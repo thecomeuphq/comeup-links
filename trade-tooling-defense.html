@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Trade Tooling Defense — Gear-Shield Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0d0c0a;
+        --bg-2: #12100d;
+        --panel: #171410;
+        --panel-2: #1e1a14;
+        --panel-3: #262118;
+        --ink: #f4eee1;
+        --ink-soft: #d8cfba;
+        --muted: #a3977f;
+        --line: #2e2920;
+        --line-strong: #453d2e;
+        --amber: #f5a524;
+        --amber-hot: #ffb63d;
+        --orange: #ff6a1f;
+        --danger: #ff4b2e;
+        --danger-bg: #2b130d;
+        --good: #93d65a;
+        --good-bg: #16240c;
+        --track: #2a251c;
+        --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(900px 480px at 85% -60px, rgba(245, 165, 36, 0.13), transparent 60%),
+          radial-gradient(700px 500px at -10% 30%, rgba(255, 106, 31, 0.06), transparent 55%),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 0 18px 64px; }
+      .hazard {
+        height: 10px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #14110c 14px 28px);
+      }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .kicker {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600;
+        letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber);
+        border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 12px;
+        background: var(--panel);
+      }
+      .kicker::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 3px rgba(255, 106, 31, 0.22); }
+      h1 {
+        font-family: "Oswald", sans-serif; font-weight: 700; text-transform: uppercase;
+        font-size: clamp(40px, 9.5vw, 62px); line-height: 1.02; letter-spacing: 0.01em;
+        margin: 20px 0 6px;
+      }
+      h1 .hl { color: var(--amber); }
+      .hero-q {
+        font-family: "Oswald", sans-serif; font-weight: 500; text-transform: uppercase;
+        font-size: clamp(19px, 5vw, 26px); letter-spacing: 0.04em; color: var(--orange);
+        margin: 0 0 14px;
+      }
+      .hero p.lede { color: var(--ink-soft); font-size: 18px; max-width: 56ch; margin: 0 0 20px; }
+      .hero p.lede strong { color: var(--ink); }
+      .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 22px 0 6px; }
+      .hstat {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+        padding: 12px 12px 10px;
+      }
+      .hstat .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 20px; color: var(--amber); }
+      .hstat .k { font-size: 12.5px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+      .btn-start {
+        display: inline-block; margin-top: 18px; background: var(--amber); color: #191204;
+        font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+        text-decoration: none; padding: 14px 26px; border-radius: 8px; font-size: 17px;
+        box-shadow: 0 8px 24px rgba(245, 165, 36, 0.28);
+      }
+      .btn-start:active { transform: translateY(1px); }
+
+      /* ---------- Steps ---------- */
+      .step {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+        padding: 22px 20px 20px; margin-top: 26px; box-shadow: var(--shadow);
+      }
+      .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 6px; }
+      .step-num {
+        flex: 0 0 auto; width: 44px; height: 44px; border-radius: 10px;
+        background: var(--panel-3); border: 1px solid var(--line-strong);
+        display: flex; align-items: center; justify-content: center;
+        font-family: "Oswald", sans-serif; font-weight: 700; font-size: 20px; color: var(--amber);
+      }
+      .step-head h2 {
+        font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase;
+        font-size: 23px; letter-spacing: 0.03em; margin: 2px 0 2px;
+      }
+      .step-head .sub { color: var(--muted); font-size: 15px; margin: 0; }
+
+      .field { margin-top: 20px; }
+      .field label, .field .flabel {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+        font-weight: 600; font-size: 16px; margin-bottom: 8px;
+      }
+      .field .hint { display: block; font-weight: 400; color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+      .money-input { position: relative; flex: 0 0 auto; }
+      .money-input span {
+        position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+        font-family: "IBM Plex Mono", monospace; color: var(--muted); font-size: 15px; pointer-events: none;
+      }
+      .money-input input, .num-input input {
+        width: 118px; background: var(--bg-2); border: 1px solid var(--line-strong); border-radius: 8px;
+        color: var(--ink); font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 16px;
+        padding: 8px 10px 8px 24px; text-align: right;
+      }
+      .num-input input { padding-left: 10px; width: 96px; }
+      .money-input input:focus, .num-input input:focus { outline: 2px solid var(--amber); outline-offset: 1px; border-color: var(--amber); }
+      input[type="range"] {
+        -webkit-appearance: none; appearance: none; width: 100%; height: 34px; background: transparent; cursor: pointer; margin: 0;
+      }
+      input[type="range"]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: var(--track); }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; width: 26px; height: 26px; margin-top: -9px; border-radius: 50%;
+        background: var(--amber); border: 3px solid #14110c; box-shadow: 0 0 0 2px var(--amber), 0 4px 10px rgba(0,0,0,0.4);
+      }
+      input[type="range"]::-moz-range-track { height: 8px; border-radius: 4px; background: var(--track); }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px; height: 20px; border-radius: 50%; background: var(--amber);
+        border: 3px solid #14110c; box-shadow: 0 0 0 2px var(--amber);
+      }
+      .scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); font-family: "IBM Plex Mono", monospace; margin-top: -4px; }
+
+      .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+      .seg button {
+        flex: 1 1 0; min-width: 100px; background: var(--bg-2); color: var(--ink-soft);
+        border: 1px solid var(--line-strong); border-radius: 9px; padding: 11px 8px;
+        font-family: "Barlow", sans-serif; font-weight: 600; font-size: 15px; cursor: pointer;
+      }
+      .seg button small { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; margin-top: 1px; }
+      .seg button[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: #191204; }
+      .seg button[aria-pressed="true"] small { color: #5c4305; }
+      .seg.two button { min-width: 140px; }
+
+      .toggle-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 14px;
+        background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px;
+        padding: 14px 14px; margin-top: 10px; cursor: pointer; width: 100%; text-align: left;
+        color: var(--ink); font-family: "Barlow", sans-serif;
+      }
+      .toggle-row .t-text { font-weight: 600; font-size: 16px; }
+      .toggle-row .t-sub { display: block; font-weight: 400; color: var(--muted); font-size: 13.5px; margin-top: 1px; }
+      .switch {
+        flex: 0 0 auto; width: 52px; height: 30px; border-radius: 999px; background: var(--track);
+        border: 1px solid var(--line-strong); position: relative; transition: background 0.15s ease;
+      }
+      .switch::after {
+        content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%;
+        background: #8d8271; transition: left 0.15s ease, background 0.15s ease;
+      }
+      .toggle-row[aria-pressed="true"] { border-color: var(--orange); }
+      .toggle-row[aria-pressed="true"] .switch { background: var(--orange); border-color: var(--orange); }
+      .toggle-row[aria-pressed="true"] .switch::after { left: 25px; background: #fff4e0; }
+
+      /* ---------- Engine readout ---------- */
+      .engine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+      .readout {
+        background: var(--bg-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px;
+      }
+      .readout .rk { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 600; }
+      .readout .rv { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: clamp(24px, 6.5vw, 32px); color: var(--amber); margin-top: 4px; }
+      .readout .rv.orange { color: var(--orange); }
+      .readout .rn { font-size: 13px; color: var(--muted); margin-top: 2px; }
+      .readout.wide { grid-column: 1 / -1; }
+      .breakdown { margin-top: 14px; border-top: 1px dashed var(--line-strong); padding-top: 12px; }
+      .breakdown .brow { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 15px; color: var(--ink-soft); }
+      .breakdown .brow .bv { font-family: "IBM Plex Mono", monospace; font-weight: 600; color: var(--ink); white-space: nowrap; }
+      .breakdown .brow.total { border-top: 1px solid var(--line); margin-top: 6px; padding-top: 10px; font-weight: 700; color: var(--ink); }
+      .breakdown .brow.total .bv { color: var(--amber); }
+      .engine-note { font-size: 13.5px; color: var(--muted); margin: 12px 0 0; }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 14px; margin-top: 12px;
+        background: var(--bg-2); opacity: 0.55;
+      }
+      .tier.active { opacity: 1; border-width: 2px; }
+      .tier .tier-tag {
+        display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 700;
+        letter-spacing: 0.1em; padding: 4px 9px; border-radius: 5px; text-transform: uppercase;
+      }
+      .tier h3 { font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; font-size: 19px; margin: 10px 0 4px; letter-spacing: 0.02em; }
+      .tier p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+      .tier .tier-action {
+        margin-top: 10px; font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 14.5px;
+        padding: 10px 12px; border-radius: 8px; display: none;
+      }
+      .tier.active .tier-action { display: block; }
+      .tier.t1 { border-color: var(--line); }
+      .tier.t1.active { border-color: var(--danger); background: var(--danger-bg); }
+      .tier.t1 .tier-tag { background: var(--danger); color: #fff; }
+      .tier.t1 .tier-action { background: rgba(255, 75, 46, 0.14); color: var(--danger); }
+      .tier.t2.active { border-color: var(--amber); }
+      .tier.t2 .tier-tag { background: var(--amber); color: #191204; }
+      .tier.t2 .tier-action { background: rgba(245, 165, 36, 0.13); color: var(--amber); }
+      .tier.t3.active { border-color: var(--good); background: var(--good-bg); }
+      .tier.t3 .tier-tag { background: var(--good); color: #14240a; }
+      .tier.t3 .tier-action { background: rgba(147, 214, 90, 0.13); color: var(--good); }
+      .tier .your-tier { display: none; float: right; font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .tier.active .your-tier { display: inline; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 30px; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow);
+        border: 1px solid var(--line-strong); background: var(--panel-2);
+      }
+      .blueprint .bp-top { padding: 22px 22px 6px; }
+      .bp-kicker { font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); }
+      .blueprint h2 {
+        font-family: "Oswald", sans-serif; font-weight: 700; text-transform: uppercase;
+        font-size: clamp(26px, 6.5vw, 34px); margin: 6px 0 2px; line-height: 1.1;
+      }
+      .bp-sub { color: var(--muted); font-size: 14.5px; margin: 0; }
+      .gauge-row { display: flex; align-items: center; gap: 20px; padding: 14px 22px 4px; flex-wrap: wrap; }
+      .gauge-box { flex: 0 0 auto; text-align: center; }
+      .gauge-box svg { display: block; }
+      .gauge-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 600; margin-top: 2px; }
+      .gauge-verdict { flex: 1 1 200px; }
+      .gauge-verdict .gv-big { font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; font-size: 21px; margin: 0 0 4px; }
+      .gauge-verdict p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+      .bp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 16px; }
+      .bp-cell { background: var(--panel); padding: 14px 18px; }
+      .bp-cell .bk { font-size: 12px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); font-weight: 600; }
+      .bp-cell .bv2 { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 24px; margin-top: 3px; }
+      .bp-cell .bn { font-size: 13px; color: var(--muted); }
+      .bp-cell .bv2.amber { color: var(--amber); }
+      .bp-cell .bv2.orange { color: var(--orange); }
+      .bp-tier-line { padding: 14px 22px 4px; }
+      .bp-tier-line .bt { font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; font-size: 17px; }
+      .bp-tier-line p { margin: 4px 0 0; color: var(--ink-soft); font-size: 15px; }
+      .bp-tax { margin: 14px 22px 0; background: var(--bg-2); border: 1px solid var(--line); border-left: 4px solid var(--amber); border-radius: 8px; padding: 12px 14px; }
+      .bp-tax .tk { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); }
+      .bp-tax p { margin: 4px 0 0; font-size: 14.5px; color: var(--ink-soft); }
+      .bp-actions { display: flex; gap: 10px; padding: 18px 22px 22px; flex-wrap: wrap; }
+      .btn-copy {
+        background: var(--amber); color: #191204; border: none; border-radius: 8px; cursor: pointer;
+        font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+        font-size: 15.5px; padding: 12px 20px;
+      }
+      .btn-copy.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line-strong); }
+      .reserve-bar { height: 10px; border-radius: 5px; background: var(--track); overflow: hidden; margin-top: 8px; }
+      .reserve-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--amber)); border-radius: 5px; transition: width 0.3s ease; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase;
+        font-size: 22px; letter-spacing: 0.03em; margin: 38px 0 4px;
+      }
+      .section-sub { color: var(--muted); margin: 0 0 14px; font-size: 15.5px; }
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 560px) { .next-grid { grid-template-columns: 1fr; } .engine-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; background: var(--panel); border: 1px solid var(--line);
+        border-radius: 12px; padding: 18px; color: var(--ink);
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .nc-tag { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); }
+      .next-card h3 { font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; font-size: 19px; margin: 8px 0 4px; }
+      .next-card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+      .next-card .nc-go { display: inline-block; margin-top: 10px; font-weight: 700; color: var(--orange); font-size: 15px; }
+      .cta-banner {
+        margin-top: 22px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line-strong);
+        background: var(--panel);
+      }
+      .cta-body { padding: 22px; }
+      .cta-body .nc-tag { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); }
+      .cta-body h3 { font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; font-size: clamp(20px, 5.5vw, 25px); line-height: 1.2; margin: 8px 0 8px; }
+      .cta-body p { margin: 0 0 16px; color: var(--ink-soft); font-size: 15.5px; }
+      .btn-gumroad {
+        display: inline-block; background: var(--orange); color: #fff7ec; text-decoration: none;
+        font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+        padding: 13px 22px; border-radius: 8px; font-size: 16px;
+      }
+      details.faq {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+        padding: 0 18px; margin-top: 10px;
+      }
+      details.faq summary {
+        cursor: pointer; font-weight: 600; font-size: 16.5px; padding: 15px 0; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      }
+      details.faq summary::-webkit-details-marker { display: none; }
+      details.faq summary::after { content: "+"; font-family: "IBM Plex Mono", monospace; color: var(--amber); font-size: 22px; font-weight: 700; }
+      details.faq[open ] summary::after { content: "–"; }
+      details.faq p { margin: 0 0 16px; color: var(--ink-soft); font-size: 15.5px; }
+      footer { margin-top: 40px; color: var(--muted); font-size: 13.5px; line-height: 1.55; }
+      footer .fineprint { border-top: 1px solid var(--line); padding-top: 14px; }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .reserve-fill { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <!-- ============ HERO ============ -->
+      <header class="hero">
+        <span class="kicker">Gear-Shield Engine · For Shift &amp; Trade Workers</span>
+        <h1>Your tools <span class="hl">are</span> your paycheck.</h1>
+        <p class="hero-q">What happens when they break?</p>
+        <p class="lede">A busted impact driver, blown-out boots, or a stolen tool bag doesn't just cost money — it costs <strong>shifts, overtime, and the job itself</strong>. This engine turns gear replacement into one small automatic set-aside per paycheck, so a breakdown never lands on a credit card.</p>
+        <div class="hero-stats">
+          <div class="hstat"><div class="v">$0</div><div class="k">is what most tool reserves look like the day something breaks</div></div>
+          <div class="hstat"><div class="v">20%+ APR</div><div class="k">is the going rate on tool-truck credit when you buy in a panic</div></div>
+          <div class="hstat"><div class="v">1 payday</div><div class="k">is all it takes to start funding your Tooling Reserve</div></div>
+        </div>
+        <a class="btn-start" href="#step1">Build my defense ↓</a>
+      </header>
+
+      <!-- ============ STEP 1 ============ -->
+      <section class="step" id="step1">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div>
+            <h2>Gear Profile</h2>
+            <p class="sub">What it would cost to replace everything you work with — today, at full price.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="toolValueNum">Total replacement value of tools &amp; gear
+            <span class="money-input"><span>$</span><input id="toolValueNum" type="number" inputmode="numeric" min="0" max="25000" step="50" value="3500" /></span>
+          </label>
+          <input id="toolValue" type="range" min="0" max="25000" step="50" value="3500" aria-label="Total replacement value of tools and gear in dollars" />
+          <div class="scale"><span>$0</span><span>hand tools · power tools · meters · bags · PPE</span><span>$25,000</span></div>
+        </div>
+
+        <div class="field">
+          <label for="bootAgeNum">Age of your boots / core PPE
+            <span class="num-input"><input id="bootAgeNum" type="number" inputmode="numeric" min="0" max="48" step="1" value="14" /></span>
+          </label>
+          <input id="bootAge" type="range" min="0" max="48" step="1" value="14" aria-label="Age of boots and core PPE in months" />
+          <div class="scale"><span>new</span><span>months since you bought them</span><span>48 mo</span></div>
+          <span class="hint" id="bootHint"></span>
+        </div>
+
+        <div class="field">
+          <label for="feesNum">Annual recertification &amp; union fees
+            <span class="money-input"><span>$</span><input id="feesNum" type="number" inputmode="numeric" min="0" max="3000" step="10" value="250" /></span>
+          </label>
+          <input id="fees" type="range" min="0" max="3000" step="10" value="250" aria-label="Annual recertification or union fees in dollars" />
+          <div class="scale"><span>$0</span><span>licenses · OSHA cards · certs · dues</span><span>$3,000</span></div>
+        </div>
+
+        <div class="field">
+          <label for="reserveNum">Tooling Reserve saved so far
+            <span class="money-input"><span>$</span><input id="reserveNum" type="number" inputmode="numeric" min="0" max="10000" step="25" value="0" /></span>
+          </label>
+          <input id="reserve" type="range" min="0" max="10000" step="25" value="0" aria-label="Current tooling reserve saved in dollars" />
+          <div class="scale"><span>$0</span><span>cash set aside for gear only — be honest</span><span>$10,000</span></div>
+        </div>
+
+        <div class="field">
+          <span class="flabel">How you're paid</span>
+          <div class="seg" id="payFreqSeg" role="group" aria-label="Pay frequency">
+            <button type="button" data-paydays="52" aria-pressed="false">Weekly<small>52 paydays/yr</small></button>
+            <button type="button" data-paydays="26" aria-pressed="true">Biweekly<small>26 paydays/yr</small></button>
+            <button type="button" data-paydays="24" aria-pressed="false">Twice monthly<small>24 paydays/yr</small></button>
+            <button type="button" data-paydays="12" aria-pressed="false">Monthly<small>12 paydays/yr</small></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="flabel">How you're taxed</span>
+          <div class="seg two" id="taxSeg" role="group" aria-label="Employment type">
+            <button type="button" data-tax="w2" aria-pressed="true">W-2 employee<small>payroll job</small></button>
+            <button type="button" data-tax="1099" aria-pressed="false">1099 / self-employed<small>own boss, own taxes</small></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ STEP 2 ============ -->
+      <section class="step" id="step2">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <div>
+            <h2>Wear &amp; Risk</h2>
+            <p class="sub">How fast your gear wears out — and what's already gone wrong before.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="flabel">Trade intensity</span>
+          <div class="seg" id="intensitySeg" role="group" aria-label="Trade intensity">
+            <button type="button" data-intensity="light" aria-pressed="false">Light<small>shop / bench work</small></button>
+            <button type="button" data-intensity="moderate" aria-pressed="true">Moderate<small>daily jobsite use</small></button>
+            <button type="button" data-intensity="heavy" aria-pressed="false">Heavy<small>field use, weather, drops</small></button>
+          </div>
+          <span class="hint" id="intensityHint"></span>
+        </div>
+
+        <div class="field">
+          <span class="flabel">High-risk flags — tap everything that's true</span>
+          <button type="button" class="toggle-row" id="flagStolen" aria-pressed="false">
+            <span><span class="t-text">Gear stolen before</span><span class="t-sub">Truck, site, or garage — it's happened once, it can happen again</span></span>
+            <span class="switch" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="toggle-row" id="flagNoBackup" aria-pressed="true">
+            <span><span class="t-text">No backup tools</span><span class="t-sub">If your main kit dies, you're borrowing or buying same-day</span></span>
+            <span class="switch" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="toggle-row" id="flagNoCover" aria-pressed="true">
+            <span><span class="t-text">Employer doesn't cover replacements</span><span class="t-sub">No tool allowance, no reimbursement — it's all on you</span></span>
+            <span class="switch" aria-hidden="true"></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ STEP 3 ============ -->
+      <section class="step" id="step3">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <div>
+            <h2>Gear-Shield Engine</h2>
+            <p class="sub">Your gear's real annual cost — and the exact per-paycheck set-aside that covers it.</p>
+          </div>
+        </div>
+
+        <div class="engine-grid">
+          <div class="readout">
+            <div class="rk">Annual gear cost</div>
+            <div class="rv" id="annualCost">$0</div>
+            <div class="rn">what your kit really costs you per year</div>
+          </div>
+          <div class="readout">
+            <div class="rk">Per-paycheck set-aside</div>
+            <div class="rv orange" id="perPaycheck">$0</div>
+            <div class="rn" id="perPaycheckNote">into your Tooling Reserve</div>
+          </div>
+          <div class="readout">
+            <div class="rk">Reserve target</div>
+            <div class="rv" id="reserveTarget">$0</div>
+            <div class="rn">one full year of gear wear, funded</div>
+          </div>
+          <div class="readout">
+            <div class="rk">Gap to close</div>
+            <div class="rv" id="reserveGap">$0</div>
+            <div class="rn" id="reserveGapNote">at $0 saved right now</div>
+          </div>
+        </div>
+
+        <div class="breakdown" id="breakdown">
+          <div class="brow"><span>Tools &amp; gear wear <span id="bdToolsNote"></span></span><span class="bv" id="bdTools">$0</span></div>
+          <div class="brow"><span>Boots &amp; PPE cycle <span id="bdBootsNote"></span></span><span class="bv" id="bdBoots">$0</span></div>
+          <div class="brow"><span>Risk contingency <span id="bdRiskNote"></span></span><span class="bv" id="bdRisk">$0</span></div>
+          <div class="brow"><span>Recertification &amp; union fees</span><span class="bv" id="bdFees">$0</span></div>
+          <div class="brow total"><span>Annual gear cost</span><span class="bv" id="bdTotal">$0</span></div>
+        </div>
+        <p class="engine-note">How it works: your kit's replacement value is spread over its realistic service life for your trade intensity, boots &amp; PPE are annualized on their wear cycle (est. $200/pair), and each risk flag adds a small contingency so one bad week doesn't zero the fund.</p>
+      </section>
+
+      <!-- ============ STEP 4 ============ -->
+      <section class="step" id="step4">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <div>
+            <h2>Defense Strategy</h2>
+            <p class="sub">Three tiers. Your inputs decide which one you're standing in — the lit tier is yours.</p>
+          </div>
+        </div>
+
+        <div class="tier t1" id="tier1">
+          <span class="tier-tag">Tier 1</span><span class="your-tier">◀ Your tier</span>
+          <h3>High-Risk Emergency</h3>
+          <p>Critical gear is at or past its wear limit and the reserve is nearly empty. One failure this week means tool-truck credit or a missed shift. No slow build — freeze a buffer first, then start the per-paycheck set-aside.</p>
+          <div class="tier-action" id="tier1Action"></div>
+        </div>
+
+        <div class="tier t2" id="tier2">
+          <span class="tier-tag">Tier 2</span><span class="your-tier">◀ Your tier</span>
+          <h3>Moderate Wear</h3>
+          <p>Gear is holding, but nothing is funded. This is the standard maintenance play: automate a small sinking-fund allocation every payday and let the reserve quietly reach target before anything breaks.</p>
+          <div class="tier-action" id="tier2Action"></div>
+        </div>
+
+        <div class="tier t3" id="tier3">
+          <span class="tier-tag">Tier 3</span><span class="your-tier">◀ Your tier</span>
+          <h3>Fortified Shield</h3>
+          <p>Your Tooling Reserve covers a full year of gear wear. Now optimize: claim every employer tool-allowance and reimbursement you're owed, keep receipts for deductions, and drop the set-aside to maintenance level.</p>
+          <div class="tier-action" id="tier3Action"></div>
+        </div>
+      </section>
+
+      <!-- ============ BLUEPRINT ============ -->
+      <section class="blueprint" id="blueprint" aria-label="Trade Tooling Defense Blueprint">
+        <div class="hazard" aria-hidden="true"></div>
+        <div class="bp-top">
+          <div class="bp-kicker">Screenshot-Ready · Your Plan</div>
+          <h2>Trade Tooling Defense Blueprint</h2>
+          <p class="bp-sub" id="bpProfileLine"></p>
+        </div>
+
+        <div class="gauge-row">
+          <div class="gauge-box">
+            <svg width="150" height="92" viewBox="0 0 150 92" role="img" aria-label="Gear Readiness Index gauge">
+              <path d="M 12 84 A 63 63 0 0 1 138 84" fill="none" stroke="var(--track)" stroke-width="13" stroke-linecap="round" />
+              <path id="gaugeArc" d="M 12 84 A 63 63 0 0 1 138 84" fill="none" stroke="var(--amber)" stroke-width="13" stroke-linecap="round" stroke-dasharray="198" stroke-dashoffset="198" />
+              <text id="gaugeValue" x="75" y="72" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="34" fill="var(--ink)">0</text>
+              <text x="75" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1.5" fill="var(--muted)">/ 100</text>
+            </svg>
+            <div class="gauge-label">Gear Readiness Index</div>
+          </div>
+          <div class="gauge-verdict">
+            <p class="gv-big" id="gaugeVerdict">—</p>
+            <p id="gaugeText">—</p>
+          </div>
+        </div>
+
+        <div class="bp-grid">
+          <div class="bp-cell">
+            <div class="bk">Annual gear cost</div>
+            <div class="bv2 amber" id="bpAnnual">$0</div>
+            <div class="bn">tools + boots + fees + risk load</div>
+          </div>
+          <div class="bp-cell">
+            <div class="bk">Per-paycheck set-aside</div>
+            <div class="bv2 orange" id="bpPerPay">$0</div>
+            <div class="bn" id="bpPerPayNote">every payday, automatic</div>
+          </div>
+          <div class="bp-cell">
+            <div class="bk">Tooling Reserve</div>
+            <div class="bv2" id="bpReserve">$0 <span style="font-size:14px;color:var(--muted)">of</span> $0</div>
+            <div class="reserve-bar"><div class="reserve-fill" id="reserveFill" style="width:0%"></div></div>
+          </div>
+          <div class="bp-cell">
+            <div class="bk">Action tier</div>
+            <div class="bv2" id="bpTier" style="font-size:19px; line-height:1.25; padding-top:3px;">—</div>
+            <div class="bn" id="bpTierNote"></div>
+          </div>
+        </div>
+
+        <div class="bp-tier-line">
+          <span class="bt" id="bpMoveLabel">Your first move</span>
+          <p id="bpMove"></p>
+        </div>
+
+        <div class="bp-tax">
+          <div class="tk">Tax deduction note</div>
+          <p id="bpTax"></p>
+        </div>
+
+        <div class="bp-actions">
+          <button type="button" class="btn-copy" id="copyBtn">Copy my blueprint</button>
+          <button type="button" class="btn-copy ghost" id="recalcBtn">↺ Re-check my numbers</button>
+        </div>
+        <div class="hazard" aria-hidden="true"></div>
+      </section>
+
+      <!-- ============ NEXT STEPS ============ -->
+      <h2 class="section-title">Put the plan on rails</h2>
+      <p class="section-sub">The blueprint is the strategy. These two free tools run the money side of it.</p>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/sinking-fund-planner.html">
+          <span class="nc-tag">Next Step · Fund It</span>
+          <h3>Sinking Fund Planner</h3>
+          <p>Turn your per-paycheck set-aside into a named sinking fund with a target date — boots, tools, and cert fees each in their own bucket.</p>
+          <span class="nc-go">Open the planner →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html">
+          <span class="nc-tag">Next Step · Split It</span>
+          <h3>Paycheck Budget Splitter</h3>
+          <p>Carve the Tooling Reserve line into your actual paycheck split, so the gear money moves before rent, gas, and everything else competes for it.</p>
+          <span class="nc-go">Split my paycheck →</span>
+        </a>
+      </div>
+
+      <div class="cta-banner">
+        <div class="hazard" aria-hidden="true"></div>
+        <div class="cta-body">
+          <span class="nc-tag">Track It On Paper</span>
+          <h3>Log every tool, every mile, every maintenance dollar</h3>
+          <p>The <strong>Truck &amp; Equipment Maintenance Log</strong> and <strong>Sinking Funds Tracker</strong> on Gumroad turn this defense plan into a paper trail — proof of every gear dollar for reimbursements, deductions, and your own records.</p>
+          <a class="btn-gumroad" href="https://bradley57.gumroad.com/">Get the log &amp; tracker →</a>
+        </div>
+      </div>
+
+      <!-- ============ FAQ ============ -->
+      <h2 class="section-title">Straight answers</h2>
+      <p class="section-sub">The questions every trade worker asks before the first breakdown — not after.</p>
+
+      <details class="faq">
+        <summary>Why is tool-truck credit a trap?</summary>
+        <p>Because it's sold at your lowest moment — tool dead, shift starting, truck right there. Weekly-payment plans on the big tool trucks commonly run 20% APR and up, stretch a $400 tool into $550+, and the payment follows you even if the job doesn't. Worse, it trains the habit: every breakdown becomes debt instead of a withdrawal from a reserve you already funded. A $12–$25 per-paycheck set-aside costs less per month than one tool-truck payment — and when the tool breaks, you pay cash and keep working.</p>
+      </details>
+
+      <details class="faq">
+        <summary>What counts as deductible work gear?</summary>
+        <p>If you're <strong>1099 / self-employed</strong>: tools, safety boots, PPE, tool storage, repairs, and required certification or license fees are generally deductible business expenses on Schedule C — keep receipts and a log. If you're <strong>W-2</strong>: the federal deduction for unreimbursed employee expenses has been suspended since 2018, so your best moves are employer reimbursements (tax-free to you under an accountable plan) and tool allowances — plus a handful of states still allow the deduction on the state return. Either way, documented gear spending is money on the table; undocumented spending is just gone.</p>
+      </details>
+
+      <details class="faq">
+        <summary>How often should I reassess my gear defense?</summary>
+        <p>Run this check every 6 months, and immediately after three events: a job or trade change (new required kit), a theft or major breakage (your risk flags just changed), and any raise or schedule change (your per-paycheck number can move). Boots and PPE deserve a hard look at the 6-month mark regardless — they're the gear most likely to fail mid-shift and the cheapest to keep ahead of.</p>
+      </details>
+
+      <footer>
+        <p class="fineprint">Trade Tooling Defense is an educational planning tool. Dollar figures are estimates built from your inputs and standard gear service-life assumptions (boots/PPE est. $200 per replacement cycle) — your trade, brand choices, and employer policies will shift the real numbers. Tax notes are general information, not tax advice; check IRS rules and your state's treatment of unreimbursed employee expenses, or ask a tax pro about your situation.</p>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var LIFE = {
+          light:    { years: 6,   bootMonths: 18, label: "Light",    desc: "Tools live ~6 years · boots ~18 months" },
+          moderate: { years: 4,   bootMonths: 12, label: "Moderate", desc: "Tools live ~4 years · boots ~12 months" },
+          heavy:    { years: 2.5, bootMonths: 8,  label: "Heavy",    desc: "Tools live ~2.5 years · boots ~8 months" }
+        };
+        var BOOT_COST = 200;
+        var EMERGENCY_FREEZE = 150;
+
+        var state = {
+          toolValue: 3500,
+          bootAge: 14,
+          fees: 250,
+          reserve: 0,
+          paydays: 26,
+          tax: "w2",
+          intensity: "moderate",
+          stolen: false,
+          noBackup: true,
+          noCover: true
+        };
+
+        function $(id) { return document.getElementById(id); }
+        function money(n) {
+          return "$" + Math.round(n).toLocaleString("en-US");
+        }
+        function moneyExact(n) {
+          var r = Math.round(n);
+          return "$" + r.toLocaleString("en-US");
+        }
+
+        function bindPair(rangeId, numId, key, max) {
+          var range = $(rangeId), num = $(numId);
+          range.addEventListener("input", function () {
+            state[key] = parseFloat(range.value) || 0;
+            num.value = range.value;
+            render();
+          });
+          num.addEventListener("input", function () {
+            var v = parseFloat(num.value);
+            if (isNaN(v)) v = 0;
+            v = Math.max(0, Math.min(max, v));
+            state[key] = v;
+            range.value = v;
+            render();
+          });
+        }
+        bindPair("toolValue", "toolValueNum", "toolValue", 25000);
+        bindPair("bootAge", "bootAgeNum", "bootAge", 48);
+        bindPair("fees", "feesNum", "fees", 3000);
+        bindPair("reserve", "reserveNum", "reserve", 10000);
+
+        function segWire(id, attr, fn) {
+          var seg = $(id);
+          var btns = seg.querySelectorAll("button");
+          Array.prototype.forEach.call(btns, function (b) {
+            b.addEventListener("click", function () {
+              Array.prototype.forEach.call(btns, function (x) { x.setAttribute("aria-pressed", "false"); });
+              b.setAttribute("aria-pressed", "true");
+              fn(b.getAttribute(attr));
+            });
+          });
+        }
+        segWire("payFreqSeg", "data-paydays", function (v) { state.paydays = parseInt(v, 10); render(); });
+        segWire("taxSeg", "data-tax", function (v) { state.tax = v; render(); });
+        segWire("intensitySeg", "data-intensity", function (v) { state.intensity = v; render(); });
+
+        function flagWire(id, key) {
+          var el = $(id);
+          el.addEventListener("click", function () {
+            var on = el.getAttribute("aria-pressed") === "true";
+            el.setAttribute("aria-pressed", on ? "false" : "true");
+            state[key] = !on;
+            render();
+          });
+        }
+        flagWire("flagStolen", "stolen");
+        flagWire("flagNoBackup", "noBackup");
+        flagWire("flagNoCover", "noCover");
+
+        function compute() {
+          var life = LIFE[state.intensity];
+          var toolsAnnual = state.toolValue / life.years;
+          var bootsAnnual = BOOT_COST * 12 / life.bootMonths;
+          var riskPct = (state.stolen ? 0.10 : 0) + (state.noBackup ? 0.10 : 0) + (state.noCover ? 0.05 : 0);
+          var riskLoad = (toolsAnnual + bootsAnnual) * riskPct;
+          var annual = toolsAnnual + bootsAnnual + riskLoad + state.fees;
+
+          var target = annual;
+          var gap = Math.max(target - state.reserve, 0);
+          var catchUp = gap / state.paydays;
+          var maintenance = annual / state.paydays;
+          var perPay = gap > 0 ? catchUp : maintenance;
+
+          var bootsOverdue = state.bootAge >= life.bootMonths;
+          var tier;
+          if (state.reserve >= target && target > 0) tier = 3;
+          else if (bootsOverdue && state.reserve < EMERGENCY_FREEZE) tier = 1;
+          else tier = 2;
+
+          // Gear Readiness Index 0-100
+          var coverage = target > 0 ? Math.min(state.reserve / target, 1) : 1;
+          var coverageScore = coverage * 55;
+          var bootRatio = life.bootMonths > 0 ? state.bootAge / life.bootMonths : 0;
+          var bootScore = 20 * Math.max(0, 1 - bootRatio * 0.8);
+          var flagCount = (state.stolen ? 1 : 0) + (state.noBackup ? 1 : 0) + (state.noCover ? 1 : 0);
+          var riskScore = Math.max(0, 25 - flagCount * 8);
+          var index = Math.round(Math.max(0, Math.min(100, coverageScore + bootScore + riskScore)));
+
+          return {
+            life: life, toolsAnnual: toolsAnnual, bootsAnnual: bootsAnnual,
+            riskPct: riskPct, riskLoad: riskLoad, annual: annual,
+            target: target, gap: gap, perPay: perPay, maintenance: maintenance,
+            bootsOverdue: bootsOverdue, tier: tier, index: index,
+            coverage: coverage, flagCount: flagCount
+          };
+        }
+
+        var TAX_NOTES = {
+          w2: "W-2: the federal deduction for unreimbursed employee gear is suspended (2018–2025 rules), so your strongest play is employer money — tool allowances and reimbursements under an accountable plan come to you tax-free. Some states (e.g. CA, NY, PA) still allow the deduction on the state return. Keep every receipt either way.",
+          f1099: "1099 / self-employed: tools, boots, PPE, repairs, and required cert fees are generally deductible business expenses on Schedule C — every documented gear dollar lowers your taxable income. Keep receipts plus a mileage/maintenance log, and consider quarterly set-asides so the deduction and the cash are both ready."
+        };
+
+        function render() {
+          var r = compute();
+          var life = r.life;
+
+          // Step 1 hints
+          var bootHint = $("bootHint");
+          if (state.bootAge === 0) bootHint.textContent = "Fresh gear — the reserve you build now stays ahead of the wear curve.";
+          else if (r.bootsOverdue) bootHint.textContent = "⚠ Past the " + life.bootMonths + "-month wear limit for " + life.label.toLowerCase() + " use — these are on borrowed time.";
+          else bootHint.textContent = "About " + Math.max(life.bootMonths - state.bootAge, 0) + " months of expected life left at " + life.label.toLowerCase() + " intensity.";
+          $("intensityHint").textContent = life.desc + " at this intensity.";
+
+          // Step 3 readouts
+          $("annualCost").textContent = moneyExact(r.annual);
+          $("perPaycheck").textContent = moneyExact(r.perPay);
+          $("perPaycheckNote").textContent = r.gap > 0
+            ? "every payday × " + state.paydays + "/yr closes your gap in 12 months"
+            : "maintenance level — reserve is funded, keep it topped";
+          $("reserveTarget").textContent = moneyExact(r.target);
+          $("reserveGap").textContent = moneyExact(r.gap);
+          $("reserveGapNote").textContent = r.gap > 0
+            ? "target minus your " + money(state.reserve) + " saved"
+            : "fully funded — shield up";
+
+          // Breakdown
+          $("bdToolsNote").textContent = "— " + money(state.toolValue) + " kit ÷ " + life.years + "-yr life";
+          $("bdTools").textContent = moneyExact(r.toolsAnnual);
+          $("bdBootsNote").textContent = "— $" + BOOT_COST + "/pair every " + life.bootMonths + " mo";
+          $("bdBoots").textContent = moneyExact(r.bootsAnnual);
+          $("bdRiskNote").textContent = r.riskPct > 0 ? "— +" + Math.round(r.riskPct * 100) + "% for " + r.flagCount + " risk flag" + (r.flagCount === 1 ? "" : "s") : "— no risk flags set";
+          $("bdRisk").textContent = moneyExact(r.riskLoad);
+          $("bdFees").textContent = moneyExact(state.fees);
+          $("bdTotal").textContent = moneyExact(r.annual);
+
+          // Tiers
+          [1, 2, 3].forEach(function (t) {
+            $("tier" + t).classList.toggle("active", r.tier === t);
+          });
+          $("tier1Action").textContent = "⚠ Mandate: freeze " + money(EMERGENCY_FREEZE) + " into the Tooling Reserve this payday — before anything discretionary — then automate " + moneyExact(r.perPay) + "/paycheck.";
+          $("tier2Action").textContent = "→ Automate " + moneyExact(r.perPay) + "/paycheck into a separate Tooling Reserve account on payday, before spending starts.";
+          $("tier3Action").textContent = "→ Drop to maintenance: " + moneyExact(r.maintenance) + "/paycheck. Sweep any employer tool allowance straight into the reserve and log every gear receipt for deductions.";
+
+          // Blueprint
+          $("bpProfileLine").textContent =
+            money(state.toolValue) + " kit · " + life.label.toLowerCase() + " intensity · boots " + state.bootAge + " mo old · " + state.paydays + " paydays/yr · " + (state.tax === "w2" ? "W-2" : "1099");
+          $("bpAnnual").textContent = moneyExact(r.annual);
+          $("bpPerPay").textContent = moneyExact(r.perPay);
+          $("bpPerPayNote").textContent = r.gap > 0 ? "every payday until the reserve hits target" : "maintenance level — reserve funded";
+          $("bpReserve").innerHTML = money(state.reserve) + ' <span style="font-size:14px;color:var(--muted)">of</span> ' + moneyExact(r.target);
+          $("reserveFill").style.width = Math.round(r.coverage * 100) + "%";
+
+          var tierNames = { 1: "Tier 1 — High-Risk Emergency", 2: "Tier 2 — Moderate Wear", 3: "Tier 3 — Fortified Shield" };
+          var tierColors = { 1: "var(--danger)", 2: "var(--amber)", 3: "var(--good)" };
+          var bpTier = $("bpTier");
+          bpTier.textContent = tierNames[r.tier];
+          bpTier.style.color = tierColors[r.tier];
+          $("bpTierNote").textContent = r.tier === 1 ? "act this payday, not next" : r.tier === 2 ? "automate and let it build" : "funded — now optimize";
+
+          var moves = {
+            1: "Freeze " + money(EMERGENCY_FREEZE) + " into a separate Tooling Reserve this payday — boots/PPE first, they're past their wear limit. Then set an automatic " + moneyExact(r.perPay) + " transfer every payday until the reserve reaches " + moneyExact(r.target) + ". No tool-truck credit, no exceptions.",
+            2: "Set an automatic transfer of " + moneyExact(r.perPay) + " per paycheck into a dedicated Tooling Reserve account, scheduled for payday itself. At that pace the reserve hits its " + moneyExact(r.target) + " target in about 12 months — before the wear curve catches up.",
+            3: "Your shield is funded. Keep a maintenance transfer of " + moneyExact(r.maintenance) + "/paycheck, claim every employer tool allowance and reimbursement you're owed, and keep receipts logged — " + (state.tax === "w2" ? "reimbursements under an accountable plan are tax-free money." : "every documented gear dollar is a Schedule C deduction.")
+          };
+          $("bpMove").textContent = moves[r.tier];
+          $("bpTax").textContent = state.tax === "w2" ? TAX_NOTES.w2 : TAX_NOTES.f1099;
+
+          // Gauge
+          var arcLen = 198;
+          var arc = $("gaugeArc");
+          arc.style.strokeDashoffset = String(arcLen - arcLen * r.index / 100);
+          arc.style.stroke = r.index >= 70 ? "var(--good)" : r.index >= 40 ? "var(--amber)" : "var(--danger)";
+          $("gaugeValue").textContent = r.index;
+          var verdict, vtext;
+          if (r.index >= 85) { verdict = "Fortified"; vtext = "You could replace your critical gear tomorrow in cash. This is what protected earning power looks like."; }
+          else if (r.index >= 70) { verdict = "Solid shield"; vtext = "Most breakdowns are covered without credit. Keep the set-aside running to close the last of the gap."; }
+          else if (r.index >= 50) { verdict = "Building"; vtext = "Real coverage is forming, but weak spots remain — overdue gear and open risk flags can still turn a breakdown into debt. Stay on the per-paycheck number."; }
+          else if (r.index >= 30) { verdict = "Exposed"; vtext = "One breakdown likely means tool-truck credit or a high-interest card. The per-paycheck set-aside is the way out — start it this payday."; }
+          else { verdict = "Undefended"; vtext = "Right now a broken tool is a financial emergency. That's fixable: one automatic set-aside per paycheck rebuilds the shield within a year."; }
+          $("gaugeVerdict").textContent = verdict;
+          $("gaugeText").textContent = vtext;
+
+          lastResult = { r: r, tierName: tierNames[r.tier] };
+        }
+
+        var lastResult = null;
+
+        $("copyBtn").addEventListener("click", function () {
+          if (!lastResult) return;
+          var r = lastResult.r;
+          var lines = [
+            "TRADE TOOLING DEFENSE BLUEPRINT",
+            "Gear Readiness Index: " + r.index + "/100",
+            "Kit value: " + money(state.toolValue) + " · " + r.life.label + " intensity · Boots: " + state.bootAge + " mo old",
+            "Annual gear cost: " + moneyExact(r.annual),
+            "Per-paycheck set-aside: " + moneyExact(r.perPay) + " (" + state.paydays + " paydays/yr)",
+            "Tooling Reserve: " + money(state.reserve) + " of " + moneyExact(r.target) + " target",
+            "Action tier: " + lastResult.tierName,
+            "First move: " + $("bpMove").textContent,
+            "Tax note: " + $("bpTax").textContent
+          ];
+          var text = lines.join("\n");
+          var btn = $("copyBtn");
+          function done() {
+            btn.textContent = "Copied ✓";
+            setTimeout(function () { btn.textContent = "Copy my blueprint"; }, 2000);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+          } else { fallbackCopy(text); done(); }
+        });
+        function fallbackCopy(text) {
+          var ta = document.createElement("textarea");
+          ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand("copy"); } catch (e) {}
+          document.body.removeChild(ta);
+        }
+        $("recalcBtn").addEventListener("click", function () {
+          document.getElementById("step1").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

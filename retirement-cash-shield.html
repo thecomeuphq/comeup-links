@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Retirement Cash Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#100e0b;
+        --bg2:#171410;
+        --panel:#1c1915;
+        --panel2:#221e19;
+        --line:#37312a;
+        --line-soft:#2a251f;
+        --ink:#f2ede4;
+        --ink-dim:#b8ae9d;
+        --ink-faint:#8a8073;
+        --amber:#f5a524;
+        --orange:#ff6b1a;
+        --red:#ff4d3d;
+        --green:#4ade80;
+        --hazard:repeating-linear-gradient(45deg,#f5a524 0 14px,#14110d 14px 28px);
+        --radius:10px;
+      }
+      *{box-sizing:border-box;}
+      html{scroll-behavior:smooth;}
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:"Barlow",system-ui,sans-serif;
+        font-size:16px;
+        line-height:1.5;
+        -webkit-font-smoothing:antialiased;
+      }
+      .wrap{max-width:880px;margin:0 auto;padding:0 16px 64px;}
+
+      /* ---------- header / hook ---------- */
+      header{padding:34px 0 8px;}
+      .plate{
+        display:inline-flex;align-items:center;gap:8px;
+        border:1px solid var(--line);background:var(--panel);
+        padding:5px 12px;border-radius:999px;
+        font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;
+        text-transform:uppercase;color:var(--amber);
+      }
+      .plate::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange);}
+      h1{
+        font-family:"Barlow Condensed",sans-serif;font-weight:700;
+        font-size:clamp(44px,11vw,76px);line-height:.94;letter-spacing:.01em;
+        text-transform:uppercase;margin:18px 0 6px;
+      }
+      h1 .hl{color:var(--amber);}
+      .hook{
+        font-size:clamp(18px,4.6vw,23px);font-weight:600;line-height:1.35;
+        color:var(--ink);margin:10px 0 4px;max-width:34em;
+      }
+      .hook strong{color:var(--orange);}
+      .sub{color:var(--ink-dim);max-width:38em;margin:6px 0 0;font-size:15.5px;}
+      .hazard-bar{height:10px;background:var(--hazard);border-radius:3px;margin:26px 0 4px;opacity:.9;}
+
+      /* ---------- steps ---------- */
+      section.step{
+        background:var(--panel);
+        border:1px solid var(--line-soft);
+        border-radius:var(--radius);
+        margin-top:22px;
+        padding:20px 18px 22px;
+      }
+      .step-head{display:flex;align-items:baseline;gap:12px;margin-bottom:16px;}
+      .step-num{
+        font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:13px;
+        background:var(--amber);color:#171106;
+        padding:3px 9px;border-radius:4px;letter-spacing:.06em;white-space:nowrap;
+      }
+      .step-head h2{
+        font-family:"Barlow Condensed",sans-serif;font-weight:600;
+        font-size:26px;letter-spacing:.03em;text-transform:uppercase;margin:0;line-height:1;
+      }
+      .step-head p{margin:2px 0 0;color:var(--ink-faint);font-size:13.5px;}
+
+      label.flabel{display:block;font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-dim);margin:18px 0 8px;}
+      label.flabel:first-of-type{margin-top:0;}
+
+      .amount-row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap;}
+      .amount-box{
+        display:flex;align-items:center;gap:4px;flex:1 1 180px;
+        background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:0 14px;
+      }
+      .amount-box span{font-family:"IBM Plex Mono",monospace;color:var(--amber);font-size:20px;font-weight:700;}
+      .amount-box input{
+        width:100%;background:transparent;border:0;outline:0;color:var(--ink);
+        font-family:"IBM Plex Mono",monospace;font-size:24px;font-weight:700;padding:10px 0;
+      }
+      input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;background:#33291a;outline:none;margin-top:14px;}
+      input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--amber);border:3px solid #171106;box-shadow:0 0 0 2px var(--amber);cursor:pointer;}
+      input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--amber);border:3px solid #171106;box-shadow:0 0 0 2px var(--amber);cursor:pointer;}
+
+      .seg{display:grid;gap:8px;}
+      .seg.cols3{grid-template-columns:repeat(3,1fr);}
+      .seg.cols2{grid-template-columns:repeat(2,1fr);}
+      @media (max-width:560px){.seg.cols3{grid-template-columns:1fr;}}
+      .seg label{cursor:pointer;position:relative;display:block;}
+      .seg input,.bracket-row input{
+        -webkit-appearance:none;appearance:none;
+        position:absolute;top:13px;left:13px;z-index:1;
+        width:20px;height:20px;margin:0;border-radius:50%;
+        border:2px solid var(--line);background:var(--bg);cursor:pointer;
+      }
+      .seg input:checked,.bracket-row input:checked{
+        border-color:var(--amber);
+        background:radial-gradient(circle,var(--amber) 0 5.5px,transparent 6.5px);
+      }
+      .seg input:focus-visible,.bracket-row input:focus-visible{outline:2px solid var(--orange);outline-offset:2px;}
+      .seg .opt{
+        display:block;height:100%;
+        background:var(--bg2);border:1px solid var(--line);border-radius:8px;
+        padding:11px 13px 11px 44px;font-weight:600;font-size:15px;line-height:1.3;color:var(--ink-dim);
+        transition:border-color .15s,color .15s,background .15s;
+      }
+      .seg .opt small{display:block;font-weight:400;font-size:12.5px;color:var(--ink-faint);margin-top:3px;line-height:1.35;}
+      .seg input:checked + .opt{border-color:var(--amber);color:var(--ink);background:#2a2113;box-shadow:inset 0 0 0 1px var(--amber);}
+      .seg input:checked + .opt small{color:var(--ink-dim);}
+      .seg input:focus-visible + .opt{outline:2px solid var(--orange);outline-offset:2px;}
+
+      .bracket-row{display:flex;gap:8px;flex-wrap:wrap;}
+      .bracket-row label{cursor:pointer;position:relative;display:inline-block;}
+      .bracket-row input{top:50%;left:11px;transform:translateY(-50%);width:16px;height:16px;}
+      .bracket-row input:checked{background:radial-gradient(circle,#171106 0 4.5px,transparent 5.5px);border-color:#171106;}
+      .bracket-row .chip{
+        display:inline-block;padding:8px 15px 8px 34px;border-radius:999px;
+        border:1px solid var(--line);background:var(--bg2);
+        font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:14.5px;color:var(--ink-dim);
+      }
+      .bracket-row input:checked + .chip{border-color:var(--amber);color:#171106;background:var(--amber);}
+      .bracket-row input:focus-visible + .chip{outline:2px solid var(--orange);outline-offset:2px;}
+
+      .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+      @media (max-width:560px){.mini-grid{grid-template-columns:1fr;}}
+      .mini-grid .field label.flabel{margin-top:0;}
+      select,.numin{
+        width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:8px;
+        color:var(--ink);font-family:"Barlow",sans-serif;font-size:16px;font-weight:600;
+        padding:11px 12px;outline:none;
+      }
+      select:focus,.numin:focus{border-color:var(--amber);}
+      .numin{font-family:"IBM Plex Mono",monospace;}
+
+      /* ---------- destruction engine ---------- */
+      section.engine{background:var(--bg2);border-color:var(--line);}
+      .eng-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+      @media (max-width:620px){.eng-grid{grid-template-columns:1fr;}}
+      .stat{
+        background:var(--panel);border:1px solid var(--line-soft);border-radius:8px;padding:16px;
+      }
+      .stat.wide{grid-column:1/-1;}
+      .stat .k{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);}
+      .stat .v{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:clamp(26px,6vw,34px);line-height:1.15;margin-top:4px;}
+      .stat .d{font-size:13.5px;color:var(--ink-dim);margin-top:4px;line-height:1.45;}
+      .v.red{color:var(--red);} .v.amber{color:var(--amber);} .v.green{color:var(--green);} .v.orange{color:var(--orange);}
+      .breakdown{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;display:grid;gap:5px;}
+      .breakdown .row{display:flex;justify-content:space-between;font-size:14px;color:var(--ink-dim);}
+      .breakdown .row b{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-weight:600;}
+      .breakdown .row.total{border-top:1px solid var(--line-soft);padding-top:6px;margin-top:2px;font-weight:600;color:var(--ink);}
+      .breakdown .row.total b{color:var(--red);}
+      .bar-shell{height:14px;background:#0c0a08;border:1px solid var(--line-soft);border-radius:4px;overflow:hidden;margin-top:12px;display:flex;}
+      .bar-keep{background:var(--green);height:100%;transition:width .35s ease;}
+      .bar-lost{background:var(--red);height:100%;transition:width .35s ease;}
+      .bar-legend{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-faint);margin-top:5px;font-family:"IBM Plex Mono",monospace;}
+      .warn{
+        border:1px solid #6e2a1e;background:#2a140e;border-radius:8px;
+        padding:13px 15px;font-size:14.5px;line-height:1.5;color:#ffd9d2;margin-top:12px;
+      }
+      .warn b{color:#ff8a75;text-transform:uppercase;letter-spacing:.05em;font-size:12.5px;display:block;margin-bottom:3px;}
+      .ok-note{
+        border:1px solid #21512f;background:#0f2317;border-radius:8px;
+        padding:13px 15px;font-size:14.5px;line-height:1.5;color:#c9f2d4;margin-top:12px;
+      }
+      .ok-note b{color:var(--green);text-transform:uppercase;letter-spacing:.05em;font-size:12.5px;display:block;margin-bottom:3px;}
+      .hidden{display:none !important;}
+
+      /* ---------- score ---------- */
+      .score-panel{
+        display:flex;gap:18px;align-items:center;flex-wrap:wrap;
+        background:var(--panel);border:1px solid var(--line-soft);border-radius:8px;padding:16px;margin-top:12px;
+      }
+      .score-num{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:56px;line-height:1;}
+      .score-meta{flex:1 1 220px;}
+      .score-meta .k{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);}
+      .score-meta .verdict{font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;margin:2px 0;}
+      .score-meta p{margin:0;font-size:14px;color:var(--ink-dim);}
+      .score-track{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--red),var(--amber) 55%,var(--green));position:relative;margin-top:12px;}
+      .score-pin{position:absolute;top:-5px;width:4px;height:20px;background:#fff;border-radius:2px;box-shadow:0 0 6px rgba(0,0,0,.8);transition:left .35s ease;}
+
+      /* ---------- tiers ---------- */
+      .tier{
+        border:1px solid var(--line-soft);border-radius:8px;background:var(--bg2);
+        padding:16px;margin-top:12px;opacity:.55;transition:opacity .2s;
+      }
+      .tier.active{opacity:1;border-color:var(--amber);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--amber);}
+      .tier-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+      .tier-tag{
+        font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:700;letter-spacing:.1em;
+        padding:3px 8px;border-radius:4px;background:#33291a;color:var(--amber);text-transform:uppercase;
+      }
+      .tier.t1 .tier-tag{background:#4a1710;color:#ff9a86;}
+      .tier.t3 .tier-tag{background:#14331c;color:#7deea0;}
+      .tier h3{font-family:"Barlow Condensed",sans-serif;font-size:23px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;margin:0;}
+      .your-tier{
+        margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:700;
+        letter-spacing:.12em;color:#171106;background:var(--amber);padding:4px 9px;border-radius:4px;
+        text-transform:uppercase;display:none;
+      }
+      .tier.active .your-tier{display:inline-block;}
+      .tier p{color:var(--ink-dim);font-size:14.5px;margin:8px 0 0;}
+      .tier ol,.tier ul{margin:10px 0 2px;padding-left:20px;color:var(--ink-dim);font-size:14.5px;line-height:1.55;}
+      .tier li{margin-bottom:5px;}
+      .tier li b,.tier p b{color:var(--ink);}
+      .tier .tstat{
+        display:inline-block;font-family:"IBM Plex Mono",monospace;font-weight:700;color:var(--amber);
+        background:#14110d;border:1px solid var(--line);border-radius:6px;padding:6px 11px;margin-top:10px;font-size:15px;
+      }
+
+      /* ---------- blueprint ---------- */
+      section.blueprint{
+        margin-top:26px;border:1px solid var(--amber);border-radius:var(--radius);
+        background:linear-gradient(180deg,#241c10,#171410);overflow:hidden;
+      }
+      section.blueprint .hazard-bar{margin:0;border-radius:0;height:12px;}
+      .bp-body{padding:20px 18px 22px;}
+      .bp-body h2{
+        font-family:"Barlow Condensed",sans-serif;font-size:30px;font-weight:700;
+        text-transform:uppercase;letter-spacing:.02em;margin:0 0 2px;line-height:1.05;
+      }
+      .bp-body .bp-sub{color:var(--ink-dim);font-size:14px;margin:0 0 16px;}
+      .bp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+      @media (max-width:560px){.bp-grid{grid-template-columns:1fr;}}
+      .bp-cell{background:rgba(12,10,8,.55);border:1px solid var(--line);border-radius:8px;padding:12px 14px;}
+      .bp-cell .k{font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);}
+      .bp-cell .v{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:23px;margin-top:2px;}
+      .bp-list{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:8px;}
+      .bp-list li{display:flex;gap:10px;font-size:14.5px;color:var(--ink-dim);line-height:1.45;}
+      .bp-list li::before{content:"▸";color:var(--amber);font-weight:700;flex:none;}
+      .bp-list li b{color:var(--ink);}
+      .bp-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+      .btn{
+        appearance:none;border:0;cursor:pointer;border-radius:8px;
+        font-family:"Barlow",sans-serif;font-weight:700;font-size:15px;
+        padding:12px 20px;text-decoration:none;display:inline-block;text-align:center;
+      }
+      .btn-amber{background:var(--amber);color:#171106;}
+      .btn-amber:hover{background:#ffb63d;}
+      .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+      .btn-ghost:hover{border-color:var(--amber);color:var(--amber);}
+      .copied{font-size:13.5px;color:var(--green);align-self:center;font-weight:600;}
+
+      /* ---------- next steps / cta / faq ---------- */
+      .next-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px;}
+      @media (max-width:620px){.next-grid{grid-template-columns:1fr;}}
+      .next-card{
+        display:block;text-decoration:none;color:var(--ink);
+        background:var(--panel);border:1px solid var(--line-soft);border-radius:var(--radius);padding:18px;
+      }
+      .next-card:hover{border-color:var(--amber);}
+      .next-card .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber);}
+      .next-card h3{font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:600;text-transform:uppercase;margin:5px 0 4px;line-height:1.05;}
+      .next-card p{margin:0;color:var(--ink-dim);font-size:14px;}
+      .next-card .go{color:var(--orange);font-weight:700;font-size:14px;display:inline-block;margin-top:10px;}
+      .cta{
+        margin-top:14px;border-radius:var(--radius);padding:20px 18px;
+        background:linear-gradient(120deg,#3a2410,#241708 60%,#171106);
+        border:1px solid #6b4a17;
+        display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+      }
+      .cta p{flex:1 1 260px;margin:0;font-size:17px;font-weight:600;line-height:1.4;}
+      .cta p span{color:var(--amber);}
+      .faq{margin-top:26px;}
+      .faq h2{font-family:"Barlow Condensed",sans-serif;font-size:28px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;margin:0 0 10px;}
+      details{
+        background:var(--panel);border:1px solid var(--line-soft);border-radius:8px;
+        padding:14px 16px;margin-top:10px;
+      }
+      summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:10px;}
+      summary::-webkit-details-marker{display:none;}
+      summary::after{content:"+";color:var(--amber);font-family:"IBM Plex Mono",monospace;font-weight:700;}
+      details[open ] summary::after{content:"–";}
+      details p{color:var(--ink-dim);font-size:14.5px;margin:9px 0 2px;line-height:1.55;}
+      footer{margin-top:30px;border-top:1px solid var(--line-soft);padding-top:16px;}
+      footer p{color:var(--ink-faint);font-size:13px;line-height:1.55;margin:0 0 8px;}
+      @media print{
+        body{background:#fff;color:#000;}
+        section.step,.tier,details,.next-card{background:#fff;border-color:#bbb;}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <header>
+        <span class="plate">Retirement Cash Shield</span>
+        <h1>Before you raid<br />the <span class="hl">401(k)</span>,<br />run the math.</h1>
+        <p class="hook">Cashing out <strong>$10,000</strong> of your 401(k) destroys about <strong>$4,000 instantly</strong> — before the decades of lost growth even start. See the real math first.</p>
+        <p class="sub">A triage engine for workers in a cash crunch. Enter what you're thinking of pulling, pick the move you're considering, and get the true cost plus a defense plan — in about 60 seconds.</p>
+        <div class="hazard-bar" aria-hidden="true"></div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head">
+          <span class="step-num">STEP 1</span>
+          <div>
+            <h2 id="s1">Account Snapshot</h2>
+            <p>What you'd touch, and where you stand.</p>
+          </div>
+        </div>
+
+        <label class="flabel" for="amount">Amount you're considering pulling</label>
+        <div class="amount-row">
+          <div class="amount-box">
+            <span>$</span>
+            <input id="amount" type="number" inputmode="decimal" min="0" step="100" value="10000" aria-label="Amount in dollars" />
+          </div>
+        </div>
+        <input id="amountRange" type="range" min="500" max="100000" step="250" value="10000" aria-label="Amount slider" />
+
+        <label class="flabel">Account type</label>
+        <div class="seg cols3" role="radiogroup" aria-label="Account type">
+          <label>
+            <input type="radio" name="acct" value="traditional" checked />
+            <span class="opt">Traditional 401(k) / 403(b)<small>Pre-tax money. Fully taxable when it comes out early.</small></span>
+          </label>
+          <label>
+            <input type="radio" name="acct" value="roth" />
+            <span class="opt">Roth 401(k)<small>After-tax money. Contributions come back free; earnings get taxed and penalized.</small></span>
+          </label>
+          <label>
+            <input type="radio" name="acct" value="pension" />
+            <span class="opt">Vested union pension<small>Defined-benefit. A lump-sum buyout is usually the worst trade on the table.</small></span>
+          </label>
+        </div>
+
+        <label class="flabel">Job status</label>
+        <div class="seg cols3" role="radiogroup" aria-label="Job status">
+          <label>
+            <input type="radio" name="job" value="employed" checked />
+            <span class="opt">Employed<small>Still on the job with this employer.</small></span>
+          </label>
+          <label>
+            <input type="radio" name="job" value="changing" />
+            <span class="opt">Changing jobs<small>Leaving or starting somewhere new soon.</small></span>
+          </label>
+          <label>
+            <input type="radio" name="job" value="terminated" />
+            <span class="opt">Terminated / laid off<small>Already separated from the employer.</small></span>
+          </label>
+        </div>
+
+        <label class="flabel">Estimated federal tax bracket</label>
+        <div class="bracket-row" role="radiogroup" aria-label="Tax bracket">
+          <label><input type="radio" name="bracket" value="10" /><span class="chip">10%</span></label>
+          <label><input type="radio" name="bracket" value="12" /><span class="chip">12%</span></label>
+          <label><input type="radio" name="bracket" value="22" checked /><span class="chip">22%</span></label>
+          <label><input type="radio" name="bracket" value="24" /><span class="chip">24%</span></label>
+          <label><input type="radio" name="bracket" value="32" /><span class="chip">32%</span></label>
+          <label><input type="radio" name="bracket" value="35" /><span class="chip">35%</span></label>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head">
+          <span class="step-num">STEP 2</span>
+          <div>
+            <h2 id="s2">Action Selector</h2>
+            <p>The move you're weighing. Each one hits different.</p>
+          </div>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="Action" style="gap:10px;">
+          <label>
+            <input type="radio" name="action" value="cashout" checked />
+            <span class="opt">Full lump-sum cash-out<small>Close it out, take the check, pay the tax and the penalty. The most destructive option on this page.</small></span>
+          </label>
+          <label>
+            <input type="radio" name="action" value="loan" />
+            <span class="opt">401(k) loan<small>Borrow from yourself and repay through payroll. No tax if repaid — but it turns dangerous the day the job ends.</small></span>
+          </label>
+          <label>
+            <input type="radio" name="action" value="rollover" />
+            <span class="opt">Direct rollover to an IRA<small>Move the money trustee-to-trustee. No tax, no penalty, growth keeps compounding. The shield move.</small></span>
+          </label>
+        </div>
+
+        <div id="loanFields" class="hidden">
+          <div class="mini-grid" style="margin-top:18px;">
+            <div class="field">
+              <label class="flabel" for="loanTerm">Loan term</label>
+              <select id="loanTerm">
+                <option value="1">1 year</option>
+                <option value="2">2 years</option>
+                <option value="3" selected>3 years</option>
+                <option value="4">4 years</option>
+                <option value="5">5 years (max for most plans)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="flabel" for="payFreq">Paychecks per year</label>
+              <select id="payFreq">
+                <option value="52">Weekly (52)</option>
+                <option value="26" selected>Every two weeks (26)</option>
+                <option value="24">Twice a month (24)</option>
+                <option value="12">Monthly (12)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="flabel" for="loanRate">Loan interest rate (%)</label>
+              <input class="numin" id="loanRate" type="number" min="0" max="25" step="0.25" value="9.5" />
+            </div>
+            <div class="field">
+              <label class="flabel" for="growthRate2">Assumed market return (%)</label>
+              <input class="numin" id="growthRate2" type="number" min="0" max="15" step="0.5" value="7" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step engine" aria-labelledby="s3">
+        <div class="step-head">
+          <span class="step-num">STEP 3</span>
+          <div>
+            <h2 id="s3">Destruction Engine</h2>
+            <p>What this move actually costs — now and in 30 years.</p>
+          </div>
+        </div>
+
+        <div class="eng-grid">
+          <div class="stat">
+            <div class="k" id="haircutLabel">Immediate tax &amp; penalty haircut</div>
+            <div class="v red" id="haircutVal">$0</div>
+            <div class="breakdown" id="haircutBreakdown">
+              <div class="row"><span>10% early-withdrawal penalty</span><b id="penaltyVal">$0</b></div>
+              <div class="row"><span>Income tax on the withdrawal</span><b id="taxVal">$0</b></div>
+              <div class="row total"><span>Total destroyed on day one</span><b id="haircutTotal">$0</b></div>
+            </div>
+            <div class="d" id="haircutNote"></div>
+          </div>
+
+          <div class="stat">
+            <div class="k">True net cash you actually receive</div>
+            <div class="v amber" id="netVal">$0</div>
+            <div class="d" id="netNote"></div>
+            <div class="bar-shell" aria-hidden="true">
+              <div class="bar-keep" id="barKeep" style="width:70%"></div>
+              <div class="bar-lost" id="barLost" style="width:30%"></div>
+            </div>
+            <div class="bar-legend"><span id="barKeepLbl">You keep</span><span id="barLostLbl">IRS takes</span></div>
+          </div>
+
+          <div class="stat wide">
+            <div class="k">30-year compound growth loss</div>
+            <div class="v orange" id="growthVal">$0</div>
+            <div class="d" id="growthNote"></div>
+            <div class="mini-grid" style="margin-top:12px;max-width:340px;">
+              <div class="field">
+                <label class="flabel" for="growthRate">Assumed annual return (%)</label>
+                <input class="numin" id="growthRate" type="number" min="0" max="15" step="0.5" value="7" />
+              </div>
+            </div>
+          </div>
+
+          <div class="stat wide hidden" id="loanStat">
+            <div class="k">Loan repayment — straight from your paycheck</div>
+            <div class="v amber" id="loanPayVal">$0</div>
+            <div class="d" id="loanPayNote"></div>
+            <div class="breakdown">
+              <div class="row"><span>Total you'll repay</span><b id="loanTotalVal">$0</b></div>
+              <div class="row"><span>Interest you pay back to yourself</span><b id="loanIntVal">$0</b></div>
+              <div class="row"><span>Growth missed while the money is out</span><b id="loanOppVal">$0</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="warn hidden" id="loanWarn">
+          <b>⚠ Job-change default trap</b>
+          <span id="loanWarnText"></span>
+        </div>
+        <div class="warn hidden" id="cashWarn">
+          <b>⚠ Withholding ambush</b>
+          If the check is cut in your name, the plan must withhold <b>20% for federal taxes</b> before you ever see it — and that's on top of your real tax bill if your bracket is higher. A $10,000 cash-out can show up as an $8,000 check and still leave you owing in April.
+        </div>
+        <div class="ok-note hidden" id="rollNote">
+          <b>✓ Zero-damage path</b>
+          A direct, trustee-to-trustee rollover is not a taxable event. No 10% penalty, no income tax, no 20% withholding — every dollar keeps compounding inside the IRA.
+        </div>
+
+        <div class="score-panel">
+          <div>
+            <div class="score-num" id="scoreNum">0</div>
+          </div>
+          <div class="score-meta">
+            <div class="k">Retirement Shield Preservation Score</div>
+            <div class="verdict" id="scoreVerdict">—</div>
+            <p id="scoreNote"></p>
+            <div class="score-track"><div class="score-pin" id="scorePin" style="left:0%"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head">
+          <span class="step-num">STEP 4</span>
+          <div>
+            <h2 id="s4">Defense Strategy</h2>
+            <p>Your tier is set by the damage in Step 3.</p>
+          </div>
+        </div>
+
+        <div class="tier t1" id="tier1">
+          <div class="tier-head">
+            <span class="tier-tag">Tier 1 · High Destruction</span>
+            <h3>Rollover &amp; Hardship Protocol</h3>
+            <span class="your-tier">Your tier</span>
+          </div>
+          <p id="tier1Intro">Your current path destroys more than 30% of the money's value the moment it moves. Don't cash out — redirect it:</p>
+          <ol>
+            <li><b>Open the destination first.</b> Open a Traditional IRA at any major brokerage before you touch the 401(k), so the money has somewhere to land.</li>
+            <li><b>Demand a direct rollover.</b> Tell your plan administrator: "trustee-to-trustee direct rollover." Any check should be payable to the new custodian <i>for benefit of (FBO)</i> you — never to you personally.</li>
+            <li><b>Never take a check in your name.</b> The plan must withhold 20% for federal tax, and your 60-day clock to redeposit starts ticking.</li>
+            <li><b>If a check already came to you,</b> redeposit the <i>full</i> original amount — including replacing the withheld 20% out of pocket — into an IRA within 60 days, or the whole thing is taxed and penalized.</li>
+            <li><b>Confirm the landing.</b> Verify the deposit posted, pick investments inside the IRA, and keep Form 1099-R and 5498 for tax season.</li>
+          </ol>
+          <p><b>IRS hardship notes:</b> hardship distributions exist for immediate, heavy needs — medical bills, preventing foreclosure or eviction, tuition, funeral costs, certain home repairs. Hardship money is still taxable income, and the 10% penalty usually still applies unless a specific exception covers you: separation from service in the year you turn 55 or later (the "Rule of 55"), total disability, a divorce order (QDRO), or a 72(t) series of substantially equal payments. A hardship withdrawal also can't be rolled back later — it's gone for good.</p>
+        </div>
+
+        <div class="tier t2" id="tier2">
+          <div class="tier-head">
+            <span class="tier-tag">Tier 2 · Loan Trap Risk</span>
+            <h3>Job-Transition Safeguard</h3>
+            <span class="your-tier">Your tier</span>
+          </div>
+          <p>A 401(k) loan feels free because you're "paying yourself." The trap is the exit door: the loan is tied to the job, not to you.</p>
+          <ul>
+            <li><b>Know the repayment math cold</b> — your per-paycheck hit is in Step 3. If that payment squeezes the same budget that caused the crunch, the loan makes the crunch worse.</li>
+            <li><b>If you leave — quit, laid off, fired — the balance comes due.</b> Most plans give you until the tax-filing deadline (usually the following April/October) to repay or roll the balance into an IRA.</li>
+            <li><b>Unpaid = cashed out.</b> Whatever you don't repay becomes a "loan offset": taxable income plus the 10% early-withdrawal penalty, exactly like the cash-out you were trying to avoid.</li>
+            <li><b>Rule:</b> if there's any real chance you change jobs in the next 12 months, treat a 401(k) loan as a cash-out with extra steps — and size it by the default math, not the loan math.</li>
+          </ul>
+          <span class="tstat" id="tier2Stat"></span>
+        </div>
+
+        <div class="tier t3" id="tier3">
+          <div class="tier-head">
+            <span class="tier-tag">Tier 3 · Preserved</span>
+            <h3>Shield Fortification</h3>
+            <span class="your-tier">Your tier</span>
+          </div>
+          <p>The retirement money stays intact. Now solve the cash problem without ever touching it again:</p>
+          <ul>
+            <li><b>Cheaper cash first:</b> a 0% intro-APR card for a timed payoff, a credit-union payday-alternative loan (PAL), or a small personal loan — all cost a fraction of a 32% tax-and-penalty haircut.</li>
+            <li><b>Negotiate before you borrow:</b> medical bills, utilities, and lenders all have hardship plans. A phone call can move a due date 30–60 days for free.</li>
+            <li><b>Find fast cash in the house:</b> sell what's sitting unused, pick up extra shifts or gig runs — ugly for a weekend, cheaper than 30 years of lost growth.</li>
+            <li><b>Build the buffer so this never happens again:</b> route even $25–$50 a paycheck into a high-yield savings account until you hold one month of expenses. That account is the shield in front of the shield.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bp">
+        <div class="hazard-bar" aria-hidden="true"></div>
+        <div class="bp-body">
+          <h2 id="bp">Retirement Cash-Trap<br />Defense Blueprint</h2>
+          <p class="bp-sub" id="bpSub">Your numbers, your move, your defense — screenshot this before you make the call.</p>
+          <div class="bp-grid">
+            <div class="bp-cell"><div class="k">The move you're weighing</div><div class="v" id="bpAction" style="font-size:19px;">—</div></div>
+            <div class="bp-cell"><div class="k">Amount on the line</div><div class="v" id="bpAmount">$0</div></div>
+            <div class="bp-cell"><div class="k">Net payout after penalties</div><div class="v" id="bpNet" style="color:var(--amber);">$0</div></div>
+            <div class="bp-cell"><div class="k">Destroyed on day one</div><div class="v" id="bpHaircut" style="color:var(--red);">$0</div></div>
+            <div class="bp-cell"><div class="k">Value lost over 30 years</div><div class="v" id="bpGrowth" style="color:var(--orange);">$0</div></div>
+            <div class="bp-cell"><div class="k">Shield Preservation Score</div><div class="v" id="bpScore">0 / 100</div></div>
+          </div>
+          <ul class="bp-list" id="bpList"></ul>
+          <div class="bp-actions">
+            <button class="btn btn-amber" id="copyBtn" type="button">Copy my blueprint</button>
+            <span class="copied hidden" id="copiedMsg">Copied — paste it anywhere.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/tax-withholding-safeguard.html">
+          <span class="k">Fix the paycheck side</span>
+          <h3>Tax Withholding Safeguard</h3>
+          <p>If a big refund or a surprise tax bill is part of the cash crunch, check whether your W-4 withholding is quietly draining every check.</p>
+          <span class="go">Run the safeguard →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html">
+          <span class="k">Plan the next payday</span>
+          <h3>Payday Cash Flow Allocator</h3>
+          <p>Give every dollar of the next check a job — bills, buffer, breathing room — so the 401(k) stops being your emergency fund.</p>
+          <span class="go">Allocate my payday →</span>
+        </a>
+      </div>
+
+      <div class="cta">
+        <p>Protect the future while fixing today — the <span>Net Worth &amp; Debt Payoff Tracker</span> and <span>Zero-Based Budgeting Binder</span> on Gumroad.</p>
+        <a class="btn btn-amber" href="https://bradley57.gumroad.com/">Get the tools →</a>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq">
+        <h2>Straight answers</h2>
+        <details>
+          <summary>What exactly is the 10% early-withdrawal penalty?</summary>
+          <p>It's an extra federal tax the IRS adds on top of regular income tax when you take money out of a retirement account before age 59½. Cash out $10,000 at a 22% bracket and you lose $1,000 to the penalty plus $2,200 to income tax — $3,200 gone before state tax even enters the picture. Exceptions exist (Rule of 55 separation, disability, certain medical costs, QDRO divorce orders, 72(t) payment plans), but "I need the money" by itself isn't one of them.</p>
+        </details>
+        <details>
+          <summary>What happens to my 401(k) loan if I quit or get fired?</summary>
+          <p>The loan stops being a loan. Most plans require the remaining balance to be repaid quickly, or rolled into an IRA by your tax-filing deadline (usually the April — or October with an extension — after the year you leave). Whatever isn't repaid is treated as if you cashed it out: it counts as taxable income and, under 59½, takes the 10% penalty too. This is the single most common way a "safe" 401(k) loan turns into a tax bill.</p>
+        </details>
+        <details>
+          <summary>Is a rollover to an IRA taxable?</summary>
+          <p>No — a direct rollover is not a taxable event. When the money moves trustee-to-trustee from your 401(k) into a Traditional IRA, no tax is owed, no penalty applies, and the plan doesn't withhold 20%. The tax trap only appears with an <i>indirect</i> rollover, where the check comes to you: 20% is withheld up front, and you have 60 days to deposit the full original amount (including replacing that 20% out of pocket) or the shortfall gets taxed and penalized.</p>
+        </details>
+        <details>
+          <summary>Can I just put the money back later?</summary>
+          <p>For a cash-out, no. Once a distribution is taken (outside the 60-day indirect-rollover window), it can't be undone — and you can only re-contribute up to the normal yearly IRA/401(k) limits, which take years to rebuild what one cash-out removed. That's why the 30-year number in Step 3 is the real cost: the growth on money you can never fully put back.</p>
+        </details>
+      </div>
+
+      <footer>
+        <p><b>Educational information only — not tax, legal, or financial advice.</b> Figures are estimates based on the bracket and return you enter; actual tax depends on your full return, state tax, plan rules, and exceptions that may apply to you. Before cashing out, borrowing, or rolling over, confirm the details with your plan administrator or a qualified tax professional.</p>
+        <p>Penalty, withholding, hardship, and rollover rules summarized from standard IRS guidance for employer plans and IRAs.</p>
+      </footer>
+
+    </div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var fmt = function (n) {
+          return "$" + Math.round(n).toLocaleString("en-US");
+        };
+        var money = function (id) { return parseFloat($(id).value) || 0; };
+
+        var amountEl = $("amount"), rangeEl = $("amountRange");
+        amountEl.addEventListener("input", function () {
+          var v = parseFloat(amountEl.value);
+          if (!isNaN(v)) rangeEl.value = Math.max(500, Math.min(100000, v));
+          recalc();
+        });
+        rangeEl.addEventListener("input", function () {
+          amountEl.value = rangeEl.value;
+          recalc();
+        });
+
+        // keep the two growth-rate inputs in sync
+        var g1 = $("growthRate"), g2 = $("growthRate2");
+        g1.addEventListener("input", function () { g2.value = g1.value; recalc(); });
+        g2.addEventListener("input", function () { g1.value = g2.value; recalc(); });
+
+        document.querySelectorAll("input[type=radio], select, #loanRate").forEach(function (el) {
+          el.addEventListener("change", recalc);
+          el.addEventListener("input", recalc);
+        });
+
+        function checked(name) {
+          var el = document.querySelector('input[name="' + name + '"]:checked');
+          return el ? el.value : "";
+        }
+
+        function recalc() {
+          var amount = Math.max(0, parseFloat(amountEl.value) || 0);
+          var acct = checked("acct");
+          var job = checked("job");
+          var bracket = parseFloat(checked("bracket")) || 0;
+          var action = checked("action");
+          var growthRate = (parseFloat(g1.value) || 0) / 100;
+          var term = parseFloat($("loanTerm").value) || 3;
+          var freq = parseFloat($("payFreq").value) || 26;
+          var loanRate = (parseFloat($("loanRate").value) || 0) / 100;
+
+          var penaltyRate = 0.10, taxRate = bracket / 100;
+          var penalty = 0, tax = 0, haircut = 0, net = 0;
+          var fv = amount * Math.pow(1 + growthRate, 30);
+          var growthLoss = 0;
+
+          $("loanFields").classList.toggle("hidden", action !== "loan");
+          $("loanStat").classList.toggle("hidden", action !== "loan");
+          $("cashWarn").classList.toggle("hidden", action !== "cashout");
+          $("rollNote").classList.toggle("hidden", action !== "rollover");
+
+          var haircutNote = "", netNote = "", growthNote = "";
+
+          if (action === "cashout") {
+            penalty = amount * penaltyRate;
+            tax = amount * taxRate;
+            haircut = penalty + tax;
+            net = amount - haircut;
+            growthLoss = fv;
+            haircutNote = "Gone before the money ever reaches your bank account — and state tax may take more.";
+            netNote = "Out of " + fmt(amount) + ", this is what actually lands. The rest never had a chance to work for you.";
+            growthNote = "Left invested at " + (growthRate * 100).toFixed(1).replace(/\.0$/, "") + "% a year, " + fmt(amount) + " becomes about " + fmt(fv) + " in 30 years — " + fmt(fv - amount) + " of that is pure growth. Cashing out deletes all of it.";
+          } else if (action === "rollover") {
+            penalty = 0; tax = 0; haircut = 0; net = 0; growthLoss = 0;
+            haircutNote = "Direct rollover: no penalty, no income tax, no 20% withholding. The IRS takes nothing.";
+            netNote = "You receive $0 in cash — because 100% of the money moves straight into your IRA and keeps compounding. That's the point.";
+            growthNote = "Nothing is lost. The full " + fmt(amount) + " stays on track to become about " + fmt(fv) + " over 30 years at the assumed return.";
+          } else { // loan
+            penalty = 0; tax = 0; haircut = 0; net = amount;
+            growthLoss = amount * (Math.pow(1 + growthRate, term) - 1);
+            haircutNote = "No tax and no penalty while the loan stays in good standing and gets repaid. Default is where the haircut appears — see the warning below.";
+            netNote = "You receive the full " + fmt(amount) + " — but it's a loan, not income. Every dollar has to go back, with interest, through payroll deduction.";
+            growthNote = "While " + fmt(amount) + " sits outside the market for " + term + " year" + (term > 1 ? "s" : "") + ", it misses roughly " + fmt(growthLoss) + " of growth at the assumed return. Repaid on time, the principal itself survives.";
+          }
+
+          $("haircutVal").textContent = fmt(haircut);
+          $("haircutLabel").textContent = action === "rollover" ? "Immediate tax & penalty haircut" : (action === "loan" ? "Immediate haircut (if repaid on time)" : "Immediate tax & penalty haircut");
+          $("penaltyVal").textContent = fmt(penalty);
+          $("taxVal").textContent = fmt(tax);
+          $("haircutTotal").textContent = fmt(haircut);
+          $("haircutNote").textContent = haircutNote;
+          $("netVal").textContent = fmt(net);
+          $("netNote").textContent = netNote;
+          $("growthVal").textContent = fmt(growthLoss);
+          $("growthNote").textContent = growthNote;
+
+          // keep/lost bar
+          var keepPct = amount > 0 ? Math.max(0, Math.min(100, ((amount - haircut) / amount) * 100)) : 100;
+          if (action === "rollover") keepPct = 100;
+          $("barKeep").style.width = keepPct + "%";
+          $("barLost").style.width = (100 - keepPct) + "%";
+          $("barKeepLbl").textContent = action === "rollover" ? "Stays invested: 100%" : "You keep: " + keepPct.toFixed(0) + "%";
+          $("barLostLbl").textContent = "IRS takes: " + (100 - keepPct).toFixed(0) + "%";
+
+          // ---- loan math ----
+          var perCheck = 0, totalRepay = 0, loanInterest = 0;
+          if (action === "loan") {
+            var months = term * 12, mi = loanRate / 12;
+            var monthly = mi > 0 ? amount * mi / (1 - Math.pow(1 + mi, -months)) : amount / months;
+            totalRepay = monthly * months;
+            loanInterest = totalRepay - amount;
+            perCheck = totalRepay / (term * freq);
+            $("loanPayVal").textContent = fmt(perCheck) + " / paycheck";
+            $("loanPayNote").textContent = "That's the bite out of every check for " + term + " year" + (term > 1 ? "s" : "") + " at " + (loanRate * 100).toFixed(2).replace(/\.?0+$/, "") + "% loan interest. It comes out after tax, and the interest portion gets taxed again when you eventually withdraw it for real.";
+            $("loanTotalVal").textContent = fmt(totalRepay);
+            $("loanIntVal").textContent = fmt(loanInterest);
+            $("loanOppVal").textContent = fmt(growthLoss);
+          }
+
+          // ---- loan default warning ----
+          var warn = $("loanWarn");
+          if (action === "loan" && job !== "employed") {
+            var defaultHaircut = amount * (penaltyRate + taxRate);
+            warn.classList.remove("hidden");
+            $("loanWarnText").textContent = "You're flagged as " + (job === "changing" ? "changing jobs" : "already separated") + ". If this loan isn't repaid or rolled into an IRA by your tax-filing deadline after you leave, the outstanding balance is treated as a cash-out: on " + fmt(amount) + " that's about " + fmt(defaultHaircut) + " in tax and penalty — due on money you may have already spent.";
+          } else if (action === "loan") {
+            warn.classList.remove("hidden");
+            $("loanWarnText").textContent = "Even with a steady job today, this loan is welded to your employment. Quit, get laid off, or get fired before it's repaid and the remaining balance must be repaid or rolled into an IRA by your tax-filing deadline — or it's taxed and penalized like a cash-out.";
+          } else {
+            warn.classList.add("hidden");
+          }
+
+          // ---- preservation score ----
+          var score;
+          if (action === "rollover") {
+            score = 96;
+          } else if (action === "loan") {
+            score = 72;
+            if (job === "changing") score -= 18;
+            if (job === "terminated") score -= 32;
+            if (term >= 5) score -= 6;
+            if (amount >= 25000) score -= 4;
+          } else {
+            var haircutPct = amount > 0 ? (haircut / amount) * 100 : 0;
+            score = 100 - haircutPct * 1.1 - 18;
+          }
+          if (acct === "pension" && action === "cashout") score -= 8; // trading guaranteed lifetime income away
+          score = Math.max(3, Math.min(98, Math.round(score)));
+          $("scoreNum").textContent = score;
+          $("scoreNum").style.color = score >= 80 ? "var(--green)" : score >= 55 ? "var(--amber)" : "var(--red)";
+          $("scorePin").style.left = "calc(" + score + "% - 2px)";
+          var verdict, note;
+          if (score >= 80) { verdict = "Shield holding"; note = "Your long-term wealth survives this cash crunch almost untouched. Fortify the buffer so the next crunch never reaches the retirement account."; }
+          else if (score >= 55) { verdict = "Shield dented"; note = "You solve today's problem but pay real money for it. Read your tier plan below before signing anything."; }
+          else if (score >= 35) { verdict = "Shield cracking"; note = "This move trades a serious chunk of your future for cash today. The defense plan below offers cheaper ways to get the same dollars."; }
+          else { verdict = "Shield breach"; note = "This is the cash trap in full: a third gone instantly and decades of growth deleted. Stop and run the Tier 1 protocol instead."; }
+          $("scoreVerdict").textContent = verdict;
+          $("scoreNote").textContent = note;
+
+          // ---- tiers ----
+          var haircutPct2 = amount > 0 ? (haircut / amount) * 100 : 0;
+          var activeTier = action === "rollover" ? 3 : action === "loan" ? 2 : (haircutPct2 > 0 ? 1 : 3);
+          $("tier1").classList.toggle("active", activeTier === 1);
+          $("tier2").classList.toggle("active", activeTier === 2);
+          $("tier3").classList.toggle("active", activeTier === 3);
+          if (action === "cashout") {
+            $("tier1Intro").textContent = "Your current path destroys " + haircutPct2.toFixed(0) + "% of the money instantly (" + fmt(haircut) + ") and deletes " + fmt(fv) + " of future value. Don't cash out — redirect it:";
+          }
+          $("tier2Stat").textContent = action === "loan"
+            ? "Your loan: " + fmt(perCheck) + "/paycheck · default would cost ≈ " + fmt(amount * (penaltyRate + taxRate))
+            : "Default on a " + fmt(amount) + " loan balance ≈ " + fmt(amount * (penaltyRate + taxRate)) + " in tax + penalty";
+
+          // ---- blueprint ----
+          var actionNames = { cashout: "Full lump-sum cash-out", loan: "401(k) loan", rollover: "Direct rollover to IRA" };
+          var acctNames = { traditional: "Traditional 401(k)/403(b)", roth: "Roth 401(k)", pension: "Vested union pension" };
+          $("bpAction").textContent = actionNames[action];
+          $("bpAmount").textContent = fmt(amount);
+          $("bpNet").textContent = action === "rollover" ? fmt(amount) + " stays invested" : fmt(net);
+          $("bpHaircut").textContent = fmt(haircut);
+          $("bpGrowth").textContent = fmt(growthLoss);
+          $("bpScore").textContent = score + " / 100";
+          $("bpScore").style.color = score >= 80 ? "var(--green)" : score >= 55 ? "var(--amber)" : "var(--red)";
+          $("bpSub").textContent = acctNames[acct] + " · " + (job === "employed" ? "Employed" : job === "changing" ? "Changing jobs" : "Terminated") + " · " + bracket + "% bracket. Screenshot this before you make the call.";
+
+          var items = [];
+          if (action === "cashout") {
+            items.push("<b>Cheaper first move:</b> roll it over instead — net payout " + fmt(haircut) + " higher, and " + fmt(fv) + " of future value survives.");
+            items.push("<b>Rollover step 1:</b> open a Traditional IRA before touching the 401(k).");
+            items.push("<b>Rollover step 2:</b> request a direct trustee-to-trustee rollover — any check payable to the custodian FBO you, never to you.");
+            items.push("<b>If cash is truly unavoidable:</b> ask about a hardship distribution and check the Rule of 55 and other penalty exceptions before filing.");
+          } else if (action === "loan") {
+            items.push("<b>Repayment:</b> " + fmt(perCheck) + " per paycheck for " + term + " year" + (term > 1 ? "s" : "") + " — total " + fmt(totalRepay) + " including " + fmt(loanInterest) + " interest.");
+            items.push("<b>Exit plan:</b> if the job ends, repay or roll the balance into an IRA by your tax-filing deadline, or " + fmt(amount * (penaltyRate + taxRate)) + " in tax + penalty lands on the outstanding balance.");
+            items.push("<b>Safer alternative:</b> compare a credit-union PAL or 0% intro-APR card — both leave the retirement money compounding.");
+          } else {
+            items.push("<b>Rollover step 1:</b> open the IRA first, then request the direct rollover from your plan administrator.");
+            items.push("<b>Rollover step 2:</b> never accept a check in your name — that triggers 20% withholding and a 60-day deadline.");
+            items.push("<b>For the cash need itself:</b> hardship payment plans, a credit-union PAL, or selling unused gear all beat a 30%+ haircut.");
+            items.push("<b>Fortify:</b> auto-route $25–$50 per paycheck to a high-yield savings buffer so this decision never comes back.");
+          }
+          items.push("<b>Account note:</b> " + (acct === "roth"
+            ? "Roth 401(k) — your contributions come back tax-free; only the earnings portion faces tax and penalty, so a partial withdrawal of contributions may cost less than the headline number."
+            : acct === "pension"
+            ? "A pension lump-sum trades guaranteed lifetime income for a one-time check. Run the monthly-benefit comparison before ever signing a buyout."
+            : "Traditional pre-tax money is taxed on every dollar out — there's no partial credit for what you 'already earned.'"));
+          $("bpList").innerHTML = items.map(function (t) { return "<li><span>" + t + "</span></li>"; }).join("");
+
+          // stash plain-text version for copy
+          window.__bpText =
+            "RETIREMENT CASH-TRAP DEFENSE BLUEPRINT\n" +
+            "Move: " + actionNames[action] + " · Account: " + acctNames[acct] + "\n" +
+            "Amount on the line: " + fmt(amount) + "\n" +
+            "Net payout after penalties: " + (action === "rollover" ? fmt(amount) + " stays invested" : fmt(net)) + "\n" +
+            "Destroyed on day one: " + fmt(haircut) + "\n" +
+            "Value lost over 30 years: " + fmt(growthLoss) + "\n" +
+            "Shield Preservation Score: " + score + " / 100 (" + verdict + ")";
+        }
+
+        $("copyBtn").addEventListener("click", function () {
+          var done = function () {
+            var m = $("copiedMsg");
+            m.classList.remove("hidden");
+            setTimeout(function () { m.classList.add("hidden"); }, 2600);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(window.__bpText || "").then(done, done);
+          } else {
+            var ta = document.createElement("textarea");
+            ta.value = window.__bpText || "";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); } catch (e) {}
+            document.body.removeChild(ta);
+            done();
+          }
+        });
+
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

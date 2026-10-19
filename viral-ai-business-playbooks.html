@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:," />
+  <title>Viral AI Business Playbooks</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f5f7f3;
+      --paper: #ffffff;
+      --ink: #17211a;
+      --muted: #56635a;
+      --line: #cad2cc;
+      --line-strong: #929f96;
+      --signal: #d9ff43;
+      --signal-ink: #182400;
+      --coral: #ff6848;
+      --blue: #1f65ff;
+      --soft: #e9eee9;
+      --soft-2: #f0f3ef;
+      --shadow: 0 18px 50px rgba(26, 40, 30, .09);
+      --radius: 10px;
+      --font: "Avenir Next", Avenir, "Segoe UI", Helvetica, sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101512;
+        --paper: #171e19;
+        --ink: #eef5ef;
+        --muted: #b6c2b9;
+        --line: #364239;
+        --line-strong: #667269;
+        --signal: #cbf53d;
+        --signal-ink: #142000;
+        --coral: #ff795c;
+        --blue: #78a1ff;
+        --soft: #202922;
+        --soft-2: #1b231d;
+        --shadow: 0 22px 54px rgba(0, 0, 0, .28);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    button, input { font: inherit; }
+    a { color: inherit; text-underline-offset: 3px; }
+    a:hover { color: var(--blue); }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    .hero {
+      padding: 30px 0 48px;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, transparent 0 49.8%, color-mix(in srgb, var(--line) 38%, transparent) 50%, transparent 50.2%) 0 0/84px 84px,
+        linear-gradient(transparent 0 49.8%, color-mix(in srgb, var(--line) 30%, transparent) 50%, transparent 50.2%) 0 0/84px 84px;
+    }
+    .meta-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-family: var(--mono);
+      font-size: .76rem;
+      color: var(--muted);
+      letter-spacing: .02em;
+      margin-bottom: 54px;
+    }
+    .stamp {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 6px 9px;
+      transform: rotate(-1deg);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+      gap: clamp(32px, 7vw, 90px);
+      align-items: end;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3.2rem, 8.5vw, 7.4rem);
+      line-height: .88;
+      letter-spacing: -.065em;
+      margin-bottom: 26px;
+      max-width: 780px;
+    }
+    .underline { box-shadow: inset 0 -.18em 0 var(--signal); }
+    .hero-copy {
+      max-width: 680px;
+      font-size: clamp(1.03rem, 1.5vw, 1.24rem);
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+    .thesis {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 24px;
+      box-shadow: 11px 11px 0 var(--signal);
+      transform: rotate(1deg);
+    }
+    .thesis .label, .section-kicker, .eyebrow {
+      font: 700 .75rem/1.2 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .09em;
+    }
+    .thesis strong {
+      display: block;
+      font: 700 clamp(1.4rem, 2vw, 2rem)/1.08 Georgia, serif;
+      margin: 12px 0;
+    }
+    .thesis p { margin: 0; color: color-mix(in srgb, var(--paper) 80%, transparent); font-size: .92rem; }
+    .jumpbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: color-mix(in srgb, var(--paper) 92%, transparent);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+    .jumpbar .wrap {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding-block: 10px;
+    }
+    .jumpbar a {
+      text-decoration: none;
+      font-size: .84rem;
+      font-weight: 700;
+      white-space: nowrap;
+      padding: 8px 11px;
+      border: 1px solid transparent;
+    }
+    .jumpbar a:hover { border-color: var(--line); color: var(--ink); background: var(--soft); }
+    section { padding: 80px 0; border-bottom: 1px solid var(--line); }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+      gap: 30px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+    .section-kicker { color: var(--coral); margin-bottom: 12px; }
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.25rem, 5vw, 4.4rem);
+      letter-spacing: -.045em;
+      line-height: .98;
+      margin-bottom: 0;
+    }
+    .section-intro { color: var(--muted); margin: 0; }
+    .numbers {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line-strong);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .number {
+      padding: 26px 22px;
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--line);
+    }
+    .number:last-child { border-right: 0; }
+    .number .big { font: 700 clamp(2rem, 4vw, 4.6rem)/.9 Georgia, serif; letter-spacing: -.05em; }
+    .number .desc { font-size: .9rem; color: var(--muted); margin-top: 28px; }
+    .number .source-tag { font: .67rem var(--mono); color: var(--muted); margin-top: 8px; }
+    .lean-callout {
+      display: grid;
+      grid-template-columns: 130px 1fr auto;
+      gap: 22px;
+      align-items: center;
+      background: var(--signal);
+      color: var(--signal-ink);
+      padding: 24px;
+      margin-top: 22px;
+    }
+    .lean-callout .amount { font: 800 2.6rem/.9 Georgia, serif; }
+    .lean-callout p { margin: 0; }
+    .lean-callout .note { font: .74rem var(--mono); }
+    .route-lab {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      border: 1px solid var(--line-strong);
+      background: var(--paper);
+      min-height: 360px;
+    }
+    .route-controls { padding: 24px; border-right: 1px solid var(--line); }
+    .route-controls h3 { font: 700 1.25rem Georgia, serif; }
+    .route-controls p { color: var(--muted); font-size: .9rem; }
+    .route-btn {
+      width: 100%;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: transparent;
+      text-align: left;
+      padding: 14px 13px;
+      margin-top: 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .route-btn:hover, .route-btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .route-result { padding: clamp(28px, 6vw, 64px); display: grid; align-content: center; }
+    .route-result .route-num { font: 700 .75rem var(--mono); color: var(--coral); }
+    .route-result h3 { font: 700 clamp(2rem, 4vw, 3.8rem)/.98 Georgia, serif; letter-spacing: -.035em; margin: 10px 0 14px; }
+    .route-result p { color: var(--muted); max-width: 680px; }
+    .route-result ul { padding-left: 1.2em; margin: 12px 0 0; }
+    .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 24px; }
+    .filter-btn {
+      border: 1px solid var(--line-strong);
+      background: var(--paper);
+      color: var(--ink);
+      padding: 9px 13px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: .84rem;
+    }
+    .filter-btn[aria-pressed="true"] { background: var(--signal); color: var(--signal-ink); }
+    .case-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .case {
+      border: 1px solid var(--line-strong);
+      background: var(--paper);
+      padding: 24px;
+      position: relative;
+      transition: border-color .2s ease, background .2s ease;
+    }
+    .case:hover { border-color: var(--ink); }
+    .case[hidden] { display: none; }
+    .case-head { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; }
+    .case h3 { font: 700 1.8rem/1 Georgia, serif; margin: 7px 0 7px; }
+    .case-type { font: .7rem var(--mono); text-transform: uppercase; color: var(--muted); }
+    .revenue { font: 800 1.05rem var(--mono); color: var(--blue); text-align: right; }
+    .case-summary { color: var(--muted); font-size: .92rem; min-height: 3em; }
+    .mechanics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      margin: 18px 0;
+    }
+    .mechanic { background: var(--soft-2); padding: 11px; }
+    .mechanic b { display: block; font: .66rem var(--mono); text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .mechanic span { font-size: .83rem; }
+    .proof { font-size: .83rem; margin: 0; }
+    .proof a { font-weight: 700; }
+    .confidence {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 4px 7px;
+      background: var(--soft);
+      font: .68rem var(--mono);
+      color: var(--muted);
+    }
+    .playbook-stack { display: grid; gap: 20px; }
+    .playbook {
+      display: grid;
+      grid-template-columns: 90px minmax(0, .8fr) minmax(0, 1.2fr);
+      gap: clamp(20px, 4vw, 56px);
+      border-top: 2px solid var(--ink);
+      padding: 30px 0 18px;
+    }
+    .play-num { font: 700 3.6rem/.8 Georgia, serif; color: var(--coral); }
+    .playbook h3 { font: 700 clamp(1.6rem, 3vw, 2.7rem)/1.05 Georgia, serif; letter-spacing: -.03em; margin-bottom: 12px; }
+    .formula { font: .73rem/1.5 var(--mono); color: var(--muted); }
+    .steps { list-style: none; padding: 0; margin: 0; counter-reset: step; }
+    .steps li { counter-increment: step; padding: 12px 0 12px 42px; border-bottom: 1px solid var(--line); position: relative; }
+    .steps li::before { content: counter(step, decimal-leading-zero); position: absolute; left: 0; top: 14px; font: .73rem var(--mono); color: var(--coral); }
+    .reality-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 20px; }
+    .memo { background: var(--ink); color: var(--paper); padding: clamp(28px, 5vw, 56px); }
+    .memo h2 { color: var(--paper); }
+    .memo .section-kicker { color: var(--signal); }
+    .memo p { color: color-mix(in srgb, var(--paper) 78%, transparent); }
+    .memo ol { padding-left: 1.25em; }
+    .memo li { margin-bottom: 13px; }
+    .warnings { border: 1px solid var(--line-strong); background: var(--paper); padding: 28px; }
+    .warnings h3 { font: 700 1.6rem Georgia, serif; }
+    .warnings ul { margin: 0; padding-left: 1.15em; }
+    .warnings li { padding: 9px 0; color: var(--muted); }
+    .sources-list { columns: 2; column-gap: 38px; padding-left: 1.25em; }
+    .sources-list li { break-inside: avoid; margin-bottom: 13px; font-size: .88rem; }
+    .source-note { color: var(--muted); font-size: .84rem; }
+    footer { padding: 28px 0 50px; color: var(--muted); font: .74rem var(--mono); }
+    .mobile-only { display: none; }
+    @media (max-width: 850px) {
+      .hero { padding-top: 20px; }
+      .meta-strip { margin-bottom: 36px; }
+      .hero-grid, .section-head, .route-lab, .reality-grid { grid-template-columns: 1fr; }
+      .thesis { transform: none; margin-right: 10px; }
+      .numbers { grid-template-columns: 1fr 1fr; }
+      .number:nth-child(2) { border-right: 0; }
+      .number:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .route-controls { border-right: 0; border-bottom: 1px solid var(--line); }
+      .route-result { min-height: 310px; }
+      .playbook { grid-template-columns: 64px 1fr; }
+      .playbook .steps { grid-column: 2; }
+    }
+    @media (max-width: 620px) {
+      .wrap { width: min(100% - 28px, 1180px); }
+      .hero { padding-bottom: 36px; }
+      .meta-strip span:first-child { display: none; }
+      h1 { font-size: clamp(3.2rem, 19vw, 5.1rem); }
+      section { padding: 58px 0; }
+      .numbers, .case-grid { grid-template-columns: 1fr; }
+      .number { min-height: 140px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .number:last-child { border-bottom: 0; }
+      .lean-callout { grid-template-columns: 1fr; gap: 8px; }
+      .case-head { display: block; }
+      .revenue { text-align: left; margin: 10px 0; }
+      .playbook { grid-template-columns: 48px 1fr; gap: 12px; }
+      .play-num { font-size: 2.8rem; }
+      .playbook .steps { grid-column: 1 / -1; }
+      .sources-list { columns: 1; }
+      .mechanics { grid-template-columns: 1fr; }
+      .jumpbar .wrap { width: 100%; padding-left: 14px; padding-right: 14px; gap: 2px; }
+      .jumpbar a { flex: 1 1 30%; text-align: center; padding: 7px 5px; font-size: .78rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="meta-strip">
+        <span>FIELD NOTES / 2024–2026</span>
+        <span class="stamp">RESEARCHED OCT 15, 2026</span>
+      </div>
+      <div class="hero-grid">
+        <div>
+          <h1>Which viral AI play is <span class="underline">actually copyable?</span></h1>
+          <p class="hero-copy">Seven revenue-backed cases point to the same answer: the model is rented, the product is narrow, and distribution is built into the output. Here’s the machinery—not the hype.</p>
+        </div>
+        <aside class="thesis" aria-label="Core thesis">
+          <span class="label">The pattern</span>
+          <strong>Thin wrapper.<br>Sharp promise.<br>Native distribution.</strong>
+          <p>The strongest cases shipped in days or weeks, charged from day one, and let the demo do the selling.</p>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <nav class="jumpbar" aria-label="Page sections">
+    <div class="wrap">
+      <a href="#signal">The signal</a>
+      <a href="#route">Pick a route</a>
+      <a href="#cases">Case files</a>
+      <a href="#playbooks">Playbooks</a>
+      <a href="#verdict">Verdict</a>
+      <a href="#sources">Sources</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="signal">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">01 / The signal</div><h2>Small teams, very large outcomes.</h2></div>
+          <p class="section-intro">These are public or founder-reported figures, not a promise. Source quality varies, so every number keeps its caveat.</p>
+        </div>
+        <div class="numbers" aria-label="Selected business outcomes">
+          <div class="number"><div class="big">$30M+</div><div><div class="desc">Cal AI annual revenue in under two years; 15M+ downloads.</div><div class="source-tag">TECHCRUNCH / HIGH CONFIDENCE</div></div></div>
+          <div class="number"><div class="big">117d</div><div><div class="desc">Chatbase to $1M ARR, entirely organic, according to its published story.</div><div class="source-tag">SUPABASE STORY</div></div></div>
+          <div class="number"><div class="big">$132–138K</div><div><div class="desc">Photo AI monthly revenue in late 2025, from founder revenue posts.</div><div class="source-tag">FOUNDER-REPORTED</div></div></div>
+          <div class="number"><div class="big">$10–15M</div><div><div class="desc">Arcads approximate ARR by 2026 with eight people.</div><div class="source-tag">SECONDARY / APPROXIMATE</div></div></div>
+        </div>
+        <div class="lean-callout">
+          <div class="amount">~$200</div>
+          <p><strong>The leanest launch proof:</strong> RizzGPT reportedly paid two TikTok creators about $50–100 each. Both videos went viral; reports cite 45K downloads on day one and 500K in a month.</p>
+          <div class="note">MEDIUM-CONFIDENCE<br>CASE, NOT A GUARANTEE</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="route">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">02 / Route selector</div><h2>Start with your distribution advantage.</h2></div>
+          <p class="section-intro">Choose the channel you can realistically feed every week. The product format follows the channel—not the other way around.</p>
+        </div>
+        <div class="route-lab">
+          <div class="route-controls">
+            <h3>What can you consistently do?</h3>
+            <p>Tap the closest fit. This is a decision aid built from the three repeated patterns in the research.</p>
+            <button class="route-btn" data-route="short" aria-pressed="true">Make or recruit short-form demos</button>
+            <button class="route-btn" data-route="build" aria-pressed="false">Post the build publicly</button>
+            <button class="route-btn" data-route="search" aria-pressed="false">Publish useful search content</button>
+          </div>
+          <div class="route-result" aria-live="polite">
+            <div class="route-num" id="routeNum">PLAYBOOK 01</div>
+            <h3 id="routeTitle">Consumer demo loop</h3>
+            <p id="routeCopy">Best fit for a watchable result people understand in under 15 seconds: a reply, score, scan, or visible transformation.</p>
+            <ul id="routeList"><li>Thin mobile wrapper + API + paywall</li><li>Low-friction weekly or annual subscription</li><li>Seed small niche creators before paid ads</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cases">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">03 / Case files</div><h2>Reverse-engineer the engine.</h2></div>
+          <p class="section-intro">Filter by the part you want to study. “Wrapper” here means the business uses existing frontier models rather than training its own.</p>
+        </div>
+        <div class="filter-row" role="group" aria-label="Filter case studies">
+          <button class="filter-btn" data-filter="all" aria-pressed="true">All cases</button>
+          <button class="filter-btn" data-filter="consumer" aria-pressed="false">Consumer</button>
+          <button class="filter-btn" data-filter="b2b" aria-pressed="false">B2B</button>
+          <button class="filter-btn" data-filter="transformation" aria-pressed="false">Transformation</button>
+        </div>
+        <div class="case-grid">
+          <article class="case" data-tags="consumer">
+            <div class="case-head"><div><div class="case-type">Consumer / mobile</div><h3>Cal AI</h3></div><div class="revenue">$30M+<br>annual revenue</div></div>
+            <p class="case-summary">Photograph a meal; vision models and the phone’s depth sensor estimate calories and macros.</p>
+            <div class="mechanics"><div class="mechanic"><b>Price</b><span>$30/year headline price; 3-day trial</span></div><div class="mechanic"><b>Growth</b><span>TikTok fitness creators, systemized at scale</span></div><div class="mechanic"><b>Build</b><span>Medium wrapper; no custom model training</span></div><div class="mechanic"><b>Team</b><span>7 people at acquisition</span></div></div>
+            <p class="proof"><a href="https://techcrunch.com/2026/09/24/techcrunch-disrupt-2026-cal-ais-zach-yadegari-on-how-to-create-viral-growth-and-capitalize-on-it/" target="_blank" rel="noopener">TechCrunch revenue report ↗</a> · <a href="https://www.youtube.com/watch?v=22wFjjVyXUI" target="_blank" rel="noopener">RevenueCat creator playbook ↗</a></p>
+            <span class="confidence">HIGH CONFIDENCE ON REVENUE</span>
+          </article>
+
+          <article class="case" data-tags="consumer">
+            <div class="case-head"><div><div class="case-type">Consumer / mobile</div><h3>RizzGPT + Umax</h3></div><div class="revenue">~$80K →<br>~$200K MRR</div></div>
+            <p class="case-summary">Dating-reply suggestions from chat screenshots; the companion Umax product scores selfies and suggests improvements.</p>
+            <div class="mechanics"><div class="mechanic"><b>Price</b><span>RizzGPT tiers unverified; Umax about $4/week</span></div><div class="mechanic"><b>Growth</b><span>Two paid TikTok creators; demo is the content</span></div><div class="mechanic"><b>Build</b><span>Simple wrapper, built by a non-coder in ~1 month</span></div><div class="mechanic"><b>Seed</b><span>Reportedly about $50–100 per creator</span></div></div>
+            <p class="proof"><a href="https://alphaleaders.co.uk/hacking-the-app-store-gen-zs-15m-arr-bootstrapped-success-story/" target="_blank" rel="noopener">Growth case ↗</a> · <a href="https://getpodcast.com/pl/podcast/were-gonna-make-it2/the-23-year-old-that-made-2-4m-with-his-first-app-blake-anderson-rizz-_7ccedfb213" target="_blank" rel="noopener">Founder podcast ↗</a></p>
+            <span class="confidence">MEDIUM CONFIDENCE / FOUNDER-REPORTED</span>
+          </article>
+
+          <article class="case" data-tags="b2b">
+            <div class="case-head"><div><div class="case-type">B2B / SaaS</div><h3>Chatbase</h3></div><div class="revenue">~$863K MRR<br>mid-2026</div></div>
+            <p class="case-summary">Upload documents or a site URL, then publish a trained support chatbot and embed it anywhere.</p>
+            <div class="mechanics"><div class="mechanic"><b>Price</b><span>Free; $40 / $150 / $500 monthly tiers</span></div><div class="mechanic"><b>Growth</b><span>X demos and build-in-public; no paid marketing early</span></div><div class="mechanic"><b>Build</b><span>Simple retrieval wrapper; 2 weeks to launch</span></div><div class="mechanic"><b>Proof</b><span>12,424 active subscriptions; Stripe-verified</span></div></div>
+            <p class="proof"><a href="https://trustmrr.com/startup/chatbase" target="_blank" rel="noopener">TrustMRR metrics ↗</a> · <a href="https://github.com/akadop/supabase/blob/HEAD/apps/www/_customers/chatbase.mdx" target="_blank" rel="noopener">Supabase launch story ↗</a></p>
+            <span class="confidence">STRONGEST VERIFIED SAAS CASE</span>
+          </article>
+
+          <article class="case" data-tags="transformation consumer">
+            <div class="case-head"><div><div class="case-type">Consumer / transformation</div><h3>Photo AI</h3></div><div class="revenue">$132–138K<br>MRR, late 2025</div></div>
+            <p class="case-summary">Upload 15–20 selfies and receive photorealistic photos in new settings from a personalized image model.</p>
+            <div class="mechanics"><div class="mechanic"><b>Price</b><span>One-time photo packs / credits</span></div><div class="mechanic"><b>Growth</b><span>Founder’s X audience + shared outputs</span></div><div class="mechanic"><b>Build</b><span>Vanilla web stack, one VPS, external GPU API</span></div><div class="mechanic"><b>Economics</b><span>About 87% margins; founder-reported</span></div></div>
+            <p class="proof"><a href="https://www.indiehackers.com/post/photo-ai-by-pieter-levels-complete-deep-dive-case-study-0-to-132k-mrr-in-18-months-3a9a2b1579" target="_blank" rel="noopener">Indie Hackers deep dive ↗</a> · <a href="https://aituts.com/case-study/photo-ai-pieter-levels/" target="_blank" rel="noopener">Case study ↗</a></p>
+            <span class="confidence">FOUNDER-REPORTED REVENUE</span>
+          </article>
+
+          <article class="case" data-tags="transformation consumer">
+            <div class="case-head"><div><div class="case-type">Consumer / SEO</div><h3>HeadshotPro</h3></div><div class="revenue">~$300K MRR<br>estimated</div></div>
+            <p class="case-summary">Turns a few selfies into professional LinkedIn and résumé headshots.</p>
+            <div class="mechanics"><div class="mechanic"><b>Price</b><span>One-time $29–$59 packages</span></div><div class="mechanic"><b>Growth</b><span>SEO/content + founder’s X audience</span></div><div class="mechanic"><b>Build</b><span>Simple third-party image-model wrapper</span></div><div class="mechanic"><b>Team</b><span>Solo, zero paid ads in year one</span></div></div>
+            <p class="proof"><a href="https://supabird.io/articles/danny-postma-how-a-solo-hacker-built-an-ai-empire-from-bali" target="_blank" rel="noopener">Single-source profile ↗</a></p>
+            <span class="confidence">LOWER CONFIDENCE / SINGLE ESTIMATE</span>
+          </article>
+
+          <article class="case" data-tags="b2b transformation">
+            <div class="case-head"><div><div class="case-type">B2B / video</div><h3>Arcads</h3></div><div class="revenue">~$10–15M<br>ARR by 2026</div></div>
+            <p class="case-summary">More than 1,000 AI actors deliver ad scripts in 30+ languages for e-commerce brands.</p>
+            <div class="mechanics"><div class="mechanic"><b>Price</b><span>Usage-based; some six-figure ACVs</span></div><div class="mechanic"><b>Growth</b><span>One viral tweet, then influencer virality</span></div><div class="mechanic"><b>Build</b><span>Multi-model wrapper, automated ops</span></div><div class="mechanic"><b>Team</b><span>8 people; bootstrapped and profitable</span></div></div>
+            <p class="proof"><a href="https://www.everand.com/podcast/963823035/From-5K-to-10M-ARR-The-ArcAds-Founder-s-Playbook" target="_blank" rel="noopener">Podcast notes ↗</a> · <a href="https://www.everand.com/podcast/885865523/My-Agent-Army-Brings-Me-500-000-Per-Month-Exploding-SaaS-Romain-Torres-bootstrapped-ARCads-ai-from-zero-to-6-million-ARR-in-just-16-months-with-o" target="_blank" rel="noopener">Agent-ops notes ↗</a></p>
+            <span class="confidence">APPROXIMATE / SECONDARY SOURCES</span>
+          </article>
+
+          <article class="case" data-tags="b2b consumer">
+            <div class="case-head"><div><div class="case-type">Bonus / app builder</div><h3>Base44</h3></div><div class="revenue">$1M ARR<br>in 3 weeks</div></div>
+            <p class="case-summary">A no-code app builder whose solo founder reportedly used Cursor to write about 90% of the code.</p>
+            <div class="mechanics"><div class="mechanic"><b>Price</b><span>$20–$200/month subscriptions</span></div><div class="mechanic"><b>Growth</b><span>LinkedIn, WhatsApp groups, hackathons, Product Hunt</span></div><div class="mechanic"><b>Build</b><span>AI-built product; 95% reported margins</span></div><div class="mechanic"><b>Outcome</b><span>$80M cash acquisition by Wix, June 2025</span></div></div>
+            <p class="proof"><a href="https://github.com/AnshumanAtrey/licon/blob/HEAD/research/founder-stories/solo-saas-founders-research.md" target="_blank" rel="noopener">Founder-story compilation ↗</a></p>
+            <span class="confidence">SECONDARY RESEARCH COMPILATION</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="playbooks">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">04 / Three repeatable plays</div><h2>Copy the mechanics, not the product.</h2></div>
+          <p class="section-intro">Each route begins with a channel-native promise, uses existing model APIs, and gets paid before technical complexity becomes the project.</p>
+        </div>
+        <div class="playbook-stack">
+          <article class="playbook">
+            <div class="play-num">01</div>
+            <div><h3>Consumer demo loop</h3><div class="formula">PAINFUL MOMENT → 15-SECOND DEMO → MICRO-CREATOR → LOW-FRICTION SUBSCRIPTION</div></div>
+            <ol class="steps"><li>Pick a result that is visually obvious: reply, score, scan, or transformation.</li><li>Build a mobile shell, API call, and paywall in 2–4 weeks; no custom model.</li><li>Seed 5–20 small niche creators with a flat fee or revenue share before paid ads.</li><li>Track revenue per 1,000 views by creator; scale only what converts.</li><li>Optimize the first “magic moment” and paywall before adding reach.</li></ol>
+          </article>
+          <article class="playbook">
+            <div class="play-num">02</div>
+            <div><h3>B2B wow-demo</h3><div class="formula">EXPENSIVE WORKFLOW → 60-SECOND PROOF → BUILD IN PUBLIC → FREEMIUM SAAS</div></div>
+            <ol class="steps"><li>Choose a business pain where one demo makes the time saving undeniable.</li><li>Build in 2–3 weeks on managed infrastructure; sell access to model output.</li><li>Post demos, screenshots, failures, and revenue progress on X or LinkedIn.</li><li>Start freemium or usage-based; add enterprise tiers only when customers pull for them.</li><li>Automate repetitive operations before adding headcount.</li></ol>
+          </article>
+          <article class="playbook">
+            <div class="play-num">03</div>
+            <div><h3>Paid transformation</h3><div class="formula">$100–500 SERVICE → INSTANT AI OUTPUT → ONE-TIME PACK → SHAREABLE RESULT + SEO</div></div>
+            <ol class="steps"><li>Target an output people already pay for: headshots, résumés, designs, or mockups.</li><li>Build upload → model API → gallery → download in 1–2 weeks.</li><li>Use one-time $29–$59 packages or credits to match the tangible output.</li><li>Launch with before/after proof; the transformation becomes the ad.</li><li>Publish durable “[thing] AI generator” search pages while social spikes demand.</li></ol>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="verdict">
+      <div class="wrap">
+        <div class="reality-grid">
+          <div class="memo">
+            <div class="section-kicker">05 / The verdict</div>
+            <h2>The leanest first bet is a demoable consumer utility.</h2>
+            <p>Not because consumer apps are easy—they are not—but because this route has the clearest low-capital proof: a narrow wrapper, a watchable outcome, and creator seeding measured by conversion.</p>
+            <ol>
+              <li><strong>Choose the output first.</strong> If someone cannot understand the result without narration, it is a weak short-form product.</li>
+              <li><strong>Choose one distribution loop.</strong> Short-form, build-in-public, or search. Don’t launch into all three.</li>
+              <li><strong>Charge for the first useful result.</strong> Subscription for repeat use; one-time payment for a tangible deliverable.</li>
+              <li><strong>Measure proof, not views.</strong> Cal AI’s system priced creator deals around revenue per 1,000 views.</li>
+            </ol>
+          </div>
+          <aside class="warnings">
+            <h3>Reality check</h3>
+            <ul>
+              <li>Revenue does not equal profit; only Photo AI’s reported 87% margin gives a clear case-level margin.</li>
+              <li>“Zero ad spend” refers to early founder-reported growth. Cal AI and Chatbase added paid channels later.</li>
+              <li>RizzGPT’s exact pricing is not published, and its portfolio revenue moved across reports.</li>
+              <li>HeadshotPro’s revenue is a single-source estimate, not independently verified.</li>
+              <li>Arcads’ 2026 revenue is approximate and comes from secondary podcast and event notes.</li>
+              <li>Photo AI’s latest verified figures here are late 2025; later founder posts suggest lower monthly figures as annual plans and churn normalized.</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="wrap">
+        <div class="section-head">
+          <div><div class="section-kicker">06 / Source desk</div><h2>Follow the receipts.</h2></div>
+          <p class="section-intro">Sources were read through the web index on October 15, 2026. Where a figure comes from a founder, podcast note, or single secondary source, the page says so.</p>
+        </div>
+        <ol class="sources-list">
+          <li><a href="https://techcrunch.com/2026/09/24/techcrunch-disrupt-2026-cal-ais-zach-yadegari-on-how-to-create-viral-growth-and-capitalize-on-it/" target="_blank" rel="noopener">TechCrunch — Cal AI revenue and acquisition</a></li>
+          <li><a href="https://www.youtube.com/watch?v=22wFjjVyXUI" target="_blank" rel="noopener">RevenueCat SubClub — Cal AI creator system</a></li>
+          <li><a href="https://alphaleaders.co.uk/hacking-the-app-store-gen-zs-15m-arr-bootstrapped-success-story/" target="_blank" rel="noopener">Alpha Leaders — TikTok-grown apps</a></li>
+          <li><a href="https://medium.com/@thestartupseries/how-blake-anderson-made-5m-in-apps-by-asking-chatgpt-one-question-7040f46c89a3" target="_blank" rel="noopener">The Startup Series — Blake Anderson</a></li>
+          <li><a href="https://trustmrr.com/startup/chatbase" target="_blank" rel="noopener">TrustMRR — Chatbase Stripe-verified metrics</a></li>
+          <li><a href="https://github.com/akadop/supabase/blob/HEAD/apps/www/_customers/chatbase.mdx" target="_blank" rel="noopener">Supabase customer story — Chatbase launch</a></li>
+          <li><a href="https://www.indiehackers.com/post/photo-ai-by-pieter-levels-complete-deep-dive-case-study-0-to-132k-mrr-in-18-months-3a9a2b1579" target="_blank" rel="noopener">Indie Hackers — Photo AI deep dive</a></li>
+          <li><a href="https://aituts.com/case-study/photo-ai-pieter-levels/" target="_blank" rel="noopener">aituts — Photo AI case study</a></li>
+          <li><a href="https://supabird.io/articles/danny-postma-how-a-solo-hacker-built-an-ai-empire-from-bali" target="_blank" rel="noopener">Supabird — HeadshotPro profile</a></li>
+          <li><a href="https://www.everand.com/podcast/963823035/From-5K-to-10M-ARR-The-ArcAds-Founder-s-Playbook" target="_blank" rel="noopener">Everand — Arcads founder podcast notes</a></li>
+          <li><a href="https://www.everand.com/podcast/885865523/My-Agent-Army-Brings-Me-500-000-Per-Month-Exploding-SaaS-Romain-Torres-bootstrapped-ARCads-ai-from-zero-to-6-million-ARR-in-just-16-months-with-o" target="_blank" rel="noopener">Everand — Arcads agent operations notes</a></li>
+          <li><a href="https://github.com/AnshumanAtrey/licon/blob/HEAD/research/founder-stories/solo-saas-founders-research.md" target="_blank" rel="noopener">Founder-story compilation — Base44</a></li>
+        </ol>
+        <p class="source-note">Open questions retained: exact RizzGPT tiers; Cal AI retention and paywall metrics; independently verified HeadshotPro revenue; independently verified 2026 Arcads revenue; and current Photo AI revenue after late 2025.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap">A research-backed decision brief. Outcomes are historical examples, not earnings forecasts.</div></footer>
+
+  <script>
+    (function () {
+      var routeData = {
+        short: {
+          num: 'PLAYBOOK 01', title: 'Consumer demo loop',
+          copy: 'Best fit for a watchable result people understand in under 15 seconds: a reply, score, scan, or visible transformation.',
+          items: ['Thin mobile wrapper + API + paywall', 'Low-friction weekly or annual subscription', 'Seed small niche creators before paid ads']
+        },
+        build: {
+          num: 'PLAYBOOK 02', title: 'B2B wow-demo',
+          copy: 'Best fit when you understand a costly business workflow and can prove the result in a 60-second screen recording.',
+          items: ['Managed infrastructure + existing model APIs', 'Freemium or usage-based pricing', 'Post demos, failures, and progress consistently']
+        },
+        search: {
+          num: 'PLAYBOOK 03', title: 'Paid transformation',
+          copy: 'Best fit for a durable search need and a tangible output customers already buy from a human service provider.',
+          items: ['Upload → generation → gallery → download', 'One-time package or credit pricing', 'Before/after launch proof plus durable SEO content']
+        }
+      };
+      var routeButtons = document.querySelectorAll('.route-btn');
+      routeButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          routeButtons.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+          button.setAttribute('aria-pressed', 'true');
+          var data = routeData[button.getAttribute('data-route')];
+          document.getElementById('routeNum').textContent = data.num;
+          document.getElementById('routeTitle').textContent = data.title;
+          document.getElementById('routeCopy').textContent = data.copy;
+          var list = document.getElementById('routeList');
+          list.innerHTML = '';
+          data.items.forEach(function (item) { var li = document.createElement('li'); li.textContent = item; list.appendChild(li); });
+        });
+      });
+
+      var filterButtons = document.querySelectorAll('.filter-btn');
+      var cases = document.querySelectorAll('.case');
+      filterButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var filter = button.getAttribute('data-filter');
+          filterButtons.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+          button.setAttribute('aria-pressed', 'true');
+          cases.forEach(function (card) {
+            card.hidden = filter !== 'all' && card.getAttribute('data-tags').split(' ').indexOf(filter) === -1;
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

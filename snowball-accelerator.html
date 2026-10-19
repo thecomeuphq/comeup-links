@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Snowball Accelerator — Paycheck-to-Paycheck Debt Snowball Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #101012;
+        --bg-raise: #17171a;
+        --panel: #1c1c20;
+        --panel-2: #232329;
+        --line: #33333b;
+        --line-soft: #2a2a31;
+        --ink: #f4f1ea;
+        --ink-dim: #b8b4aa;
+        --ink-faint: #8b877d;
+        --amber: #f5a524;
+        --orange: #ff7a18;
+        --amber-ink: #1a1206;
+        --good: #7fc96b;
+        --bad: #ff6b5e;
+        --stripe-a: #f5a524;
+        --stripe-b: #141416;
+        --input-bg: #121214;
+        --shadow: 0 10px 30px rgba(0,0,0,.45);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 56px; }
+
+      /* ---------- header ---------- */
+      .hero { padding: 14px 0 6px; }
+      .hero h1 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: clamp(2.3rem, 9vw, 3.4rem);
+        font-weight: 700;
+        line-height: .98;
+        letter-spacing: .01em;
+        text-transform: uppercase;
+        margin: 0 0 10px;
+      }
+      .hero h1 .accent { color: var(--amber); }
+      .hero p { margin: 0; color: var(--ink-dim); font-size: 1.02rem; max-width: 56ch; }
+      .hero p strong { color: var(--ink); }
+
+      /* ---------- step cards ---------- */
+      .step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px 16px 20px;
+        margin-top: 22px;
+        box-shadow: var(--shadow);
+      }
+      .step-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+      .step-num {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: .95rem;
+        letter-spacing: .08em;
+        color: var(--amber-ink);
+        background: var(--amber);
+        border-radius: 4px;
+        padding: 2px 8px;
+        white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.55rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        margin: 0;
+      }
+      .step-sub { color: var(--ink-dim); font-size: .94rem; margin: 2px 0 14px; }
+
+      /* ---------- debt rows ---------- */
+      .debt-row {
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+      .debt-top { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+      .debt-order {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--amber);
+        border: 1px solid var(--amber);
+        border-radius: 4px;
+        width: 30px; height: 30px;
+        display: flex; align-items: center; justify-content: center;
+        flex: 0 0 auto;
+      }
+      .d-name {
+        flex: 1 1 auto; min-width: 0;
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--ink);
+        font: inherit; font-weight: 600;
+        padding: 8px 10px;
+      }
+      .d-remove {
+        flex: 0 0 auto;
+        width: 34px; height: 34px;
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--ink-faint);
+        font-size: 1.15rem; line-height: 1;
+        cursor: pointer;
+      }
+      .d-remove:hover { color: var(--bad); border-color: var(--bad); }
+      .debt-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+      .debt-grid label {
+        display: block;
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+      }
+      .debt-grid input {
+        width: 100%;
+        margin-top: 4px;
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--ink);
+        font: inherit; font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        padding: 8px 9px;
+      }
+      input:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 1px; }
+      .add-btn {
+        width: 100%;
+        background: transparent;
+        border: 1.5px dashed var(--line);
+        border-radius: 8px;
+        color: var(--ink-dim);
+        font: inherit; font-weight: 600;
+        padding: 11px;
+        cursor: pointer;
+      }
+      .add-btn:hover { border-color: var(--amber); color: var(--amber); }
+      .add-btn[disabled] { opacity: .45; cursor: default; }
+      .add-btn[disabled]:hover { border-color: var(--line); color: var(--ink-dim); }
+      .stack-total {
+        margin-top: 12px;
+        display: flex; justify-content: space-between; align-items: baseline;
+        border-top: 1px solid var(--line-soft);
+        padding-top: 12px;
+        font-size: .95rem; color: var(--ink-dim);
+      }
+      .stack-total strong {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.5rem; color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ---------- boost controls ---------- */
+      .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+      .seg button {
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink-dim);
+        font: inherit; font-weight: 600;
+        padding: 11px 6px;
+        cursor: pointer;
+      }
+      .seg button small { display: block; font-weight: 500; font-size: .78rem; color: var(--ink-faint); }
+      .seg button.on {
+        border-color: var(--amber);
+        color: var(--ink);
+        background: var(--panel-2);
+        box-shadow: inset 0 0 0 1px var(--amber);
+      }
+      .seg button.on small { color: var(--amber); }
+      .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+      .chip {
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink-dim);
+        font: inherit; font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        padding: 8px 18px;
+        cursor: pointer;
+      }
+      .chip.on { background: var(--amber); border-color: var(--amber); color: var(--amber-ink); }
+      .custom-boost { display: flex; align-items: center; gap: 10px; }
+      .custom-boost label { font-size: .9rem; font-weight: 600; color: var(--ink-dim); white-space: nowrap; }
+      .custom-boost .money { position: relative; flex: 1 1 auto; }
+      .custom-boost .money span {
+        position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+        color: var(--ink-faint); font-weight: 600;
+      }
+      .custom-boost input {
+        width: 100%;
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--ink);
+        font: inherit; font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        padding: 9px 10px 9px 24px;
+      }
+      .boost-echo {
+        margin-top: 14px;
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 12px 14px;
+        font-size: .95rem; color: var(--ink-dim);
+      }
+      .boost-echo strong { color: var(--amber); font-variant-numeric: tabular-nums; }
+
+      /* ---------- blueprint ---------- */
+      .blueprint {
+        margin-top: 26px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .bp-stripe {
+        height: 10px;
+        background: repeating-linear-gradient(-45deg, var(--stripe-a) 0 14px, var(--stripe-b) 14px 28px);
+      }
+      .bp-body { padding: 20px 16px 22px; }
+      .bp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+      .bp-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.8rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .02em;
+        margin: 0; line-height: 1.05;
+      }
+      .bp-head p { margin: 4px 0 0; color: var(--ink-dim); font-size: .93rem; }
+      .print-btn {
+        flex: 0 0 auto;
+        background: var(--amber);
+        border: none;
+        border-radius: 6px;
+        color: var(--amber-ink);
+        font: inherit; font-weight: 700; font-size: .92rem;
+        padding: 10px 16px;
+        cursor: pointer;
+      }
+      .print-btn:hover { background: var(--orange); color: #fff; }
+      .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+      .metric {
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 12px 14px;
+      }
+      .metric .m-label {
+        font-size: .72rem; font-weight: 700;
+        letter-spacing: .07em; text-transform: uppercase;
+        color: var(--ink-faint);
+      }
+      .metric .m-value {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.9rem; font-weight: 700; line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+        margin-top: 2px;
+      }
+      .metric .m-sub { font-size: .85rem; color: var(--ink-dim); }
+      .metric.hero-metric { grid-column: 1 / -1; border-color: var(--amber); }
+      .metric.hero-metric .m-value { color: var(--amber); font-size: 2.4rem; }
+      .metric .m-value.good { color: var(--good); }
+
+      .race { margin-top: 18px; }
+      .race-row { display: grid; grid-template-columns: 118px 1fr 64px; align-items: center; gap: 10px; margin-bottom: 8px; font-size: .88rem; }
+      .race-row .r-label { color: var(--ink-dim); font-weight: 600; }
+      .race-row .r-time { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .race-track { height: 14px; background: var(--input-bg); border: 1px solid var(--line-soft); border-radius: 4px; overflow: hidden; }
+      .race-fill { height: 100%; background: var(--ink-faint); }
+      .race-fill.fast { background: linear-gradient(90deg, var(--orange), var(--amber)); }
+
+      .timeline { margin-top: 22px; }
+      .timeline h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.3rem; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .03em;
+        margin: 0 0 14px;
+      }
+      .tl { list-style: none; margin: 0; padding: 0 0 0 6px; position: relative; }
+      .tl::before {
+        content: ""; position: absolute; left: 15px; top: 10px; bottom: 10px;
+        width: 2px; background: var(--line);
+      }
+      .tl li { position: relative; padding: 0 0 20px 44px; }
+      .tl li:last-child { padding-bottom: 2px; }
+      .tl .dot {
+        position: absolute; left: 0; top: 1px;
+        width: 32px; height: 32px; border-radius: 50%;
+        background: var(--panel-2);
+        border: 2px solid var(--amber);
+        color: var(--amber);
+        font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 1rem;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .tl li.final .dot { background: var(--amber); color: var(--amber-ink); border-color: var(--amber); }
+      .tl .t-name { font-weight: 700; font-size: 1.02rem; }
+      .tl .t-date { color: var(--amber); font-weight: 700; font-variant-numeric: tabular-nums; }
+      .tl li.final .t-name { text-transform: uppercase; letter-spacing: .04em; }
+      .tl .t-meta { color: var(--ink-dim); font-size: .88rem; }
+      .warn {
+        margin-top: 14px;
+        border: 1px solid var(--bad);
+        color: var(--bad);
+        border-radius: 8px;
+        padding: 11px 13px;
+        font-size: .92rem; font-weight: 600;
+        display: none;
+      }
+      .bp-note { margin-top: 16px; color: var(--ink-faint); font-size: .83rem; }
+      .empty-state { color: var(--ink-dim); padding: 18px 0 4px; }
+
+      /* ---------- next steps / CTA / FAQ ---------- */
+      .next-grid { display: grid; gap: 12px; margin-top: 26px; }
+      @media (min-width: 620px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px;
+        color: var(--ink);
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .n-tag {
+        font-size: .72rem; font-weight: 700; letter-spacing: .07em;
+        text-transform: uppercase; color: var(--amber);
+      }
+      .next-card h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.4rem; font-weight: 600; margin: 4px 0 4px; line-height: 1.1;
+      }
+      .next-card p { margin: 0; color: var(--ink-dim); font-size: .92rem; }
+      .next-card .n-arrow { color: var(--amber); font-weight: 700; }
+      .cta {
+        margin-top: 14px;
+        background: linear-gradient(120deg, #2a1c05, #1c1c20 55%);
+        border: 1px solid var(--amber);
+        border-radius: 10px;
+        padding: 18px 16px;
+      }
+      .cta p { margin: 0 0 12px; font-size: 1rem; color: var(--ink); }
+      .cta a {
+        display: inline-block;
+        background: var(--amber); color: var(--amber-ink);
+        font-weight: 700; text-decoration: none;
+        border-radius: 6px; padding: 11px 18px;
+      }
+      .cta a:hover { background: var(--orange); color: #fff; }
+      .faq { margin-top: 30px; }
+      .faq h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.6rem; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .03em;
+        margin: 0 0 12px;
+      }
+      .faq details {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 13px 15px;
+        margin-bottom: 10px;
+      }
+      .faq summary { font-weight: 700; cursor: pointer; }
+      .faq details p { margin: 9px 0 2px; color: var(--ink-dim); font-size: .95rem; }
+      .foot { margin-top: 30px; color: var(--ink-faint); font-size: .82rem; text-align: center; }
+
+      @media (max-width: 560px) {
+        .bp-head { flex-direction: column; }
+        .print-btn { align-self: flex-start; }
+      }
+      @media (max-width: 430px) {
+        .debt-grid { grid-template-columns: 1fr 1fr; }
+        .debt-grid label:last-child { grid-column: 1 / -1; }
+        .race-row { grid-template-columns: 96px 1fr 58px; }
+        .metrics { grid-template-columns: 1fr 1fr; }
+      }
+
+      /* ---------- print ---------- */
+      @media print {
+        :root {
+          --bg: #ffffff; --panel: #ffffff; --panel-2: #f4f1ea;
+          --line: #999; --line-soft: #bbb;
+          --ink: #111; --ink-dim: #333; --ink-faint: #555;
+          --amber: #b96e00; --input-bg: #fff;
+          --shadow: none;
+        }
+        body { background: #fff; }
+        .no-print { display: none !important; }
+        .wrap { max-width: none; padding: 0; }
+        .blueprint { border: 2px solid #111; box-shadow: none; margin-top: 0; }
+        .faq details { break-inside: avoid; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="hero">
+        <h1>Debt Snowball<br /><span class="accent">Accelerator</span></h1>
+        <p>Stack your debts, throw a small extra amount from every paycheck at the smallest one, and watch each payoff roll into the next. This engine runs the cascade month by month and hands you the <strong>exact dates your debts die</strong> — plus how much sooner you're free versus paying minimums only.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step no-print" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1">Your Debt Stack</h2></div>
+        <p class="step-sub">Up to 4 debts. Don't stress about order — the engine attacks the smallest balance first, automatically.</p>
+        <div id="debtList"></div>
+        <button class="add-btn" id="addDebt" type="button">+ Add a debt</button>
+        <div class="stack-total"><span>Total stacked debt</span><strong id="stackTotal">$0</strong></div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step no-print" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2">Payday Micro-Boost</h2></div>
+        <p class="step-sub">A small extra amount skimmed off every paycheck and aimed at your smallest debt. Small on purpose — it has to survive every single pay period.</p>
+        <div class="seg" role="group" aria-label="Pay frequency">
+          <button type="button" id="freqWeekly">Weekly<small>52 paychecks a year</small></button>
+          <button type="button" id="freqBiweekly" class="on">Bi-Weekly<small>26 paychecks a year</small></button>
+        </div>
+        <div class="chips" role="group" aria-label="Boost amount presets">
+          <button type="button" class="chip" data-boost="10">$10</button>
+          <button type="button" class="chip on" data-boost="25">$25</button>
+          <button type="button" class="chip" data-boost="50">$50</button>
+          <button type="button" class="chip" data-boost="100">$100</button>
+        </div>
+        <div class="custom-boost">
+          <label for="customBoost">Custom per paycheck</label>
+          <div class="money"><span>$</span><input id="customBoost" type="number" inputmode="decimal" min="0" step="1" value="25" /></div>
+        </div>
+        <div class="boost-echo" id="boostEcho"></div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bpTitle">
+        <div class="bp-stripe"></div>
+        <div class="bp-body">
+          <div class="bp-head">
+            <div>
+              <h2 id="bpTitle">Payday Snowball Acceleration Blueprint</h2>
+              <p id="bpSub">Your payoff battle plan, in attack order.</p>
+            </div>
+            <button class="print-btn no-print" id="printBtn" type="button">Print Blueprint</button>
+          </div>
+          <div id="bpContent"></div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid no-print">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/debt-snowball-vs-avalanche-calculator.html">
+          <span class="n-tag">Run the comparison</span>
+          <h3>Snowball vs. Avalanche Calculator</h3>
+          <p>See both payoff strategies side by side on your own numbers — total interest, months to debt-free, and which order clears each debt first.</p>
+          <p class="n-arrow">Open the calculator →</p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html">
+          <span class="n-tag">Fund the boost</span>
+          <h3>Paycheck Budget Splitter</h3>
+          <p>Split every paycheck into bills, boost money, and breathing room before the money evaporates — so the micro-boost is always covered.</p>
+          <p class="n-arrow">Open the splitter →</p>
+        </a>
+      </div>
+
+      <div class="cta no-print">
+        <p>Track every snowball payment with the <strong>Debt Payoff Tracker</strong> and run it weekly with the <strong>Paycheck-to-Paycheck Weekly Planner</strong> on Gumroad — grab the free <strong>Paycheck Protection Checklist</strong> too.</p>
+        <a href="https://bradley57.gumroad.com/">Get the tools on Gumroad →</a>
+      </div>
+
+      <!-- FAQ -->
+      <section class="faq" aria-labelledby="faqTitle">
+        <h2 id="faqTitle">Straight Answers</h2>
+        <details>
+          <summary>Why does smallest-first beat highest-APR for most people?</summary>
+          <p>On paper, attacking the highest APR first (the avalanche) saves a bit more interest. But paper isn't the problem — quitting is. Most people don't fail a payoff plan because the math was slightly off; they fail because months pass with nothing to show for it and motivation dies. Knocking out the smallest debt fast gives you a real win early, frees up a whole payment, and proves the plan works. A good plan you actually finish beats a perfect plan you abandon in month three — and the interest gap between the two is usually much smaller than people expect.</p>
+        </details>
+        <details>
+          <summary>What exactly is the rollover effect?</summary>
+          <p>When a debt hits zero, its payment doesn't disappear — it stacks on top of the attack payment aimed at the next debt. Say your smallest card took a $25 minimum plus your $54 monthly boost. The day it's gone, that full $79 rolls onto debt #2, on top of its own minimum. Every debt you kill makes the payment hitting the next one bigger, which is why the back half of a snowball moves so much faster than the front. That's the whole engine: the payment grows while the target list shrinks.</p>
+        </details>
+        <details>
+          <summary>What if I miss a boost week?</summary>
+          <p>Nothing breaks. The blueprint assumes you boost every paycheck, so a missed week just nudges your payoff dates a little later — it doesn't reset anything, and your minimums keep the balances moving regardless. The fix is boring on purpose: don't try to double up next paycheck if that would squeeze rent or groceries. Just restart the boost on the next payday and keep the streak going. Consistency over months is what moves the dates, not one heroic payment.</p>
+        </details>
+      </section>
+
+      <p class="foot">Estimates assume no new charges are added, minimums are paid on time every month, and APRs stay fixed. Your actual dates will shift if balances, rates, or payments change.</p>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var MAX_DEBTS = 4;
+        var MAX_MONTHS = 1200; // 100-year safety cap
+
+        var state = {
+          freq: "biweekly",
+          boost: 25,
+          debts: [
+            { name: "Store Card",    balance: 640,  min: 25,  apr: 26.99 },
+            { name: "Credit Card",   balance: 2350, min: 68,  apr: 22.99 },
+            { name: "Personal Loan", balance: 5900, min: 180, apr: 12.49 }
+          ]
+        };
+
+        var els = {
+          debtList: document.getElementById("debtList"),
+          addDebt: document.getElementById("addDebt"),
+          stackTotal: document.getElementById("stackTotal"),
+          freqWeekly: document.getElementById("freqWeekly"),
+          freqBiweekly: document.getElementById("freqBiweekly"),
+          customBoost: document.getElementById("customBoost"),
+          boostEcho: document.getElementById("boostEcho"),
+          bpContent: document.getElementById("bpContent"),
+          bpSub: document.getElementById("bpSub"),
+          printBtn: document.getElementById("printBtn")
+        };
+
+        /* ---------- formatting ---------- */
+        function fmtMoney(n) {
+          if (!isFinite(n)) return "—";
+          return "$" + Math.round(n).toLocaleString("en-US");
+        }
+        function fmtMoney2(n) {
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        function fmtDate(monthOffset) {
+          if (!isFinite(monthOffset)) return "—";
+          var d = new Date();
+          var total = d.getFullYear() * 12 + d.getMonth() + monthOffset;
+          var y = Math.floor(total / 12), m = total % 12;
+          return MONTHS[m] + " " + y;
+        }
+        function fmtSpan(months) {
+          if (!isFinite(months)) return "50+ yrs";
+          var y = Math.floor(months / 12), m = months % 12;
+          var parts = [];
+          if (y > 0) parts.push(y + (y === 1 ? " yr" : " yrs"));
+          if (m > 0 || y === 0) parts.push(m + (m === 1 ? " mo" : " mos"));
+          return parts.join(" ");
+        }
+        function esc(s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+
+        /* ---------- simulation ---------- */
+        function monthlyBoost() {
+          if (!(state.boost > 0)) return 0;
+          return state.freq === "weekly" ? state.boost * 52 / 12 : state.boost * 26 / 12;
+        }
+
+        function activeDebts() {
+          return state.debts.filter(function (d) { return d.balance > 0; });
+        }
+
+        // Snowball: minimums on everything + boost on smallest; freed payments roll forward.
+        function simulateSnowball(list, extraMonthly) {
+          var sim = list.map(function (d, i) {
+            return { idx: i, name: d.name, bal: d.balance, min: d.min, apr: d.apr, interest: 0, payoff: Infinity, alive: true };
+          });
+          sim.sort(function (a, b) { return a.bal - b.bal; });
+          var budget = sim.reduce(function (s, d) { return s + d.min; }, 0) + extraMonthly;
+          var totalInterest = 0, month = 0, alive = sim.length;
+
+          while (alive > 0 && month < MAX_MONTHS) {
+            month++;
+            var i, d, pay;
+            for (i = 0; i < sim.length; i++) {
+              d = sim[i];
+              if (!d.alive) continue;
+              var interest = d.bal * (d.apr / 100 / 12);
+              d.bal += interest; d.interest += interest; totalInterest += interest;
+            }
+            var remaining = budget;
+            for (i = 0; i < sim.length; i++) { // minimums first, in attack order
+              d = sim[i];
+              if (!d.alive) continue;
+              pay = Math.min(d.min, d.bal, remaining);
+              d.bal -= pay; remaining -= pay;
+            }
+            for (i = 0; i < sim.length; i++) { // leftover cascades to smallest alive
+              d = sim[i];
+              if (!d.alive || remaining <= 0) continue;
+              pay = Math.min(d.bal, remaining);
+              d.bal -= pay; remaining -= pay;
+            }
+            for (i = 0; i < sim.length; i++) {
+              d = sim[i];
+              if (d.alive && d.bal <= 0.005) { d.bal = 0; d.alive = false; d.payoff = month; alive--; }
+            }
+          }
+          return {
+            order: sim,
+            months: alive === 0 ? month : Infinity,
+            totalInterest: totalInterest,
+            never: alive > 0
+          };
+        }
+
+        // Baseline: each debt gets only its own minimum; no boost, no rollover.
+        function simulateBaseline(list) {
+          var totalInterest = 0, worst = 0;
+          for (var i = 0; i < list.length; i++) {
+            var d = list[i], bal = d.balance, month = 0;
+            while (bal > 0.005 && month < MAX_MONTHS) {
+              month++;
+              var interest = bal * (d.apr / 100 / 12);
+              bal += interest; totalInterest += interest;
+              bal -= Math.min(d.min, bal);
+            }
+            if (month >= MAX_MONTHS && bal > 0.005) return { months: Infinity, totalInterest: totalInterest };
+            if (month > worst) worst = month;
+          }
+          return { months: worst, totalInterest: totalInterest };
+        }
+
+        /* ---------- debt rows ---------- */
+        function renderDebtRows() {
+          var html = "";
+          state.debts.forEach(function (d, i) {
+            html +=
+              '<div class="debt-row" data-i="' + i + '">' +
+                '<div class="debt-top">' +
+                  '<span class="debt-order">' + (i + 1) + "</span>" +
+                  '<input class="d-name" type="text" maxlength="40" value="' + esc(d.name) + '" placeholder="Debt name" aria-label="Debt name" />' +
+                  '<button class="d-remove" type="button" aria-label="Remove this debt" title="Remove debt">&times;</button>' +
+                "</div>" +
+                '<div class="debt-grid">' +
+                  '<label>Balance $<input class="d-bal" type="number" inputmode="decimal" min="0" step="1" value="' + d.balance + '" /></label>' +
+                  '<label>Min payment $/mo<input class="d-min" type="number" inputmode="decimal" min="0" step="1" value="' + d.min + '" /></label>' +
+                  '<label>APR %<input class="d-apr" type="number" inputmode="decimal" min="0" step="0.01" value="' + d.apr + '" /></label>' +
+                "</div>" +
+              "</div>";
+          });
+          els.debtList.innerHTML = html;
+          els.addDebt.disabled = state.debts.length >= MAX_DEBTS;
+          els.addDebt.textContent = state.debts.length >= MAX_DEBTS
+            ? "Stack full — 4 debts max"
+            : "+ Add a debt";
+        }
+
+        els.debtList.addEventListener("input", function (e) {
+          var row = e.target.closest(".debt-row");
+          if (!row) return;
+          var d = state.debts[Number(row.getAttribute("data-i"))];
+          if (!d) return;
+          if (e.target.classList.contains("d-name")) d.name = e.target.value;
+          if (e.target.classList.contains("d-bal")) d.balance = Math.max(0, parseFloat(e.target.value) || 0);
+          if (e.target.classList.contains("d-min")) d.min = Math.max(0, parseFloat(e.target.value) || 0);
+          if (e.target.classList.contains("d-apr")) d.apr = Math.max(0, parseFloat(e.target.value) || 0);
+          render();
+        });
+        els.debtList.addEventListener("click", function (e) {
+          if (!e.target.classList.contains("d-remove")) return;
+          var row = e.target.closest(".debt-row");
+          state.debts.splice(Number(row.getAttribute("data-i")), 1);
+          renderDebtRows();
+          render();
+        });
+        els.addDebt.addEventListener("click", function () {
+          if (state.debts.length >= MAX_DEBTS) return;
+          state.debts.push({ name: "New Debt", balance: 1000, min: 35, apr: 19.99 });
+          renderDebtRows();
+          render();
+        });
+
+        /* ---------- boost controls ---------- */
+        function setFreq(f) {
+          state.freq = f;
+          els.freqWeekly.classList.toggle("on", f === "weekly");
+          els.freqBiweekly.classList.toggle("on", f === "biweekly");
+          render();
+        }
+        els.freqWeekly.addEventListener("click", function () { setFreq("weekly"); });
+        els.freqBiweekly.addEventListener("click", function () { setFreq("biweekly"); });
+
+        var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
+        function syncChips() {
+          chips.forEach(function (c) {
+            c.classList.toggle("on", Number(c.getAttribute("data-boost")) === state.boost);
+          });
+        }
+        chips.forEach(function (c) {
+          c.addEventListener("click", function () {
+            state.boost = Number(c.getAttribute("data-boost"));
+            els.customBoost.value = state.boost;
+            syncChips();
+            render();
+          });
+        });
+        els.customBoost.addEventListener("input", function () {
+          state.boost = Math.max(0, parseFloat(els.customBoost.value) || 0);
+          syncChips();
+          render();
+        });
+
+        els.printBtn.addEventListener("click", function () { window.print(); });
+
+        /* ---------- blueprint render ---------- */
+        function render() {
+          var list = activeDebts();
+          var totalBal = state.debts.reduce(function (s, d) { return s + Math.max(0, d.balance); }, 0);
+          els.stackTotal.textContent = fmtMoney(totalBal);
+
+          var perYear = state.freq === "weekly" ? 52 : 26;
+          var mb = monthlyBoost();
+          els.boostEcho.innerHTML =
+            "Snowball fuel: <strong>" + fmtMoney2(mb) + "/month</strong> — that's " +
+            fmtMoney(state.boost) + " × " + perYear + " paychecks a year, aimed at your smallest debt until it dies, then rolled forward.";
+
+          if (list.length === 0) {
+            els.bpSub.textContent = "Add at least one debt with a balance to build your blueprint.";
+            els.bpContent.innerHTML = '<p class="empty-state">No debts in the stack yet. Add a balance in Step 1 and your payoff timeline appears here instantly.</p>';
+            return;
+          }
+
+          var boosted = simulateSnowball(list, mb);
+          var base = simulateBaseline(list);
+          var saved = base.totalInterest - boosted.totalInterest;
+          var shaved = (isFinite(base.months) && isFinite(boosted.months)) ? base.months - boosted.months : Infinity;
+
+          els.bpSub.textContent =
+            "Attack order: smallest balance first · " + fmtMoney2(mb) + "/mo boost · " +
+            list.length + (list.length === 1 ? " debt" : " debts") + " in the stack.";
+
+          var html = "";
+
+          /* metrics */
+          html += '<div class="metrics">';
+          html +=
+            '<div class="metric hero-metric"><div class="m-label">Debt-Free Date — Accelerated</div>' +
+            '<div class="m-value">' + fmtDate(boosted.months) + "</div>" +
+            '<div class="m-sub">' + (isFinite(boosted.months) ? fmtSpan(boosted.months) + " from now · minimums-only would take until " + fmtDate(base.months) : "One or more debts never clear on these payments — see the warning below.") + "</div></div>";
+          html +=
+            '<div class="metric"><div class="m-label">Freedom Fast-Forward</div>' +
+            '<div class="m-value good">' + (isFinite(shaved) ? fmtSpan(shaved) : "—") + "</div>" +
+            '<div class="m-sub">shaved off vs. paying minimums only</div></div>';
+          html +=
+            '<div class="metric"><div class="m-label">Interest Saved</div>' +
+            '<div class="m-value good">' + (isFinite(saved) ? fmtMoney2(saved) : "—") + "</div>" +
+            '<div class="m-sub">kept in your pocket, not the lender\'s</div></div>';
+          html +=
+            '<div class="metric"><div class="m-label">Total Interest Paid</div>' +
+            '<div class="m-value">' + fmtMoney2(boosted.totalInterest) + "</div>" +
+            '<div class="m-sub">vs. ' + fmtMoney2(base.totalInterest) + ' on minimums only</div></div>';
+          html +=
+            '<div class="metric"><div class="m-label">Monthly Attack Budget</div>' +
+            '<div class="m-value">' + fmtMoney(list.reduce(function (s, d) { return s + d.min; }, 0) + mb) + "</div>" +
+            '<div class="m-sub">all minimums + boost, rolled forward as debts die</div></div>';
+          html += "</div>";
+
+          /* race bars */
+          if (isFinite(base.months) && isFinite(boosted.months) && base.months > 0) {
+            var pct = Math.max(4, Math.round(boosted.months / base.months * 100));
+            html += '<div class="race" aria-hidden="true">';
+            html += '<div class="race-row"><span class="r-label">Minimums only</span><div class="race-track"><div class="race-fill" style="width:100%"></div></div><span class="r-time">' + fmtSpan(base.months) + "</span></div>";
+            html += '<div class="race-row"><span class="r-label">Snowball + boost</span><div class="race-track"><div class="race-fill fast" style="width:' + pct + '%"></div></div><span class="r-time">' + fmtSpan(boosted.months) + "</span></div>";
+            html += "</div>";
+          }
+
+          /* timeline */
+          html += '<div class="timeline"><h3>Payoff Timeline — In Attack Order</h3><ol class="tl">';
+          boosted.order.forEach(function (d, i) {
+            html +=
+              "<li>" +
+                '<span class="dot">' + (i + 1) + "</span>" +
+                '<div class="t-name">' + esc(d.name || "Debt " + (i + 1)) + ' — cleared <span class="t-date">' + fmtDate(d.payoff) + "</span></div>" +
+                '<div class="t-meta">Started at ' + fmtMoney(list[d.idx].balance) + " · interest paid " + fmtMoney2(d.interest) +
+                (isFinite(d.payoff) ? " · gone in " + fmtSpan(d.payoff) : " · does not clear on current payments") + "</div>" +
+              "</li>";
+          });
+          html +=
+            '<li class="final">' +
+              '<span class="dot">✓</span>' +
+              '<div class="t-name">Debt Free — <span class="t-date">' + fmtDate(boosted.months) + "</span></div>" +
+              '<div class="t-meta">Every balance at zero. The full ' + fmtMoney(list.reduce(function (s, d) { return s + d.min; }, 0) + mb) + '/mo attack budget becomes yours again.</div>' +
+            "</li>";
+          html += "</ol></div>";
+
+          if (boosted.never) {
+            html += '<div class="warn" style="display:block">One or more debts never reach zero on these numbers — the minimum payment doesn\'t beat the monthly interest. Raise that debt\'s minimum (or aim the boost at it by making it your smallest balance) until the payment covers more than the interest it accrues.</div>';
+          }
+
+          html += '<p class="bp-note">How the engine runs it: interest accrues monthly on every balance; every debt gets its minimum; your micro-boost and every freed payment cascade onto the smallest remaining balance until it hits zero, then roll to the next. Dates count from this month and assume no new charges.</p>';
+
+          els.bpContent.innerHTML = html;
+        }
+
+        renderDebtRows();
+        syncChips();
+        render();
+      })();
+    </script>
+  </body>
+</html>

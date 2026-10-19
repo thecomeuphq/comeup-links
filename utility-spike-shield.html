@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Utility Spike Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0c0c0e;
+        --bg-2: #121214;
+        --panel: #17171a;
+        --panel-2: #1e1e22;
+        --line: #2b2b31;
+        --line-strong: #3a3a42;
+        --ink: #f2efe9;
+        --ink-2: #c9c4ba;
+        --muted: #98938a;
+        --amber: #f5a623;
+        --orange: #f96d1b;
+        --amber-soft: rgba(245, 166, 35, 0.13);
+        --red: #ff5347;
+        --red-soft: rgba(255, 83, 71, 0.12);
+        --green: #3ecf7c;
+        --green-soft: rgba(62, 207, 124, 0.12);
+        --field: #101013;
+        --shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+      }
+      @media (prefers-color-scheme: light) {
+        /* The brief calls for a dark industrial theme in all conditions —
+           the charcoal/amber palette above is the design, light or dark OS. */
+        :root { color-scheme: dark; }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background:
+          repeating-linear-gradient(0deg, transparent 0 47px, rgba(128, 128, 128, 0.045) 47px 48px),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .hero-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        border: 1px solid var(--line-strong);
+        background: var(--panel);
+        padding: 5px 12px 5px 8px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--ink-2);
+      }
+      .hero-badge svg { flex: none; }
+      h1 {
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: clamp(34px, 8.5vw, 58px);
+        line-height: 1.04;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+        margin: 18px 0 12px;
+      }
+      h1 .hot { color: var(--orange); }
+      .hero-sub { font-size: clamp(16px, 4.4vw, 19px); color: var(--ink-2); max-width: 620px; margin: 0; }
+      .hero-sub strong { color: var(--ink); }
+      .hazard {
+        height: 10px; margin: 26px 0 0;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #131315 14px 28px);
+        border: 1px solid var(--line-strong);
+      }
+      @media (prefers-color-scheme: light) {
+        .hazard { background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #2a2a2e 14px 28px); }
+      }
+
+      /* ---------- Step sections ---------- */
+      .step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        margin-top: 22px;
+        padding: 22px 18px 24px;
+        box-shadow: var(--shadow);
+      }
+      .step-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+      .step-num {
+        font-family: "Oswald", sans-serif; font-weight: 700;
+        font-size: 15px; letter-spacing: 0.08em;
+        color: #131315; background: var(--amber);
+        padding: 3px 9px; flex: none;
+      }
+      .step h2 {
+        font-family: "Oswald", sans-serif; font-weight: 600;
+        font-size: clamp(21px, 5.4vw, 27px);
+        text-transform: uppercase; letter-spacing: 0.02em;
+        margin: 0;
+      }
+      .step-lede { color: var(--muted); margin: 4px 0 18px; font-size: 15px; }
+
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+
+      label.field-label {
+        display: block;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase;
+        color: var(--ink-2); margin-bottom: 7px;
+      }
+      .money-input { position: relative; }
+      .money-input span {
+        position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+        font-family: "Oswald", sans-serif; font-size: 20px; color: var(--amber);
+        pointer-events: none;
+      }
+      .money-input input {
+        width: 100%;
+        background: var(--field);
+        border: 1px solid var(--line-strong);
+        color: var(--ink);
+        font-family: "Oswald", sans-serif; font-weight: 600; font-size: 24px;
+        padding: 12px 12px 12px 34px;
+        border-radius: 4px;
+        outline: none;
+      }
+      .money-input input:focus { border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-soft); }
+      .field-note { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+      .seg { display: flex; gap: 0; border: 1px solid var(--line-strong); border-radius: 4px; overflow: hidden; }
+      .seg button {
+        flex: 1 1 0;
+        appearance: none; border: 0; cursor: pointer;
+        background: var(--field); color: var(--ink-2);
+        font-family: "Barlow", sans-serif; font-weight: 600; font-size: 15px;
+        padding: 12px 8px; line-height: 1.25;
+        border-right: 1px solid var(--line);
+        transition: background 0.15s, color 0.15s;
+      }
+      .seg button:last-child { border-right: 0; }
+      .seg button small { display: block; font-weight: 500; font-size: 12px; color: var(--muted); margin-top: 2px; }
+      .seg button[aria-pressed="true"] { background: var(--amber); color: #171204; }
+      .seg button[aria-pressed="true"] small { color: rgba(23, 18, 4, 0.72); }
+      .seg button.danger[aria-pressed="true"] { background: var(--red); color: #fff; }
+      .seg button.danger[aria-pressed="true"] small { color: rgba(255,255,255,0.8); }
+      .seg.wrap-seg { flex-wrap: wrap; }
+      .seg.wrap-seg button { flex: 1 1 30%; }
+      @media (max-width: 480px) {
+        .seg.stack { flex-direction: column; }
+        .seg.stack button { border-right: 0; border-bottom: 1px solid var(--line); text-align: left; padding-left: 14px; }
+        .seg.stack button:last-child { border-bottom: 0; }
+      }
+
+      .toggle-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        background: var(--field); border: 1px solid var(--line-strong);
+        border-radius: 4px; padding: 13px 14px;
+      }
+      .toggle-row .t-text strong { display: block; font-size: 16px; }
+      .toggle-row .t-text span { font-size: 13px; color: var(--muted); display: block; margin-top: 1px; }
+      .switch { position: relative; flex: none; width: 56px; height: 31px; display: block; }
+      .switch input {
+        appearance: none; -webkit-appearance: none;
+        width: 56px; height: 31px; margin: 0; display: block; cursor: pointer;
+        border-radius: 999px; border: 1px solid var(--line-strong);
+        background: var(--panel-2); position: relative;
+        transition: background 0.18s; outline: none;
+      }
+      .switch input::after {
+        content: ""; position: absolute; top: 2px; left: 2px;
+        width: 25px; height: 25px; border-radius: 50%;
+        background: #f2efe9; transition: transform 0.18s;
+      }
+      .switch input:checked { background: var(--orange); border-color: var(--orange); }
+      .switch input:checked::after { transform: translateX(25px); }
+      .switch input:focus-visible { box-shadow: 0 0 0 3px var(--amber-soft); }
+
+      .block { margin-bottom: 18px; }
+      .block:last-child { margin-bottom: 0; }
+
+      /* ---------- Engine results ---------- */
+      .rating-band {
+        display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center;
+        background: var(--panel-2); border: 1px solid var(--line-strong);
+        padding: 16px; margin-bottom: 16px;
+      }
+      @media (max-width: 480px) { .rating-band { grid-template-columns: 1fr; text-align: center; justify-items: center; } }
+      .rating-num {
+        font-family: "Oswald", sans-serif; font-weight: 700;
+        font-size: 74px; line-height: 0.95; min-width: 128px; text-align: center;
+      }
+      .rating-num small { display: block; font-size: 13px; font-family: "Barlow Condensed", sans-serif; letter-spacing: 0.16em; color: var(--muted); margin-top: 6px; font-weight: 500; }
+      .rating-meta h3 { margin: 0 0 4px; font-family: "Oswald", sans-serif; font-size: 21px; text-transform: uppercase; letter-spacing: 0.03em; }
+      .rating-meta p { margin: 0; color: var(--ink-2); font-size: 15px; }
+      .meter { height: 10px; background: var(--field); border: 1px solid var(--line); margin-top: 12px; position: relative; overflow: hidden; }
+      .meter i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--amber), var(--orange), var(--red)); transition: width 0.4s ease; }
+
+      .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      @media (min-width: 640px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+      .stat {
+        background: var(--field); border: 1px solid var(--line);
+        border-top: 3px solid var(--amber);
+        padding: 13px 13px 11px;
+      }
+      .stat .k { font-family: "Barlow Condensed", sans-serif; font-size: 13.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); line-height: 1.3; min-height: 2.5em; }
+      .stat .v { font-family: "Oswald", sans-serif; font-weight: 700; font-size: clamp(24px, 6vw, 30px); margin-top: 4px; }
+      .stat .v small { font-size: 14px; color: var(--muted); font-weight: 500; }
+      .stat .d { font-size: 13px; color: var(--ink-2); margin-top: 3px; line-height: 1.4; }
+      .stat.hero-stat { border-top-color: var(--orange); background: var(--amber-soft); }
+      .stat.hero-stat .v { color: var(--orange); font-size: clamp(28px, 7vw, 36px); }
+
+      .chart-box { margin-top: 18px; background: var(--field); border: 1px solid var(--line); padding: 14px 10px 8px; }
+      .chart-legend { display: flex; flex-wrap: wrap; gap: 16px; padding: 0 6px 8px; font-size: 13.5px; color: var(--ink-2); }
+      .chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+      .swatch { width: 14px; height: 14px; flex: none; }
+      .swatch.spiky { background: var(--orange); }
+      .swatch.smooth { background: transparent; border-top: 3px dashed var(--amber); height: 0; width: 18px; }
+      .chart-box svg { display: block; width: 100%; height: auto; }
+      .chart-callout { padding: 8px 6px 6px; font-size: 14.5px; color: var(--ink-2); }
+      .chart-callout strong { color: var(--orange); }
+
+      details.months { margin-top: 12px; border: 1px solid var(--line); background: var(--field); }
+      details.months summary {
+        cursor: pointer; padding: 11px 14px; font-weight: 600; font-size: 14.5px; color: var(--ink-2);
+        list-style: none; display: flex; justify-content: space-between; align-items: center;
+      }
+      details.months summary::-webkit-details-marker { display: none; }
+      details.months summary::after { content: "+"; font-family: "Oswald", sans-serif; font-size: 20px; color: var(--amber); }
+      details.months[open ] summary::after { content: "–"; }
+      .month-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      .month-table th, .month-table td { padding: 7px 14px; text-align: right; border-top: 1px solid var(--line); }
+      .month-table th:first-child, .month-table td:first-child { text-align: left; }
+      .month-table th { font-family: "Barlow Condensed", sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+      .month-table td.peak { color: var(--orange); font-weight: 700; }
+      .month-table td.surplus { color: var(--green); }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        border: 1px solid var(--line); background: var(--panel-2);
+        padding: 18px 16px; margin-bottom: 14px; position: relative;
+      }
+      .tier:last-child { margin-bottom: 0; }
+      .tier.active { border-color: var(--line-strong); }
+      .tier.t1.active { border-color: var(--red); box-shadow: 0 0 0 1px var(--red), var(--shadow); }
+      .tier.t2.active { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber), var(--shadow); }
+      .tier.t3.active { border-color: var(--green); box-shadow: 0 0 0 1px var(--green), var(--shadow); }
+      .tier:not(.active) { opacity: 0.78; }
+      .tier-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+      .tier-tag {
+        font-family: "Barlow Condensed", sans-serif; font-size: 14px;
+        letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;
+      }
+      .t1 .tier-tag { color: var(--red); }
+      .t2 .tier-tag { color: var(--amber); }
+      .t3 .tier-tag { color: var(--green); }
+      .tier h3 { font-family: "Oswald", sans-serif; font-size: clamp(19px, 5vw, 23px); text-transform: uppercase; margin: 3px 0 6px; font-weight: 600; }
+      .tier p { color: var(--ink-2); margin: 0 0 10px; font-size: 15px; }
+      .your-move {
+        display: none; flex: none;
+        font-family: "Barlow Condensed", sans-serif; font-size: 13.5px; letter-spacing: 0.12em;
+        padding: 4px 9px; text-transform: uppercase; font-weight: 600;
+      }
+      .tier.active .your-move { display: inline-block; }
+      .t1 .your-move { background: var(--red); color: #fff; }
+      .t2 .your-move { background: var(--amber); color: #171204; }
+      .t3 .your-move { background: var(--green); color: #0a2013; }
+      .tier ul, .tier ol { margin: 8px 0 4px; padding-left: 20px; color: var(--ink-2); font-size: 15px; }
+      .tier li { margin-bottom: 6px; }
+      .tier li strong, .tier p strong { color: var(--ink); }
+
+      .script-box {
+        background: var(--field); border: 1px dashed var(--line-strong);
+        padding: 14px; margin-top: 12px;
+      }
+      .script-box .script-label {
+        font-family: "Barlow Condensed", sans-serif; font-size: 13.5px;
+        letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+      }
+      .script-text { font-size: 15px; color: var(--ink); line-height: 1.6; white-space: pre-wrap; }
+      .copy-btn {
+        appearance: none; cursor: pointer; margin-top: 12px;
+        background: var(--amber); color: #171204; border: 0;
+        font-family: "Barlow", sans-serif; font-weight: 700; font-size: 15px;
+        padding: 11px 18px; border-radius: 4px; width: 100%;
+      }
+      .copy-btn:active { transform: translateY(1px); }
+      .copy-btn.alt { background: transparent; color: var(--amber); border: 1px solid var(--amber); }
+      .copy-note { font-size: 12.5px; color: var(--muted); margin-top: 8px; text-align: center; min-height: 1em; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 26px;
+        background: linear-gradient(160deg, var(--panel-2), var(--panel));
+        border: 2px solid var(--amber);
+        box-shadow: var(--shadow);
+        padding: 24px 20px 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      .blueprint::before {
+        content: ""; position: absolute; top: 0; left: 0; right: 0; height: 8px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #131315 14px 28px);
+      }
+      .blueprint h2 {
+        font-family: "Oswald", sans-serif; text-transform: uppercase;
+        font-size: clamp(22px, 6vw, 30px); margin: 8px 0 2px; line-height: 1.15;
+      }
+      .blueprint .bp-sub { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+      .bp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+      .bp-cell { background: var(--panel); padding: 13px 14px; }
+      .bp-cell .k { font-family: "Barlow Condensed", sans-serif; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+      .bp-cell .v { font-family: "Oswald", sans-serif; font-weight: 700; font-size: clamp(21px, 5.6vw, 27px); margin-top: 2px; }
+      .bp-cell .v small { font-size: 13px; color: var(--muted); font-weight: 500; }
+      .bp-row { margin-top: 16px; font-size: 15px; color: var(--ink-2); }
+      .bp-row strong { color: var(--ink); }
+      .bp-script {
+        margin-top: 14px; background: var(--field); border: 1px solid var(--line);
+        padding: 13px 14px; font-size: 14px; line-height: 1.6; color: var(--ink-2);
+        white-space: pre-wrap;
+      }
+      .bp-script .script-label { font-family: "Barlow Condensed", sans-serif; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); display: block; margin-bottom: 6px; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-family: "Oswald", sans-serif; text-transform: uppercase;
+        font-size: clamp(20px, 5.4vw, 26px); margin: 36px 0 14px; font-weight: 600;
+      }
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 560px) { .next-grid { grid-template-columns: 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line-strong);
+        padding: 18px; transition: border-color 0.15s, transform 0.15s;
+      }
+      a.next-card:hover { border-color: var(--amber); transform: translateY(-2px); }
+      a.next-card .nc-tag { font-family: "Barlow Condensed", sans-serif; font-size: 13.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); }
+      a.next-card h3 { font-family: "Oswald", sans-serif; font-size: 20px; text-transform: uppercase; margin: 5px 0 6px; font-weight: 600; }
+      a.next-card p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+      a.next-card .go { display: inline-block; margin-top: 12px; font-weight: 700; color: var(--orange); font-size: 15px; }
+
+      .cta {
+        display: block; text-decoration: none; margin-top: 14px;
+        background: linear-gradient(120deg, var(--orange), var(--amber));
+        color: #1c1204; padding: 20px; border: 1px solid var(--line-strong);
+      }
+      .cta .cta-tag { font-family: "Barlow Condensed", sans-serif; font-size: 13.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; opacity: 0.75; }
+      .cta h3 { font-family: "Oswald", sans-serif; font-size: clamp(20px, 5.6vw, 27px); text-transform: uppercase; margin: 4px 0 6px; line-height: 1.2; }
+      .cta p { margin: 0; font-size: 15px; font-weight: 500; }
+      .cta .go { display: inline-block; margin-top: 10px; font-weight: 700; text-decoration: underline; }
+
+      .faq details { border: 1px solid var(--line); background: var(--panel); margin-bottom: 10px; }
+      .faq summary {
+        cursor: pointer; padding: 15px 16px; font-weight: 600; font-size: 16px;
+        list-style: none; display: flex; justify-content: space-between; gap: 12px; align-items: center;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; font-family: "Oswald", sans-serif; font-size: 22px; color: var(--amber); flex: none; }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq .faq-body { padding: 0 16px 16px; color: var(--ink-2); font-size: 15px; }
+      .faq .faq-body p { margin: 0 0 8px; }
+      .faq .faq-body ul { margin: 4px 0; padding-left: 20px; }
+      .faq .faq-body li { margin-bottom: 5px; }
+      .faq .faq-body strong { color: var(--ink); }
+
+      footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13.5px; }
+      footer p { margin: 0 0 6px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <header class="hero">
+        <span class="hero-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 4 5.5V11c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5.5L12 2Z" fill="#f5a623"/><path d="M13.2 6 8.6 13h3l-1 5 4.8-7.4h-3.1l.9-4.6Z" fill="#131315"/></svg>
+          Utility Spike Shield
+        </span>
+        <h1>Your <span class="hot">$400 summer power bill</span> doesn't have to be a surprise.</h1>
+        <p class="hero-sub">Seasonal bills spike. Paychecks don't. This engine turns a violent summer (or winter) bill into <strong>one flat per-paycheck number</strong> — and gives you the exact playbook if a shutoff notice is already on the fridge.</p>
+        <div class="hazard" aria-hidden="true"></div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1">Seasonal Baseline</h2></div>
+        <p class="step-lede">Pull two numbers off your last 12 months of statements: a normal month, and the worst month.</p>
+        <div class="grid2">
+          <div>
+            <label class="field-label" for="baseline">Normal monthly bill</label>
+            <div class="money-input"><span>$</span><input id="baseline" type="number" inputmode="decimal" min="0" step="1" value="150" /></div>
+            <div class="field-note">A mild spring or fall month — no AC, no furnace running hard.</div>
+          </div>
+          <div>
+            <label class="field-label" for="peak">Peak seasonal bill</label>
+            <div class="money-input"><span>$</span><input id="peak" type="number" inputmode="decimal" min="0" step="1" value="400" /></div>
+            <div class="field-note">Your worst month — deep summer heat or deep winter cold.</div>
+          </div>
+        </div>
+        <div class="block" style="margin-top:18px;">
+          <span class="field-label" id="freq-label">Pay frequency</span>
+          <div class="seg" role="group" aria-labelledby="freq-label" id="freqSeg">
+            <button type="button" data-freq="52" aria-pressed="true">Weekly<small>52 paychecks / yr</small></button>
+            <button type="button" data-freq="26" aria-pressed="false">Bi-Weekly<small>26 paychecks / yr</small></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2">Exposure &amp; Status</h2></div>
+        <p class="step-lede">Your schedule and your climate decide how hard a spike can hit. Your bill status decides how urgent this is.</p>
+
+        <div class="block">
+          <div class="toggle-row">
+            <div class="t-text">
+              <strong>Night shift</strong>
+              <span>AC / heat runs all day while you sleep — your "off" hours still burn full power.</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="nightShift" aria-label="Night shift" />
+            </label>
+          </div>
+        </div>
+
+        <div class="block">
+          <span class="field-label" id="climate-label">Climate zone</span>
+          <div class="seg wrap-seg" role="group" aria-labelledby="climate-label" id="climateSeg">
+            <button type="button" data-climate="heat" aria-pressed="true">Extreme Heat<small>Brutal summers</small></button>
+            <button type="button" data-climate="cold" aria-pressed="false">Extreme Cold<small>Brutal winters</small></button>
+            <button type="button" data-climate="moderate" aria-pressed="false">Moderate<small>Two short spikes</small></button>
+          </div>
+        </div>
+
+        <div class="block">
+          <span class="field-label" id="status-label">Where does the bill stand right now?</span>
+          <div class="seg stack" role="group" aria-labelledby="status-label" id="statusSeg">
+            <button type="button" data-status="current" aria-pressed="true">Current<small>Paid up, no balance hanging over you</small></button>
+            <button type="button" data-status="pastdue" aria-pressed="false">Past Due<small>Behind, but no shutoff date yet</small></button>
+            <button type="button" data-status="final" class="danger" aria-pressed="false">Final Notice Received<small>Shutoff date is on the letter</small></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head"><span class="step-num">STEP 3</span><h2 id="s3">The Smoothing Engine</h2></div>
+        <p class="step-lede">Same annual cost. Two completely different years. Here's the spike — and the flat line that replaces it.</p>
+
+        <div class="rating-band">
+          <div class="rating-num"><span id="ratingNum">0</span><small>Energy Spike<br/>Vulnerability / 100</small></div>
+          <div class="rating-meta">
+            <h3 id="ratingLabel">—</h3>
+            <p id="ratingDesc">—</p>
+            <div class="meter" aria-hidden="true"><i id="ratingBar" style="width:0%"></i></div>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat hero-stat">
+            <div class="k">Levelized set-aside per paycheck</div>
+            <div class="v" id="statPerCheck">$0</div>
+            <div class="d" id="statPerCheckD">Every check, all year — spike months included.</div>
+          </div>
+          <div class="stat">
+            <div class="k">Annual volatility drag</div>
+            <div class="v" id="statDrag">$0</div>
+            <div class="d" id="statDragD">Peak month minus a normal month.</div>
+          </div>
+          <div class="stat">
+            <div class="k">Spike size</div>
+            <div class="v" id="statSpike">0%</div>
+            <div class="d" id="statSpikeD">How far the peak jumps over baseline.</div>
+          </div>
+          <div class="stat">
+            <div class="k">Annual buffer to bank</div>
+            <div class="v" id="statBuffer">$0</div>
+            <div class="d">What must be sitting in the fund before peak season starts.</div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-legend">
+            <span><span class="swatch spiky"></span> What you pay now (spiky)</span>
+            <span><span class="swatch smooth"></span> Smoothed — same cost, flat line</span>
+          </div>
+          <div id="chart"></div>
+          <p class="chart-callout" id="chartCallout"></p>
+        </div>
+
+        <details class="months">
+          <summary>See all 12 months, side by side</summary>
+          <table class="month-table">
+            <thead><tr><th>Month</th><th>Spiky bill</th><th>Smoothed</th><th>Fund flow</th></tr></thead>
+            <tbody id="monthRows"></tbody>
+          </table>
+        </details>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head"><span class="step-num">STEP 4</span><h2 id="s4">Defense Strategy</h2></div>
+        <p class="step-lede">Three tiers. Your status and spike size decide which one is your move right now — the others stay loaded for when the season turns.</p>
+
+        <article class="tier t1" id="tier1">
+          <div class="tier-head">
+            <div>
+              <span class="tier-tag">Tier 1 — Shutoff Risk</span>
+              <h3>Shutoff Freeze Protocol</h3>
+            </div>
+            <span class="your-move">Your move</span>
+          </div>
+          <p>If a final notice is in hand, the goal for the next 24 hours is simple: <strong>get a human on the phone and get a hold placed before the shutoff date.</strong> Utilities would rather collect slowly than not at all — but you have to ask, out loud, before the truck rolls.</p>
+          <ol>
+            <li><strong>Call before the date on the letter</strong> — use the number printed on the notice, not a search result.</li>
+            <li><strong>Read the script below, word for word if you need to.</strong> Ask for a 30-day disconnection hold plus a payment plan.</li>
+            <li><strong>Get the confirmation number and the rep's name.</strong> Ask for the agreement in writing or by email.</li>
+            <li><strong>Apply for LIHEAP the same day</strong> (below) — a crisis grant can pay the past-due balance directly and strengthens your hold.</li>
+          </ol>
+          <div class="script-box">
+            <div class="script-label">Copy-paste hardship script — say it or send it</div>
+            <div class="script-text" id="hardshipScript"></div>
+            <button class="copy-btn" type="button" data-copy="hardshipScript">Copy the script</button>
+            <div class="copy-note" data-note></div>
+          </div>
+          <ul>
+            <li><strong>LIHEAP (Low Income Home Energy Assistance Program):</strong> federal money, run by your state, that pays heating and cooling bills for income-qualifying households. Its <em>crisis</em> component exists specifically to stop shutoffs and restore service. Apply through your local Community Action Agency, at energyassistance.us, or by dialing <strong>2-1-1</strong>.</li>
+            <li><strong>Medical-necessity protection:</strong> in most states, a signed form from a doctor or clinic — stating that someone in the home relies on powered medical equipment, or that shutoff would seriously harm their health — forces the utility to delay disconnection, commonly 30 days at a time and renewable. Ask the rep: <em>"What is your medical certificate process?"</em></li>
+            <li><strong>Winter/summer moratoriums:</strong> many states ban shutoffs entirely during extreme-temperature months. Ask whether your state has one in effect right now.</li>
+          </ul>
+        </article>
+
+        <article class="tier t2" id="tier2">
+          <div class="tier-head">
+            <div>
+              <span class="tier-tag">Tier 2 — High Volatility</span>
+              <h3>Equal Payment Smoothing Plan</h3>
+            </div>
+            <span class="your-move">Your move</span>
+          </div>
+          <p>When your peak jumps more than 75% over baseline, willpower budgeting loses to weather. Most utilities will flatten the bill for you — free — through <strong>budget billing</strong> (also called levelized, averaged, or equal-pay billing). Enrollment takes one call:</p>
+          <ol>
+            <li><strong>Ask by name:</strong> "I want to enroll in budget billing / levelized billing." It's offered by nearly every major electric and gas utility.</li>
+            <li><strong>They average your last 12 months</strong> of usage and bill you that flat amount every month — for your numbers, about <strong id="t2Level">$0/mo</strong>.</li>
+            <li><strong>Know the true-up:</strong> once a year (or monthly, rolling) they compare what you paid vs. what you actually used and settle the difference. Slightly overpaid = credit. Slightly under = a modest catch-up added on.</li>
+            <li><strong>Eligibility is usually light:</strong> an account in decent standing, sometimes 12 months of service history at the address. Past-due? Ask about enrolling <em>with</em> a payment plan — many utilities allow both at once.</li>
+            <li><strong>Keep the sinking set-aside anyway.</strong> Budget billing smooths the bill; your own <span id="t2PerCheck">$0</span>/paycheck fund covers the true-up and any rate hikes. Belt and suspenders.</li>
+          </ol>
+        </article>
+
+        <article class="tier t3" id="tier3">
+          <div class="tier-head">
+            <div>
+              <span class="tier-tag">Tier 3 — Fortified</span>
+              <h3>Off-Peak Sinking Set-Aside</h3>
+            </div>
+            <span class="your-move">Your move</span>
+          </div>
+          <p>No crisis, manageable spike — this is where you get ahead of next season while bills are cheap. The move is a small automatic transfer, on payday, during the months your bill runs <em>below</em> the yearly average:</p>
+          <ul>
+            <li><strong>Automate <span id="t3Amount">$0</span> per paycheck</span> during off-peak months into a separate savings pocket labeled "Utilities." Most households land in the $15–$30 range — yours is sized exactly to your spike.</li>
+            <li><strong>By the time peak season opens, you'll have banked ≈ <span id="t3Buffer">$0</span></strong> — enough to cover every month the real bill runs over the flat line.</li>
+            <li><strong>Peak months:</strong> pay the bill from the fund, keep setting aside the flat <span id="t3PerCheck">$0</span>, and the "spike" becomes a bookkeeping entry, not an emergency.</li>
+            <li><strong>Never let the fund do double duty.</strong> The month it quietly becomes grocery money is the month August wins.</li>
+          </ul>
+        </article>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bp">
+        <h2 id="bp">Utility Hardship &amp; Levelized Payment Blueprint</h2>
+        <p class="bp-sub">Screenshot this. Every number below updates live from your inputs.</p>
+        <div class="bp-grid">
+          <div class="bp-cell"><div class="k">Set aside per paycheck</div><div class="v" id="bpPerCheck">$0</div></div>
+          <div class="bp-cell"><div class="k">Levelized monthly bill</div><div class="v" id="bpMonthly">$0</div></div>
+          <div class="bp-cell"><div class="k">Annual utility cost</div><div class="v" id="bpAnnual">$0</div></div>
+          <div class="bp-cell"><div class="k">Buffer to bank pre-season</div><div class="v" id="bpBuffer">$0</div></div>
+          <div class="bp-cell"><div class="k">Peak vs. normal</div><div class="v" id="bpSpike">$0 <small>vs</small> $0</div></div>
+          <div class="bp-cell"><div class="k">Vulnerability rating</div><div class="v" id="bpRating">0 / 100</div></div>
+        </div>
+        <p class="bp-row"><strong>Your active defense:</strong> <span id="bpTier">—</span></p>
+        <p class="bp-row"><strong>Off-peak set-aside:</strong> <span id="bpSetAside">—</span></p>
+        <div class="bp-script"><span class="script-label">If they threaten shutoff — say this</span><span id="bpScript"></span></div>
+        <button class="copy-btn" type="button" id="copyBlueprint">Copy the full blueprint</button>
+        <div class="copy-note" data-note></div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <h2 class="section-title">Put the shield on a system</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/sinking-fund-planner.html" target="_blank" rel="noopener">
+          <span class="nc-tag">Next step</span>
+          <h3>Sinking Fund Planner</h3>
+          <p>Run utilities alongside tires, insurance, and holidays — every seasonal spike gets its own per-paycheck target in one plan.</p>
+          <span class="go">Open the planner →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html" target="_blank" rel="noopener">
+          <span class="nc-tag">Next step</span>
+          <h3>Payday Cash Flow Allocator</h3>
+          <p>Slot the levelized set-aside into payday itself, so the utility money moves before rent, gas, and groceries compete for it.</p>
+          <span class="go">Open the allocator →</span>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+        <span class="cta-tag">Print it. Post it on the fridge.</span>
+        <h3>Smooth every spike before it hits</h3>
+        <p>The Sinking Funds Tracker and Blue-Collar Buffer Binder on Gumroad — the paper system that keeps the utility fund (and every other fund) filled all year.</p>
+        <span class="go">See the printables →</span>
+      </a>
+
+      <!-- FAQ -->
+      <h2 class="section-title">Straight answers</h2>
+      <div class="faq">
+        <details>
+          <summary>How does levelized (budget) billing actually work?</summary>
+          <div class="faq-body">
+            <p>Your utility adds up your last 12 months of bills, divides by 12, and charges you that average every month. You still <em>use</em> the same power — you just stop paying for August in August.</p>
+            <p>Periodically — monthly on a rolling basis with some utilities, once a year with others — they reconcile: if you used more than you paid for, the difference is added gradually or settled in a "true-up" month; if you used less, you get a credit. You stay responsible for your actual usage, so the per-paycheck sinking set-aside in Tier 3 is what keeps a true-up from stinging.</p>
+          </div>
+        </details>
+        <details>
+          <summary>What does LIHEAP cover, and who qualifies?</summary>
+          <div class="faq-body">
+            <p>LIHEAP is a federal program, administered by states, that helps income-qualifying households with energy costs. Depending on your state it can cover:</p>
+            <ul>
+              <li><strong>Heating and cooling bills</strong> — a benefit paid directly to your utility.</li>
+              <li><strong>Crisis assistance</strong> — emergency help to stop a shutoff, restore service, or repair/replace a broken furnace or AC.</li>
+              <li><strong>Weatherization</strong> — sealing and insulation work that lowers every future bill.</li>
+            </ul>
+            <p>Eligibility is income-based (often up to 150% of the federal poverty line, varies by state), and households with seniors, young children, or disabled members are frequently prioritized. Apply via your local Community Action Agency, energyassistance.us, or dial <strong>2-1-1</strong>. Bring ID, proof of income, and a recent utility bill.</p>
+          </div>
+        </details>
+        <details>
+          <summary>I'm on night shift. How do I cut the day-sleep energy bill?</summary>
+          <div class="faq-body">
+            <p>Sleeping through the hottest hours means your AC works its hardest shift while you're unconscious. Target the sleep room, not the whole home:</p>
+            <ul>
+              <li><strong>Zone it:</strong> close vents and doors to unused rooms; cool the bedroom hard and let the rest of the home drift a few degrees warmer.</li>
+              <li><strong>Blackout curtains</strong> on sun-facing windows — they block heat gain and help you sleep. Cheap, immediate payoff.</li>
+              <li><strong>Pre-cool before your shift ends:</strong> drop the thermostat while morning air is cooler, then let it coast up slowly during the day.</li>
+              <li><strong>A fan in the sleep room</strong> lets you set the thermostat 3–4° higher and feel the same — fans cool people, not rooms, so run it only while you're in there.</li>
+              <li><strong>Check for a time-of-use rate:</strong> some utilities charge far less overnight. If yours does, run laundry, dishes, and charging on your "day" — the hours before your shift.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <footer>
+        <p>Estimates are built from your two bill numbers and a standard seasonal pattern for your climate zone — your utility's actual budget-billing quote may differ slightly. Assistance program rules (LIHEAP, medical holds, moratoriums) vary by state and utility; confirm details on the call.</p>
+        <p>Utility Spike Shield — part of the Come Up Money toolkit.</p>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        // Seasonal shape per climate: factor applied to the drag (peak - baseline).
+        // 1 = full peak month, 0.5 = shoulder month, 0 = baseline month.
+        var SHAPES = {
+          heat:     [0, 0, 0, 0, 0.5, 1, 1, 1, 1, 0.5, 0, 0],
+          cold:     [1, 1, 1, 0.5, 0, 0, 0, 0, 0, 0, 0.5, 1],
+          moderate: [1, 0.5, 0, 0, 0, 0.5, 1, 0, 0, 0, 0, 0]
+        };
+        var CLIMATE_NAMES = { heat: "Extreme heat", cold: "Extreme cold", moderate: "Moderate" };
+        var STATUS_NAMES = { current: "Current", pastdue: "Past Due", final: "Final Notice Received" };
+
+        var state = { baseline: 150, peak: 400, periods: 52, climate: "heat", status: "current", night: false };
+
+        var $ = function (id) { return document.getElementById(id); };
+        var fmt0 = function (n) { return "$" + Math.round(n).toLocaleString("en-US"); };
+        var fmt2 = function (n) { return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+
+        function segWire(id, attr, apply) {
+          var seg = $(id);
+          seg.addEventListener("click", function (e) {
+            var btn = e.target.closest("button");
+            if (!btn) return;
+            var btns = seg.querySelectorAll("button");
+            for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", btns[i] === btn ? "true" : "false");
+            apply(btn.getAttribute(attr));
+            render();
+          });
+        }
+
+        $("baseline").addEventListener("input", function (e) { state.baseline = Math.max(0, parseFloat(e.target.value) || 0); render(); });
+        $("peak").addEventListener("input", function (e) { state.peak = Math.max(0, parseFloat(e.target.value) || 0); render(); });
+        $("nightShift").addEventListener("change", function (e) { state.night = e.target.checked; render(); });
+        segWire("freqSeg", "data-freq", function (v) { state.periods = parseInt(v, 10); });
+        segWire("climateSeg", "data-climate", function (v) { state.climate = v; });
+        segWire("statusSeg", "data-status", function (v) { state.status = v; });
+
+        function compute() {
+          var baseline = state.baseline;
+          var peak = Math.max(state.peak, baseline);
+          var drag = peak - baseline;
+          var shape = SHAPES[state.climate];
+          var bills = shape.map(function (f) { return baseline + drag * f; });
+          var annual = bills.reduce(function (a, b) { return a + b; }, 0);
+          var monthly = annual / 12;
+          var perCheck = annual / state.periods;
+          var spikePct = baseline > 0 ? (drag / baseline) * 100 : 0;
+
+          var buffer = 0, offMonths = 0;
+          bills.forEach(function (b) {
+            if (b > monthly) buffer += b - monthly;
+            if (b < monthly) offMonths++;
+          });
+          var periodsPerMonth = state.periods / 12;
+          var offPeriods = Math.max(1, offMonths * periodsPerMonth);
+          var setAside = buffer / offPeriods;
+
+          // Vulnerability rating 0-100 (higher = more exposed)
+          var score = Math.min(52, spikePct * 0.42);
+          if (state.status === "pastdue") score += 18;
+          if (state.status === "final") score += 32;
+          if (state.night) score += 8;
+          if (state.climate !== "moderate") score += 9; else score += 2;
+          score = Math.max(0, Math.min(100, Math.round(score)));
+
+          // Active tier
+          var tier;
+          if (state.status === "final") tier = 1;
+          else if (spikePct > 75) tier = 2;
+          else tier = 3;
+
+          return { baseline: baseline, peak: peak, drag: drag, bills: bills, annual: annual,
+                   monthly: monthly, perCheck: perCheck, spikePct: spikePct,
+                   buffer: buffer, offMonths: offMonths, setAside: setAside, score: score, tier: tier };
+        }
+
+        function ratingText(score) {
+          if (score >= 85) return { label: "Critical Exposure", desc: "One bad month can cascade into a shutoff. Tier 1 moves and a call to the utility come before anything else." };
+          if (score >= 60) return { label: "High Risk", desc: "A peak-season bill can swallow a whole paycheck. Flatten it now — levelized billing plus the sinking set-aside — before the season opens." };
+          if (score >= 30) return { label: "Exposed", desc: "You can absorb a spike, but it will hurt and something else will go unpaid. A small per-paycheck set-aside closes the gap." };
+          return { label: "Fortified", desc: "Your cash flow can take a weather-driven hit without missing other bills. Keep the set-aside automated and this stays boring — the good kind." };
+        }
+
+        function ratingColor(score) {
+          if (score >= 60) return "var(--red)";
+          if (score >= 30) return "var(--orange)";
+          return "var(--green)";
+        }
+
+        function buildChart(c) {
+          var W = 660, H = 250, base = 218, top = 26;
+          var maxV = Math.max(c.peak, c.monthly) * 1.12 || 1;
+          var y = function (v) { return base - (v / maxV) * (base - top); };
+          var bw = 34, gap = (W - 36 - 12 * bw) / 11;
+          var out = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Month by month chart comparing spiky utility bills to the smoothed levelized amount">';
+          // levelized dashed line
+          out += '<line x1="14" y1="' + y(c.monthly).toFixed(1) + '" x2="' + (W - 10) + '" y2="' + y(c.monthly).toFixed(1) + '" stroke="#f5a623" stroke-width="2.5" stroke-dasharray="7 5"/>';
+          out += '<text x="' + (W - 12) + '" y="' + (y(c.monthly) - 7).toFixed(1) + '" text-anchor="end" font-family="Oswald, sans-serif" font-size="14" fill="#f5a623">' + fmt0(c.monthly) + '/mo flat</text>';
+          for (var i = 0; i < 12; i++) {
+            var x = 18 + i * (bw + gap);
+            var h = Math.max(2, base - y(c.bills[i]));
+            var isPeak = c.bills[i] >= c.peak - 0.01 && c.drag > 0;
+            var isShoulder = !isPeak && c.bills[i] > c.baseline + 0.01;
+            var fill = isPeak ? "#f96d1b" : (isShoulder ? "#b97e14" : "#6e675c");
+            out += '<rect x="' + x.toFixed(1) + '" y="' + y(c.bills[i]).toFixed(1) + '" width="' + bw + '" height="' + h.toFixed(1) + '" fill="' + fill + '"/>';
+            if (isPeak) {
+              out += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (y(c.bills[i]) - 6).toFixed(1) + '" text-anchor="middle" font-family="Oswald, sans-serif" font-size="13.5" font-weight="600" fill="#f96d1b">' + fmt0(c.bills[i]) + '</text>';
+            }
+            out += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (base + 18) + '" text-anchor="middle" font-size="12" fill="#98938a">' + MONTHS[i] + '</text>';
+          }
+          out += '<line x1="14" y1="' + base + '" x2="' + (W - 10) + '" y2="' + base + '" stroke="#3a3a42" stroke-width="1"/>';
+          out += '</svg>';
+          return out;
+        }
+
+        function scriptText(c) {
+          return "Hello, my name is [YOUR NAME], account ending in [LAST 4 DIGITS]. I'm calling about the final notice on my account.\n\n" +
+            "I'm requesting a 30-day hold on disconnection while we set up a payment plan. I can pay " + fmt0(c.perCheck) + " every pay period — that's my actual pay schedule — until the balance is cleared, starting with a payment today.\n\n" +
+            "Can you also check three things for me: whether I qualify for LIHEAP crisis assistance, whether a medical-necessity hold applies to my household, and whether a shutoff moratorium is in effect in my state right now?\n\n" +
+            "Please confirm the agreement, the hold end date, and give me your name and a confirmation number. I'd like the plan in writing as well. Thank you for working with me — I want this paid, I just need it structured so it stays paid.";
+        }
+
+        var lastCalc = null;
+
+        function render() {
+          var c = compute();
+          lastCalc = c;
+          var per = state.periods === 52 ? "weekly" : "bi-weekly";
+
+          // Rating
+          var rt = ratingText(c.score);
+          $("ratingNum").textContent = c.score;
+          $("ratingNum").style.color = ratingColor(c.score);
+          $("ratingLabel").textContent = rt.label;
+          $("ratingDesc").textContent = rt.desc;
+          $("ratingBar").style.width = c.score + "%";
+
+          // Stats
+          $("statPerCheck").textContent = fmt2(c.perCheck);
+          $("statPerCheckD").textContent = "Every " + per + " check, all year — spike months included.";
+          $("statDrag").textContent = fmt0(c.drag) + " /mo";
+          $("statDragD").textContent = "Extra cost in a peak month vs. a normal month — " + fmt0(Math.max(0, c.annual - 12 * c.baseline)) + " extra across the year.";
+          $("statSpike").textContent = Math.round(c.spikePct) + "%";
+          $("statSpikeD").textContent = c.spikePct > 75 ? "Over the 75% line — this is Tier 2 territory." : "Under the 75% high-volatility line.";
+          $("statBuffer").textContent = fmt0(c.buffer);
+
+          // Chart
+          $("chart").innerHTML = buildChart(c);
+          var peakMonths = [];
+          c.bills.forEach(function (b, i) { if (b >= c.peak - 0.01 && c.drag > 0) peakMonths.push(MONTHS[i]); });
+          $("chartCallout").innerHTML = "Peak season (" + peakMonths.join(", ") + ") hits <strong>" + fmt0(c.peak) + "/mo</strong> — " +
+            Math.round(c.spikePct) + "% over a normal month. Smoothed, you pay <strong style='color:var(--amber)'>" + fmt0(c.monthly) + "/mo</strong> every month and the season stops mattering.";
+
+          // Month table
+          var rows = "";
+          for (var i = 0; i < 12; i++) {
+            var diff = c.monthly - c.bills[i];
+            var flow = diff >= 0
+              ? '<td class="surplus">+' + fmt0(diff) + " into fund</td>"
+              : "<td>" + fmt0(diff) + " from fund</td>";
+            var cls = (c.bills[i] >= c.peak - 0.01 && c.drag > 0) ? ' class="peak"' : "";
+            rows += "<tr><td>" + MONTHS[i] + "</td><td" + cls + ">" + fmt0(c.bills[i]) + "</td><td>" + fmt0(c.monthly) + "</td>" + flow + "</tr>";
+          }
+          $("monthRows").innerHTML = rows;
+
+          // Tiers
+          [1, 2, 3].forEach(function (n) {
+            $("tier" + n).classList.toggle("active", c.tier === n);
+          });
+          $("hardshipScript").textContent = scriptText(c);
+          $("t2Level").textContent = fmt0(c.monthly) + "/mo";
+          $("t2PerCheck").textContent = fmt2(c.perCheck);
+          $("t3Amount").textContent = fmt2(c.setAside);
+          $("t3Buffer").textContent = fmt0(c.buffer);
+          $("t3PerCheck").textContent = fmt2(c.perCheck);
+
+          // Blueprint
+          $("bpPerCheck").textContent = fmt2(c.perCheck);
+          $("bpMonthly").textContent = fmt0(c.monthly);
+          $("bpAnnual").textContent = fmt0(c.annual);
+          $("bpBuffer").textContent = fmt0(c.buffer);
+          $("bpSpike").innerHTML = fmt0(c.peak) + " <small>vs</small> " + fmt0(c.baseline);
+          $("bpRating").textContent = c.score + " / 100";
+          var tierNames = {
+            1: "Tier 1 — Shutoff Freeze Protocol (call the utility today, use the script)",
+            2: "Tier 2 — Equal Payment Smoothing Plan (enroll in budget/levelized billing)",
+            3: "Tier 3 — Fortified (automate the off-peak sinking set-aside)"
+          };
+          $("bpTier").textContent = tierNames[c.tier];
+          $("bpSetAside").textContent = fmt2(c.setAside) + " per " + per + " paycheck during the " + c.offMonths + " off-peak months banks the full " + fmt0(c.buffer) + " buffer before peak season.";
+          $("bpScript").textContent = "\"I'm requesting a 30-day hold on disconnection and a payment plan of " + fmt0(c.perCheck) + " per pay period. Please also check my LIHEAP crisis eligibility and any medical-necessity hold — and give me the confirmation number.\"";
+        }
+
+        // Copy helpers
+        function copyText(text, noteEl) {
+          function done(ok) {
+            noteEl.textContent = ok ? "Copied — paste it anywhere." : "Copy didn't go through — long-press the text to copy it manually.";
+            setTimeout(function () { noteEl.textContent = ""; }, 3500);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            try {
+              var ta = document.createElement("textarea");
+              ta.value = text;
+              ta.style.position = "fixed"; ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              var ok = document.execCommand("copy");
+              document.body.removeChild(ta);
+              done(ok);
+            } catch (e) { done(false); }
+          }
+        }
+
+        document.querySelectorAll("[data-copy]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var note = btn.parentElement.querySelector("[data-note]");
+            copyText($(btn.getAttribute("data-copy")).textContent, note);
+          });
+        });
+
+        $("copyBlueprint").addEventListener("click", function () {
+          var c = lastCalc || compute();
+          var per = state.periods === 52 ? "weekly" : "bi-weekly";
+          var text =
+            "UTILITY HARDSHIP & LEVELIZED PAYMENT BLUEPRINT\n" +
+            "----------------------------------------------\n" +
+            "Normal monthly bill: " + fmt0(c.baseline) + "\n" +
+            "Peak seasonal bill: " + fmt0(c.peak) + " (+" + Math.round(c.spikePct) + "%)\n" +
+            "Climate zone: " + CLIMATE_NAMES[state.climate] + (state.night ? " · Night shift (day-sleep load)" : "") + "\n" +
+            "Bill status: " + STATUS_NAMES[state.status] + "\n" +
+            "Annual utility cost: " + fmt0(c.annual) + "\n" +
+            "Levelized monthly amount: " + fmt0(c.monthly) + "\n" +
+            "SET ASIDE PER PAYCHECK (" + per + "): " + fmt2(c.perCheck) + "\n" +
+            "Buffer to bank before peak season: " + fmt0(c.buffer) + "\n" +
+            "Off-peak set-aside: " + fmt2(c.setAside) + " per paycheck for " + c.offMonths + " off-peak months\n" +
+            "Energy Spike Vulnerability Rating: " + c.score + " / 100\n\n" +
+            "HARDSHIP SCRIPT (if a final notice arrives):\n" + scriptText(c);
+          var note = this.parentElement.querySelector("[data-note]");
+          copyText(text, note);
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

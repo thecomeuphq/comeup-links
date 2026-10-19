@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Relocation Cash Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #121110;
+        --bg-2: #1a1815;
+        --panel: #1e1b17;
+        --panel-2: #26221c;
+        --line: #3a352c;
+        --line-strong: #57503f;
+        --ink: #f2ede3;
+        --ink-2: #c9c0ae;
+        --ink-3: #948b76;
+        --amber: #f5a623;
+        --amber-hi: #ffb93e;
+        --amber-deep: #c47b12;
+        --amber-ink: #1a1206;
+        --red: #ff5d47;
+        --green: #7fc96b;
+        --hazard-a: #f5a623;
+        --hazard-b: #17140f;
+        --input-bg: #14120f;
+        --shadow: rgba(0,0,0,.45);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .hazard {
+        height: 10px;
+        background: repeating-linear-gradient(-45deg, var(--hazard-a) 0 14px, var(--hazard-b) 14px 28px);
+        border: 1px solid var(--line-strong);
+        margin-bottom: 26px;
+      }
+      .hero h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(2.3rem, 8.5vw, 3.6rem);
+        line-height: 1.02;
+        letter-spacing: .01em;
+        text-transform: uppercase;
+        margin: 0 0 14px;
+      }
+      .hero h1 .cash { color: var(--amber); }
+      .hero p { color: var(--ink-2); font-size: 1.06rem; margin: 0; max-width: 34rem; }
+      .hero p strong { color: var(--ink); }
+
+      /* ---------- rating strip ---------- */
+      .rating-strip {
+        margin-top: 26px;
+        background: var(--panel);
+        border: 1px solid var(--line-strong);
+        border-left: 6px solid var(--amber);
+        padding: 16px 18px;
+        display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+      }
+      .rating-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 3rem; font-weight: 700; line-height: 1;
+        color: var(--amber);
+        min-width: 3.4ch;
+      }
+      .rating-meta { flex: 1 1 220px; }
+      .rating-label {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase; letter-spacing: .12em;
+        font-size: .82rem; color: var(--ink-3); font-weight: 600;
+      }
+      .rating-band { font-weight: 700; font-size: 1.15rem; }
+      .rating-bar { height: 10px; background: var(--bg-2); border: 1px solid var(--line); margin-top: 8px; }
+      .rating-fill { height: 100%; background: var(--amber); width: 0%; transition: width .35s ease; }
+      .rating-note { color: var(--ink-2); font-size: .92rem; margin-top: 6px; }
+
+      /* ---------- steps ---------- */
+      section.step {
+        margin-top: 30px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+      }
+      .step-head {
+        display: flex; align-items: baseline; gap: 12px;
+        padding: 16px 18px 0;
+      }
+      .step-no {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; font-size: .85rem; letter-spacing: .14em;
+        color: var(--amber-ink); background: var(--amber);
+        padding: 3px 9px; text-transform: uppercase; white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.55rem; font-weight: 600; text-transform: uppercase;
+        letter-spacing: .03em; margin: 0;
+      }
+      .step-body { padding: 14px 18px 20px; }
+      .step-body > p.lede { color: var(--ink-2); margin: 0 0 16px; }
+
+      .field { margin-bottom: 16px; }
+      .field label, .field .flabel {
+        display: block; font-weight: 600; font-size: .95rem; margin-bottom: 6px;
+      }
+      .field .hint { color: var(--ink-3); font-size: .86rem; margin-top: 5px; }
+      .money {
+        display: flex; align-items: stretch;
+        background: var(--input-bg);
+        border: 1px solid var(--line-strong);
+      }
+      .money span {
+        padding: 10px 4px 10px 12px; color: var(--amber);
+        font-family: "JetBrains Mono", monospace; font-weight: 700;
+      }
+      .money input {
+        flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink);
+        font-family: "JetBrains Mono", monospace; font-size: 1.1rem; font-weight: 500;
+        padding: 10px 12px 10px 2px; outline: none;
+      }
+      .money:focus-within { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
+      input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+      input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+      .seg { display: flex; border: 1px solid var(--line-strong); background: var(--input-bg); }
+      .seg button {
+        flex: 1; appearance: none; border: 0; background: transparent; color: var(--ink-2);
+        font-family: "Barlow", sans-serif; font-weight: 600; font-size: .92rem;
+        padding: 11px 6px; cursor: pointer; text-align: center;
+      }
+      .seg button + button { border-left: 1px solid var(--line); }
+      .seg button[aria-pressed="true"] { background: var(--amber); color: var(--amber-ink); }
+      .seg button small { display: block; font-weight: 500; font-size: .76rem; opacity: .85; }
+
+      /* toggles */
+      .toggle-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 14px;
+        padding: 12px 0; border-bottom: 1px solid var(--line);
+      }
+      .toggle-row:last-of-type { border-bottom: 0; }
+      .toggle-row .t-text strong { display: block; font-size: .98rem; }
+      .toggle-row .t-text span { color: var(--ink-3); font-size: .86rem; }
+      .switch { position: relative; flex: 0 0 auto; width: 52px; height: 28px; display: inline-block; }
+      .switch input {
+        appearance: none; -webkit-appearance: none;
+        display: block; width: 52px; height: 28px; margin: 0; cursor: pointer;
+        background: var(--bg-2); border: 1px solid var(--line-strong);
+        position: relative; outline: none;
+        transition: background .15s ease, border-color .15s ease;
+      }
+      .switch input::after {
+        content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+        background: var(--ink-3); transition: transform .15s ease, background .15s ease;
+      }
+      .switch input:checked { background: var(--amber-deep); border-color: var(--amber); }
+      .switch input:checked::after { transform: translateX(24px); background: var(--amber-hi); }
+      .switch input:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+      .return-meter { margin-top: 14px; background: var(--panel-2); border: 1px solid var(--line); padding: 14px 16px; }
+      .return-meter .rm-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .return-meter .rm-rate { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.5rem; color: var(--amber); }
+      .return-meter .rm-bar { height: 10px; background: var(--bg); border: 1px solid var(--line); margin-top: 10px; }
+      .return-meter .rm-fill { height: 100%; background: var(--amber); width: 100%; transition: width .3s ease; }
+      .return-meter .rm-note { color: var(--ink-2); font-size: .9rem; margin-top: 8px; }
+
+      /* ---------- bridge outputs ---------- */
+      .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr; } }
+      .stat {
+        background: var(--panel-2); border: 1px solid var(--line); padding: 14px 16px;
+      }
+      .stat.wide { grid-column: 1 / -1; border-color: var(--amber-deep); }
+      .stat .s-label {
+        font-family: "Barlow Condensed", sans-serif; text-transform: uppercase;
+        letter-spacing: .1em; font-size: .8rem; color: var(--ink-3); font-weight: 600;
+      }
+      .stat .s-value { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.7rem; margin-top: 2px; }
+      .stat .s-value.amber { color: var(--amber); }
+      .stat .s-sub { color: var(--ink-2); font-size: .88rem; margin-top: 3px; }
+      .formula { color: var(--ink-3); font-size: .88rem; margin: 14px 0 0; font-family: "JetBrains Mono", monospace; }
+
+      /* ---------- tiers ---------- */
+      .tier {
+        border: 1px solid var(--line); background: var(--panel-2);
+        padding: 16px 18px; margin-bottom: 14px; opacity: .62;
+      }
+      .tier.active { opacity: 1; border-color: var(--amber); border-left: 6px solid var(--amber); background: var(--panel); }
+      .tier-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+      .tier-tag {
+        font-family: "Barlow Condensed", sans-serif; font-weight: 700; letter-spacing: .1em;
+        font-size: .8rem; text-transform: uppercase; padding: 3px 8px;
+        background: var(--bg-2); border: 1px solid var(--line-strong); color: var(--ink-2);
+      }
+      .tier.active .tier-tag { background: var(--amber); color: var(--amber-ink); border-color: var(--amber); }
+      .tier h3 { font-family: "Barlow Condensed", sans-serif; font-size: 1.35rem; margin: 0; text-transform: uppercase; letter-spacing: .02em; }
+      .tier .live-badge {
+        margin-left: auto; font-size: .78rem; font-weight: 700; letter-spacing: .08em;
+        text-transform: uppercase; color: var(--amber); display: none;
+      }
+      .tier.active .live-badge { display: inline; }
+      .tier p { color: var(--ink-2); margin: 10px 0 0; }
+      .tier .when { color: var(--ink-3); font-size: .86rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+
+      .script-box { margin-top: 14px; }
+      .script-box label { font-weight: 600; font-size: .92rem; display: block; margin-bottom: 6px; }
+      .script-box textarea {
+        width: 100%; min-height: 190px; resize: vertical;
+        background: var(--input-bg); color: var(--ink);
+        border: 1px solid var(--line-strong);
+        font-family: "Barlow", sans-serif; font-size: .93rem; line-height: 1.55;
+        padding: 12px; outline: none;
+      }
+      .script-box textarea:focus { border-color: var(--amber); }
+      .script-box textarea.short { min-height: 130px; }
+
+      .btn {
+        appearance: none; border: 1px solid var(--amber); cursor: pointer;
+        background: var(--amber); color: var(--amber-ink);
+        font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+        font-size: 1rem; letter-spacing: .08em; text-transform: uppercase;
+        padding: 10px 18px; margin-top: 10px;
+      }
+      .btn.ghost { background: transparent; color: var(--amber); }
+      .btn:active { transform: translateY(1px); }
+      .btn.copied { background: var(--green); border-color: var(--green); color: #101408; }
+
+      .alloc-list, .audit-list, .note-list { list-style: none; margin: 12px 0 0; padding: 0; }
+      .alloc-list li {
+        display: flex; justify-content: space-between; gap: 12px;
+        padding: 9px 0; border-bottom: 1px dashed var(--line);
+        font-size: .96rem;
+      }
+      .alloc-list li:last-child { border-bottom: 0; }
+      .alloc-list .a-amt { font-family: "JetBrains Mono", monospace; font-weight: 700; color: var(--amber); white-space: nowrap; }
+      .audit-list li, .note-list li {
+        padding: 8px 0 8px 30px; position: relative; color: var(--ink-2);
+        border-bottom: 1px dashed var(--line);
+      }
+      .audit-list li:last-child, .note-list li:last-child { border-bottom: 0; }
+      .audit-list li::before {
+        content: ""; position: absolute; left: 2px; top: 12px;
+        width: 13px; height: 13px; border: 2px solid var(--amber);
+      }
+      .note-list li::before {
+        content: ""; position: absolute; left: 4px; top: 15px;
+        width: 9px; height: 9px; background: var(--amber);
+      }
+      .audit-list li strong, .note-list li strong { color: var(--ink); }
+
+      /* ---------- blueprint ---------- */
+      .blueprint {
+        margin-top: 34px; background: var(--panel);
+        border: 2px solid var(--amber-deep);
+        box-shadow: 0 12px 32px var(--shadow);
+      }
+      .blueprint .bp-hazard { height: 12px; background: repeating-linear-gradient(-45deg, var(--hazard-a) 0 14px, var(--hazard-b) 14px 28px); }
+      .blueprint-inner { padding: 20px 20px 22px; }
+      .blueprint h2 {
+        font-family: "Barlow Condensed", sans-serif; text-transform: uppercase;
+        font-size: 1.9rem; margin: 0; letter-spacing: .02em; line-height: 1.05;
+      }
+      .blueprint .bp-sub { color: var(--ink-3); font-size: .9rem; margin-top: 4px; }
+      .bp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+      @media (max-width: 480px) { .bp-grid { grid-template-columns: 1fr; } }
+      .bp-stat { background: var(--panel-2); border: 1px solid var(--line); padding: 12px 14px; }
+      .bp-stat .b-label { font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; letter-spacing: .1em; font-size: .78rem; color: var(--ink-3); font-weight: 600; }
+      .bp-stat .b-value { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.45rem; margin-top: 2px; }
+      .bp-stat .b-value.amber { color: var(--amber); }
+      .bp-stat .b-sub { color: var(--ink-2); font-size: .85rem; }
+      .bp-tier {
+        margin-top: 14px; padding: 12px 14px; border: 1px solid var(--amber-deep);
+        background: var(--panel-2); font-size: .96rem;
+      }
+      .bp-tier strong { color: var(--amber); text-transform: uppercase; letter-spacing: .05em; }
+      .blueprint .script-box textarea { min-height: 210px; }
+      .bp-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+      .bp-actions .btn { flex: 1 1 180px; }
+
+      /* ---------- next steps / cta / faq ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 34px; }
+      @media (max-width: 560px) { .next-grid { grid-template-columns: 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line-strong); padding: 18px;
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card .n-kicker { font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; letter-spacing: .12em; font-size: .78rem; color: var(--amber); font-weight: 700; }
+      a.next-card h3 { font-family: "Barlow Condensed", sans-serif; font-size: 1.4rem; margin: 4px 0 6px; text-transform: uppercase; }
+      a.next-card p { color: var(--ink-2); margin: 0; font-size: .94rem; }
+      a.next-card .n-arrow { color: var(--amber); font-weight: 700; }
+
+      .cta {
+        margin-top: 14px; background: var(--amber); color: var(--amber-ink);
+        padding: 20px; display: block; text-decoration: none;
+      }
+      .cta h3 { font-family: "Barlow Condensed", sans-serif; font-size: 1.5rem; text-transform: uppercase; margin: 0 0 6px; line-height: 1.1; }
+      .cta p { margin: 0; font-weight: 500; }
+      .cta .cta-link { font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+      .faq { margin-top: 34px; }
+      .faq h2 { font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; font-size: 1.6rem; margin: 0 0 12px; }
+      .faq details { background: var(--panel); border: 1px solid var(--line); margin-bottom: 10px; }
+      .faq summary {
+        cursor: pointer; font-weight: 600; padding: 14px 16px; list-style: none;
+        display: flex; justify-content: space-between; gap: 10px; align-items: center;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; color: var(--amber); font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.2rem; }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq details p { margin: 0; padding: 0 16px 16px; color: var(--ink-2); }
+
+      footer { margin-top: 36px; color: var(--ink-3); font-size: .86rem; border-top: 1px solid var(--line); padding-top: 16px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <header class="hero">
+        <div class="hazard" aria-hidden="true"></div>
+        <h1>Moving needs <span class="cash">$3,000 cash</span>.<br />You have 30 days.<br />Here's the bridge.</h1>
+        <p>A non-renewal notice, an eviction filing, a job across town — a sudden move hits you with thousands in upfront cash before your old deposit ever comes back. <strong>Run your numbers below</strong> and get the exact per-paycheck plan to land the new place without a high-APR loan.</p>
+
+        <div class="rating-strip" aria-live="polite">
+          <div class="rating-num" id="ratingNum">–</div>
+          <div class="rating-meta">
+            <div class="rating-label">Relocation Liquidity Rating</div>
+            <div class="rating-band" id="ratingBand">Enter your numbers</div>
+            <div class="rating-bar"><div class="rating-fill" id="ratingFill"></div></div>
+            <div class="rating-note" id="ratingNote">How safely you can execute this move without high-interest credit.</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1h">
+        <div class="step-head"><span class="step-no">Step 1</span><h2 id="s1h">Move-In Demand</h2></div>
+        <div class="step-body">
+          <p class="lede">What the new place demands before you get the keys.</p>
+
+          <div class="field">
+            <label for="rent">New monthly rent</label>
+            <div class="money"><span>$</span><input type="number" id="rent" inputmode="decimal" min="0" value="1200" /></div>
+          </div>
+
+          <div class="field">
+            <span class="flabel" id="upfrontLabel">Upfront cash required at signing</span>
+            <div class="seg" role="group" aria-labelledby="upfrontLabel">
+              <button type="button" id="upFS" aria-pressed="true">First + Security<small>2× rent</small></button>
+              <button type="button" id="upFLS" aria-pressed="false">First + Last + Security<small>3× rent</small></button>
+              <button type="button" id="upCustom" aria-pressed="false">Custom Deposit<small>first month + flat fee</small></button>
+            </div>
+          </div>
+
+          <div class="field" id="customDepositField" hidden>
+            <label for="customDeposit">Flat deposit amount</label>
+            <div class="money"><span>$</span><input type="number" id="customDeposit" inputmode="decimal" min="0" value="800" /></div>
+            <div class="hint">Total upfront = first month's rent + this flat deposit.</div>
+          </div>
+
+          <div class="field">
+            <label for="fees">Moving truck + utility connection fees</label>
+            <div class="money"><span>$</span><input type="number" id="fees" inputmode="decimal" min="0" value="450" /></div>
+            <div class="hint">Truck rental, gas, utility deposits and hookup fees, application fees.</div>
+          </div>
+
+          <div class="field">
+            <label for="income">Your monthly net (take-home) income</label>
+            <div class="money"><span>$</span><input type="number" id="income" inputmode="decimal" min="0" value="2600" /></div>
+            <div class="hint">Used to size the burden and set your action tier.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2h">
+        <div class="step-head"><span class="step-no">Step 2</span><h2 id="s2h">Deposit Recovery</h2></div>
+        <div class="step-body">
+          <p class="lede">Your old deposit is the first plank of the bridge — if it actually comes back. Be honest about the unit's condition; landlords document everything.</p>
+
+          <div class="field">
+            <label for="depositHeld">Deposit currently held by your landlord</label>
+            <div class="money"><span>$</span><input type="number" id="depositHeld" inputmode="decimal" min="0" value="1000" /></div>
+          </div>
+
+          <div class="field">
+            <label for="weeks">Weeks until move-out</label>
+            <div class="money"><span style="font-family:'Barlow',sans-serif; font-weight:600;">wk</span><input type="number" id="weeks" inputmode="decimal" min="0" step="0.5" value="4" /></div>
+            <div class="hint" id="weeksHint">That's about 28 days on the clock.</div>
+          </div>
+
+          <div class="toggle-row">
+            <div class="t-text"><strong>Unit will be left clean</strong><span>Deep-cleaned, trash out, keys returned on time</span></div>
+            <label class="switch"><input type="checkbox" id="condClean" checked /></label>
+          </div>
+          <div class="toggle-row">
+            <div class="t-text"><strong>Minor wear &amp; tear</strong><span>Scuffs, nail holes, light carpet wear</span></div>
+            <label class="switch"><input type="checkbox" id="condWear" /></label>
+          </div>
+          <div class="toggle-row">
+            <div class="t-text"><strong>Pet damage</strong><span>Stains, scratches, odor treatment likely</span></div>
+            <label class="switch"><input type="checkbox" id="condPet" /></label>
+          </div>
+
+          <div class="return-meter" aria-live="polite">
+            <div class="rm-top">
+              <span style="font-weight:600;">Estimated deposit return rate</span>
+              <span class="rm-rate" id="returnRate">100%</span>
+            </div>
+            <div class="rm-bar"><div class="rm-fill" id="returnFill"></div></div>
+            <div class="rm-note" id="returnNote">Projected recovery: $1,000 of your $1,000 deposit.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3h">
+        <div class="step-head"><span class="step-no">Step 3</span><h2 id="s3h">Bridge Engine</h2></div>
+        <div class="step-body">
+          <p class="lede">The gap between what the move demands and what your old deposit returns — split across the paychecks you actually have left.</p>
+
+          <div class="field">
+            <span class="flabel" id="freqLabel">Pay frequency</span>
+            <div class="seg" role="group" aria-labelledby="freqLabel">
+              <button type="button" id="freqWeekly" aria-pressed="false">Weekly</button>
+              <button type="button" id="freqBiweekly" aria-pressed="true">Bi-weekly</button>
+            </div>
+          </div>
+
+          <div class="stat-grid" aria-live="polite">
+            <div class="stat">
+              <div class="s-label">Total Capital Barrier</div>
+              <div class="s-value" id="statBarrier">$2,850</div>
+              <div class="s-sub" id="statBarrierSub">Upfront move-in + moving &amp; utility fees</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">Recoverable Deposit</div>
+              <div class="s-value" id="statRecover">$1,000</div>
+              <div class="s-sub" id="statRecoverSub">Projected refund from your current landlord</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">Deposit Net Gap</div>
+              <div class="s-value amber" id="statGap">$1,850</div>
+              <div class="s-sub" id="statGapSub">Cash you must build before move-in day</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">Paychecks Left</div>
+              <div class="s-value" id="statChecks">2</div>
+              <div class="s-sub" id="statChecksSub">Before move-in day</div>
+            </div>
+            <div class="stat wide">
+              <div class="s-label">Per-Paycheck Relocation Sinking Target</div>
+              <div class="s-value amber" id="statTarget">$925</div>
+              <div class="s-sub" id="statTargetSub">Set this aside from every paycheck and you arrive at move-in day with the gap covered — no credit card, no personal loan.</div>
+            </div>
+          </div>
+
+          <p class="formula" id="formulaLine">barrier $2,850 − recovery $1,000 = gap $1,850 ÷ 2 paychecks</p>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4h">
+        <div class="step-head"><span class="step-no">Step 4</span><h2 id="s4h">Action Strategy</h2></div>
+        <div class="step-body">
+          <p class="lede">Your numbers place you in one tier. That tier's protocol is live below — the other two stay visible so you can see what changes if your timeline or burden shifts.</p>
+
+          <!-- TIER 1 -->
+          <div class="tier" id="tier1">
+            <div class="tier-head">
+              <span class="tier-tag">Tier 1</span>
+              <h3>Deposit Hardship Protocol</h3>
+              <span class="live-badge">● Your tier</span>
+            </div>
+            <div class="when">Critical — barrier over 60% of monthly net income, under 30 days</div>
+            <p>The gap is too big to save in time, so you shrink the demand itself. Many landlords will split a security deposit across the first months if you ask in writing, with a clean payment record behind you. And most utilities must offer deposit waivers or installment plans to qualifying households — but only if you ask before the account is opened.</p>
+
+            <div class="script-box">
+              <label for="letterTier1">Landlord deposit-installment request — copy &amp; send</label>
+              <textarea id="letterTier1" readonly></textarea>
+              <button type="button" class="btn" data-copy="letterTier1">Copy the letter</button>
+            </div>
+
+            <div class="script-box">
+              <label for="waiverText">Utility deposit waiver request — copy &amp; send</label>
+              <textarea id="waiverText" class="short" readonly></textarea>
+              <button type="button" class="btn ghost" data-copy="waiverText">Copy waiver request</button>
+            </div>
+          </div>
+
+          <!-- TIER 2 -->
+          <div class="tier" id="tier2">
+            <div class="tier-head">
+              <span class="tier-tag">Tier 2</span>
+              <h3>Micro-Sinking Bridge</h3>
+              <span class="live-badge">● Your tier</span>
+            </div>
+            <div class="when">Moderate — barrier 30–60% of monthly net income, 30–60 days</div>
+            <p>The gap is bridgeable if every payday moves the target amount automatically — and if your old deposit comes back whole. The refund is half your bridge, so protect it with a documented move-out audit.</p>
+
+            <div class="script-box">
+              <label>Your payday allocation schedule</label>
+              <ul class="alloc-list" id="allocList"></ul>
+            </div>
+
+            <div class="script-box">
+              <label>Move-out photo audit — protects your refund</label>
+              <ul class="audit-list">
+                <li><strong>Every wall, every room:</strong> wide shots plus close-ups, with your phone's date/time stamp on.</li>
+                <li><strong>Floors &amp; carpets:</strong> photograph from the doorway of each room, then any stain or wear up close.</li>
+                <li><strong>Inside the appliances:</strong> oven, fridge, microwave — cleaned and empty.</li>
+                <li><strong>Meter readings:</strong> electric, gas, and water meters on your last day, photo + written numbers.</li>
+                <li><strong>Bathroom &amp; fixtures:</strong> tub, toilet, faucets running — proof everything works and is clean.</li>
+                <li><strong>Keys &amp; handoff:</strong> photo of keys returned, and get the walkthrough signed or emailed to you.</li>
+                <li><strong>Back it up twice:</strong> cloud folder plus a copy emailed to yourself the same day — timestamps are your evidence.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- TIER 3 -->
+          <div class="tier" id="tier3">
+            <div class="tier-head">
+              <span class="tier-tag">Tier 3</span>
+              <h3>Security Deposit Lock Protocol</h3>
+              <span class="live-badge">● Your tier</span>
+            </div>
+            <div class="when">Fortified — barrier under 30% of monthly net income, or your deposit covers the move</div>
+            <p>You're covered. The job now is locking down the refund you're owed and converting this scare into a permanent buffer, so the next notice is an inconvenience instead of a crisis.</p>
+            <ul class="note-list">
+              <li><strong>Escrow rules:</strong> most states require landlords to hold your deposit in a separate escrow or trust account — many owe you interest on it. Ask, in writing, where the deposit is held.</li>
+              <li><strong>Itemization deadline:</strong> landlords typically have 14–45 days after move-out (varies by state) to return your deposit or send an itemized deduction list. Miss that deadline and many states let you recover the full deposit plus penalties — often 2–3× for bad-faith withholding.</li>
+              <li><strong>Demand letter timing:</strong> if the deadline passes with no refund and no itemization, send a written demand citing your state's statute before filing in small-claims court.</li>
+              <li id="surplusNote"><strong>Route the surplus:</strong> every dollar your recovered deposit pays you back beyond the move goes straight into a starter emergency fund — that's the shield that makes the next move a non-event.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <div class="blueprint" aria-labelledby="bph">
+        <div class="bp-hazard" aria-hidden="true"></div>
+        <div class="blueprint-inner">
+          <h2 id="bph">Emergency Relocation Cash Blueprint</h2>
+          <div class="bp-sub" id="bpDate">Your screenshot-ready move plan.</div>
+
+          <div class="bp-grid">
+            <div class="bp-stat">
+              <div class="b-label">Total Capital Required</div>
+              <div class="b-value" id="bpBarrier">$2,850</div>
+              <div class="b-sub" id="bpBarrierSub">Due at signing + moving day</div>
+            </div>
+            <div class="bp-stat">
+              <div class="b-label">Deposit Recovery Projection</div>
+              <div class="b-value" id="bpRecover">$1,000</div>
+              <div class="b-sub" id="bpRecoverSub">At a 100% estimated return rate</div>
+            </div>
+            <div class="bp-stat">
+              <div class="b-label">Per-Paycheck Bridge Allocation</div>
+              <div class="b-value amber" id="bpTarget">$925</div>
+              <div class="b-sub" id="bpTargetSub">From each of 2 remaining paychecks</div>
+            </div>
+            <div class="bp-stat">
+              <div class="b-label">Relocation Liquidity Rating</div>
+              <div class="b-value amber" id="bpRating">– / 100</div>
+              <div class="b-sub" id="bpRatingSub">—</div>
+            </div>
+          </div>
+
+          <div class="bp-tier" id="bpTierLine"><strong>Active protocol:</strong> —</div>
+
+          <div class="script-box">
+            <label for="letterBlueprint">Landlord deposit-installment letter</label>
+            <textarea id="letterBlueprint" readonly></textarea>
+          </div>
+
+          <div class="bp-actions">
+            <button type="button" class="btn" data-copy="letterBlueprint">Copy the letter</button>
+            <button type="button" class="btn ghost" id="copySummaryBtn">Copy blueprint summary</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/housing-affordability-engine.html" target="_blank" rel="noopener">
+          <div class="n-kicker">Before you sign</div>
+          <h3>Housing Affordability Engine</h3>
+          <p>Check whether the new rent itself fits your paycheck long-term — not just the move-in cash. <span class="n-arrow">Run it →</span></p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" target="_blank" rel="noopener">
+          <div class="n-kicker">After the move</div>
+          <h3>Emergency Fund Runway Calculator</h3>
+          <p>See how many months your savings actually cover, and how fast you can rebuild the buffer this move drained. <span class="n-arrow">Run it →</span></p>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+        <h3>A move shouldn't mean a loan</h3>
+        <p>The <span class="cta-link">$1,000 Emergency Fund Starter Pack</span> and the <span class="cta-link">Sinking Funds Tracker</span> on Gumroad turn this one-time bridge into a system — so the next deposit, the next truck, the next surprise is already paid for.</p>
+      </a>
+
+      <!-- FAQ -->
+      <div class="faq">
+        <h2>Straight Answers</h2>
+        <details>
+          <summary>Can a security deposit be paid in installments?</summary>
+          <p>Often, yes — but it's usually the landlord's choice, not a legal right. Some cities and states do require landlords to offer installment plans for deposits and move-in fees, so check your local rules. Everywhere else, a written request works more often than people expect: offer a larger first payment at signing, put the installment dates in writing, and point to your on-time payment history. A landlord's real fear is a tenant who can't pay rent — a structured deposit plan from a tenant with a clean record reads as lower risk, not higher. Use the Tier 1 letter above.</p>
+        </details>
+        <details>
+          <summary>How do I make sure I get my current deposit back?</summary>
+          <p>Document the unit's condition twice: the day you moved in and the day you move out. On move-out day, take timestamped photos of every wall, floor, appliance interior, and meter reading (the Tier 2 audit list), clean to the standard in your lease, and return keys on time with proof. Then know your state's deadline: landlords generally have 14–45 days to refund your deposit or send an itemized list of deductions. Normal wear and tear — scuffs, small nail holes, faded paint — is not a lawful deduction in most states. If the deadline passes in silence, send a written demand; many states award extra damages for deposits withheld in bad faith.</p>
+        </details>
+        <details>
+          <summary>Can I get utility deposits waived?</summary>
+          <p>Frequently. Many electric, gas, and water utilities waive or reduce deposits if you can show a letter of good payment history from your previous utility (typically 12 months with no late payments), enroll in autopay, or qualify for income-based assistance programs like LIHEAP. Some must offer deposit installment plans instead of one lump sum. The key is to ask before the account is opened or transferred — once the deposit is billed, it's much harder to unwind. Call the utility, ask for the deposit waiver or letter-of-credit option, and use the Tier 1 waiver request above as your script.</p>
+        </details>
+      </div>
+
+      <footer>
+        Estimates only — deposit return rates, refund deadlines, and waiver rules vary by state, city, lease, and utility. Confirm your local tenant rules before relying on a deadline. This page runs entirely on your device; nothing you type is sent or stored anywhere.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+
+        var state = {
+          upfrontMode: 'fs',   // fs | fls | custom
+          freq: 'biweekly'     // weekly | biweekly
+        };
+
+        function num(id) {
+          var v = parseFloat($(id).value);
+          return isNaN(v) || v < 0 ? 0 : v;
+        }
+        function money(n) {
+          return '$' + Math.round(n).toLocaleString('en-US');
+        }
+        function fmtDate(d) {
+          return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function setSeg(btnOn, btnOff) {
+          $(btnOn).setAttribute('aria-pressed', 'true');
+          $(btnOff).setAttribute('aria-pressed', 'false');
+        }
+
+        $('upFS').addEventListener('click', function () {
+          state.upfrontMode = 'fs';
+          setSeg('upFS', 'upFLS'); $('upCustom').setAttribute('aria-pressed', 'false');
+          $('customDepositField').hidden = true; recalc();
+        });
+        $('upFLS').addEventListener('click', function () {
+          state.upfrontMode = 'fls';
+          setSeg('upFLS', 'upFS'); $('upCustom').setAttribute('aria-pressed', 'false');
+          $('customDepositField').hidden = true; recalc();
+        });
+        $('upCustom').addEventListener('click', function () {
+          state.upfrontMode = 'custom';
+          setSeg('upCustom', 'upFS'); $('upFLS').setAttribute('aria-pressed', 'false');
+          $('customDepositField').hidden = false; recalc();
+        });
+        $('freqWeekly').addEventListener('click', function () {
+          state.freq = 'weekly'; setSeg('freqWeekly', 'freqBiweekly'); recalc();
+        });
+        $('freqBiweekly').addEventListener('click', function () {
+          state.freq = 'biweekly'; setSeg('freqBiweekly', 'freqWeekly'); recalc();
+        });
+
+        ['rent', 'fees', 'income', 'customDeposit', 'depositHeld', 'weeks'].forEach(function (id) {
+          $(id).addEventListener('input', recalc);
+        });
+        ['condClean', 'condWear', 'condPet'].forEach(function (id) {
+          $(id).addEventListener('change', recalc);
+        });
+
+        document.querySelectorAll('[data-copy]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var ta = $(btn.getAttribute('data-copy'));
+            copyText(ta.value, btn);
+          });
+        });
+        $('copySummaryBtn').addEventListener('click', function () {
+          copyText(lastSummary, $('copySummaryBtn'));
+        });
+
+        function copyText(text, btn) {
+          function done() {
+            var old = btn.textContent;
+            btn.textContent = 'Copied ✓';
+            btn.classList.add('copied');
+            setTimeout(function () { btn.textContent = old; btn.classList.remove('copied'); }, 1800);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var t = document.createElement('textarea');
+            t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+            document.body.appendChild(t); t.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(t); done();
+          }
+        }
+
+        var lastSummary = '';
+
+        function buildLetter(r) {
+          var upfrontDepositPart = r.upfront; // total due at signing incl. first month
+          var half = Math.ceil(r.barrier / 2);
+          var lines = [
+            'Dear Property Manager,',
+            '',
+            'I am writing to request an installment arrangement for the move-in costs on the unit I am applying for, with monthly rent of ' + money(r.rent) + '.',
+            '',
+            'The total due at signing is ' + money(r.upfront) + ' (first month plus deposit), with a further ' + money(r.fees) + ' in moving and utility connection costs — a total capital requirement of ' + money(r.barrier) + ' before move-in day, ' + fmtDate(r.moveDate) + '. My current security deposit of ' + money(r.depositHeld) + ' will not be refunded until after I vacate my current home, which is standard practice — but it means the timing, not my ability to pay, is the obstacle. My monthly net income is ' + money(r.income) + ', and rent at this property is a sustainable share of it.',
+            '',
+            'I propose the following: I pay ' + money(half) + ' at lease signing, and the remaining balance of the deposit portion in equal installments added to my first two rent payments, in full by the start of month three. I am happy to put this schedule in writing as a lease addendum, and to provide pay stubs, my prior landlord reference, and proof of on-time rent payments.',
+            '',
+            'I want this home and I intend to be a long-term, low-maintenance tenant. This arrangement gets you a qualified tenant now, with the deposit made whole on a short, documented schedule. Please let me know if we can discuss.',
+            '',
+            'Thank you for your consideration,',
+            '[Your Full Name]',
+            '[Your Phone Number]',
+            '[Date]'
+          ];
+          return lines.join('\n');
+        }
+
+        function buildWaiver(r) {
+          var lines = [
+            'Hello, I am opening (or transferring) utility service for a move on ' + fmtDate(r.moveDate) + ', with connection and deposit fees currently totaling ' + money(r.fees) + ' across my accounts.',
+            '',
+            'I am requesting a deposit waiver or a deposit installment plan. I can provide a letter of good payment history from my current utility showing 12 months of on-time payments, and I am willing to enroll in autopay. If your company offers a low-income or hardship deposit waiver, please let me know what documentation you need from me.',
+            '',
+            'If a full waiver is not available, I request that the deposit be split across my first three billing cycles. Thank you for reviewing this before the account is activated.',
+            '',
+            '[Your Full Name] · [Account or Service Address] · [Phone Number]'
+          ];
+          return lines.join('\n');
+        }
+
+        function recalc() {
+          var rent = num('rent');
+          var fees = num('fees');
+          var income = num('income');
+          var depositHeld = num('depositHeld');
+          var weeks = num('weeks');
+          var days = Math.round(weeks * 7);
+
+          // --- upfront ---
+          var upfront, upfrontLabel;
+          if (state.upfrontMode === 'fs') { upfront = rent * 2; upfrontLabel = 'first month + security deposit (2× rent)'; }
+          else if (state.upfrontMode === 'fls') { upfront = rent * 3; upfrontLabel = 'first + last month + security deposit (3× rent)'; }
+          else { upfront = rent + num('customDeposit'); upfrontLabel = 'first month + flat deposit of ' + money(num('customDeposit')); }
+
+          var barrier = upfront + fees;
+
+          // --- deposit recovery ---
+          var rate = 100;
+          if (!$('condClean').checked) rate -= 10;
+          if ($('condWear').checked) rate -= 15;
+          if ($('condPet').checked) rate -= 30;
+          rate = Math.max(0, Math.min(100, rate));
+          var recoverable = depositHeld * rate / 100;
+
+          $('returnRate').textContent = rate + '%';
+          $('returnFill').style.width = rate + '%';
+          $('returnNote').textContent = 'Projected recovery: ' + money(recoverable) + ' of your ' + money(depositHeld) + ' deposit' +
+            (rate < 100 ? ' — the condition items above are where landlords deduct.' : ' — protect it with the move-out photo audit in Tier 2.');
+          $('weeksHint').textContent = 'That\'s about ' + days + ' days on the clock.';
+
+          // --- bridge ---
+          var gap = barrier - recoverable;
+          var gapClamped = Math.max(0, gap);
+          var interval = state.freq === 'weekly' ? 7 : 14;
+          var paychecks = Math.max(1, Math.floor(days / interval));
+          var perCheckNet = income > 0 ? (state.freq === 'weekly' ? income * 12 / 52 : income * 12 / 26) : 0;
+          var target = gapClamped > 0 ? gapClamped / paychecks : 0;
+
+          $('statBarrier').textContent = money(barrier);
+          $('statBarrierSub').textContent = 'Upfront: ' + upfrontLabel + ' (' + money(upfront) + ') + ' + money(fees) + ' moving/utility fees';
+          $('statRecover').textContent = money(recoverable);
+          $('statRecoverSub').textContent = money(depositHeld) + ' deposit × ' + rate + '% estimated return';
+          $('statGap').textContent = money(gapClamped);
+          $('statGapSub').textContent = gap <= 0
+            ? 'Your projected refund covers the whole move — surplus of ' + money(-gap) + '.'
+            : 'Cash you must build before move-in day';
+          $('statChecks').textContent = paychecks;
+          $('statChecksSub').textContent = (state.freq === 'weekly' ? 'Weekly' : 'Bi-weekly') + ' paydays between now and move-in (' + fmtDate(moveDate(days)) + ')';
+          $('statTarget').textContent = money(target);
+          $('statTargetSub').textContent = gap <= 0
+            ? 'Nothing to sink — your deposit refund covers the barrier. Redirect this habit into your emergency fund instead.'
+            : 'Set aside ' + money(target) + ' from each of your next ' + paychecks + ' paychecks and the gap is covered before move-in day — no credit card, no personal loan.' +
+              (perCheckNet > 0 ? ' That is ' + Math.round(target / perCheckNet * 100) + '% of a typical ' + (state.freq === 'weekly' ? 'weekly' : 'bi-weekly') + ' check (' + money(perCheckNet) + ').' : '');
+          $('formulaLine').textContent = 'barrier ' + money(barrier) + ' − recovery ' + money(recoverable) + ' = gap ' + money(gapClamped) + ' ÷ ' + paychecks + ' paychecks = ' + money(target) + ' per check';
+
+          // --- liquidity rating ---
+          var rating, band, note;
+          if (income <= 0) {
+            rating = 0; band = 'Add your income'; note = 'The rating needs your monthly net income to judge the burden.';
+          } else if (gap <= 0) {
+            rating = 100; band = 'Fully Covered';
+            note = 'Your projected deposit refund covers the entire move. Zero borrowing needed.';
+          } else {
+            var burdenPerCheck = perCheckNet > 0 ? target / perCheckNet : 1;
+            var timePenalty = 0;
+            if (days < 30) timePenalty = 15 + (30 - days) / 30 * 20;
+            else if (days < 60) timePenalty = (60 - days) / 30 * 15;
+            rating = Math.round(Math.max(0, Math.min(100, 100 - burdenPerCheck * 65 - timePenalty)));
+            if (rating >= 80) { band = 'Fortified'; note = 'The per-paycheck target is a small slice of your check. This move is safely self-funded.'; }
+            else if (rating >= 55) { band = 'Manageable'; note = 'Tight but doable on sinking targets alone — protect the deposit refund and skip new debt.'; }
+            else if (rating >= 30) { band = 'Strained'; note = 'The target eats a large share of each check. The installment and waiver scripts below matter.'; }
+            else { band = 'Critical'; note = 'Saving alone likely won\'t close this gap in time — negotiate the demand down with the Tier 1 protocol.'; }
+          }
+          $('ratingNum').textContent = income <= 0 && gap > 0 ? '–' : rating;
+          $('ratingFill').style.width = (income <= 0 && gap > 0 ? 0 : rating) + '%';
+          $('ratingFill').style.background = rating >= 55 ? 'var(--amber)' : (rating >= 30 ? '#e07b2a' : 'var(--red)');
+          $('ratingNum').style.color = rating >= 30 ? 'var(--amber)' : 'var(--red)';
+          $('ratingBand').textContent = band;
+          $('ratingNote').textContent = note;
+
+          // --- tier selection ---
+          var burden = income > 0 ? barrier / income : 99;
+          var tier;
+          if (gap <= 0) tier = 3;
+          else if (burden > 0.60 && days < 30) tier = 1;
+          else if ((burden >= 0.30 && days <= 60) || (burden > 0.60 && days < 60)) tier = 2;
+          else tier = 3;
+          [1, 2, 3].forEach(function (t) {
+            $('tier' + t).classList.toggle('active', t === tier);
+          });
+          var tierNames = { 1: 'Tier 1 — Deposit Hardship Protocol', 2: 'Tier 2 — Micro-Sinking Bridge', 3: 'Tier 3 — Security Deposit Lock Protocol' };
+          $('bpTierLine').innerHTML = '<strong>Active protocol:</strong> ' + tierNames[tier] +
+            ' · Barrier is ' + (income > 0 ? Math.round(burden * 100) + '% of monthly net income' : '— add income to size the burden') +
+            ' · ' + days + ' days to move-in (' + fmtDate(moveDate(days)) + ').';
+
+          // --- letters & schedule ---
+          var r = {
+            rent: rent, fees: fees, income: income, upfront: upfront,
+            barrier: barrier, depositHeld: depositHeld, moveDate: moveDate(days)
+          };
+          var letter = buildLetter(r);
+          $('letterTier1').value = letter;
+          $('letterBlueprint').value = letter;
+          $('waiverText').value = buildWaiver(r);
+
+          // payday allocation schedule
+          var alloc = $('allocList');
+          alloc.innerHTML = '';
+          var remaining = gapClamped;
+          if (gapClamped <= 0) {
+            var li0 = document.createElement('li');
+            li0.innerHTML = '<span>No sinking target needed — your deposit refund covers the move.</span><span class="a-amt">' + money(0) + '</span>';
+            alloc.appendChild(li0);
+          } else {
+            for (var i = 0; i < paychecks; i++) {
+              var amt = Math.min(target, remaining);
+              remaining -= amt;
+              var d = new Date(); d.setDate(d.getDate() + interval * (i + 1));
+              if (d > r.moveDate) d = r.moveDate;
+              var li = document.createElement('li');
+              li.innerHTML = '<span>Payday ' + (i + 1) + ' — ' + fmtDate(d) + (i === paychecks - 1 ? ' (move-in day)' : '') + '</span><span class="a-amt">set aside ' + money(amt) + '</span>';
+              alloc.appendChild(li);
+            }
+          }
+
+          // surplus note (tier 3)
+          $('surplusNote').innerHTML = '<strong>Route the surplus:</strong> ' +
+            (gap < 0
+              ? 'Your projected refund beats the barrier by ' + money(-gap) + ' — move that ' + money(-gap) + ' straight into a starter emergency fund the day it lands, before it dissolves into spending.'
+              : 'Each paycheck\'s sinking target (' + money(target) + ') becomes your emergency-fund contribution the month after the move — same habit, permanent shield. Aim for the first $1,000 buffer, then one month of expenses.');
+
+          // --- blueprint ---
+          $('bpDate').textContent = 'Generated ' + fmtDate(new Date()) + ' · Move-in day: ' + fmtDate(r.moveDate) + ' · ' + days + ' days out';
+          $('bpBarrier').textContent = money(barrier);
+          $('bpBarrierSub').textContent = money(upfront) + ' at signing (' + upfrontLabel + ') + ' + money(fees) + ' moving/utility';
+          $('bpRecover').textContent = money(recoverable);
+          $('bpRecoverSub').textContent = 'At a ' + rate + '% estimated return on ' + money(depositHeld);
+          $('bpTarget').textContent = money(target);
+          $('bpTargetSub').textContent = gap <= 0 ? 'No sinking target — refund covers the move' : 'From each of ' + paychecks + ' remaining ' + (state.freq === 'weekly' ? 'weekly' : 'bi-weekly') + ' paychecks';
+          $('bpRating').textContent = (income <= 0 && gap > 0 ? '–' : rating) + ' / 100';
+          $('bpRatingSub').textContent = band;
+
+          lastSummary = [
+            'EMERGENCY RELOCATION CASH BLUEPRINT',
+            'Move-in day: ' + fmtDate(r.moveDate) + ' (' + days + ' days out)',
+            'Total capital required: ' + money(barrier),
+            'Deposit recovery projection: ' + money(recoverable) + ' (' + rate + '% of ' + money(depositHeld) + ')',
+            'Deposit net gap: ' + money(gapClamped),
+            'Per-paycheck bridge allocation: ' + money(target) + ' × ' + paychecks + ' ' + (state.freq === 'weekly' ? 'weekly' : 'bi-weekly') + ' paychecks',
+            'Relocation Liquidity Rating: ' + (income <= 0 && gap > 0 ? 'n/a' : rating) + '/100 (' + band + ')',
+            'Active protocol: ' + tierNames[tier]
+          ].join('\n');
+        }
+
+        function moveDate(days) {
+          var d = new Date(); d.setDate(d.getDate() + days); return d;
+        }
+
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

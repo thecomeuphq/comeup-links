@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Work Cost Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0d0b08;
+        --bg-2: #14110c;
+        --panel: #1a1712;
+        --panel-2: #221e16;
+        --line: #3a3325;
+        --line-soft: #2b2619;
+        --ink: #f5eedd;
+        --ink-2: #cfc3a6;
+        --muted: #9c8f74;
+        --amber: #f5a524;
+        --orange: #ff6b1a;
+        --amber-ink: #1a1206;
+        --good: #7dc95e;
+        --bad: #ff5d47;
+        --receipt-bg: #f7f1df;
+        --receipt-ink: #241c0e;
+        --receipt-muted: #6d5f42;
+        --shadow: 0 18px 40px rgba(0,0,0,.5);
+        color-scheme: dark;
+      }
+      html { box-sizing: border-box; }
+      *, *::before, *::after { box-sizing: inherit; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .hazard {
+        height: 10px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #12100b 14px 28px);
+      }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 18px 72px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .hero .tag {
+        display: inline-block;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+        color: var(--amber);
+        border: 1px solid var(--line);
+        padding: 5px 10px; border-radius: 4px;
+        background: var(--bg-2);
+      }
+      h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(44px, 9vw, 84px);
+        line-height: .95;
+        letter-spacing: .01em;
+        margin: 16px 0 10px;
+        text-transform: uppercase;
+      }
+      h1 .amt { color: var(--amber); }
+      .hero p.lede {
+        font-size: clamp(18px, 4.4vw, 22px);
+        color: var(--ink-2);
+        max-width: 640px;
+        margin: 0 0 6px;
+      }
+      .hero p.lede strong { color: var(--ink); }
+
+      /* ---------- Layout ---------- */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 22px;
+        margin-top: 26px;
+      }
+      @media (min-width: 920px) {
+        .grid { grid-template-columns: 5fr 6fr; align-items: start; }
+        .sticky { position: sticky; top: 18px; }
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        border-radius: 10px;
+        padding: 22px 20px;
+        box-shadow: var(--shadow);
+      }
+      .card + .card { margin-top: 22px; }
+      .step-head {
+        display: flex; align-items: baseline; gap: 12px;
+        border-bottom: 2px solid var(--line);
+        padding-bottom: 12px; margin-bottom: 18px;
+      }
+      .step-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700; font-size: 13px;
+        color: var(--amber-ink);
+        background: var(--amber);
+        border-radius: 4px;
+        padding: 3px 8px;
+        white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 28px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .02em;
+        margin: 0; line-height: 1;
+      }
+      .step-head p { margin: 2px 0 0; color: var(--muted); font-size: 14.5px; }
+
+      .field { margin-bottom: 16px; }
+      .field:last-child { margin-bottom: 0; }
+      label.lbl {
+        display: flex; justify-content: space-between; align-items: baseline;
+        font-weight: 600; font-size: 15px; margin-bottom: 6px; gap: 10px;
+      }
+      label.lbl .per { color: var(--muted); font-weight: 500; font-size: 13px; white-space: nowrap; }
+      .money {
+        display: flex; align-items: stretch;
+        border: 1.5px solid var(--line);
+        border-radius: 8px;
+        background: var(--bg-2);
+        overflow: hidden;
+      }
+      .money:focus-within { border-color: var(--amber); }
+      .money .cur {
+        display: flex; align-items: center; padding: 0 12px;
+        font-family: "IBM Plex Mono", monospace; font-weight: 700;
+        color: var(--amber); background: var(--panel-2);
+        border-right: 1.5px solid var(--line);
+      }
+      .money input {
+        flex: 1; min-width: 0;
+        border: 0; background: transparent; color: var(--ink);
+        font-family: "IBM Plex Mono", monospace; font-size: 19px; font-weight: 600;
+        padding: 11px 12px; outline: none;
+      }
+      select.sel {
+        width: 100%;
+        border: 1.5px solid var(--line); border-radius: 8px;
+        background: var(--bg-2); color: var(--ink);
+        font-family: "Barlow", sans-serif; font-size: 16.5px; font-weight: 600;
+        padding: 11px 12px; outline: none;
+      }
+      select.sel:focus { border-color: var(--amber); }
+      .hint { font-size: 13.5px; color: var(--muted); margin-top: 5px; }
+      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 420px) { .row2 { grid-template-columns: 1fr; } }
+
+      .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .seg button {
+        font-family: "Barlow", sans-serif; font-weight: 700; font-size: 15.5px;
+        padding: 11px 8px; border-radius: 8px; cursor: pointer;
+        border: 1.5px solid var(--line); background: var(--bg-2); color: var(--ink-2);
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--amber); border-color: var(--amber); color: var(--amber-ink);
+      }
+
+      /* ---------- Receipt / audit ---------- */
+      .receipt {
+        background: var(--receipt-bg); color: var(--receipt-ink);
+        border-radius: 6px;
+        padding: 22px 20px 18px;
+        font-family: "IBM Plex Mono", monospace;
+        position: relative;
+        box-shadow: var(--shadow);
+      }
+      .receipt::before, .receipt::after {
+        content: ""; position: absolute; left: 0; right: 0; height: 8px;
+        background:
+          linear-gradient(45deg, transparent 33.333%, var(--receipt-bg) 33.333%, var(--receipt-bg) 66.667%, transparent 66.667%),
+          linear-gradient(-45deg, transparent 33.333%, var(--receipt-bg) 33.333%, var(--receipt-bg) 66.667%, transparent 66.667%);
+        background-size: 16px 16px;
+      }
+      .receipt::before { top: -7px; transform: rotate(180deg); }
+      .receipt::after { bottom: -7px; }
+      .receipt h3 {
+        margin: 0; text-align: center;
+        font-size: 15px; letter-spacing: .22em; text-transform: uppercase; font-weight: 700;
+      }
+      .receipt .rsub { text-align: center; font-size: 12px; color: var(--receipt-muted); margin: 4px 0 14px; letter-spacing: .06em; }
+      .rrow { display: flex; align-items: baseline; gap: 8px; font-size: 14.5px; padding: 5px 0; }
+      .rrow .dots { flex: 1; border-bottom: 2px dotted #b7a87f; transform: translateY(-4px); }
+      .rrow .val { font-weight: 700; white-space: nowrap; }
+      .rrow .sub { display: block; font-size: 11.5px; color: var(--receipt-muted); }
+      .rtotal {
+        border-top: 2.5px solid var(--receipt-ink);
+        margin-top: 10px; padding-top: 12px;
+        display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+      }
+      .rtotal .t { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+      .rtotal .v { font-size: clamp(26px, 6vw, 34px); font-weight: 700; color: #b3540a; }
+      .rannual { text-align: right; font-size: 12.5px; color: var(--receipt-muted); margin-top: 2px; }
+
+      .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+      .stat {
+        background: var(--panel-2); border: 1px solid var(--line-soft);
+        border-radius: 8px; padding: 14px 14px 12px;
+      }
+      .stat .k { font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+      .stat .v { font-family: "IBM Plex Mono", monospace; font-size: clamp(24px, 5.5vw, 32px); font-weight: 700; margin-top: 2px; }
+      .stat .v.amber { color: var(--amber); }
+      .stat .v.bad { color: var(--bad); }
+      .stat .d { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+
+      .gauge { margin-top: 20px; }
+      .gauge .g-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+      .gauge .g-title { font-weight: 700; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; }
+      .gauge .g-val { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 30px; color: var(--amber); }
+      .gauge .g-val small { font-size: 14px; color: var(--muted); }
+      .track {
+        height: 16px; border-radius: 4px; margin-top: 8px;
+        background: var(--bg-2); border: 1px solid var(--line);
+        position: relative; overflow: hidden;
+      }
+      .track .fill {
+        position: absolute; inset: 0 auto 0 0; width: 0%;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 10px, var(--orange) 10px 20px);
+        transition: width .45s ease;
+      }
+      .gauge .g-scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 5px; font-family: "IBM Plex Mono", monospace; }
+      .gauge .g-note { font-size: 14px; color: var(--ink-2); margin-top: 8px; }
+
+      .notes { margin-top: 20px; border-top: 1px dashed var(--line); padding-top: 16px; }
+      .notes h4 { margin: 0 0 8px; font-size: 14px; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); }
+      .notes ul { margin: 0; padding-left: 18px; }
+      .notes li { margin-bottom: 7px; font-size: 15px; color: var(--ink-2); }
+      .notes li strong { color: var(--ink); }
+      .gap-banner {
+        margin-top: 16px; border: 1.5px solid var(--orange); border-radius: 8px;
+        padding: 13px 15px; background: var(--bg-2);
+        font-size: 15px;
+      }
+      .gap-banner strong { color: var(--orange); font-family: "IBM Plex Mono", monospace; }
+
+      /* ---------- Tiers ---------- */
+      .tiers { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 22px; }
+      @media (min-width: 920px) { .tiers { grid-template-columns: repeat(3, 1fr); } }
+      .tier {
+        background: var(--panel); border: 1.5px solid var(--line-soft);
+        border-radius: 10px; padding: 20px 18px; opacity: .62;
+      }
+      .tier.active { opacity: 1; border-color: var(--amber); box-shadow: var(--shadow); }
+      .tier .t-tag {
+        display: inline-block; font-family: "IBM Plex Mono", monospace;
+        font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+        padding: 4px 8px; border-radius: 4px; background: var(--panel-2); color: var(--muted);
+        border: 1px solid var(--line-soft);
+      }
+      .tier.active .t-tag { background: var(--amber); color: var(--amber-ink); border-color: var(--amber); }
+      .tier h3 { font-family: "Barlow Condensed", sans-serif; font-size: 25px; margin: 10px 0 4px; text-transform: uppercase; line-height: 1.05; }
+      .tier .t-range { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--amber); font-weight: 700; }
+      .tier p { font-size: 15px; color: var(--ink-2); margin: 10px 0; }
+      .tier ul { margin: 8px 0 0; padding-left: 18px; }
+      .tier li { font-size: 14.5px; color: var(--ink-2); margin-bottom: 6px; }
+      .tier li strong { color: var(--ink); }
+      .tier .yours {
+        display: none; margin-top: 12px; font-size: 13px; font-weight: 700;
+        letter-spacing: .08em; text-transform: uppercase; color: var(--amber);
+      }
+      .tier.active .yours { display: block; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 26px;
+        border: 2px solid var(--amber);
+        border-radius: 12px;
+        background: linear-gradient(180deg, var(--panel-2), var(--panel));
+        padding: 24px 20px;
+        box-shadow: var(--shadow);
+      }
+      .blueprint .b-tag {
+        font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .16em;
+        text-transform: uppercase; color: var(--amber); font-weight: 700;
+      }
+      .blueprint h2 {
+        font-family: "Barlow Condensed", sans-serif; font-size: clamp(30px, 6vw, 40px);
+        margin: 6px 0 4px; text-transform: uppercase; line-height: 1;
+      }
+      .blueprint .b-sub { color: var(--ink-2); font-size: 15.5px; margin: 0 0 18px; }
+      .b-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 480px) { .b-grid { grid-template-columns: 1fr; } }
+      .b-cell { background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 8px; padding: 14px; }
+      .b-cell .k { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+      .b-cell .v { font-family: "IBM Plex Mono", monospace; font-size: 27px; font-weight: 700; color: var(--amber); margin-top: 2px; }
+      .b-cell .v.plain { color: var(--ink); }
+      .b-cell .d { font-size: 13px; color: var(--ink-2); }
+      .script-box { margin-top: 18px; }
+      .script-box h3 { font-size: 14px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 8px; color: var(--amber); }
+      .script-text {
+        background: var(--bg-2); border: 1px dashed var(--line); border-radius: 8px;
+        padding: 15px 16px; font-size: 15.5px; color: var(--ink); white-space: pre-wrap;
+      }
+      .copy-btn {
+        margin-top: 12px; width: 100%;
+        font-family: "Barlow", sans-serif; font-weight: 700; font-size: 16.5px;
+        background: var(--amber); color: var(--amber-ink);
+        border: 0; border-radius: 8px; padding: 14px 16px; cursor: pointer;
+      }
+      .copy-btn:active { transform: translateY(1px); }
+      .copy-btn.done { background: var(--good); color: #0e1a08; }
+      .b-foot { margin-top: 14px; font-size: 13px; color: var(--muted); text-align: center; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-family: "Barlow Condensed", sans-serif; font-size: 30px; font-weight: 700;
+        text-transform: uppercase; margin: 40px 0 14px;
+      }
+      .next-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+      @media (min-width: 720px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1.5px solid var(--line-soft);
+        border-radius: 10px; padding: 20px;
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card .n-tag { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); font-weight: 700; }
+      a.next-card h3 { font-family: "Barlow Condensed", sans-serif; font-size: 26px; margin: 8px 0 4px; text-transform: uppercase; }
+      a.next-card p { margin: 0; color: var(--ink-2); font-size: 15px; }
+      a.next-card .arrow { color: var(--amber); font-weight: 700; }
+
+      .cta {
+        margin-top: 16px; border-radius: 10px; overflow: hidden;
+        border: 1.5px solid var(--line);
+      }
+      .cta a {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel-2); padding: 22px 20px;
+      }
+      .cta .c-tag { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--orange); font-weight: 700; }
+      .cta h3 { font-family: "Barlow Condensed", sans-serif; font-size: clamp(24px, 5.5vw, 32px); margin: 8px 0 6px; text-transform: uppercase; line-height: 1.05; }
+      .cta p { margin: 0; color: var(--ink-2); font-size: 15.5px; max-width: 640px; }
+      .cta .go { display: inline-block; margin-top: 12px; font-weight: 700; color: var(--amber); }
+
+      .faq { margin-top: 8px; }
+      details.faq-item {
+        background: var(--panel); border: 1px solid var(--line-soft);
+        border-radius: 10px; padding: 4px 20px; margin-bottom: 12px;
+      }
+      details.faq-item summary {
+        cursor: pointer; font-weight: 700; font-size: 17px;
+        padding: 14px 0; list-style: none;
+        display: flex; justify-content: space-between; gap: 12px; align-items: center;
+      }
+      details.faq-item summary::-webkit-details-marker { display: none; }
+      details.faq-item summary .plus { color: var(--amber); font-family: "IBM Plex Mono", monospace; font-size: 20px; }
+      details.faq-item .faq-body { padding: 0 0 16px; color: var(--ink-2); font-size: 15.5px; }
+      details.faq-item .faq-body strong { color: var(--ink); }
+      details.faq-item .faq-body ul { margin: 8px 0; padding-left: 18px; }
+
+      footer { margin-top: 44px; border-top: 1px solid var(--line-soft); padding-top: 16px; color: var(--muted); font-size: 13.5px; }
+      @media (prefers-reduced-motion: reduce) {
+        .track .fill { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <header class="hero">
+        <span class="tag">Work Cost Shield · Job Friction Audit</span>
+        <h1>It costs you <span class="amt">$300/mo</span> just to show up.</h1>
+        <p class="lede">Gas, parking, gear, laundry, break-room food — the job quietly bills you before you earn a dime. <strong>Here's the receipt</strong>, and the plan to claw it back.</p>
+      </header>
+
+      <div class="grid">
+        <div>
+          <!-- STEP 1 -->
+          <section class="card" aria-labelledby="s1">
+            <div class="step-head">
+              <span class="step-num">STEP 1</span>
+              <div>
+                <h2 id="s1">Commute &amp; Routine</h2>
+                <p>What it costs to physically get to the job and be there.</p>
+              </div>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label class="lbl" for="gasWeek">Gas / tolls <span class="per">per week</span></label>
+                <div class="money"><span class="cur">$</span><input id="gasWeek" type="number" inputmode="decimal" min="0" step="1" value="38" /></div>
+              </div>
+              <div class="field">
+                <label class="lbl" for="parkingDay">Parking / transit <span class="per">per workday</span></label>
+                <div class="money"><span class="cur">$</span><input id="parkingDay" type="number" inputmode="decimal" min="0" step="0.5" value="7" /></div>
+              </div>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label class="lbl" for="daysWeek">Days on site <span class="per">per week</span></label>
+                <div class="money"><span class="cur">#</span><input id="daysWeek" type="number" inputmode="numeric" min="0" max="7" step="1" value="5" /></div>
+              </div>
+              <div class="field">
+                <label class="lbl" for="netPay">Take-home pay <span class="per">per month</span></label>
+                <div class="money"><span class="cur">$</span><input id="netPay" type="number" inputmode="decimal" min="0" step="10" value="2900" /></div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="lbl" for="jobType">Job type</label>
+              <select class="sel" id="jobType">
+                <option value="warehouse" selected>Warehouse / Logistics</option>
+                <option value="healthcare">Healthcare / Scrubs</option>
+                <option value="trades">Trades / Heavy Gear</option>
+                <option value="service">Service / Hospitality</option>
+              </select>
+              <p class="hint" id="jobHint"></p>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label class="lbl" for="payFreq">Pay schedule</label>
+                <select class="sel" id="payFreq">
+                  <option value="52">Weekly</option>
+                  <option value="26" selected>Every 2 weeks</option>
+                  <option value="24">Twice a month</option>
+                  <option value="12">Monthly</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="lbl">Employment type</label>
+                <div class="seg" role="group" aria-label="Employment type">
+                  <button type="button" id="empW2" aria-pressed="true">W-2 Employee</button>
+                  <button type="button" id="emp1099" aria-pressed="false">1099 Contractor</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 2 -->
+          <section class="card" aria-labelledby="s2">
+            <div class="step-head">
+              <span class="step-num">STEP 2</span>
+              <div>
+                <h2 id="s2">Stealth Shift Taxes</h2>
+                <p>The upkeep nobody lists in the job posting.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="lbl" for="laundryMonth">Laundry / gear care <span class="per">per month</span></label>
+              <div class="money"><span class="cur">$</span><input id="laundryMonth" type="number" inputmode="decimal" min="0" step="1" value="35" /></div>
+              <p class="hint">Commercial laundry for uniforms and gear, boot cleaning, PPE you replace yourself.</p>
+            </div>
+
+            <div class="field">
+              <label class="lbl" for="uniformMonth">Uniforms &amp; boots <span class="per">per month</span></label>
+              <div class="money"><span class="cur">$</span><input id="uniformMonth" type="number" inputmode="decimal" min="0" step="1" value="30" /></div>
+              <p class="hint">Spread big purchases out: a $180 pair of boots worn 9 months is $20/month.</p>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label class="lbl" for="foodWeek">Break food &amp; energy drinks <span class="per">per week</span></label>
+                <div class="money"><span class="cur">$</span><input id="foodWeek" type="number" inputmode="decimal" min="0" step="1" value="45" /></div>
+              </div>
+              <div class="field">
+                <label class="lbl" for="reimbMonth">Employer already pays you back <span class="per">per month</span></label>
+                <div class="money"><span class="cur">$</span><input id="reimbMonth" type="number" inputmode="decimal" min="0" step="1" value="0" /></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="sticky">
+          <section class="card" aria-labelledby="s3">
+            <div class="step-head">
+              <span class="step-num">STEP 3</span>
+              <div>
+                <h2 id="s3">The Audit</h2>
+                <p>Your Job Friction Drain, itemized.</p>
+              </div>
+            </div>
+
+            <div class="receipt" aria-live="polite">
+              <h3>Cost of Showing Up</h3>
+              <p class="rsub">Monthly statement · keep for your records</p>
+              <div class="rrow"><span>Fuel &amp; tolls<span class="sub" id="subGas"></span></span><span class="dots"></span><span class="val" id="rGas">$0</span></div>
+              <div class="rrow"><span>Parking / transit<span class="sub" id="subPark"></span></span><span class="dots"></span><span class="val" id="rPark">$0</span></div>
+              <div class="rrow"><span>Laundry &amp; gear care</span><span class="dots"></span><span class="val" id="rLaundry">$0</span></div>
+              <div class="rrow"><span>Uniforms &amp; boots</span><span class="dots"></span><span class="val" id="rUniform">$0</span></div>
+              <div class="rrow"><span>Break food &amp; energy<span class="sub" id="subFood"></span></span><span class="dots"></span><span class="val" id="rFood">$0</span></div>
+              <div class="rtotal"><span class="t">Job Friction Drain</span><span class="v" id="rTotal">$0/mo</span></div>
+              <p class="rannual" id="rAnnual"></p>
+            </div>
+
+            <div class="stats">
+              <div class="stat">
+                <div class="k">Net Pay Erosion</div>
+                <div class="v bad" id="erosionVal">0%</div>
+                <div class="d">of your take-home pay is spent just to stay employed</div>
+              </div>
+              <div class="stat">
+                <div class="k">Per-Paycheck Upkeep</div>
+                <div class="v amber" id="perCheckVal">$0</div>
+                <div class="d" id="perCheckNote">set aside every paycheck so work pays for work</div>
+              </div>
+            </div>
+
+            <div class="gauge" aria-label="Work-Cost Friction Index">
+              <div class="g-head">
+                <span class="g-title">Work-Cost Friction Index</span>
+                <span class="g-val"><span id="indexVal">0</span><small> / 100</small></span>
+              </div>
+              <div class="track"><div class="fill" id="indexFill"></div></div>
+              <div class="g-scale"><span>0 · pay evaporates</span><span>100 · pay converts clean</span></div>
+              <p class="g-note" id="indexNote"></p>
+            </div>
+
+            <div class="gap-banner" id="gapBanner"></div>
+
+            <div class="notes">
+              <h4>Reimbursement &amp; tax notes</h4>
+              <ul id="taxNotes"></ul>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <h2 class="section-title">Step 4 · Your Execution Strategy</h2>
+      <div class="tiers">
+        <article class="tier" id="tier1">
+          <span class="t-tag">Tier 1 · High Friction</span>
+          <h3>Work-Cost Freeze Protocol</h3>
+          <div class="t-range">Erosion over 15% of net pay</div>
+          <p>Your job is charging you rent. Freeze the bleed this week — don't optimize, amputate.</p>
+          <ul>
+            <li><strong>Batch meal prep:</strong> two prep sessions a week replace break-room spending — target under $4 per shift meal instead of $12+.</li>
+            <li><strong>Parking stipend ask:</strong> use the script in your Blueprint below — parking is the easiest cost for an employer to absorb.</li>
+            <li><strong>Uniform wash optimization:</strong> one bulk wash cycle for all work gear, cold water, line-dry boots rotation — cuts laundry spend without cutting shifts.</li>
+            <li><strong>Carpool / route audit:</strong> one shared ride day a week is a full tank back in your pocket every month.</li>
+          </ul>
+          <div class="yours">→ This is your tier</div>
+        </article>
+
+        <article class="tier" id="tier2">
+          <span class="t-tag">Tier 2 · Moderate</span>
+          <h3>Payday Work-Sinking Reserve</h3>
+          <div class="t-range">Erosion 8–15% of net pay</div>
+          <p>The costs are normal — the problem is they ambush you mid-month. Pre-fund them on payday and they stop feeling like emergencies.</p>
+          <ul>
+            <li><strong>Automate the reserve:</strong> move <strong id="tier2Amt">$20–$40</strong> per paycheck into a separate "work upkeep" stash the day pay lands.</li>
+            <li><strong>Boots &amp; gear fund:</strong> the reserve absorbs the $180 boot replacement instead of a credit card.</li>
+            <li><strong>Cap the break run:</strong> one convenience stop per week, hard limit — the rest comes from the prep container.</li>
+          </ul>
+          <div class="yours">→ This is your tier</div>
+        </article>
+
+        <article class="tier" id="tier3">
+          <span class="t-tag">Tier 3 · Optimized</span>
+          <h3>Employer Stipend Maximizer</h3>
+          <div class="t-range">Erosion under 8% of net pay</div>
+          <p>Your friction is lean. Now squeeze the employer's side of the ledger and redirect every saved dollar.</p>
+          <ul>
+            <li><strong>Claim every benefit:</strong> commuter pre-tax accounts, uniform allowances, boot vouchers, mileage — ask HR for the full list in writing.</li>
+            <li><strong>Redirect the savings:</strong> route your friction savings — <strong id="tier3Amt">$0/mo</strong> — straight to debt payoff on payday, before it leaks into spending.</li>
+            <li><strong>Re-audit quarterly:</strong> gas, parking rates, and shift patterns change. Re-run this receipt every 3 months.</li>
+          </ul>
+          <div class="yours">→ This is your tier</div>
+        </article>
+      </div>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bp">
+        <span class="b-tag">Your Output · Screenshot-Ready</span>
+        <h2 id="bp">Daily Work-Cost Defense Blueprint</h2>
+        <p class="b-sub">Your numbers, your tier, your ask — in one card. Screenshot it, then send the script.</p>
+        <div class="b-grid">
+          <div class="b-cell">
+            <div class="k">Monthly Work Upkeep</div>
+            <div class="v" id="bTotal">$0</div>
+            <div class="d" id="bAnnual">per year just to stay employed</div>
+          </div>
+          <div class="b-cell">
+            <div class="k">Per-Paycheck Allowance</div>
+            <div class="v" id="bPerCheck">$0</div>
+            <div class="d" id="bFreqNote">moved to the work stash every payday</div>
+          </div>
+          <div class="b-cell">
+            <div class="k">Pay Erosion</div>
+            <div class="v plain" id="bErosion">0%</div>
+            <div class="d" id="bTier">of take-home pay goes to job friction</div>
+          </div>
+          <div class="b-cell">
+            <div class="k">Friction Index</div>
+            <div class="v plain" id="bIndex">0 / 100</div>
+            <div class="d">higher = more of your pay survives the job</div>
+          </div>
+        </div>
+
+        <div class="script-box">
+          <h3>Employer reimbursement request — copy &amp; send</h3>
+          <div class="script-text" id="scriptText"></div>
+          <button class="copy-btn" id="copyBtn" type="button">Copy the script</button>
+        </div>
+        <p class="b-foot">Work Cost Shield · numbers update live as you type — no account, nothing saved.</p>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <h2 class="section-title">Keep the shield up</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" target="_blank" rel="noopener">
+          <span class="n-tag">Next tool</span>
+          <h3>Paycheck Budget Splitter</h3>
+          <p>Now split what's left of your paycheck on purpose — needs, wants, and debt payoff, before the month decides for you. <span class="arrow">Open →</span></p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/subscription-drain-audit.html" target="_blank" rel="noopener">
+          <span class="n-tag">Next tool</span>
+          <h3>Subscription Drain Audit</h3>
+          <p>Work costs are only half the leak. Hunt down the subscriptions quietly billing you every month and cancel the dead weight. <span class="arrow">Open →</span></p>
+        </a>
+      </div>
+
+      <div class="cta">
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+          <span class="c-tag">Track it on paper</span>
+          <h3>Log every work dollar</h3>
+          <p>The <strong>Overtime &amp; Shift Worker Cash Flow Log</strong> and the <strong>Zero-Based Budgeting Binder</strong> — printable trackers built for shift pay, on Gumroad.</p>
+          <span class="go">Get the trackers →</span>
+        </a>
+      </div>
+
+      <!-- FAQ -->
+      <h2 class="section-title">Straight answers</h2>
+      <div class="faq">
+        <details class="faq-item">
+          <summary>What's actually tax deductible? <span class="plus">+</span></summary>
+          <div class="faq-body">
+            <p><strong>W-2 employees:</strong> since the 2018 tax overhaul, unreimbursed employee expenses — uniforms, mileage, parking, tools — are <strong>not deductible on your federal return</strong> (that deduction is suspended through 2025). A handful of states still allow a state-level deduction, so keep receipts either way.</p>
+            <p><strong>1099 contractors:</strong> you can generally deduct ordinary and necessary business costs on Schedule C — work-only uniforms and protective gear, tools, job-site travel mileage (not regular commuting from home), and commercial laundry for work clothes. Track it monthly; at tax time those deductions come straight off the income you owe tax on. This is general information, not tax advice — a quick consult settles your specific case.</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary>How do I actually ask for a parking stipend? <span class="plus">+</span></summary>
+          <div class="faq-body">
+            <p>Ask with numbers, not feelings. Run this audit, then:</p>
+            <ul>
+              <li><strong>Pick the moment:</strong> a schedule change, a good review, or right after the lot raises its rates.</li>
+              <li><strong>Lead with the math:</strong> "Parking runs me $X a month — that's Y% of my take-home just to be on site."</li>
+              <li><strong>Offer the cheap version:</strong> many employers can add you to a pre-tax commuter benefit or a group lot rate — it costs them little or nothing.</li>
+              <li><strong>Use the script</strong> in your Blueprint above — copy it, drop in your manager's name, send it.</li>
+            </ul>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary>Does meal prep really beat the break-room run? <span class="plus">+</span></summary>
+          <div class="faq-body">
+            <p>Run the math on a typical shift week: a convenience-store stop — sandwich, energy drink, snack — lands around <strong>$11–$14 per shift</strong>. Five shifts is $55–$70 a week, roughly <strong>$260 a month</strong>. A batch-prepped equivalent (rice, protein, frozen veg, bulk coffee or energy drinks bought by the case) runs about <strong>$3.50–$4.50 per shift</strong> — near $90 a month. That's a <strong>$150–$170 monthly difference</strong>, or around $2,000 a year, for two 45-minute prep sessions a week. You don't have to go full prep — swapping even three of five shifts recovers most of it.</p>
+          </div>
+        </details>
+      </div>
+
+      <footer>
+        Work Cost Shield · Estimates use 52 weeks ÷ 12 months for weekly-to-monthly conversions. Employer benefits, stipends, and deductions vary — confirm yours with HR or a tax professional.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var WEEKS = 52 / 12;
+        var $ = function (id) { return document.getElementById(id); };
+        var empType = "w2";
+
+        var JOB = {
+          warehouse: {
+            hint: "Warehouse math: steel-toe boots wear out fast on concrete — most operators replace them every 8–12 months.",
+            note: "Warehouse / logistics: if your employer requires specific PPE or boots and doesn't supply them, ask about the safety-shoe program before you buy — many DCs run a voucher or payroll-deduction boot truck program that beats retail."
+          },
+          healthcare: {
+            hint: "Healthcare math: scrubs laundered to facility standard add up — home washing work-only scrubs is the cheapest legal route.",
+            note: "Healthcare: scrubs that are only worn at work are the classic uniform cost. If your facility requires a specific color or embroidered set, ask whether a uniform allowance or on-site laundry service exists — many hospitals quietly offer both."
+          },
+          trades: {
+            hint: "Trades math: tool wear and FR/heavy gear replacement is the silent line item — budget it monthly, not at breakdown.",
+            note: "Trades: heavy gear and tool replacement is your biggest stealth cost. Ask about tool allowances and gear stipends at hiring or review time — many contractors build them in but never advertise them."
+          },
+          service: {
+            hint: "Service math: non-slip shoes and black-on-black uniforms churn fast — buy the shoe once, cheap twice.",
+            note: "Service / hospitality: non-slip shoes and required uniform pieces are rarely reimbursed, but many chains offer discounted gear through their uniform portal — check before paying full retail."
+          }
+        };
+
+        function num(id) {
+          var v = parseFloat($(id).value);
+          return isNaN(v) || v < 0 ? 0 : v;
+        }
+        function money(v, dec) {
+          return "$" + v.toLocaleString("en-US", { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
+        }
+
+        function setEmp(type) {
+          empType = type;
+          $("empW2").setAttribute("aria-pressed", type === "w2" ? "true" : "false");
+          $("emp1099").setAttribute("aria-pressed", type === "1099" ? "true" : "false");
+          calc();
+        }
+        $("empW2").addEventListener("click", function () { setEmp("w2"); });
+        $("emp1099").addEventListener("click", function () { setEmp("1099"); });
+
+        function calc() {
+          var gasW = num("gasWeek"), parkD = num("parkingDay"), days = Math.min(7, num("daysWeek"));
+          var net = num("netPay"), job = $("jobType").value;
+          var laundry = num("laundryMonth"), uniform = num("uniformMonth");
+          var foodW = num("foodWeek"), reimb = num("reimbMonth");
+          var checksPerYear = parseInt($("payFreq").value, 10) || 26;
+
+          // Round each line item first so the printed receipt sums exactly to the total.
+          var gasM = Math.round(gasW * WEEKS);
+          var parkM = Math.round(parkD * days * WEEKS);
+          var foodM = Math.round(foodW * WEEKS);
+          laundry = Math.round(laundry);
+          uniform = Math.round(uniform);
+          var total = gasM + parkM + laundry + uniform + foodM;
+          var annual = total * 12;
+          var erosion = net > 0 ? (total / net) * 100 : 0;
+          var perCheck = checksPerYear > 0 ? annual / checksPerYear : 0;
+          var gap = Math.max(0, total - reimb);
+          var index = Math.max(0, Math.min(100, Math.round(100 - erosion * 2)));
+          var tier = erosion > 15 ? 1 : (erosion >= 8 ? 2 : 3);
+
+          // Receipt
+          $("subGas").textContent = money(gasW) + "/wk";
+          $("subPark").textContent = money(parkD, parkD % 1 ? 2 : 0) + "/day × " + days + " days";
+          $("subFood").textContent = money(foodW) + "/wk";
+          $("rGas").textContent = money(gasM);
+          $("rPark").textContent = money(parkM);
+          $("rLaundry").textContent = money(laundry);
+          $("rUniform").textContent = money(uniform);
+          $("rFood").textContent = money(foodM);
+          $("rTotal").textContent = money(total) + "/mo";
+          $("rAnnual").textContent = "= " + money(annual) + " every year, before you've spent a dime on living";
+
+          // Stats
+          $("erosionVal").textContent = erosion.toFixed(1) + "%";
+          $("perCheckVal").textContent = money(perCheck);
+          var freqLabel = { 52: "every weekly paycheck", 26: "every bi-weekly paycheck", 24: "every paycheck (twice monthly)", 12: "every monthly paycheck" }[checksPerYear];
+          $("perCheckNote").textContent = "set aside from " + freqLabel + " so work pays for work";
+
+          // Index
+          $("indexVal").textContent = index;
+          $("indexFill").style.width = index + "%";
+          $("indexNote").textContent =
+            tier === 1 ? "High friction: over 15 cents of every take-home dollar is being eaten by the job itself. Freeze protocol applies." :
+            tier === 2 ? "Moderate friction: the costs are survivable but they're ambushing you mid-month. A payday sinking reserve fixes that." :
+            "Low friction: your pay converts to take-home wealth efficiently. Protect it — claim every stipend and re-audit quarterly.";
+
+          // Gap banner
+          if (reimb > 0) {
+            $("gapBanner").innerHTML = "Your employer covers <strong>" + money(reimb) + "/mo</strong> — leaving a reimbursement gap of <strong>" + money(gap) + "/mo</strong> (" + money(gap * 12) + "/yr) coming straight out of your pocket.";
+          } else {
+            $("gapBanner").innerHTML = "Reimbursement gap: <strong>" + money(gap) + "/mo</strong> — your employer currently covers $0 of what it costs you to work there. That's the number the script below is built on.";
+          }
+
+          // Tax / reimbursement notes
+          var notes = [];
+          notes.push("<strong>" + JOB[job].note.split(":")[0] + ":</strong>" + JOB[job].note.slice(JOB[job].note.indexOf(":") + 1));
+          if (empType === "w2") {
+            notes.push("<strong>W-2 reality check:</strong> unreimbursed employee expenses aren't deductible on your federal return under current rules — so the fix is reimbursement, not tax season. A stipend, uniform allowance, or pre-tax commuter benefit is worth real money; a deduction you can't take is worth $0.");
+            notes.push("<strong>Ask anyway:</strong> parking and transit can often run through a pre-tax commuter benefit (Section 132), which saves you income and payroll tax on money you're already spending.");
+          } else {
+            notes.push("<strong>1099 advantage:</strong> as a contractor, work-only uniforms, protective gear, tools, and commercial laundry are generally deductible on Schedule C — every documented work dollar lowers your taxable income. Keep this receipt and your monthly totals.");
+            notes.push("<strong>Track the commute honestly:</strong> regular home-to-worksite commuting usually isn't deductible, but travel between job sites in the same day often is. Log miles daily, not from memory in April.");
+          }
+          if (parkM > 0) {
+            notes.push("<strong>Biggest single lever:</strong> parking is " + money(parkM) + "/mo of your drain — it's also the cost employers absorb most easily. Lead with it.");
+          }
+          if (foodM > laundry + uniform && foodM > 0) {
+            notes.push("<strong>Your biggest leak is break food:</strong> " + money(foodM) + "/mo. Batch prep at ~$4/shift recovers most of it — see the meal-prep math in the FAQ.");
+          }
+          $("taxNotes").innerHTML = notes.map(function (n) { return "<li>" + n + "</li>"; }).join("");
+          $("jobHint").textContent = JOB[job].hint;
+
+          // Tiers
+          [1, 2, 3].forEach(function (t) {
+            $("tier" + t).classList.toggle("active", t === tier);
+          });
+          var reserve = Math.max(20, Math.min(40, Math.round(perCheck / 5) * 5));
+          $("tier2Amt").textContent = money(perCheck > 40 ? reserve : Math.max(1, Math.round(perCheck))) + "/paycheck";
+          $("tier3Amt").textContent = money(total);
+
+          // Blueprint
+          $("bTotal").textContent = money(total) + "/mo";
+          $("bAnnual").textContent = money(annual) + " per year just to stay employed";
+          $("bPerCheck").textContent = money(perCheck);
+          $("bFreqNote").textContent = "moved to the work stash from " + freqLabel;
+          $("bErosion").textContent = erosion.toFixed(1) + "%";
+          $("bTier").textContent = (tier === 1 ? "Tier 1 · Freeze Protocol" : tier === 2 ? "Tier 2 · Sinking Reserve" : "Tier 3 · Stipend Maximizer") + " — of take-home pay goes to job friction";
+          $("bIndex").textContent = index + " / 100";
+
+          var script =
+            "Hi [Manager's name] — quick ask about work costs.\n\n" +
+            "I ran my numbers: getting to and working my shifts costs me about " + money(total) + " a month out of pocket — " + money(gasM) + " in fuel, " + money(parkM) + " in parking, plus uniforms, laundry, and gear upkeep. That's " + erosion.toFixed(1) + "% of my take-home pay spent just to stay employed here.\n\n" +
+            "Would the company consider helping with any of it — a parking stipend, a pre-tax commuter benefit, or a uniform/boot allowance? Even covering the parking (" + money(parkM) + "/mo) would make a real difference.\n\n" +
+            "I'm glad to share the full breakdown. Thanks for considering it.";
+          $("scriptText").textContent = script;
+        }
+
+        ["gasWeek", "parkingDay", "daysWeek", "netPay", "jobType", "payFreq", "laundryMonth", "uniformMonth", "foodWeek", "reimbMonth"]
+          .forEach(function (id) {
+            $(id).addEventListener("input", calc);
+            $(id).addEventListener("change", calc);
+          });
+
+        $("copyBtn").addEventListener("click", function () {
+          var btn = $("copyBtn");
+          var text = $("scriptText").textContent;
+          function done() {
+            btn.textContent = "Copied — go get your money back";
+            btn.classList.add("done");
+            setTimeout(function () { btn.textContent = "Copy the script"; btn.classList.remove("done"); }, 2600);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); done(); } catch (e) { btn.textContent = "Select the script text above to copy"; }
+            document.body.removeChild(ta);
+          }
+        });
+
+        calc();
+      })();
+    </script>
+  </body>
+</html>

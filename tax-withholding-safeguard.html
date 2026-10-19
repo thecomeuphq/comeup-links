@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Tax Withholding Safeguard — Gig &amp; Shift Worker Tax Reserve Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #131009;
+        --bg-2: #1a160e;
+        --panel: #211b10;
+        --panel-2: #292114;
+        --line: #453a22;
+        --line-soft: #332b18;
+        --text: #f5edda;
+        --muted: #c2b28c;
+        --faint: #97865f;
+        --amber: #ffb020;
+        --amber-deep: #f08c00;
+        --orange: #ff6b1a;
+        --red: #ff5147;
+        --red-bg: #3a1712;
+        --green: #69c24a;
+        --green-bg: #1d2f14;
+        --gold-bg: #33270e;
+        --input-bg: #17130a;
+        --stripe-a: #ffb020;
+        --stripe-b: #17130a;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        color-scheme: dark;
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Barlow", system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 56px; }
+
+      /* ---------- header ---------- */
+      .hazard {
+        height: 12px;
+        background: repeating-linear-gradient(45deg, var(--stripe-a) 0 14px, var(--stripe-b) 14px 28px);
+      }
+      header.hero { padding: 26px 0 6px; }
+      .hero h1 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-weight: 700;
+        font-size: clamp(2rem, 7.5vw, 3.1rem);
+        line-height: 1.02;
+        letter-spacing: 0.01em;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+      }
+      .hero h1 .accent { color: var(--amber); }
+      .hero p { color: var(--muted); margin: 0; max-width: 56ch; font-size: 1.02rem; }
+      .hero p strong { color: var(--text); }
+
+      /* ---------- steps ---------- */
+      section.step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        margin-top: 22px;
+        padding: 20px 18px 22px;
+        box-shadow: var(--shadow);
+      }
+      .step-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+      .step-num {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: var(--stripe-b);
+        background: var(--amber);
+        border-radius: 4px;
+        padding: 3px 8px;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 1.55rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0;
+        line-height: 1.1;
+      }
+      .step-sub { color: var(--muted); margin: 2px 0 16px; font-size: 0.95rem; }
+
+      /* mix selector */
+      .mix-grid { display: grid; gap: 10px; }
+      @media (min-width: 640px) { .mix-grid { grid-template-columns: repeat(3, 1fr); } }
+      .mix-opt { position: relative; display: block; }
+      .mix-opt input {
+        position: absolute;
+        top: 14px; left: 14px;
+        width: 20px; height: 20px;
+        margin: 0;
+        accent-color: var(--amber-deep);
+        cursor: pointer;
+        z-index: 1;
+      }
+      .mix-card {
+        display: block;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        padding: 14px 14px 12px 44px;
+        background: var(--panel-2);
+        height: 100%;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .mix-card .mix-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: block;
+        line-height: 1.15;
+      }
+      .mix-card .mix-desc { color: var(--muted); font-size: 0.88rem; display: block; margin-top: 5px; }
+      .mix-opt input:checked + .mix-card { border-color: var(--amber); background: var(--gold-bg); }
+      .mix-opt input:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+
+      /* inputs */
+      .field-grid { display: grid; gap: 14px; }
+      @media (min-width: 640px) { .field-grid.two { grid-template-columns: 1fr 1fr; } }
+      .field label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.92rem;
+        margin-bottom: 5px;
+      }
+      .field .hint { color: var(--faint); font-size: 0.82rem; font-weight: 400; display: block; margin-top: 3px; }
+      .input-row { display: flex; align-items: stretch; }
+      .input-row .prefix, .input-row .suffix {
+        display: flex; align-items: center;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        padding: 0 10px;
+      }
+      .input-row .prefix { border-right: none; border-radius: 7px 0 0 7px; }
+      .input-row .suffix { border-left: none; border-radius: 0 7px 7px 0; }
+      .input-row input {
+        flex: 1; min-width: 0;
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 1.05rem;
+        padding: 10px 12px;
+        border-radius: 7px;
+      }
+      .input-row .prefix + input { border-radius: 0 7px 7px 0; }
+      .input-row input.has-suffix { border-radius: 7px 0 0 7px; }
+      .input-row input:focus { outline: 2px solid var(--amber); outline-offset: -1px; border-color: var(--amber); }
+      select.styled {
+        width: 100%;
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-family: "Barlow", sans-serif;
+        font-size: 1rem;
+        padding: 11px 12px;
+        border-radius: 7px;
+      }
+      select.styled:focus { outline: 2px solid var(--amber); outline-offset: -1px; }
+      .sub-block {
+        border-top: 1px dashed var(--line);
+        margin-top: 18px;
+        padding-top: 16px;
+      }
+      .sub-block h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.15rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin: 0 0 4px;
+      }
+      .sub-block .sub-note { color: var(--muted); font-size: 0.9rem; margin: 0 0 12px; }
+      .derived {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-top: 14px;
+      }
+      .derived .d-label { font-weight: 600; font-size: 0.95rem; }
+      .derived .d-label span { display: block; color: var(--faint); font-weight: 400; font-size: 0.82rem; }
+      .derived .d-value {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 1.35rem;
+        color: var(--amber);
+        white-space: nowrap;
+      }
+
+      /* breakdown table */
+      .breakdown { border: 1px solid var(--line-soft); border-radius: 8px; overflow: hidden; }
+      .b-row {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+        padding: 11px 14px;
+        background: var(--panel-2);
+      }
+      .b-row + .b-row { border-top: 1px solid var(--line-soft); }
+      .b-row .b-name { font-weight: 600; font-size: 0.95rem; }
+      .b-row .b-name span { display: block; color: var(--faint); font-weight: 400; font-size: 0.82rem; }
+      .b-row .b-amt { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.05rem; white-space: nowrap; }
+      .b-row.total { background: var(--gold-bg); }
+      .b-row.total .b-name { font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; font-size: 1.1rem; letter-spacing: 0.03em; }
+      .b-row.total .b-amt { font-size: 1.3rem; color: var(--amber); }
+      .engine-note { color: var(--muted); font-size: 0.88rem; margin: 12px 0 0; }
+
+      /* shield card */
+      .shield {
+        margin-top: 26px;
+        border: 2px solid var(--amber);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        background: var(--panel);
+      }
+      .shield-top {
+        background: repeating-linear-gradient(45deg, var(--stripe-a) 0 14px, var(--stripe-b) 14px 28px);
+        height: 12px;
+      }
+      .shield-body { padding: 20px 18px 22px; }
+      .shield-title {
+        color: var(--text);
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0;
+        display: flex; align-items: center; gap: 10px;
+      }
+      .shield-title svg { flex: none; }
+      .shield-sub { color: var(--muted); margin: 4px 0 18px; font-size: 0.93rem; }
+      .shield-stats { display: grid; gap: 12px; }
+      @media (min-width: 640px) { .shield-stats { grid-template-columns: 1fr 1fr; } }
+      .stat {
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 14px 16px;
+      }
+      .stat .s-label {
+        font-size: 0.8rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.09em;
+        color: var(--faint);
+      }
+      .stat .s-value {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 2rem;
+        line-height: 1.15;
+        color: var(--amber);
+      }
+      .stat .s-note { color: var(--muted); font-size: 0.87rem; margin-top: 2px; }
+      .tier {
+        margin-top: 14px;
+        border-radius: 8px;
+        padding: 14px 16px;
+        border: 1px solid;
+      }
+      .tier .t-badge {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+        font-size: 1.25rem;
+        display: flex; align-items: center; gap: 9px;
+      }
+      .tier .t-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+      .tier p { margin: 6px 0 0; font-size: 0.97rem; }
+      .tier.red { background: var(--red-bg); border-color: var(--red); }
+      .tier.red .t-badge { color: var(--red); }
+      .tier.red .t-dot { background: var(--red); }
+      .tier.moderate { background: var(--gold-bg); border-color: var(--amber); }
+      .tier.moderate .t-badge { color: var(--amber); }
+      .tier.moderate .t-dot { background: var(--amber); }
+      .tier.fortified { background: var(--green-bg); border-color: var(--green); }
+      .tier.fortified .t-badge { color: var(--green); }
+      .tier.fortified .t-dot { background: var(--green); }
+      .shield-actions { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+      button.print-btn {
+        background: var(--amber);
+        color: #1c1503;
+        border: none;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 11px 22px;
+        border-radius: 7px;
+        cursor: pointer;
+      }
+      button.print-btn:hover { background: var(--amber-deep); }
+      .print-hint { color: var(--faint); font-size: 0.85rem; }
+
+      /* quarterly schedule */
+      .sched { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+      @media (min-width: 640px) { .sched { grid-template-columns: 1fr 1fr; } }
+      .sched li {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 10px 14px;
+      }
+      .sched .q-date { font-weight: 600; font-size: 0.95rem; }
+      .sched .q-date span { display: block; color: var(--faint); font-weight: 400; font-size: 0.8rem; }
+      .sched .q-amt { font-family: "JetBrains Mono", monospace; font-weight: 700; color: var(--amber); white-space: nowrap; }
+      .sched li.next { border-color: var(--amber); }
+      .sched li.next .q-date span { color: var(--amber); font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; }
+
+      .disclaimer {
+        margin-top: 18px;
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        padding: 12px 14px;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+      .disclaimer strong { color: var(--text); }
+
+      /* next steps */
+      .links-grid { display: grid; gap: 12px; margin-top: 22px; }
+      @media (min-width: 640px) { .links-grid { grid-template-columns: 1fr 1fr; } }
+      a.next-card {
+        display: block;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px;
+        color: var(--text);
+        text-decoration: none;
+        box-shadow: var(--shadow);
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card .nc-kicker {
+        font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber);
+      }
+      a.next-card .nc-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.45rem; font-weight: 600; text-transform: uppercase; line-height: 1.15;
+        display: block; margin: 4px 0 6px;
+      }
+      a.next-card .nc-desc { color: var(--muted); font-size: 0.93rem; display: block; }
+      a.next-card .nc-arrow { color: var(--orange); font-weight: 700; display: block; margin-top: 10px; font-size: 0.95rem; }
+
+      .cta-banner {
+        margin-top: 14px;
+        background: var(--gold-bg);
+        border: 2px solid var(--amber);
+        border-radius: 10px;
+        padding: 20px 18px;
+        text-align: center;
+      }
+      .cta-banner p {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.35rem; font-weight: 600; line-height: 1.3;
+        margin: 0 auto 14px; max-width: 52ch;
+      }
+      .cta-banner a {
+        display: inline-block;
+        background: var(--orange);
+        color: #ffffff;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.04em;
+        padding: 12px 26px;
+        border-radius: 7px;
+        text-decoration: none;
+      }
+      .cta-banner a:hover { filter: brightness(1.08); }
+
+      /* FAQ */
+      .faq { margin-top: 26px; }
+      .faq h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 1.6rem; font-weight: 600; text-transform: uppercase;
+        margin: 0 0 12px;
+      }
+      .faq details {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+      .faq summary {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 14px 16px;
+        list-style: none;
+        display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; color: var(--amber); font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.2rem; }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq details p { margin: 0; padding: 0 16px 16px; color: var(--muted); font-size: 0.95rem; }
+      footer { margin-top: 30px; color: var(--faint); font-size: 0.85rem; text-align: center; }
+
+      /* ---------- print-friendly view ---------- */
+      .print-bar { display: none; }
+      body.print-view { background: #ffffff; }
+      body.print-view .wrap { max-width: 720px; }
+      body.print-view .no-print { display: none !important; }
+      body.print-view .print-bar {
+        display: flex; justify-content: space-between; align-items: center; gap: 12px;
+        background: #17130a; color: #f5edda;
+        padding: 12px 16px; border-radius: 8px; margin-top: 18px;
+        font-size: 0.92rem;
+      }
+      body.print-view .print-bar button {
+        background: var(--amber); border: none; border-radius: 6px;
+        font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-transform: uppercase;
+        padding: 8px 16px; cursor: pointer; color: #1c1503; font-size: 1rem;
+      }
+      body.print-view .shield {
+        --panel: #ffffff; --panel-2: #faf6ea; --text: #241c0d; --muted: #5f5236;
+        --faint: #7d6f4c; --line: #c9b98c; --line-soft: #ddd0ab; --amber: #a96e00;
+        --gold-bg: #fdf0cd; --red-bg: #fbe9e4; --green-bg: #e7f2dc;
+        box-shadow: none;
+      }
+      body.print-view .tier p { color: #3d3d3d; }
+      body.print-view .tier.red .t-badge { color: #c22e24; }
+      body.print-view .tier.moderate .t-badge { color: #8a5f00; }
+      body.print-view .tier.fortified .t-badge { color: #2f6b1e; }
+      @media print {
+        body { background: #ffffff; }
+        .no-print, .print-bar { display: none !important; }
+        .wrap { max-width: 720px; padding-bottom: 0; }
+        .shield {
+          --panel: #ffffff; --panel-2: #faf6ea; --text: #241c0d; --muted: #444444;
+          --faint: #666666; --line: #999999; --line-soft: #cccccc; --amber: #8a5c00;
+          --gold-bg: #fdf0cd; --red-bg: #fbe9e4; --green-bg: #e7f2dc;
+          box-shadow: none; margin-top: 0;
+        }
+        .tier p { color: #333333 !important; }
+        .tier.red .t-badge { color: #c22e24 !important; }
+        .tier.moderate .t-badge { color: #8a5f00 !important; }
+        .tier.fortified .t-badge { color: #2f6b1e !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <div class="print-bar">
+        <span>Print view — use your browser's Print command (or Share → Print) to save this card as a PDF.</span>
+        <button type="button" id="exitPrint">Back to calculator</button>
+      </div>
+
+      <header class="hero no-print">
+        <h1>Gig &amp; Shift Worker<br /><span class="accent">Tax Withholding Safeguard</span></h1>
+        <p>Nobody withholds tax from a DoorDash payout, an overtime spike, or a freelance invoice — <strong>that part is on you.</strong> Punch in your income mix and this tool works out exactly what percentage of every payout to lock away, and when the IRS expects it.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step no-print" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1">Your Income Mix</h2></div>
+        <p class="step-sub">Pick the setup that matches how the money actually comes in.</p>
+        <div class="mix-grid" role="radiogroup" aria-label="Income mix">
+          <label class="mix-opt">
+            <input type="radio" name="mix" value="w2" />
+            <span class="mix-card">
+              <span class="mix-title">W-2 Shift Work + Overtime</span>
+              <span class="mix-desc">One employer, regular paycheck — but heavy OT weeks can leave you under-withheld.</span>
+            </span>
+          </label>
+          <label class="mix-opt">
+            <input type="radio" name="mix" value="gig" />
+            <span class="mix-card">
+              <span class="mix-title">1099 Gig / Freelance</span>
+              <span class="mix-desc">Apps, contracts, freelance. Zero tax is taken out before the money hits your account.</span>
+            </span>
+          </label>
+          <label class="mix-opt">
+            <input type="radio" name="mix" value="hybrid" checked />
+            <span class="mix-card">
+              <span class="mix-title">Hybrid: W-2 + 1099</span>
+              <span class="mix-desc">A steady job plus a side hustle. The W-2 is covered — the side income is not.</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="sub-block">
+          <h3>Where You Stand Now</h3>
+          <p class="sub-note">Be honest — this is what decides your risk tier on the Shield Card.</p>
+          <div class="field-grid two">
+            <div class="field">
+              <label for="currentPct">% of payouts you currently set aside for tax</label>
+              <div class="input-row">
+                <input type="number" id="currentPct" min="0" max="100" step="1" value="0" inputmode="decimal" />
+                <span class="suffix">%</span>
+              </div>
+              <span class="hint">0 is the most common answer — and the most expensive one in April.</span>
+            </div>
+            <div class="field">
+              <label for="method">How do you handle reserves today?</label>
+              <select class="styled" id="method">
+                <option value="none" selected>I don't set anything aside</option>
+                <option value="manual">I transfer money when I remember</option>
+                <option value="auto">Auto-transfer to a separate account</option>
+                <option value="auto-quarterly">Auto-transfer + I pay quarterly estimates</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step no-print" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2">Income &amp; Expenses</h2></div>
+        <p class="step-sub">Monthly numbers are fine — the engine annualizes everything behind the scenes.</p>
+
+        <div class="sub-block gig-only" style="border-top:none;margin-top:0;padding-top:0;">
+          <h3>1099 / Side Income</h3>
+          <div class="field-grid two">
+            <div class="field">
+              <label for="sideIncome">Gross side income per month</label>
+              <div class="input-row">
+                <span class="prefix">$</span>
+                <input type="number" id="sideIncome" min="0" step="10" value="1800" inputmode="decimal" />
+              </div>
+              <span class="hint">Before expenses — apps, clients, freelance, all of it.</span>
+            </div>
+            <div class="field">
+              <label for="miles">Business miles driven per month</label>
+              <div class="input-row">
+                <input type="number" id="miles" min="0" step="10" value="600" inputmode="decimal" />
+                <span class="suffix">mi</span>
+              </div>
+              <span class="hint">Delivery, rideshare, and client-trip miles count. Commuting to a regular job doesn't.</span>
+            </div>
+            <div class="field">
+              <label for="mileRate">IRS mileage rate</label>
+              <div class="input-row">
+                <span class="prefix">$</span>
+                <input type="number" id="mileRate" min="0" step="0.01" value="0.70" inputmode="decimal" />
+                <span class="suffix">/mi</span>
+              </div>
+              <span class="hint">Standard rate for 2025. Editable if the IRS updates it.</span>
+            </div>
+            <div class="field">
+              <label for="fees">Platform fees per month</label>
+              <div class="input-row">
+                <span class="prefix">$</span>
+                <input type="number" id="fees" min="0" step="5" value="120" inputmode="decimal" />
+              </div>
+              <span class="hint">Service fees, app commissions, payment processing.</span>
+            </div>
+            <div class="field">
+              <label for="supplies">Supplies &amp; other costs per month</label>
+              <div class="input-row">
+                <span class="prefix">$</span>
+                <input type="number" id="supplies" min="0" step="5" value="60" inputmode="decimal" />
+              </div>
+              <span class="hint">Gear, phone bill share, bags, tools, software.</span>
+            </div>
+          </div>
+          <div class="derived">
+            <div class="d-label">Net taxable side income <span>Gross minus mileage, fees &amp; supplies</span></div>
+            <div class="d-value" id="netSideOut">$0/yr</div>
+          </div>
+        </div>
+
+        <div class="sub-block w2-only">
+          <h3>W-2 Job &amp; Overtime</h3>
+          <div class="field-grid two">
+            <div class="field">
+              <label for="baseRate">Base hourly rate</label>
+              <div class="input-row">
+                <span class="prefix">$</span>
+                <input type="number" id="baseRate" min="0" step="0.25" value="21" inputmode="decimal" />
+                <span class="suffix">/hr</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="otHours">Overtime hours per month</label>
+              <div class="input-row">
+                <input type="number" id="otHours" min="0" step="1" value="16" inputmode="decimal" />
+                <span class="suffix">hrs</span>
+              </div>
+              <span class="hint">Paid at 1.5×. Heavy OT is where withholding quietly falls behind.</span>
+            </div>
+          </div>
+          <div class="derived">
+            <div class="d-label">W-2 gross pay <span>Base (40 hrs/wk) plus overtime at time-and-a-half</span></div>
+            <div class="d-value" id="w2Out">$0/yr</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step no-print" aria-labelledby="s3">
+        <div class="step-head"><span class="step-num">STEP 3</span><h2 id="s3">The Tax Engine</h2></div>
+        <p class="step-sub">Your estimated annual tax burden on the income nobody withholds from, broken into its parts.</p>
+        <div class="breakdown">
+          <div class="b-row gig-only">
+            <div class="b-name">Self-employment tax <span>15.3% on 92.35% of net side income (Social Security + Medicare)</span></div>
+            <div class="b-amt" id="seTaxOut">$0</div>
+          </div>
+          <div class="b-row gig-only">
+            <div class="b-name">Federal income tax <span id="fedNote">Marginal estimate on side income</span></div>
+            <div class="b-amt" id="fedTaxOut">$0</div>
+          </div>
+          <div class="b-row gig-only">
+            <div class="b-name">State income tax <span>Flat 4% estimate on net side income</span></div>
+            <div class="b-amt" id="stateTaxOut">$0</div>
+          </div>
+          <div class="b-row w2-only">
+            <div class="b-name">Overtime withholding gap <span>OT premium pay is often withheld like flat supplemental pay (22%) — if your real bracket is higher, the difference comes due in April</span></div>
+            <div class="b-amt" id="otGapOut">$0</div>
+          </div>
+          <div class="b-row total">
+            <div class="b-name">Total estimated burden</div>
+            <div class="b-amt" id="totalTaxOut">$0/yr</div>
+          </div>
+        </div>
+        <p class="engine-note" id="engineNote"></p>
+      </section>
+
+      <!-- STEP 4 + SHIELD CARD -->
+      <section class="step no-print" aria-labelledby="s4" style="margin-bottom:0;">
+        <div class="step-head"><span class="step-num">STEP 4</span><h2 id="s4">Reserve &amp; Quarterly Plan</h2></div>
+        <p class="step-sub">One rule to follow on every payout, and the four dates the IRS cares about. Your Shield Card below has the summary.</p>
+        <ul class="sched" id="schedList"></ul>
+        <div class="disclaimer">
+          <strong>Estimates only — not tax advice.</strong> These figures use simplified 2025 federal brackets (single filer, standard deduction), a flat 4% state estimate, and the standard self-employment formula. Your real bill depends on filing status, credits, other deductions, and your state's actual rates. Talk to a tax professional before making decisions based on this tool.
+        </div>
+      </section>
+
+      <div class="shield" id="shieldCard">
+        <div class="shield-top" aria-hidden="true"></div>
+        <div class="shield-body">
+          <h2 class="shield-title">
+            <svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true"><path d="M13 0 L26 4 V14 C26 22 20 27 13 30 C6 27 0 22 0 14 V4 Z" fill="#ffb020"/><path d="M7 15.5 L11 19.5 L19 10.5" stroke="#17130a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Tax Shield Card
+          </h2>
+          <p class="shield-sub" id="shieldSub">Your per-payout reserve plan.</p>
+          <div class="shield-stats">
+            <div class="stat">
+              <div class="s-label">Set aside from every payout</div>
+              <div class="s-value" id="reservePctOut">0%</div>
+              <div class="s-note" id="reserveBaseNote">of gross side income</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">For every $100 you earn</div>
+              <div class="s-value" id="per100Out">$0</div>
+              <div class="s-note">goes straight into the tax reserve — before anything else touches it</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">Next quarterly payment due</div>
+              <div class="s-value" id="nextDateOut" style="font-size:1.45rem;">—</div>
+              <div class="s-note">IRS estimated tax deadline</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">Estimated amount due</div>
+              <div class="s-value" id="nextAmtOut">$0</div>
+              <div class="s-note">per quarter, based on this year's estimate</div>
+            </div>
+          </div>
+          <div class="tier moderate" id="tierBox">
+            <div class="t-badge"><span class="t-dot"></span><span id="tierName">Moderate Risk</span></div>
+            <p id="tierMsg"></p>
+          </div>
+          <div class="shield-actions no-print">
+            <button type="button" class="print-btn" id="printBtn">Clean Card View</button>
+            <span class="print-hint">Shows just this card on a clean page — ready to save or print from your browser.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEXT STEPS -->
+      <div class="links-grid no-print">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html" target="_blank" rel="noopener">
+          <span class="nc-kicker">Go deeper</span>
+          <span class="nc-title">Side-Hustle Tax Estimator</span>
+          <span class="nc-desc">Already know your side income? Run the full estimator for a closer look at what you'll owe.</span>
+          <span class="nc-arrow">Open the estimator →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/overtime-paycheck-calculator.html" target="_blank" rel="noopener">
+          <span class="nc-kicker">Check the paycheck</span>
+          <span class="nc-title">Overtime Paycheck Calculator</span>
+          <span class="nc-desc">See what an OT-heavy week actually pays after tax — before you volunteer for the extra shifts.</span>
+          <span class="nc-arrow">Run your numbers →</span>
+        </a>
+      </div>
+
+      <div class="cta-banner no-print">
+        <p>Log every mile and payout with the Overtime &amp; Shift Worker Cash Flow Log on Gumroad — grab the free Paycheck Protection Checklist too.</p>
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get it on Gumroad</a>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq no-print">
+        <h2>Straight Answers</h2>
+        <details>
+          <summary>What is quarterly estimated tax?</summary>
+          <p>When no employer withholds tax from your income, the IRS wants it paid as you earn — in four installments due January 15, April 15, June 15, and September 15. You file Form 1040-ES, pay online or by mail, and then square up on your annual return. Skip the quarters and you can owe an underpayment penalty on top of the tax itself, even if you pay in full in April.</p>
+        </details>
+        <details>
+          <summary>What's the "April shock"?</summary>
+          <p>It's the moment a gig or hybrid worker files their first return and discovers a full year of untaxed side income at once — self-employment tax plus income tax, all due on one day, sometimes with a penalty for not paying quarterly. A $1,200/month side hustle with no reserves can mean a $4,000+ bill out of nowhere. The Shield Card's reserve rate exists so April feels like a formality, not an emergency.</p>
+        </details>
+        <details>
+          <summary>How does the mileage deduction actually work?</summary>
+          <p>For self-employment driving — deliveries, rideshare, trips to clients — you can deduct the IRS standard mileage rate ($0.70 per mile for 2025) instead of tracking actual gas and repairs. At 600 business miles a month, that's $420 a month straight off your taxable income. The catch: you need a mileage log with dates, miles, and purpose. A notebook or a tracking tool works — reconstructing it from memory in April doesn't.</p>
+        </details>
+      </div>
+
+      <footer class="no-print">
+        Estimates only — not tax advice. Consult a tax professional for your situation. Built for gig drivers, shift workers, and everyone doing both.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var money = function (n) {
+          return "$" + Math.round(n).toLocaleString("en-US");
+        };
+        var moneyExact = function (n) {
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+        var num = function (id) {
+          var v = parseFloat($(id).value);
+          return isNaN(v) || v < 0 ? 0 : v;
+        };
+
+        /* 2025 federal brackets, single filer */
+        var BRACKETS = [
+          [11925, 0.10], [48475, 0.12], [103350, 0.22], [197300, 0.24],
+          [250525, 0.32], [626350, 0.35], [Infinity, 0.37]
+        ];
+        var STD_DED = 15750;
+        function fedTax(taxable) {
+          taxable = Math.max(0, taxable);
+          var tax = 0, prev = 0;
+          for (var i = 0; i < BRACKETS.length; i++) {
+            var cap = BRACKETS[i][0], rate = BRACKETS[i][1];
+            if (taxable > prev) {
+              tax += (Math.min(taxable, cap) - prev) * rate;
+              prev = cap;
+            } else { break; }
+          }
+          return tax;
+        }
+        function marginalRate(taxable) {
+          taxable = Math.max(0, taxable);
+          for (var i = 0; i < BRACKETS.length; i++) {
+            if (taxable <= BRACKETS[i][0]) { return BRACKETS[i][1]; }
+          }
+          return 0.37;
+        }
+
+        /* Next 4 quarterly due dates from today */
+        function quarterlyDates() {
+          var now = new Date();
+          var dates = [];
+          var year = now.getFullYear();
+          while (dates.length < 4) {
+            var candidates = [
+              new Date(year, 0, 15), new Date(year, 3, 15),
+              new Date(year, 5, 15), new Date(year, 8, 15),
+              new Date(year + 1, 0, 15)
+            ];
+            for (var i = 0; i < candidates.length; i++) {
+              if (candidates[i] > now && dates.length < 4) {
+                var dup = false;
+                for (var j = 0; j < dates.length; j++) {
+                  if (dates[j].getTime() === candidates[i].getTime()) { dup = true; }
+                }
+                if (!dup) { dates.push(candidates[i]); }
+              }
+            }
+            year++;
+          }
+          return dates.slice(0, 4);
+        }
+        var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        function fmtDate(d) { return MONTHS[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear(); }
+
+        function currentMix() {
+          var r = document.querySelector('input[name="mix"]:checked');
+          return r ? r.value : "hybrid";
+        }
+
+        function applyMixVisibility(mix) {
+          var gigEls = document.querySelectorAll(".gig-only");
+          var w2Els = document.querySelectorAll(".w2-only");
+          var i;
+          for (i = 0; i < gigEls.length; i++) {
+            gigEls[i].style.display = (mix === "w2") ? "none" : "";
+          }
+          for (i = 0; i < w2Els.length; i++) {
+            w2Els[i].style.display = (mix === "gig") ? "none" : "";
+          }
+        }
+
+        function compute() {
+          var mix = currentMix();
+          var hasGig = mix !== "w2";
+          var hasW2 = mix !== "gig";
+
+          /* --- side income --- */
+          var sideGrossMo = hasGig ? num("sideIncome") : 0;
+          var milesMo = hasGig ? num("miles") : 0;
+          var mileRate = num("mileRate") || 0.70;
+          var feesMo = hasGig ? num("fees") : 0;
+          var suppliesMo = hasGig ? num("supplies") : 0;
+          var deductMo = milesMo * mileRate + feesMo + suppliesMo;
+          var netSideMo = Math.max(0, sideGrossMo - deductMo);
+          var sideGrossYr = sideGrossMo * 12;
+          var netSideYr = netSideMo * 12;
+
+          /* --- W-2 --- */
+          var baseRate = hasW2 ? num("baseRate") : 0;
+          var otHoursMo = hasW2 ? num("otHours") : 0;
+          var baseYr = baseRate * 40 * 52;
+          var otPayMo = otHoursMo * baseRate * 1.5;
+          var otPayYr = otPayMo * 12;
+          var otPremiumYr = otHoursMo * baseRate * 0.5 * 12;
+          var w2Yr = baseYr + otPayYr;
+
+          /* --- tax engine --- */
+          var seTax = netSideYr * 0.9235 * 0.153;
+          var halfSE = seTax / 2;
+          var totalTaxable = Math.max(0, w2Yr + netSideYr - STD_DED - halfSE);
+          var w2Taxable = Math.max(0, w2Yr - STD_DED);
+          var fedSide = Math.max(0, fedTax(totalTaxable) - fedTax(w2Taxable));
+          var marg = marginalRate(totalTaxable);
+          var stateTax = netSideYr * 0.04;
+          var otGap = hasW2 ? otPremiumYr * Math.max(0, marg - 0.22) : 0;
+          var totalTax = seTax + fedSide + stateTax + otGap;
+
+          /* --- reserve rate --- */
+          var reservePct, reserveNote, shieldFor;
+          if (hasGig && sideGrossYr > 0) {
+            reservePct = totalTax / sideGrossYr;
+            reserveNote = "of every gross 1099 / side payout";
+            shieldFor = "each side payout";
+          } else if (hasW2 && otPayYr > 0) {
+            reservePct = otGap / otPayYr;
+            reserveNote = "of every overtime payout";
+            shieldFor = "each overtime payout";
+          } else {
+            reservePct = 0;
+            reserveNote = "no untaxed income entered yet";
+            shieldFor = "payouts";
+          }
+          var per100 = reservePct * 100;
+
+          /* --- quarterly --- */
+          var dates = quarterlyDates();
+          var qAmt = totalTax / 4;
+
+          /* --- risk tier --- */
+          var currentPct = num("currentPct") / 100;
+          var method = $("method").value;
+          var totalMoIncome = sideGrossMo + (hasW2 ? (baseRate * 40 * 52) / 12 + otPayMo : 0);
+          var sideShare = totalMoIncome > 0 ? sideGrossMo / totalMoIncome : 0;
+          var highSide = hasGig && (netSideMo >= 800 || sideShare >= 0.30);
+          var heavyOT = hasW2 && otHoursMo >= 20;
+          var tier, tierLabel, tierMsg;
+          if (totalTax <= 0) {
+            tier = "fortified"; tierLabel = "Fortified";
+            tierMsg = "No estimated tax burden on the numbers you entered. If income picks up, re-run this check — and hold reserves in a high-yield savings account until quarterly due dates.";
+          } else if (method === "auto-quarterly" && currentPct >= reservePct * 0.9) {
+            tier = "fortified"; tierLabel = "Fortified";
+            tierMsg = "Your reserves are automated and your quarterly payments are handled. Hold reserves in a high-yield savings account until quarterly due dates — let the reserve earn while it waits.";
+          } else if (currentPct === 0 && highSide) {
+            tier = "red"; tierLabel = "Red Flag";
+            tierMsg = "Immediate Tax Reserve Freeze: set aside 25–30% of every non-W-2 payout starting today. With this much untaxed income and nothing reserved, April will hurt — the freeze starts with your very next payout.";
+          } else {
+            tier = "moderate"; tierLabel = "Moderate Risk";
+            tierMsg = "Track mileage to lower taxable income + set aside 10–15% extra on OT weeks. You're partway covered — tighten the reserve to the full rate on the Shield Card and put it on autopilot.";
+          }
+
+          /* --- render --- */
+          applyMixVisibility(mix);
+          $("netSideOut").textContent = money(netSideYr) + "/yr";
+          $("w2Out").textContent = money(w2Yr) + "/yr";
+          $("seTaxOut").textContent = money(seTax);
+          $("fedTaxOut").textContent = money(fedSide);
+          $("fedNote").textContent = "Marginal estimate — your side income lands in the " + Math.round(marg * 100) + "% federal bracket";
+          $("stateTaxOut").textContent = money(stateTax);
+          $("otGapOut").textContent = money(otGap);
+          $("totalTaxOut").textContent = money(totalTax) + "/yr";
+
+          var noteParts = [];
+          if (hasGig) {
+            noteParts.push("Deductions cut your side income from " + money(sideGrossYr) + " gross to " + money(netSideYr) + " taxable — every logged mile is worth $" + (mileRate).toFixed(2) + " off the top.");
+          }
+          if (hasW2 && otGap > 0) {
+            noteParts.push("Your OT premium pay (" + money(otPremiumYr) + "/yr) is likely withheld at the flat 22% supplemental rate while your marginal bracket is " + Math.round(marg * 100) + "% — the gap is your April exposure.");
+          }
+          if (hasW2 && otGap === 0 && otHoursMo > 0) {
+            noteParts.push("Your marginal bracket is at or below the 22% supplemental withholding rate, so overtime withholding should roughly keep up — no OT gap estimated.");
+          }
+          $("engineNote").textContent = noteParts.join(" ");
+
+          $("reservePctOut").textContent = (Math.round(reservePct * 1000) / 10).toString().replace(/\.0$/, "") + "%";
+          $("reserveBaseNote").textContent = reserveNote;
+          $("per100Out").textContent = moneyExact(per100);
+          $("shieldSub").textContent = "Set this aside from " + shieldFor + " the moment it lands — not at the end of the month with whatever is left.";
+          $("nextDateOut").textContent = fmtDate(dates[0]);
+          $("nextAmtOut").textContent = money(qAmt);
+
+          var tierBox = $("tierBox");
+          tierBox.className = "tier " + tier;
+          $("tierName").textContent = tierLabel;
+          $("tierMsg").textContent = tierMsg;
+
+          var schedHtml = "";
+          for (var k = 0; k < dates.length; k++) {
+            schedHtml += '<li class="' + (k === 0 ? "next" : "") + '">' +
+              '<div class="q-date">' + fmtDate(dates[k]) + (k === 0 ? "<span>Next due</span>" : "<span>Quarterly due date</span>") + "</div>" +
+              '<div class="q-amt">' + money(qAmt) + "</div></li>";
+          }
+          $("schedList").innerHTML = schedHtml;
+        }
+
+        var inputs = document.querySelectorAll("input, select");
+        for (var i = 0; i < inputs.length; i++) {
+          inputs[i].addEventListener("input", compute);
+          inputs[i].addEventListener("change", compute);
+        }
+
+        $("printBtn").addEventListener("click", function () {
+          document.body.classList.add("print-view");
+          window.scrollTo(0, 0);
+        });
+        $("exitPrint").addEventListener("click", function () {
+          document.body.classList.remove("print-view");
+        });
+
+        compute();
+      })();
+    </script>
+  </body>
+</html>

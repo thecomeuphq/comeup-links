@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Yield Shield — Stop Your Cash From Bleeding Interest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0c0b09;
+        --bg-2: #121110;
+        --panel: #171614;
+        --panel-2: #1e1c19;
+        --line: #2c2a26;
+        --line-soft: #232120;
+        --ink: #f2ede4;
+        --ink-dim: #b8b0a2;
+        --ink-faint: #857d6f;
+        --amber: #ffb020;
+        --amber-deep: #f59e0b;
+        --orange: #ff6b1a;
+        --red: #ff5147;
+        --red-dim: #ff8a80;
+        --green: #4ade80;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+        --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+        --sans: "Barlow", system-ui, -apple-system, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(1100px 480px at 85% -80px, rgba(255, 176, 32, 0.09), transparent 60%),
+          radial-gradient(700px 400px at -10% 30%, rgba(255, 107, 26, 0.05), transparent 60%),
+          var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 920px; margin: 0 auto; padding: 0 18px 64px; }
+
+      /* ---------- hazard strip ---------- */
+      .hazard {
+        height: 10px;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--amber) 0 14px,
+          #141311 14px 28px
+        );
+        opacity: 0.9;
+      }
+
+      /* ---------- hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .hero-tag {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+        text-transform: uppercase; color: var(--amber);
+        border: 1px solid rgba(255, 176, 32, 0.4);
+        padding: 5px 10px; border-radius: 3px;
+        background: rgba(255, 176, 32, 0.06);
+      }
+      .hero-tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 8px var(--amber); }
+      h1 {
+        font-family: var(--cond);
+        font-size: clamp(44px, 9vw, 76px);
+        line-height: 0.95;
+        letter-spacing: 0.01em;
+        margin: 16px 0 6px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      h1 .shield-word { color: var(--amber); }
+      .hook {
+        font-size: clamp(19px, 4.6vw, 26px);
+        font-weight: 600;
+        line-height: 1.3;
+        margin: 10px 0 4px;
+        max-width: 640px;
+      }
+      .hook .bad { color: var(--red); font-family: var(--mono); font-weight: 700; }
+      .hook .good { color: var(--amber); font-family: var(--mono); font-weight: 700; }
+      .hero-sub { color: var(--ink-dim); max-width: 600px; margin: 8px 0 0; font-size: 16px; }
+      .hero-sub strong { color: var(--ink); }
+
+      /* ---------- steps ---------- */
+      .step {
+        margin-top: 34px;
+        background: linear-gradient(180deg, var(--panel-2), var(--panel));
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .step-head {
+        display: flex; align-items: center; gap: 14px;
+        padding: 16px 20px 14px;
+        border-bottom: 1px solid var(--line-soft);
+      }
+      .step-num {
+        font-family: var(--mono); font-weight: 700; font-size: 15px;
+        background: var(--amber); color: #171106;
+        width: 34px; height: 34px; border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        flex: none;
+        box-shadow: 0 2px 0 #8a5f04;
+      }
+      .step-head h2 {
+        font-family: var(--cond); font-size: 26px; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.04em; margin: 0; line-height: 1;
+      }
+      .step-head p { margin: 3px 0 0; color: var(--ink-faint); font-size: 13.5px; }
+      .step-body { padding: 20px; }
+
+      label.field-label {
+        display: block; font-size: 13px; font-weight: 600;
+        letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim);
+        margin-bottom: 8px;
+      }
+      .money-input { position: relative; }
+      .money-input .prefix {
+        position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+        font-family: var(--mono); font-weight: 700; color: var(--amber); font-size: 20px;
+        pointer-events: none;
+      }
+      .money-input .suffix {
+        position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+        font-family: var(--mono); font-weight: 600; color: var(--ink-faint); font-size: 16px;
+        pointer-events: none;
+      }
+      input[type="number"], input[type="text"] {
+        width: 100%;
+        background: #0f0e0c;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        font-family: var(--mono); font-weight: 600; font-size: 22px;
+        padding: 13px 40px 13px 36px;
+        outline: none;
+      }
+      input[type="number"]:focus, input[type="text"]:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(255,176,32,0.15); }
+      input.plain { padding: 13px 14px; font-size: 19px; }
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+      input[type="range"] {
+        -webkit-appearance: none; appearance: none;
+        width: 100%; height: 8px; border-radius: 4px;
+        background: linear-gradient(90deg, var(--amber) var(--fill, 30%), #2c2a26 var(--fill, 30%));
+        margin: 16px 0 4px; outline: none; cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 26px; height: 26px; border-radius: 50%;
+        background: var(--amber); border: 3px solid #171106;
+        box-shadow: 0 0 0 2px var(--amber), 0 4px 10px rgba(0,0,0,0.6);
+        cursor: grab;
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px; height: 20px; border-radius: 50%;
+        background: var(--amber); border: 3px solid #171106;
+        box-shadow: 0 0 0 2px var(--amber);
+        cursor: grab;
+      }
+      .range-marks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+      .grid-2 { display: grid; grid-template-columns: 1fr; gap: 18px; }
+      @media (min-width: 640px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+      .hint { font-size: 13px; color: var(--ink-faint); margin-top: 8px; }
+      .hint strong { color: var(--ink-dim); }
+
+      /* access pills */
+      .pill-row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+      @media (min-width: 640px) { .pill-row { grid-template-columns: repeat(3, 1fr); } }
+      .pill {
+        text-align: left; cursor: pointer;
+        background: #0f0e0c; border: 1px solid var(--line); border-radius: 8px;
+        padding: 13px 14px; color: var(--ink); font-family: var(--sans);
+        transition: border-color 0.15s, background 0.15s;
+      }
+      .pill .pill-title { display: block; font-weight: 700; font-size: 15.5px; }
+      .pill .pill-sub { display: block; font-size: 12.5px; color: var(--ink-faint); margin-top: 2px; line-height: 1.4; }
+      .pill[aria-pressed="true"] { border-color: var(--amber); background: rgba(255,176,32,0.08); }
+      .pill[aria-pressed="true"] .pill-title { color: var(--amber); }
+
+      /* toggles */
+      .toggle-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 14px;
+        padding: 14px 0; border-top: 1px dashed var(--line-soft);
+      }
+      .toggle-row:first-of-type { border-top: none; }
+      .toggle-text .t-title { font-weight: 600; font-size: 15.5px; }
+      .toggle-text .t-sub { font-size: 13px; color: var(--ink-faint); }
+      .switch {
+        flex: none; width: 52px; height: 29px; border-radius: 999px;
+        background: #2c2a26; border: 1px solid var(--line);
+        position: relative; cursor: pointer; padding: 0;
+        transition: background 0.15s;
+      }
+      .switch::after {
+        content: ""; position: absolute; top: 3px; left: 3px;
+        width: 21px; height: 21px; border-radius: 50%;
+        background: #8d8577; transition: left 0.15s, background 0.15s;
+      }
+      .switch[aria-checked="true"] { background: rgba(255,176,32,0.25); border-color: var(--amber); }
+      .switch[aria-checked="true"]::after { left: 26px; background: var(--amber); }
+      .toggle-detail { display: none; padding: 4px 0 14px; }
+      .toggle-detail.open { display: block; }
+      .warn {
+        display: none; margin-top: 12px; padding: 11px 13px;
+        background: rgba(255,81,71,0.09); border: 1px solid rgba(255,81,71,0.4);
+        border-radius: 8px; font-size: 14px; color: var(--red-dim);
+      }
+      .warn.show { display: block; }
+      .warn strong { color: var(--red); }
+
+      /* ---------- bleed engine ---------- */
+      .bleed-hero {
+        text-align: center; padding: 8px 0 4px;
+      }
+      .bleed-label { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-dim); }
+      .bleed-amount {
+        font-family: var(--mono); font-weight: 700;
+        font-size: clamp(52px, 13vw, 84px); line-height: 1.05;
+        color: var(--red);
+        text-shadow: 0 0 34px rgba(255,81,71,0.35);
+        margin: 2px 0;
+      }
+      .bleed-per { font-family: var(--mono); color: var(--ink-dim); font-size: 14px; }
+      .bleed-per b { color: var(--red-dim); }
+      .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+      @media (min-width: 640px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+      .stat {
+        background: #0f0e0c; border: 1px solid var(--line-soft); border-radius: 8px;
+        padding: 13px 14px;
+      }
+      .stat .s-label { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); line-height: 1.35; }
+      .stat .s-value { font-family: var(--mono); font-weight: 700; font-size: 21px; margin-top: 5px; }
+      .stat .s-value.red { color: var(--red); }
+      .stat .s-value.amber { color: var(--amber); }
+      .stat .s-value.green { color: var(--green); }
+      .stat .s-value.dim { color: var(--ink-dim); }
+
+      .bar-compare { margin-top: 22px; }
+      .bar-row { margin-bottom: 12px; }
+      .bar-meta { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+      .bar-meta .b-name { color: var(--ink-dim); font-weight: 600; }
+      .bar-meta .b-val { font-family: var(--mono); font-weight: 700; }
+      .bar-track { height: 16px; background: #0f0e0c; border: 1px solid var(--line-soft); border-radius: 4px; overflow: hidden; }
+      .bar-fill { height: 100%; border-radius: 3px; transition: width 0.45s ease; min-width: 3px; }
+      .bar-fill.now { background: repeating-linear-gradient(-45deg, #55504a 0 8px, #45413c 8px 16px); }
+      .bar-fill.could { background: linear-gradient(90deg, var(--amber-deep), var(--amber)); box-shadow: 0 0 14px rgba(255,176,32,0.35); }
+
+      .target-box { margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--line); }
+      .target-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .target-value { font-family: var(--mono); font-weight: 700; font-size: 24px; color: var(--amber); }
+
+      /* ---------- rating ---------- */
+      .rating-card {
+        margin-top: 26px;
+        background: linear-gradient(180deg, #1b1a17, #141311);
+        border: 1px solid var(--line); border-radius: 10px;
+        padding: 20px;
+        display: flex; gap: 20px; align-items: center; flex-wrap: wrap;
+      }
+      .gauge { position: relative; width: 132px; height: 132px; flex: none; margin: 0 auto; }
+      .gauge svg { transform: rotate(-90deg); }
+      .gauge .g-track { stroke: #2c2a26; }
+      .gauge .g-fill { stroke: var(--amber); transition: stroke-dashoffset 0.5s ease, stroke 0.3s; }
+      .gauge-center {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+      }
+      .gauge-num { font-family: var(--mono); font-weight: 700; font-size: 40px; line-height: 1; }
+      .gauge-of { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); letter-spacing: 0.1em; }
+      .rating-info { flex: 1; min-width: 220px; }
+      .rating-info h3 {
+        font-family: var(--cond); font-size: 24px; text-transform: uppercase;
+        letter-spacing: 0.04em; margin: 0 0 2px;
+      }
+      .rating-grade { font-family: var(--mono); font-weight: 700; color: var(--amber); font-size: 15px; }
+      .rating-info p { color: var(--ink-dim); font-size: 14.5px; margin: 8px 0 0; }
+      .rating-parts { margin-top: 12px; display: grid; gap: 8px; }
+      .rpart { display: grid; grid-template-columns: 112px 1fr 44px; align-items: center; gap: 10px; font-size: 12.5px; }
+      .rpart .rp-name { color: var(--ink-dim); font-weight: 600; }
+      .rpart .rp-track { height: 7px; background: #0f0e0c; border-radius: 4px; overflow: hidden; border: 1px solid var(--line-soft); }
+      .rpart .rp-fill { height: 100%; background: var(--amber); transition: width 0.45s ease; }
+      .rpart .rp-val { font-family: var(--mono); text-align: right; color: var(--ink-dim); }
+
+      /* ---------- strategy tiers ---------- */
+      .tier-banner {
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        padding: 13px 16px; border-radius: 8px; margin-bottom: 16px;
+        font-weight: 700;
+      }
+      .tier-banner .tier-chip {
+        font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em;
+        padding: 4px 9px; border-radius: 4px; background: rgba(0,0,0,0.35);
+      }
+      .tier-banner.severe { background: rgba(255,81,71,0.13); border: 1px solid rgba(255,81,71,0.5); color: #ffb3ac; }
+      .tier-banner.moderate { background: rgba(255,176,32,0.1); border: 1px solid rgba(255,176,32,0.5); color: #ffd98a; }
+      .tier-banner.optimized { background: rgba(74,222,128,0.09); border: 1px solid rgba(74,222,128,0.45); color: #a7f3c9; }
+      .tier-banner.minor { background: rgba(255,176,32,0.07); border: 1px solid var(--line); color: var(--ink-dim); }
+      .strategy h3 { font-family: var(--cond); font-size: 23px; margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+      .strategy .strat-sub { color: var(--ink-dim); margin: 0 0 16px; font-size: 15px; }
+      ol.steps-list { list-style: none; counter-reset: st; margin: 0; padding: 0; display: grid; gap: 10px; }
+      ol.steps-list li {
+        counter-increment: st; position: relative;
+        background: #0f0e0c; border: 1px solid var(--line-soft); border-radius: 8px;
+        padding: 13px 14px 13px 52px; font-size: 15px; color: var(--ink-dim);
+      }
+      ol.steps-list li strong { color: var(--ink); }
+      ol.steps-list li::before {
+        content: counter(st);
+        position: absolute; left: 13px; top: 12px;
+        width: 26px; height: 26px; border-radius: 50%;
+        background: var(--amber); color: #171106;
+        font-family: var(--mono); font-weight: 700; font-size: 14px;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .lookfor { margin-top: 16px; }
+      .lookfor h4 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); margin: 0 0 10px; }
+      .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+      .chip {
+        font-size: 13px; font-weight: 600; color: var(--ink);
+        border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+        background: #0f0e0c;
+      }
+      .chip b { color: var(--amber); font-family: var(--mono); }
+      .split-calc { margin-top: 18px; background: #0f0e0c; border: 1px solid var(--line-soft); border-radius: 8px; padding: 16px; }
+      .split-results { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+      .split-box { border: 1px solid var(--line-soft); border-radius: 8px; padding: 12px; background: var(--panel); }
+      .split-box .sb-label { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); font-weight: 600; }
+      .split-box .sb-value { font-family: var(--mono); font-weight: 700; font-size: 22px; margin-top: 3px; }
+      .split-box.keep .sb-value { color: var(--ink); }
+      .split-box.move .sb-value { color: var(--amber); }
+
+      /* ---------- blueprint ---------- */
+      .blueprint {
+        margin-top: 34px; border-radius: 12px; overflow: hidden;
+        border: 2px solid var(--amber);
+        background: linear-gradient(160deg, #1d1a12, #121110 55%);
+        box-shadow: 0 18px 50px rgba(0,0,0,0.55), 0 0 0 6px rgba(255,176,32,0.06);
+      }
+      .bp-head {
+        padding: 18px 22px 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+        border-bottom: 1px dashed rgba(255,176,32,0.4);
+      }
+      .bp-head .bp-kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); }
+      .bp-head h2 { font-family: var(--cond); font-size: 32px; margin: 2px 0 0; text-transform: uppercase; line-height: 1; }
+      .bp-stamp {
+        font-family: var(--mono); font-weight: 700; font-size: 12px; letter-spacing: 0.08em;
+        border: 2px solid var(--amber); color: var(--amber); border-radius: 5px;
+        padding: 6px 9px; transform: rotate(3deg); text-align: center; line-height: 1.3;
+        flex: none;
+      }
+      .bp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255,176,32,0.18); }
+      .bp-cell { background: #151310; padding: 15px 18px; }
+      .bp-cell .c-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+      .bp-cell .c-value { font-family: var(--mono); font-weight: 700; font-size: 25px; margin-top: 3px; }
+      .bp-cell .c-value.red { color: var(--red); }
+      .bp-cell .c-value.amber { color: var(--amber); }
+      .bp-cell .c-sub { font-size: 12.5px; color: var(--ink-faint); margin-top: 2px; }
+      .bp-body { padding: 16px 22px 20px; }
+      .bp-body h4 { font-size: 12.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin: 0 0 10px; }
+      .bp-body ol { margin: 0; padding-left: 20px; color: var(--ink-dim); font-size: 14.5px; display: grid; gap: 5px; }
+      .bp-body ol strong { color: var(--ink); }
+      .bp-liq { margin-top: 14px; font-size: 14.5px; color: var(--ink-dim); background: rgba(255,176,32,0.06); border: 1px solid rgba(255,176,32,0.25); border-radius: 8px; padding: 12px 14px; }
+      .bp-liq strong { color: var(--amber); }
+      .bp-actions { padding: 0 22px 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+      .btn {
+        appearance: none; border: none; cursor: pointer;
+        font-family: var(--sans); font-weight: 700; font-size: 15px;
+        border-radius: 8px; padding: 12px 18px;
+        background: var(--amber); color: #171106;
+        box-shadow: 0 3px 0 #8a5f04;
+        transition: transform 0.1s, box-shadow 0.1s;
+        text-decoration: none; display: inline-block; text-align: center;
+      }
+      .btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #8a5f04; }
+      .btn.ghost { background: transparent; color: var(--amber); border: 1px solid rgba(255,176,32,0.55); box-shadow: none; }
+      .copy-note { font-size: 13px; color: var(--green); align-self: center; min-height: 18px; }
+
+      /* ---------- next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-family: var(--cond); font-size: 28px; text-transform: uppercase;
+        letter-spacing: 0.04em; margin: 40px 0 14px;
+      }
+      .next-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      @media (min-width: 640px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: linear-gradient(180deg, var(--panel-2), var(--panel));
+        border: 1px solid var(--line); border-radius: 10px; padding: 18px;
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .nc-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); }
+      .next-card h3 { font-family: var(--cond); font-size: 23px; margin: 6px 0 4px; text-transform: uppercase; letter-spacing: 0.02em; }
+      .next-card p { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
+      .next-card .nc-arrow { color: var(--amber); font-weight: 700; }
+      .cta-banner {
+        margin-top: 14px; border-radius: 10px; padding: 22px;
+        background:
+          repeating-linear-gradient(-45deg, rgba(23,17,6,0.16) 0 18px, transparent 18px 36px),
+          linear-gradient(120deg, var(--amber-deep), var(--orange));
+        color: #1c1204;
+        display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+      }
+      .cta-banner .cta-text { flex: 1; min-width: 240px; }
+      .cta-banner h3 { font-family: var(--cond); font-size: 27px; margin: 0 0 4px; text-transform: uppercase; line-height: 1.05; }
+      .cta-banner p { margin: 0; font-size: 15px; font-weight: 500; color: rgba(28,18,4,0.85); }
+      .cta-banner .btn { background: #171106; color: var(--amber); box-shadow: 0 3px 0 rgba(0,0,0,0.45); }
+
+      .faq { display: grid; gap: 10px; }
+      details.faq-item {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+        padding: 0 18px;
+      }
+      details.faq-item summary {
+        cursor: pointer; font-weight: 700; font-size: 16px; padding: 15px 0;
+        list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      }
+      details.faq-item summary::-webkit-details-marker { display: none; }
+      details.faq-item summary .chev { color: var(--amber); font-family: var(--mono); font-weight: 700; transition: transform 0.2s; flex: none; }
+      details.faq-item[open ] summary .chev { transform: rotate(45deg); }
+      details.faq-item .faq-a { padding: 0 0 16px; color: var(--ink-dim); font-size: 15px; }
+      details.faq-item .faq-a strong { color: var(--ink); }
+
+      footer { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--line-soft); color: var(--ink-faint); font-size: 13px; }
+      footer p { margin: 0 0 8px; }
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <header class="hero">
+        <span class="hero-tag"><span class="dot"></span> Yield Shield · Cash Defense Engine</span>
+        <h1>Yield <span class="shield-word">Shield</span></h1>
+        <p class="hook">
+          Your $5,000 emergency fund earned <span class="bad">$0.50</span> this year.
+          It should've earned <span class="good">$200</span>.
+        </p>
+        <p class="hero-sub">
+          Big banks pay <strong>0.01% APY</strong> on regular savings while high-yield accounts pay around
+          <strong>4.00%</strong>. That gap is silently draining shift workers' safety nets.
+          Run your numbers below and see exactly what your idle cash is costing you.
+        </p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1-title">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div>
+            <h2 id="s1-title">Cash Snapshot</h2>
+            <p>What you've got sitting still right now</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="grid-2">
+            <div>
+              <label class="field-label" for="cashInput">Cash in checking / regular savings</label>
+              <div class="money-input">
+                <span class="prefix">$</span>
+                <input type="number" id="cashInput" inputmode="decimal" min="0" step="100" value="5000" />
+              </div>
+              <input type="range" id="cashRange" min="0" max="50000" step="100" value="5000" aria-label="Cash amount slider" />
+              <div class="range-marks"><span>$0</span><span>$25k</span><span>$50k</span></div>
+            </div>
+            <div>
+              <label class="field-label" for="apyInput">Interest rate you're earning now</label>
+              <div class="money-input">
+                <input type="number" id="apyInput" class="plain" inputmode="decimal" min="0" max="15" step="0.01" value="0.01" style="padding-right:44px;" />
+                <span class="suffix">% APY</span>
+              </div>
+              <p class="hint">
+                Most big-bank savings accounts pay <strong>0.01% APY</strong> — that's the national
+                big-bank standard. Check your bank app under "account details" if yours is different.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2-title">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <div>
+            <h2 id="s2-title">Access Scan</h2>
+            <p>How fast you'd need this money in a real emergency</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <label class="field-label">Emergency access speed you need</label>
+          <div class="pill-row" role="group" aria-label="Emergency access speed">
+            <button type="button" class="pill" data-access="sameday" aria-pressed="false">
+              <span class="pill-title">Same-day cash</span>
+              <span class="pill-sub">Car dies, shift cut — money has to move today</span>
+            </button>
+            <button type="button" class="pill" data-access="1-2day" aria-pressed="true">
+              <span class="pill-title">1–2 day transfer</span>
+              <span class="pill-sub">Can wait for a standard bank transfer to land</span>
+            </button>
+            <button type="button" class="pill" data-access="3plus" aria-pressed="false">
+              <span class="pill-title">3+ days is fine</span>
+              <span class="pill-sub">True last-resort fund — speed doesn't matter</span>
+            </button>
+          </div>
+
+          <div style="margin-top:20px;">
+            <div class="toggle-row">
+              <div class="toggle-text">
+                <div class="t-title">Monthly maintenance fees</div>
+                <div class="t-sub">Your bank charges you just to hold your money</div>
+              </div>
+              <button type="button" class="switch" id="feeToggle" role="switch" aria-checked="false" aria-label="Toggle monthly maintenance fees"></button>
+            </div>
+            <div class="toggle-detail" id="feeDetail">
+              <label class="field-label" for="feeInput">Monthly fee amount</label>
+              <div class="money-input" style="max-width:260px;">
+                <span class="prefix">$</span>
+                <input type="number" id="feeInput" inputmode="decimal" min="0" step="1" value="12" />
+                <span class="suffix">/mo</span>
+              </div>
+            </div>
+
+            <div class="toggle-row">
+              <div class="toggle-text">
+                <div class="t-title">Minimum balance requirement</div>
+                <div class="t-sub">Your account demands a floor balance to dodge penalties</div>
+              </div>
+              <button type="button" class="switch" id="minToggle" role="switch" aria-checked="false" aria-label="Toggle minimum balance requirement"></button>
+            </div>
+            <div class="toggle-detail" id="minDetail">
+              <label class="field-label" for="minInput">Required minimum balance</label>
+              <div class="money-input" style="max-width:260px;">
+                <span class="prefix">$</span>
+                <input type="number" id="minInput" inputmode="decimal" min="0" step="50" value="1500" />
+              </div>
+              <div class="warn" id="minWarn">
+                <strong>Heads up:</strong> your cash is below this minimum — you're likely eating
+                penalty fees or earning a reduced rate on money that's supposed to protect you.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3-title">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <div>
+            <h2 id="s3-title">Bleed Engine</h2>
+            <p>What the rate gap and fees are costing you, in hard dollars</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="bleed-hero">
+            <div class="bleed-label">Total bleeding per year</div>
+            <div class="bleed-amount" id="totalBleed">$199.50</div>
+            <div class="bleed-per">That's <b id="bleedPerDay">$0.55 a day</b> walking out the door while your money sleeps.</div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="s-label">Interest bleed / yr</div>
+              <div class="s-value red" id="interestBleed">$199.50</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">Fee drag / yr</div>
+              <div class="s-value red" id="feeDrag">$0</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">Lost growth · 5 years</div>
+              <div class="s-value amber" id="lostGrowth">$1,081</div>
+            </div>
+            <div class="stat">
+              <div class="s-label">You earn now / yr</div>
+              <div class="s-value dim" id="earnNow">$0.50</div>
+            </div>
+          </div>
+
+          <div class="bar-compare" aria-hidden="true">
+            <div class="bar-row">
+              <div class="bar-meta"><span class="b-name">Your account today</span><span class="b-val" id="barNowVal">$0.50/yr</span></div>
+              <div class="bar-track"><div class="bar-fill now" id="barNow" style="width:2%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-meta"><span class="b-name">Same cash in a high-yield account</span><span class="b-val" id="barCouldVal" style="color:var(--amber)">$200/yr</span></div>
+              <div class="bar-track"><div class="bar-fill could" id="barCould" style="width:100%"></div></div>
+            </div>
+          </div>
+
+          <div class="target-box">
+            <div class="target-head">
+              <label class="field-label" for="targetRange" style="margin:0;">High-yield target APY</label>
+              <span class="target-value" id="targetValue">4.00%</span>
+            </div>
+            <input type="range" id="targetRange" min="0.5" max="6" step="0.05" value="4" aria-label="High-yield target APY slider" />
+            <div class="range-marks"><span>0.50%</span><span>3.25%</span><span>6.00%</span></div>
+            <p class="hint">Slide it to match a real account you're eyeing. Top online high-yield savings accounts have recently paid around 4.00% — rates are variable and change over time, so check current offers before you move money.</p>
+          </div>
+
+          <!-- RATING -->
+          <div class="rating-card">
+            <div class="gauge" role="img" aria-label="Cash Efficiency Rating gauge">
+              <svg width="132" height="132" viewBox="0 0 132 132">
+                <circle class="g-track" cx="66" cy="66" r="56" fill="none" stroke-width="11" />
+                <circle class="g-fill" id="gaugeFill" cx="66" cy="66" r="56" fill="none" stroke-width="11"
+                        stroke-linecap="round" stroke-dasharray="351.86" stroke-dashoffset="351.86" />
+              </svg>
+              <div class="gauge-center">
+                <div class="gauge-num" id="ratingNum">1</div>
+                <div class="gauge-of">/ 100</div>
+              </div>
+            </div>
+            <div class="rating-info">
+              <h3>Cash Efficiency Rating</h3>
+              <div class="rating-grade" id="ratingGrade">BLEEDING OUT</div>
+              <p id="ratingText">Your cash is basically on unpaid leave. Almost none of it is working for you.</p>
+              <div class="rating-parts">
+                <div class="rpart"><span class="rp-name">Yield earned</span><span class="rp-track"><span class="rp-fill" id="rpYield" style="width:0%"></span></span><span class="rp-val" id="rpYieldVal">0/70</span></div>
+                <div class="rpart"><span class="rp-name">Fee discipline</span><span class="rp-track"><span class="rp-fill" id="rpFee" style="width:0%"></span></span><span class="rp-val" id="rpFeeVal">0/15</span></div>
+                <div class="rpart"><span class="rp-name">Liquidity fit</span><span class="rp-track"><span class="rp-fill" id="rpLiq" style="width:0%"></span></span><span class="rp-val" id="rpLiqVal">0/15</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4-title">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <div>
+            <h2 id="s4-title">Action Strategy</h2>
+            <p>Your fix, matched to how bad the bleed is</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="tier-banner severe" id="tierBanner">
+            <span class="tier-chip" id="tierChip">TIER 1 · SEVERE</span>
+            <span id="tierBannerText">You're losing over $150 a year — full migration protocol.</span>
+          </div>
+          <div class="strategy" id="strategyBody"><!-- filled by script --></div>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bp-title">
+        <div class="bp-head">
+          <div>
+            <div class="bp-kicker">Screenshot this · Your defense plan</div>
+            <h2 id="bp-title">APY Yield Defense Blueprint</h2>
+          </div>
+          <div class="bp-stamp">YIELD<br />SHIELD</div>
+        </div>
+        <div class="bp-grid">
+          <div class="bp-cell">
+            <div class="c-label">Annual interest lost</div>
+            <div class="c-value red" id="bpBleed">$199.50</div>
+            <div class="c-sub" id="bpBleedSub">plus $0 in fees</div>
+          </div>
+          <div class="bp-cell">
+            <div class="c-label">5-year projection</div>
+            <div class="c-value amber" id="bpFive">$1,081</div>
+            <div class="c-sub">gone if nothing changes</div>
+          </div>
+          <div class="bp-cell">
+            <div class="c-label">Cash Efficiency Rating</div>
+            <div class="c-value" id="bpRating">1 / 100</div>
+            <div class="c-sub" id="bpRatingSub">Bleeding out</div>
+          </div>
+          <div class="bp-cell">
+            <div class="c-label">The fix</div>
+            <div class="c-value" style="font-size:19px; line-height:1.3;" id="bpFix">Move to a 4.00% HYSA</div>
+            <div class="c-sub" id="bpFixSub">FDIC-insured, no-fee account</div>
+          </div>
+        </div>
+        <div class="bp-body">
+          <h4>Liquidity match</h4>
+          <div class="bp-liq" id="bpLiq" style="margin-top:0;">—</div>
+          <h4 style="margin-top:18px;">Transfer steps</h4>
+          <ol id="bpSteps"><!-- filled by script --></ol>
+        </div>
+        <div class="bp-actions">
+          <button type="button" class="btn" id="copyBtn">Copy my blueprint</button>
+          <span class="copy-note" id="copyNote" role="status"></span>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <h2 class="section-title">Keep the shield up</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" target="_blank" rel="noopener">
+          <span class="nc-tag">Next tool</span>
+          <h3>Emergency Fund Runway Calculator</h3>
+          <p>Now that your fund earns real interest — find out exactly how many months it actually covers if your hours get cut. <span class="nc-arrow">Run it →</span></p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html" target="_blank" rel="noopener">
+          <span class="nc-tag">Next tool</span>
+          <h3>Compound Interest Velocity Calculator</h3>
+          <p>See what happens when this yield stacks with steady deposits — how fast your money starts making its own money. <span class="nc-arrow">Run it →</span></p>
+        </a>
+      </div>
+
+      <div class="cta-banner">
+        <div class="cta-text">
+          <h3>Put every dollar to work</h3>
+          <p>The $1,000 Emergency Fund Starter Pack and the Sinking Funds Visual Tracker — printable systems that turn this one fix into a full cash defense, on Gumroad.</p>
+        </div>
+        <a class="btn" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get the tools →</a>
+      </div>
+
+      <!-- FAQ -->
+      <h2 class="section-title">Straight answers</h2>
+      <div class="faq">
+        <details class="faq-item">
+          <summary>Is my money safe in an online bank? <span class="chev">+</span></summary>
+          <div class="faq-a">
+            Yes — as long as the bank is <strong>FDIC-insured</strong> (or the credit union is NCUA-insured).
+            Your deposits are protected up to <strong>$250,000</strong> per depositor, per bank — the exact same
+            federal protection a big branch bank offers. Before opening any account, verify the bank on the
+            FDIC's BankFind tool and make sure you're on the bank's real website, not a lookalike.
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary>How fast can I get my money in a real emergency? <span class="chev">+</span></summary>
+          <div class="faq-a">
+            Transfers from an online high-yield account to your linked checking account typically take
+            <strong>1–2 business days</strong>. That's why the smart setup is a split: keep a same-day buffer
+            (about one month of essentials) in checking for true right-now emergencies, and park the rest where
+            it earns. Some online banks also offer same-day or instant transfers for a small fee — check before you need it.
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary>What APY is actually realistic right now? <span class="chev">+</span></summary>
+          <div class="faq-a">
+            Regular big-bank savings still sits around <strong>0.01% APY</strong>, while competitive online
+            high-yield savings accounts have recently offered roughly <strong>3.75%–4.25% APY</strong>.
+            These rates are <strong>variable</strong> — they move with the Federal Reserve's rate decisions and
+            can change at any time, up or down. Use the slider above with a rate you can verify on a bank's
+            site today rather than trusting any number printed anywhere, including here.
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary>Will moving my savings hurt my credit or my main bank account? <span class="chev">+</span></summary>
+          <div class="faq-a">
+            No. Opening a savings account is not a loan application — most high-yield accounts use a soft
+            identity check that <strong>doesn't touch your credit score</strong>. You keep your existing checking
+            account, direct deposit, and bill pay exactly as they are; the HYSA just sits alongside them,
+            linked for transfers.
+          </div>
+        </details>
+      </div>
+
+      <footer>
+        <p><strong>Yield Shield</strong> is an educational calculator, not financial advice. Interest projections assume a fixed balance with no deposits or withdrawals, compounded annually. APY figures are examples — bank rates are variable and change over time, so confirm the current rate with the bank before moving money.</p>
+        <p>Only move money to accounts you open yourself at FDIC-insured banks or NCUA-insured credit unions. Never send money to anyone who contacts you promising a guaranteed yield.</p>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var cashInput = $("cashInput"), cashRange = $("cashRange");
+        var apyInput = $("apyInput");
+        var feeToggle = $("feeToggle"), feeDetail = $("feeDetail"), feeInput = $("feeInput");
+        var minToggle = $("minToggle"), minDetail = $("minDetail"), minInput = $("minInput"), minWarn = $("minWarn");
+        var targetRange = $("targetRange"), targetValue = $("targetValue");
+        var access = "1-2day";
+        var CIRC = 351.86;
+
+        var usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+        var usd0 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+        function money(v, forceCents) {
+          if (forceCents || (v > 0 && v < 100)) return usd.format(v);
+          return usd0.format(Math.round(v));
+        }
+        function num(el, fallback) {
+          var v = parseFloat(el.value);
+          return isNaN(v) || v < 0 ? fallback : v;
+        }
+        function setFill(range) {
+          var min = parseFloat(range.min), max = parseFloat(range.max), v = parseFloat(range.value);
+          var pct = max > min ? ((v - min) / (max - min)) * 100 : 0;
+          range.style.setProperty("--fill", pct + "%");
+        }
+
+        /* access pills */
+        var pills = document.querySelectorAll(".pill");
+        pills.forEach(function (p) {
+          p.addEventListener("click", function () {
+            pills.forEach(function (q) { q.setAttribute("aria-pressed", "false"); });
+            p.setAttribute("aria-pressed", "true");
+            access = p.getAttribute("data-access");
+            recalc();
+          });
+        });
+
+        /* toggles */
+        function wireToggle(btn, detail) {
+          btn.addEventListener("click", function () {
+            var on = btn.getAttribute("aria-checked") === "true";
+            btn.setAttribute("aria-checked", String(!on));
+            detail.classList.toggle("open", !on);
+            recalc();
+          });
+        }
+        wireToggle(feeToggle, feeDetail);
+        wireToggle(minToggle, minDetail);
+
+        /* synced inputs */
+        cashInput.addEventListener("input", function () {
+          var v = num(cashInput, 0);
+          if (v <= 50000) { cashRange.value = v; setFill(cashRange); }
+          recalc();
+        });
+        cashRange.addEventListener("input", function () {
+          cashInput.value = cashRange.value;
+          setFill(cashRange);
+          recalc();
+        });
+        [apyInput, feeInput, minInput].forEach(function (el) {
+          el.addEventListener("input", recalc);
+        });
+        targetRange.addEventListener("input", function () {
+          setFill(targetRange);
+          recalc();
+        });
+
+        var LIQ_TEXT = {
+          "sameday": "<strong>Partial match — split it.</strong> HYSA transfers take 1–2 business days, so keep a same-day buffer (about 1 month of essentials) in checking and move the rest. You get instant access where it counts and real yield on the bulk.",
+          "1-2day": "<strong>Perfect match.</strong> A high-yield account's standard 1–2 business day transfer lands exactly inside your access window — you can move the full fund and lose nothing on speed.",
+          "3plus": "<strong>Full match — maximum yield mode.</strong> With 3+ days of slack you're not limited to fast-transfer accounts. You can pick the highest APY on the market, even from banks with slower transfers."
+        };
+
+        function gradeFor(r) {
+          if (r >= 85) return ["FORTRESS", "Fortress-grade"];
+          if (r >= 65) return ["SOLID DEFENSE", "Solid defense"];
+          if (r >= 40) return ["LEAKING", "Leaking"];
+          if (r >= 15) return ["HEAVY BLEED", "Heavy bleed"];
+          return ["BLEEDING OUT", "Bleeding out"];
+        }
+
+        function recalc() {
+          var cash = num(cashInput, 0);
+          var apy = num(apyInput, 0.01);
+          var target = parseFloat(targetRange.value);
+          var feesOn = feeToggle.getAttribute("aria-checked") === "true";
+          var feeDrag = feesOn ? num(feeInput, 0) * 12 : 0;
+          var minOn = minToggle.getAttribute("aria-checked") === "true";
+          var minBal = minOn ? num(minInput, 0) : 0;
+
+          targetValue.textContent = target.toFixed(2) + "%";
+
+          var earnNow = cash * (apy / 100);
+          var earnCould = cash * (target / 100);
+          var interestBleed = Math.max(0, cash * ((target - apy) / 100));
+          var totalBleed = interestBleed + feeDrag;
+          var fvNow = cash * Math.pow(1 + apy / 100, 5);
+          var fvTarget = cash * Math.pow(1 + target / 100, 5);
+          var lostGrowth = Math.max(0, fvTarget - fvNow);
+
+          /* bleed engine */
+          $("totalBleed").textContent = money(totalBleed, true);
+          $("bleedPerDay").textContent = usd.format(totalBleed / 365) + " a day";
+          $("interestBleed").textContent = money(interestBleed, true);
+          $("feeDrag").textContent = money(feeDrag, true);
+          $("earnNow").textContent = money(earnNow, true);
+          $("lostGrowth").textContent = money(lostGrowth);
+          $("barNowVal").textContent = money(earnNow, true) + "/yr";
+          $("barCouldVal").textContent = money(earnCould, true) + "/yr";
+          var maxBar = Math.max(earnCould, earnNow, 1);
+          $("barNow").style.width = Math.max(1.5, (earnNow / maxBar) * 100) + "%";
+          $("barCould").style.width = Math.max(1.5, (earnCould / maxBar) * 100) + "%";
+
+          /* min balance warning */
+          minWarn.classList.toggle("show", minOn && cash < minBal && cash > 0);
+
+          /* rating */
+          var yieldPart = target > 0 ? Math.min(apy / target, 1) * 70 : 70;
+          var feeRatio = cash > 0 ? feeDrag / cash : 0;
+          var feePart = Math.max(0, 15 - feeRatio * 300);
+          if (!feesOn || feeDrag === 0) feePart = 15;
+          var liqPart;
+          if (apy >= 3.5) liqPart = 15;
+          else if (access === "1-2day") liqPart = 13;
+          else if (access === "3plus") liqPart = 14;
+          else liqPart = 9; /* same-day need + low-yield account = worst fit */
+          var rating = Math.round(Math.max(0, Math.min(100, yieldPart + feePart + liqPart)));
+          var grade = gradeFor(rating);
+          $("ratingNum").textContent = rating;
+          $("ratingGrade").textContent = grade[0];
+          $("gaugeFill").style.strokeDashoffset = CIRC * (1 - rating / 100);
+          $("gaugeFill").style.stroke = rating >= 65 ? "var(--green)" : rating >= 40 ? "var(--amber)" : "var(--red)";
+          $("gaugeFill").parentNode.parentNode.setAttribute("aria-label", "Cash Efficiency Rating: " + rating + " out of 100");
+          var rText;
+          if (rating >= 85) rText = "Your cash is working hard and still fully reachable. This is the setup — now protect it and let compounding run.";
+          else if (rating >= 65) rText = "Most of your cash is earning its keep. Tighten the last leaks — fees or a slightly better rate — and you're near fortress level.";
+          else if (rating >= 40) rText = "About half your cash's potential is on the table. A single account move closes most of this gap.";
+          else if (rating >= 15) rText = "Your cash is barely working. The rate gap is costing you real money every single month it sits there.";
+          else rText = "Your cash is basically on unpaid leave. Almost none of it is working for you — but the fix takes about 15 minutes.";
+          $("ratingText").textContent = rText;
+          $("rpYield").style.width = (yieldPart / 70) * 100 + "%";
+          $("rpYieldVal").textContent = Math.round(yieldPart) + "/70";
+          $("rpFee").style.width = (feePart / 15) * 100 + "%";
+          $("rpFeeVal").textContent = Math.round(feePart) + "/15";
+          $("rpLiq").style.width = (liqPart / 15) * 100 + "%";
+          $("rpLiqVal").textContent = Math.round(liqPart) + "/15";
+
+          /* tier selection */
+          var tier, bannerClass;
+          if (apy > 3.5) { tier = 3; bannerClass = "optimized"; }
+          else if (totalBleed > 150) { tier = 1; bannerClass = "severe"; }
+          else if (totalBleed >= 50) { tier = 2; bannerClass = "moderate"; }
+          else { tier = 0; bannerClass = "minor"; }
+
+          var banner = $("tierBanner");
+          banner.className = "tier-banner " + bannerClass;
+          var chip = $("tierChip"), bText = $("tierBannerText");
+          var S = $("strategyBody");
+          var steps = [];
+
+          if (tier === 1) {
+            chip.textContent = "TIER 1 · SEVERE";
+            bText.textContent = "You're losing " + money(totalBleed, true) + " a year — full migration protocol, now.";
+            steps = [
+              "Open the new account first — <strong>before</strong> moving a dollar, so there's no gap in your safety net.",
+              "Link your existing checking account inside the new bank's app (takes 1–2 small verification deposits or an instant login link).",
+              "Transfer the bulk of your fund over. Keep only a same-day buffer in checking.",
+              "Set an <strong>automatic transfer every payday</strong> — even $25 a check keeps the fund growing on its own.",
+              "Once the transfer lands, confirm the APY on your first statement. Done — your shield is up."
+            ];
+            S.innerHTML =
+              "<h3>HYSA Migration Protocol</h3>" +
+              "<p class='strat-sub'>At this bleed rate, waiting a year costs you another " + money(totalBleed, true) + ". The move itself takes about 15 minutes online.</p>" +
+              "<ol class='steps-list'>" + steps.map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ol>" +
+              "<div class='lookfor'><h4>What to look for in the account</h4><div class='chip-row'>" +
+              "<span class='chip'><b>FDIC</b> insured to $250k</span>" +
+              "<span class='chip'><b>$0</b> monthly fees</span>" +
+              "<span class='chip'><b>$0</b> minimum to open</span>" +
+              "<span class='chip'><b>1–2 day</b> transfers</span>" +
+              "<span class='chip'><b>APY</b> near " + target.toFixed(2) + "%</span>" +
+              "</div></div>";
+          } else if (tier === 2 || tier === 0) {
+            var monthlyDefault = 1800;
+            chip.textContent = tier === 2 ? "TIER 2 · MODERATE" : "TIER 2 · SMALL LEAK";
+            bText.textContent = tier === 2
+              ? "A " + money(totalBleed, true) + "/yr leak — split the fund, keep the buffer, bank the yield."
+              : "Your leak is under $50/yr — the split below still puts every spare dollar to work.";
+            steps = [
+              "Keep <strong>one month of essentials</strong> in checking — instant access, zero stress.",
+              "Move everything above that buffer into a high-yield savings account.",
+              "Route each payday's surplus straight to the HYSA before it gets spent.",
+              "Re-check the split every few months as your balance grows."
+            ];
+            S.innerHTML =
+              "<h3>Dual-Tier Buffer Split</h3>" +
+              "<p class='strat-sub'>You don't have to move everything. Protect your same-day access with a checking buffer, and let the rest earn real yield.</p>" +
+              "<ol class='steps-list'>" + steps.map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ol>" +
+              "<div class='split-calc'>" +
+                "<label class='field-label' for='expensesInput'>Your monthly essentials (rent, bills, gas, food)</label>" +
+                "<div class='money-input' style='max-width:280px;'><span class='prefix'>$</span>" +
+                "<input type='number' id='expensesInput' inputmode='decimal' min='0' step='50' value='" + monthlyDefault + "' /></div>" +
+                "<div class='split-results'>" +
+                  "<div class='split-box keep'><div class='sb-label'>Stays in checking</div><div class='sb-value' id='splitKeep'>—</div></div>" +
+                  "<div class='split-box move'><div class='sb-label'>Moves to HYSA</div><div class='sb-value' id='splitMove'>—</div></div>" +
+                "</div>" +
+              "</div>";
+            var expEl = $("expensesInput");
+            var updSplit = function () {
+              var exp = num(expEl, 0);
+              var keep = Math.min(exp, cash);
+              $("splitKeep").textContent = money(keep);
+              $("splitMove").textContent = money(Math.max(0, cash - keep));
+            };
+            expEl.addEventListener("input", updSplit);
+            updSplit();
+            steps = [
+              "Keep " + money(Math.min(monthlyDefault, cash)) + " (1 month of essentials) in checking for same-day access.",
+              "Move the rest — " + money(Math.max(0, cash - monthlyDefault)) + " — into an FDIC-insured HYSA at ~" + target.toFixed(2) + "% APY.",
+              "Auto-transfer each payday's surplus to the HYSA.",
+              "Re-check the split quarterly."
+            ];
+          } else {
+            chip.textContent = "TIER 3 · OPTIMIZED";
+            bText.textContent = "You're already earning " + apy.toFixed(2) + "% — now make the interest itself go to work.";
+            steps = [
+              "Sweep each month's interest payment into a named <strong>sinking fund</strong> (car repairs, holidays, annual bills) instead of letting it sit.",
+              "Turn on <strong>automatic payday deposits</strong> — yield on a growing balance compounds faster every month.",
+              "Re-shop your APY every quarter. If a competitor beats your rate by 0.50%+, moving takes 15 minutes.",
+              "Watch for fee creep and minimum-balance traps as your balance grows — your terms can change."
+            ];
+            S.innerHTML =
+              "<h3>Yield Fortification</h3>" +
+              "<p class='strat-sub'>Your shield is up. This tier is about offense: capturing the interest you earn and aiming it at the bills that used to ambush you.</p>" +
+              "<ol class='steps-list'>" + steps.map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ol>" +
+              "<div class='lookfor'><h4>Fortification checklist</h4><div class='chip-row'>" +
+              "<span class='chip'>Interest → <b>sinking funds</b></span>" +
+              "<span class='chip'><b>Auto-deposit</b> every payday</span>" +
+              "<span class='chip'><b>Quarterly</b> rate check</span>" +
+              "<span class='chip'><b>$0</b> fee tolerance</span>" +
+              "</div></div>";
+          }
+
+          /* blueprint */
+          $("bpBleed").textContent = money(interestBleed, true);
+          $("bpBleedSub").textContent = feeDrag > 0 ? "plus " + money(feeDrag, true) + " in bank fees" : "interest only — no fee drag";
+          $("bpFive").textContent = money(lostGrowth);
+          $("bpRating").textContent = rating + " / 100";
+          $("bpRatingSub").textContent = grade[1];
+          if (tier === 3) {
+            $("bpFix").textContent = "Fortify at " + apy.toFixed(2) + "% APY";
+            $("bpFixSub").textContent = "Sweep interest into sinking funds";
+          } else {
+            $("bpFix").textContent = "Move to a " + target.toFixed(2) + "% HYSA";
+            $("bpFixSub").textContent = tier === 1 ? "Full migration — Tier 1 protocol" : "Buffer split — Tier 2 protocol";
+          }
+          $("bpLiq").innerHTML = LIQ_TEXT[access];
+          $("bpSteps").innerHTML = steps.slice(0, 4).map(function (s) { return "<li>" + s + "</li>"; }).join("");
+
+          /* copy blueprint */
+          window.__blueprintText =
+            "MY APY YIELD DEFENSE BLUEPRINT (Yield Shield)\n" +
+            "Cash sitting idle: " + money(cash) + " at " + apy.toFixed(2) + "% APY\n" +
+            "Annual interest lost: " + money(interestBleed, true) + (feeDrag > 0 ? " + " + money(feeDrag, true) + " in fees" : "") + "\n" +
+            "5-year lost growth: " + money(lostGrowth) + "\n" +
+            "Cash Efficiency Rating: " + rating + "/100 (" + grade[1] + ")\n" +
+            "Liquidity: " + $("bpLiq").textContent + "\n" +
+            "Plan: " + $("bpFix").textContent;
+        }
+
+        $("copyBtn").addEventListener("click", function () {
+          var note = $("copyNote");
+          var done = function () { note.textContent = "Copied — paste it anywhere."; };
+          var fail = function () { note.textContent = "Copy blocked here — screenshot the card instead."; };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(window.__blueprintText || "").then(done, fail);
+          } else { fail(); }
+          setTimeout(function () { note.textContent = ""; }, 4000);
+        });
+
+        setFill(cashRange);
+        setFill(targetRange);
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

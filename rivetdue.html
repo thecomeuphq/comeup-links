@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="RivetDue — construction receivables, followed through. Keep invoices, retainage, and payment blockers moving without making collections your second job." />
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <title>RivetDue — Construction receivables, followed through</title>
+    <style>
+      :root {
+        --paper: #faf6ef;
+        --paper-2: #f2ecdf;
+        --card: #fffdf8;
+        --ink: #1d1a15;
+        --ink-2: #57503f;
+        --ink-3: #8a8171;
+        --line: #ddd3bf;
+        --line-strong: #c9bc9f;
+        --accent: #d9500b;
+        --accent-ink: #b23f06;
+        --accent-soft: #fbe9dc;
+        --ok: #2e7d4f;
+        --ok-soft: #e2efe4;
+        --warn: #a56a00;
+        --warn-soft: #f7ecd2;
+        --shadow: 0 24px 60px -24px rgba(52, 38, 14, 0.28), 0 4px 14px -6px rgba(52, 38, 14, 0.14);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --paper: #16130f;
+          --paper-2: #1e1a15;
+          --card: #211c16;
+          --ink: #f3ecdd;
+          --ink-2: #c4bba6;
+          --ink-3: #8d8471;
+          --line: #38312a;
+          --line-strong: #4d4437;
+          --accent: #f06a1e;
+          --accent-ink: #ff8a47;
+          --accent-soft: #3a2413;
+          --ok: #6fc78f;
+          --ok-soft: #1e3325;
+          --warn: #e0b45c;
+          --warn-soft: #3a2f16;
+          --shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7), 0 4px 14px -6px rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Archivo", system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      ::selection { background: var(--accent); color: #fff; }
+
+      .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+      em.accent-serif {
+        font-family: "Newsreader", Georgia, serif;
+        font-style: italic;
+        font-weight: 500;
+        color: var(--accent-ink);
+        letter-spacing: -0.01em;
+      }
+
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+      /* ---------- Header ---------- */
+      header.site {
+        position: sticky; top: 0; z-index: 50;
+        background: color-mix(in srgb, var(--paper) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .site-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+      .wordmark { font-weight: 800; font-size: 21px; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 9px; }
+      .wordmark .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: inset 0 0 0 2.5px var(--paper); outline: 2px solid var(--accent); }
+      .site-nav { display: flex; align-items: center; gap: 28px; }
+      .site-nav a.navlink { color: var(--ink-2); text-decoration: none; font-size: 14.5px; font-weight: 500; }
+      .site-nav a.navlink:hover { color: var(--ink); }
+      @media (max-width: 640px) { .site-nav a.navlink { display: none; } }
+      @media (max-width: 640px) {
+        .hero-meta .rule { display: none; }
+        .hero-meta .audience { flex-basis: 100%; }
+      }
+
+      .btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: var(--accent); color: #fff;
+        font-weight: 600; font-size: 15px; text-decoration: none;
+        padding: 11px 20px; border-radius: 999px; border: 1px solid var(--accent);
+        transition: transform 0.15s ease, background 0.15s ease;
+      }
+      .btn:hover { background: var(--accent-ink); transform: translateY(-1px); }
+      .btn.small { padding: 8px 16px; font-size: 14px; }
+      .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+      .btn.ghost:hover { border-color: var(--ink); background: transparent; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 72px 0 0; position: relative; overflow: hidden; }
+      .hero::before {
+        content: ""; position: absolute; inset: 0;
+        background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 56px 56px; opacity: 0.28;
+        mask-image: radial-gradient(ellipse 90% 62% at 50% 0%, black 30%, transparent 78%);
+        -webkit-mask-image: radial-gradient(ellipse 90% 62% at 50% 0%, black 30%, transparent 78%);
+        pointer-events: none;
+      }
+      .hero .wrap { position: relative; }
+      .eyebrow {
+        font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600;
+        letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-ink);
+        display: inline-flex; align-items: center; gap: 10px; margin: 0 0 22px;
+      }
+      .eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--accent); }
+      h1 {
+        font-size: clamp(42px, 6.4vw, 76px); line-height: 1.02; letter-spacing: -0.035em;
+        font-weight: 800; margin: 0 0 22px; max-width: 15ch;
+      }
+      .hero-sub { font-size: clamp(18px, 2.2vw, 21px); color: var(--ink-2); max-width: 52ch; margin: 0 0 28px; }
+      .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-bottom: 56px; }
+      .hero-meta .audience { font-size: 15px; color: var(--ink-2); display: inline-flex; align-items: center; gap: 10px; }
+      .hero-meta .audience strong { color: var(--ink); font-weight: 600; }
+      .hero-meta .rule { width: 1px; height: 20px; background: var(--line-strong); }
+
+      /* ---------- Dashboard ---------- */
+      .dash-stage { position: relative; max-width: 920px; margin: 0 auto; }
+      .dash {
+        background: var(--card); border: 1px solid var(--line-strong); border-radius: 18px;
+        box-shadow: var(--shadow); overflow: hidden; text-align: left;
+      }
+      .dash-top {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 14px 20px; border-bottom: 1px solid var(--line);
+        background: var(--paper-2);
+      }
+      .dash-brand { font-weight: 800; letter-spacing: -0.03em; font-size: 16px; display: inline-flex; align-items: center; gap: 8px; }
+      .dash-brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: inset 0 0 0 2px var(--paper-2); outline: 2px solid var(--accent); }
+      .dash-sync { display: inline-flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--ink-3); font-family: "IBM Plex Mono", monospace; }
+      .dash-sync .live { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+      .avatar {
+        width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff;
+        display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; font-family: "Archivo", sans-serif;
+      }
+      .dash-body { padding: 26px 28px 22px; }
+      .dash-kicker { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--ink-3); margin: 0 0 6px; }
+      .dash-greet { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin-bottom: 22px; }
+      .dash-greet h2 { font-size: 26px; letter-spacing: -0.02em; margin: 0; font-weight: 700; }
+      .dash-greet p { margin: 2px 0 0; color: var(--ink-2); font-size: 15px; }
+      .sample-tag {
+        font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em;
+        color: var(--accent-ink); background: var(--accent-soft); border: 1px dashed var(--accent);
+        padding: 4px 9px; border-radius: 6px; white-space: nowrap;
+      }
+      .dash-stats { display: grid; grid-template-columns: 1.2fr 1fr auto; gap: 14px; margin-bottom: 26px; }
+      .stat { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; background: var(--paper); }
+      .stat .label { font-size: 13px; color: var(--ink-2); display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+      .stat .label .count { font-family: "IBM Plex Mono", monospace; font-weight: 600; color: var(--accent-ink); font-size: 15px; }
+      .stat .big { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
+      .stat .sub { font-size: 13px; color: var(--ink-3); }
+      .stat.queue { display: flex; align-items: center; }
+      .stat.queue a { color: var(--accent-ink); font-weight: 600; font-size: 14.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+      .stat.queue a:hover { text-decoration: underline; }
+      .dash-list-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+      .dash-list-head h3 { font-size: 15.5px; margin: 0; font-weight: 700; }
+      .dash-list-head span { font-size: 13px; color: var(--ink-3); }
+      .dash-list-head a { font-size: 13.5px; color: var(--accent-ink); text-decoration: none; font-weight: 600; }
+      .inv-row {
+        display: grid; grid-template-columns: 1fr auto auto; gap: 6px 18px; align-items: center;
+        padding: 14px 2px; border-top: 1px solid var(--line);
+      }
+      .inv-row .who { font-weight: 600; font-size: 15.5px; }
+      .inv-row .meta { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-3); }
+      .inv-row .amt { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 16px; text-align: right; }
+      .pill {
+        font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+      }
+      .pill.nudge { background: var(--accent-soft); color: var(--accent-ink); }
+      .pill.wait { background: var(--warn-soft); color: var(--warn); }
+      .pill.sent { background: var(--ok-soft); color: var(--ok); }
+      .dash-foot { padding: 13px 28px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+      .float-card {
+        position: absolute; right: -34px; bottom: 64px; width: 238px;
+        background: var(--card); border: 1px solid var(--line-strong); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 14px 16px; text-align: left;
+      }
+      .float-card .fc-head { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+      .float-card .fc-head .bang {
+        width: 20px; height: 20px; border-radius: 6px; background: var(--warn-soft); color: var(--warn);
+        display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex: none;
+      }
+      .float-card p { margin: 0; font-size: 13px; color: var(--ink-2); }
+      .hero-note { text-align: center; color: var(--ink-3); font-size: 15px; margin: 34px auto 0; }
+      .scroll-cue {
+        text-align: center; font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.22em;
+        color: var(--ink-3); padding: 26px 0 8px;
+      }
+      @media (max-width: 1080px) { .float-card { display: none; } }
+      @media (max-width: 720px) {
+        .dash-stats { grid-template-columns: 1fr; }
+        .dash-body { padding: 20px 18px 16px; }
+        .dash-foot { padding: 12px 18px; }
+        .inv-row { grid-template-columns: 1fr auto; }
+        .inv-row .pill { grid-column: 1 / -1; justify-self: start; }
+        .hero { padding-top: 48px; }
+      }
+
+      /* ---------- Ticker strip ---------- */
+      .ticker {
+        border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong);
+        background: var(--paper-2); overflow: hidden; margin-top: 26px;
+      }
+      .ticker-track {
+        display: flex; gap: 0; white-space: nowrap; width: max-content;
+        animation: tick 34s linear infinite; padding: 13px 0;
+      }
+      .ticker:hover .ticker-track { animation-play-state: paused; }
+      .ticker-track span {
+        font-family: "IBM Plex Mono", monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+        padding: 0 14px; color: var(--ink-2);
+      }
+      .ticker-track span b { color: var(--accent-ink); font-weight: 600; }
+      .ticker-track .lead { color: var(--ink); font-weight: 600; }
+      @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+      /* ---------- Sections ---------- */
+      section.block { padding: 96px 0 8px; }
+      .sec-head { display: grid; grid-template-columns: 1fr; gap: 6px; max-width: 760px; margin-bottom: 46px; }
+      .sec-kicker {
+        font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--ink-3); display: flex; align-items: center; gap: 12px; margin: 0 0 14px;
+      }
+      .sec-kicker b { color: var(--accent-ink); font-weight: 600; }
+      h2.sec-title { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; letter-spacing: -0.03em; font-weight: 800; margin: 0 0 16px; }
+      .sec-lede { font-size: 18.5px; color: var(--ink-2); margin: 0; max-width: 58ch; }
+
+      /* Steps */
+      .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      .step {
+        border: 1px solid var(--line); border-radius: var(--radius); background: var(--card);
+        padding: 26px 24px 22px; position: relative;
+      }
+      .step .num {
+        font-family: "IBM Plex Mono", monospace; font-size: 13px; font-weight: 600; color: var(--accent-ink);
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 42px;
+      }
+      .step .num .arrow { color: var(--ink-3); font-size: 16px; }
+      .step h3 { font-size: 20px; letter-spacing: -0.015em; margin: 0 0 10px; font-weight: 700; }
+      .step p { margin: 0 0 18px; color: var(--ink-2); font-size: 15.5px; }
+      .step .tag {
+        font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--ink-2); border-top: 1px dashed var(--line-strong); padding-top: 13px; display: block;
+      }
+      @media (max-width: 820px) { .steps { grid-template-columns: 1fr; } .step .num { margin-bottom: 20px; } }
+
+      /* Invoice detail */
+      .detail-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 44px; align-items: center; }
+      .detail-side .aside-note {
+        font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--ink-3); margin-top: 26px; display: block;
+      }
+      .invoice-card {
+        background: var(--card); border: 1px solid var(--line-strong); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden;
+      }
+      .invoice-card .ic-top { padding: 20px 24px 16px; border-bottom: 1px solid var(--line); }
+      .ic-top .ref { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: 0.1em; color: var(--ink-3); display: flex; justify-content: space-between; align-items: center; }
+      .status-open {
+        font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+        color: var(--accent-ink); background: var(--accent-soft); padding: 3px 9px; border-radius: 5px;
+      }
+      .ic-top h3 { font-size: 22px; margin: 8px 0 0; letter-spacing: -0.02em; }
+      .ic-balance { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 24px; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 6px; }
+      .ic-balance .lbl { font-size: 13.5px; color: var(--ink-2); }
+      .ic-balance .val { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+      .ic-balance .due { font-size: 13px; color: var(--accent-ink); font-weight: 600; width: 100%; text-align: right; margin-top: -4px; }
+      .ic-blockers { padding: 18px 24px 8px; }
+      .ic-blockers .bh { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.16em; color: var(--ink-3); display: flex; justify-content: space-between; margin-bottom: 12px; }
+      .blocker { display: flex; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); align-items: flex-start; }
+      .blocker:first-of-type { border-top: none; }
+      .blocker .ic {
+        width: 26px; height: 26px; border-radius: 7px; flex: none; display: inline-flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 14px;
+      }
+      .blocker .ic.warn { background: var(--warn-soft); color: var(--warn); }
+      .blocker .ic.doc { background: var(--paper-2); color: var(--ink-2); border: 1px solid var(--line); font-size: 12px; }
+      .blocker b { font-size: 15px; display: block; }
+      .blocker span { font-size: 13px; color: var(--ink-3); }
+      .ic-next {
+        margin: 14px 24px 22px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 10px;
+        padding: 13px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      }
+      .ic-next .nl { font-size: 12.5px; color: var(--ink-3); font-family: "IBM Plex Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+      .ic-next .nv { font-weight: 700; font-size: 15.5px; }
+      .ic-next .when { font-size: 13px; color: var(--accent-ink); font-weight: 600; }
+      @media (max-width: 860px) { .detail-grid { grid-template-columns: 1fr; gap: 30px; } }
+
+      /* Features */
+      .features { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--line-strong); }
+      .feature { padding: 30px 30px 30px 0; border-bottom: 1px solid var(--line); }
+      .feature:nth-child(even) { padding-left: 30px; padding-right: 0; border-left: 1px solid var(--line); }
+      .feature .fnum { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--accent-ink); font-weight: 600; }
+      .feature h3 { font-size: 21px; letter-spacing: -0.015em; margin: 10px 0 8px; font-weight: 700; }
+      .feature p { margin: 0; color: var(--ink-2); font-size: 16px; max-width: 42ch; }
+      @media (max-width: 720px) {
+        .features { grid-template-columns: 1fr; }
+        .feature, .feature:nth-child(even) { padding: 24px 0; border-left: none; }
+      }
+
+      /* CTA */
+      .cta-block { padding: 110px 0 90px; }
+      .cta-card {
+        background: var(--ink); color: var(--paper); border-radius: 22px; padding: 64px 56px;
+        position: relative; overflow: hidden;
+      }
+      @media (prefers-color-scheme: dark) { .cta-card { background: var(--paper-2); border: 1px solid var(--line-strong); } }
+      .cta-card::after {
+        content: ""; position: absolute; right: -70px; top: -70px; width: 280px; height: 280px; border-radius: 50%;
+        border: 44px solid var(--accent); opacity: 0.22; pointer-events: none;
+      }
+      .cta-card .sec-kicker { color: color-mix(in srgb, var(--paper) 55%, transparent); }
+      .cta-card .sec-kicker b { color: var(--accent); }
+      .cta-card h2 { font-size: clamp(32px, 4.6vw, 52px); line-height: 1.06; letter-spacing: -0.03em; font-weight: 800; margin: 0 0 16px; max-width: 16ch; }
+      .cta-card h2 em.accent-serif { color: var(--accent); }
+      .cta-card p { color: color-mix(in srgb, var(--paper) 78%, transparent); font-size: 18px; max-width: 52ch; margin: 0 0 32px; }
+      .cta-card .btn { background: var(--accent); border-color: var(--accent); position: relative; z-index: 1; }
+      .cta-card .btn.alt {
+        background: transparent; border-color: color-mix(in srgb, var(--paper) 38%, transparent); color: var(--paper);
+        margin-top: 26px;
+      }
+      .cta-card .btn.alt:hover { background: color-mix(in srgb, var(--paper) 10%, transparent); border-color: var(--paper); }
+      @media (max-width: 640px) { .cta-card { padding: 44px 28px; } }
+
+      /* Waitlist form (inside CTA card) */
+      .waitlist { position: relative; z-index: 1; max-width: 620px; }
+      .waitlist .wl-title {
+        font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 600; letter-spacing: 0.16em;
+        text-transform: uppercase; color: color-mix(in srgb, var(--paper) 62%, transparent);
+        display: flex; align-items: center; gap: 14px; margin: 0 0 18px; max-width: none;
+      }
+      .waitlist .wl-title::after { content: ""; flex: 1; height: 1px; background: color-mix(in srgb, var(--paper) 22%, transparent); }
+      .wl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .wl-field { display: flex; flex-direction: column; gap: 6px; }
+      .wl-field.full { grid-column: 1 / -1; }
+      .wl-field label { font-size: 13.5px; font-weight: 600; color: var(--paper); }
+      .wl-field label .opt { font-weight: 400; color: color-mix(in srgb, var(--paper) 55%, transparent); }
+      .wl-field input {
+        font: inherit; font-size: 15.5px; color: var(--paper); width: 100%;
+        background: color-mix(in srgb, var(--paper) 7%, transparent);
+        border: 1px solid color-mix(in srgb, var(--paper) 28%, transparent);
+        border-radius: 10px; padding: 11px 14px;
+      }
+      .wl-field input::placeholder { color: color-mix(in srgb, var(--paper) 45%, transparent); }
+      .wl-field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+      .waitlist button.btn { font-family: inherit; cursor: pointer; margin-top: 18px; }
+      .waitlist .wl-note { font-size: 13.5px; color: color-mix(in srgb, var(--paper) 58%, transparent); margin: 12px 0 0; max-width: none; }
+      @media (max-width: 640px) { .wl-grid { grid-template-columns: 1fr; } }
+
+      footer.site { border-top: 1px solid var(--line); padding: 26px 0 34px; }
+      .foot-inner { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+      footer.site p { margin: 0; font-size: 14px; color: var(--ink-3); }
+      footer.site .wordmark { font-size: 17px; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ticker-track { animation: none; }
+        html { scroll-behavior: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap site-inner">
+        <a class="wordmark" href="#top"><span class="dot" aria-hidden="true"></span>rivetdue</a>
+        <nav class="site-nav" aria-label="Site">
+          <a class="navlink" href="#how">How it works</a>
+          <a class="navlink" href="#blockers">Payment blockers</a>
+          <a class="navlink" href="#features">Features</a>
+          <a class="btn small" href="mailto:leroybradley7@gmail.com?subject=RivetDue%20%E2%80%94%20let%27s%20talk%20receivables">Start a conversation</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- ============ HERO ============ -->
+      <div class="hero">
+        <div class="wrap">
+          <p class="eyebrow">Receivables, built for the trades</p>
+          <h1>Construction receivables, <em class="accent-serif">followed&nbsp;through.</em></h1>
+          <p class="hero-sub">Keep invoices, retainage, and payment blockers moving without making collections your second job.</p>
+          <div class="hero-meta">
+            <a class="btn" href="mailto:leroybradley7@gmail.com?subject=RivetDue%20%E2%80%94%20let%27s%20talk%20receivables">Start a conversation</a>
+            <span class="rule" aria-hidden="true"></span>
+            <span class="audience">Made for <strong>specialty subcontractors</strong> · 5–50 person teams</span>
+          </div>
+
+          <!-- Sample dashboard -->
+          <div class="dash-stage reveal">
+            <div class="dash" role="img" aria-label="Illustrative RivetDue dashboard showing $82,640 in open receivables across 12 invoices, with three sample invoices needing follow-up.">
+              <div class="dash-top">
+                <span class="dash-brand"><span class="dot" aria-hidden="true"></span>rivetdue</span>
+                <span class="dash-sync"><span class="live" aria-hidden="true"></span>Synced just now <span class="avatar" aria-hidden="true">MC</span></span>
+              </div>
+              <div class="dash-body">
+                <p class="dash-kicker">YOUR RECEIVABLES</p>
+                <div class="dash-greet">
+                  <div>
+                    <h2>Good morning, Maya</h2>
+                    <p>Here’s what needs your attention.</p>
+                  </div>
+                  <span class="sample-tag">SAMPLE DATA</span>
+                </div>
+                <div class="dash-stats">
+                  <div class="stat">
+                    <div class="label">Open receivables</div>
+                    <div class="big">$82,640</div>
+                    <div class="sub">Across 12 invoices</div>
+                  </div>
+                  <div class="stat">
+                    <div class="label">Needs a follow-up <span class="count">03</span></div>
+                    <div class="big">3 invoices</div>
+                    <div class="sub">Next step is ready</div>
+                  </div>
+                  <div class="stat queue">
+                    <a href="#how">Review today’s queue <span aria-hidden="true">→</span></a>
+                  </div>
+                </div>
+                <div class="dash-list-head">
+                  <h3>Payment follow-through</h3>
+                  <span>Sample invoices that need a next step</span>
+                  <a href="#blockers">View all</a>
+                </div>
+                <div class="inv-row">
+                  <div>
+                    <div class="who">Westline Mechanical</div>
+                    <div class="meta">INV-1048 · Due 12 days ago</div>
+                  </div>
+                  <div class="amt">$8,420</div>
+                  <span class="pill nudge">Ready to nudge</span>
+                </div>
+                <div class="inv-row">
+                  <div>
+                    <div class="who">Northstar Electric</div>
+                    <div class="meta">INV-1032 · Retainage</div>
+                  </div>
+                  <div class="amt">$4,875</div>
+                  <span class="pill wait">Awaiting approval</span>
+                </div>
+                <div class="inv-row">
+                  <div>
+                    <div class="who">Harbor Fire Systems</div>
+                    <div class="meta">INV-1019 · Due 3 days ago</div>
+                  </div>
+                  <div class="amt">$2,160</div>
+                  <span class="pill sent">Follow-up sent</span>
+                </div>
+              </div>
+              <div class="dash-foot">
+                <span>You stay in control of every follow-up.</span>
+                <span>Illustrative dashboard</span>
+              </div>
+            </div>
+            <aside class="float-card" aria-hidden="true">
+              <div class="fc-head"><span class="bang">!</span>Blocker captured</div>
+              <p>Missing sign-off · 2 days ago</p>
+            </aside>
+          </div>
+
+          <p class="hero-note">A clearer picture of what’s outstanding.</p>
+          <p class="scroll-cue">SCROLL TO EXPLORE ↓</p>
+        </div>
+      </div>
+
+      <!-- Ticker -->
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track" id="tickerTrack">
+          <span class="lead">One place for the work after the invoice.</span>
+          <span><b>01</b> Open invoices</span><span>·</span>
+          <span><b>02</b> Retainage</span><span>·</span>
+          <span><b>03</b> Payment blockers</span><span>·</span>
+          <span><b>04</b> Follow-ups</span><span>·</span>
+        </div>
+      </div>
+
+      <!-- ============ 01 · HOW IT WORKS ============ -->
+      <section class="block" id="how">
+        <div class="wrap">
+          <div class="sec-head reveal">
+            <p class="sec-kicker"><b>01</b> A steadier way to collect</p>
+            <h2 class="sec-title">From invoice sent to <em class="accent-serif">next step taken.</em></h2>
+            <p class="sec-lede">RivetDue brings the moving pieces of getting paid into one clear, working view—so nothing gets lost between the books, the inbox, and the job.</p>
+          </div>
+          <div class="steps">
+            <article class="step reveal">
+              <div class="num"><span>01</span><span class="arrow" aria-hidden="true">↔</span></div>
+              <h3>Bring the picture together</h3>
+              <p>Connect your accounting software and email. RivetDue organizes what’s open, what’s aging, and what’s being held back.</p>
+              <span class="tag">Invoices + inbox, together</span>
+            </article>
+            <article class="step reveal">
+              <div class="num"><span>02</span><span class="arrow" aria-hidden="true">→</span></div>
+              <h3>See what’s holding payment</h3>
+              <p>Keep retainage, approvals, missing paperwork, and other blockers beside the invoice they affect—with a clear next action.</p>
+              <span class="tag">Every hold-up has a place</span>
+            </article>
+            <article class="step reveal">
+              <div class="num"><span>03</span><span class="arrow" aria-hidden="true">→</span></div>
+              <h3>Follow up on your terms</h3>
+              <p>Set the timing and tone for payment reminders. Review the queue and keep your team in control of what goes out.</p>
+              <span class="tag">Configurable reminders</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 02 · BLOCKERS ============ -->
+      <section class="block" id="blockers">
+        <div class="wrap">
+          <div class="detail-grid">
+            <div class="detail-side reveal">
+              <p class="sec-kicker"><b>02</b> Built for how construction gets paid</p>
+              <h2 class="sec-title">Because “sent” is only <em class="accent-serif">the beginning.</em></h2>
+              <p class="sec-lede">Payment can depend on an approval, a waiver, a sign-off, or someone getting back to you. RivetDue gives those details a home right next to the money you’re waiting on.</p>
+              <span class="aside-note">Make room for follow-through</span>
+            </div>
+            <div class="invoice-card reveal" role="img" aria-label="Sample invoice INV-1048 for Westline Mechanical: $8,420 outstanding, due 12 days ago, held up by a pending GC approval and a requested conditional waiver. Next step: check in on approval, today.">
+              <div class="ic-top">
+                <div class="ref"><span>INVOICE · INV-1048</span><span class="status-open">OPEN</span></div>
+                <h3>Westline Mechanical</h3>
+              </div>
+              <div class="ic-balance">
+                <span class="lbl">Outstanding balance</span>
+                <span class="val">$8,420.00</span>
+                <span class="due">Due 12 days ago</span>
+              </div>
+              <div class="ic-blockers">
+                <div class="bh"><span>WHAT’S HOLDING THIS UP</span><span>02</span></div>
+                <div class="blocker">
+                  <span class="ic warn" aria-hidden="true">!</span>
+                  <div><b>Approval pending</b><span>GC review · Added 2 days ago</span></div>
+                </div>
+                <div class="blocker">
+                  <span class="ic doc" aria-hidden="true">▤</span>
+                  <div><b>Waiver requested</b><span>Conditional · Sent 4 days ago</span></div>
+                </div>
+              </div>
+              <div class="ic-next">
+                <div>
+                  <div class="nl">Next step</div>
+                  <div class="nv">Check in on approval</div>
+                </div>
+                <span class="when">Today</span>
+              </div>
+            </div>
+          </div>
+          <p class="mono reveal" style="text-align:center; font-size:11.5px; letter-spacing:0.18em; color:var(--ink-3); margin-top:44px;">ONE JOB AT A TIME</p>
+        </div>
+      </section>
+
+      <!-- ============ 03 · FEATURES ============ -->
+      <section class="block" id="features">
+        <div class="wrap">
+          <div class="sec-head reveal">
+            <p class="sec-kicker"><b>03</b> A tool that knows the work</p>
+            <h2 class="sec-title">Less chasing. <em class="accent-serif">More visibility.</em></h2>
+            <p class="sec-lede">Your crew keeps the job moving. RivetDue helps keep the paperwork and payments moving with it.</p>
+          </div>
+          <div class="features">
+            <div class="feature reveal">
+              <span class="fnum">/ 01</span>
+              <h3>One receivables view</h3>
+              <p>See open invoices and retainage without stitching together spreadsheets and email threads.</p>
+            </div>
+            <div class="feature reveal">
+              <span class="fnum">/ 02</span>
+              <h3>Your process, your rules</h3>
+              <p>Set follow-up timing that fits your customer relationships and your team’s way of working.</p>
+            </div>
+            <div class="feature reveal">
+              <span class="fnum">/ 03</span>
+              <h3>Blockers with context</h3>
+              <p>Keep what’s missing, who owns it, and what happens next attached to the payment.</p>
+            </div>
+            <div class="feature reveal">
+              <span class="fnum">/ 04</span>
+              <h3>Built for smaller teams</h3>
+              <p>Practical follow-through for specialty contractors—not another system that needs a full-time admin.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 04 · CTA ============ -->
+      <section class="cta-block">
+        <div class="wrap">
+          <div class="cta-card reveal">
+            <p class="sec-kicker"><b>04</b> A little more room to build</p>
+            <h2>Let’s get your <em class="accent-serif">receivables moving.</em></h2>
+            <p>Tell us how your team handles follow-ups today. We’ll show you where RivetDue can help.</p>
+            <form class="waitlist" id="waitlistForm">
+              <p class="wl-title">Join the waitlist</p>
+              <div class="wl-grid">
+                <div class="wl-field">
+                  <label for="wl-name">Name</label>
+                  <input id="wl-name" name="name" type="text" autocomplete="name" required placeholder="Your name" />
+                </div>
+                <div class="wl-field">
+                  <label for="wl-company">Company name</label>
+                  <input id="wl-company" name="company" type="text" autocomplete="organization" required placeholder="Company name" />
+                </div>
+                <div class="wl-field full">
+                  <label for="wl-email">Email</label>
+                  <input id="wl-email" name="email" type="email" autocomplete="email" required placeholder="you@company.com" />
+                </div>
+                <div class="wl-field full">
+                  <label for="wl-volume">Approximate monthly invoice volume <span class="opt">(optional)</span></label>
+                  <input id="wl-volume" name="volume" type="text" inputmode="numeric" placeholder="e.g. 30 invoices a month" />
+                </div>
+              </div>
+              <button class="btn" type="submit">Join the waitlist</button>
+              <p class="wl-note">Submitting opens your email app with your details filled in — just hit send.</p>
+            </form>
+            <a class="btn alt" href="mailto:leroybradley7@gmail.com?subject=RivetDue%20%E2%80%94%20let%27s%20talk%20receivables">Start a conversation</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site">
+      <div class="wrap foot-inner">
+        <a class="wordmark" href="#top"><span class="dot" aria-hidden="true"></span>rivetdue</a>
+        <p>Made for the teams doing the work.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Duplicate ticker content so the loop is seamless.
+      (function () {
+        var track = document.getElementById('tickerTrack');
+        if (track) { track.innerHTML += track.innerHTML; }
+      })();
+
+      // Waitlist form: hand the signup off to the visitor's email app.
+      (function () {
+        var form = document.getElementById('waitlistForm');
+        if (!form) { return; }
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (!form.reportValidity()) { return; }
+          function val(id) { return document.getElementById(id).value.trim(); }
+          var volume = val('wl-volume');
+          var lines = [
+            'Name: ' + val('wl-name'),
+            'Company: ' + val('wl-company'),
+            'Email: ' + val('wl-email'),
+            'Approx. monthly invoice volume: ' + (volume || 'Not provided')
+          ];
+          var href = 'mailto:leroybradley7@gmail.com'
+            + '?subject=' + encodeURIComponent('RivetDue waitlist signup')
+            + '&body=' + encodeURIComponent(lines.join('\n'));
+          window.location.href = href;
+        });
+      })();
+    </script>
+  </body>
+</html>

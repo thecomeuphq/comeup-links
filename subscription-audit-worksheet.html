@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Subscription Audit Worksheet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0b0b0d;
+        --panel: #151519;
+        --panel-2: #1c1c21;
+        --panel-3: #232329;
+        --line: #2b2b32;
+        --line-soft: #222228;
+        --ink: #f3f1ea;
+        --muted: #a9a69c;
+        --faint: #76736b;
+        --amber: #ffb020;
+        --orange: #ff6b1a;
+        --amber-dim: rgba(255, 176, 32, 0.12);
+        --red: #ff5142;
+        --red-dim: rgba(255, 81, 66, 0.12);
+        --green: #3ecf6f;
+        --green-dim: rgba(62, 207, 111, 0.12);
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      input, button, a, summary { scroll-margin-bottom: 110px; scroll-margin-top: 16px; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(900px 420px at 85% -120px, rgba(255, 107, 26, 0.10), transparent 60%),
+          radial-gradient(700px 380px at -10% 0, rgba(255, 176, 32, 0.06), transparent 55%),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        padding-bottom: 92px;
+      }
+      .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px; }
+
+      /* ---------- header ---------- */
+      header { padding: 30px 0 6px; }
+      .hazard {
+        height: 8px;
+        border-radius: 2px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #101012 14px 28px);
+        margin-bottom: 22px;
+      }
+      h1 {
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: clamp(30px, 7.4vw, 46px);
+        line-height: 1.04;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 0 0 10px;
+      }
+      h1 .accent { color: var(--amber); }
+      .lede { color: var(--muted); font-size: 17px; margin: 0 0 20px; max-width: 56ch; }
+      .lede strong { color: var(--ink); }
+
+      .stat-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .stat {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 12px 12px 10px;
+      }
+      .stat .label {
+        font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--faint); margin: 0 0 4px;
+      }
+      .stat .value {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: clamp(17px, 4.6vw, 24px); font-weight: 700; margin: 0;
+        white-space: nowrap;
+      }
+      .stat.waste .value { color: var(--red); }
+      .stat.annual .value { color: var(--amber); }
+
+      /* ---------- steps ---------- */
+      section.step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 20px 16px 18px;
+        margin-top: 22px;
+      }
+      .step-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
+      .step-num {
+        font-family: "Oswald", sans-serif; font-weight: 700;
+        background: var(--amber); color: #14100a;
+        font-size: 15px; line-height: 1;
+        padding: 8px 10px; border-radius: 6px;
+        letter-spacing: 0.06em; white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Oswald", sans-serif; font-weight: 600;
+        font-size: clamp(19px, 5vw, 24px); line-height: 1.15;
+        text-transform: uppercase; letter-spacing: 0.02em; margin: 2px 0 0;
+      }
+      .step-sub { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+
+      /* preset rows */
+      .preset {
+        display: flex; align-items: center; gap: 12px;
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius);
+        padding: 11px 12px;
+        margin-bottom: 8px;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .preset.on { border-color: rgba(255, 176, 32, 0.55); background: #201b12; }
+      .switch {
+        flex: 0 0 auto;
+        width: 46px; height: 26px; border-radius: 999px;
+        border: 1px solid var(--line);
+        background: var(--panel-3);
+        position: relative; cursor: pointer; padding: 0;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+      .switch::after {
+        content: ""; position: absolute; top: 2px; left: 2px;
+        width: 20px; height: 20px; border-radius: 50%;
+        background: #8a877e; transition: transform 0.15s ease, background 0.15s ease;
+      }
+      .switch[aria-checked="true"] { background: var(--amber); border-color: var(--amber); }
+      .switch[aria-checked="true"]::after { transform: translateX(20px); background: #17130a; }
+      .preset .meta { flex: 1 1 auto; min-width: 0; }
+      .preset .name { font-weight: 600; font-size: 16px; line-height: 1.25; }
+      .preset .note { color: var(--faint); font-size: 13px; line-height: 1.3; }
+
+      .costbox {
+        flex: 0 0 auto; display: flex; align-items: center; gap: 2px;
+        background: var(--bg); border: 1px solid var(--line);
+        border-radius: 8px; padding: 5px 8px;
+      }
+      .costbox .cur { color: var(--faint); font-family: "IBM Plex Mono", monospace; font-size: 14px; }
+      .costbox input {
+        width: 64px; background: transparent; border: 0; outline: none;
+        color: var(--ink); font-family: "IBM Plex Mono", monospace;
+        font-size: 15px; font-weight: 600; text-align: right; padding: 0;
+      }
+      .costbox input:disabled { color: var(--faint); }
+      .costbox .per { color: var(--faint); font-size: 12px; }
+
+      /* custom add form + rows */
+      .custom-form {
+        display: flex; gap: 8px; flex-wrap: wrap;
+        margin-top: 14px; padding-top: 14px;
+        border-top: 1px dashed var(--line);
+      }
+      .custom-form input[type="text"] {
+        flex: 1 1 150px; min-width: 0;
+        background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+        color: var(--ink); font-family: "Barlow", sans-serif; font-size: 15px;
+        padding: 10px 12px; outline: none;
+      }
+      .custom-form input[type="number"] {
+        flex: 0 0 92px; min-width: 0;
+        background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+        color: var(--ink); font-family: "IBM Plex Mono", monospace; font-size: 15px;
+        padding: 10px 10px; outline: none;
+      }
+      .custom-form input:focus, .costbox:focus-within, .spike-field input:focus {
+        border-color: var(--amber);
+      }
+      .btn-add {
+        flex: 0 0 auto;
+        background: var(--panel-3); color: var(--amber);
+        border: 1px solid rgba(255, 176, 32, 0.5);
+        border-radius: 8px; padding: 10px 16px;
+        font-family: "Barlow", sans-serif; font-weight: 700; font-size: 15px;
+        cursor: pointer;
+      }
+      .btn-add:active { background: var(--amber-dim); }
+      .custom-row {
+        display: flex; align-items: center; gap: 10px;
+        background: #201b12; border: 1px solid rgba(255, 176, 32, 0.4);
+        border-radius: var(--radius); padding: 9px 12px; margin-top: 8px;
+      }
+      .custom-row .meta { flex: 1 1 auto; min-width: 0; }
+      .custom-row .name { font-weight: 600; font-size: 15px; }
+      .custom-row .note { color: var(--faint); font-size: 12px; }
+      .btn-remove {
+        flex: 0 0 auto; width: 30px; height: 30px; border-radius: 8px;
+        background: transparent; border: 1px solid var(--line);
+        color: var(--muted); font-size: 16px; line-height: 1; cursor: pointer;
+      }
+
+      /* spikes */
+      .spike-box {
+        margin-top: 16px; padding: 14px;
+        background: var(--panel-2); border: 1px solid var(--line-soft);
+        border-radius: var(--radius);
+      }
+      .spike-box h3 {
+        font-family: "Oswald", sans-serif; font-weight: 600; font-size: 16px;
+        text-transform: uppercase; letter-spacing: 0.03em; margin: 0 0 4px;
+      }
+      .spike-box p { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+      .spike-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .spike-field label {
+        display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--faint); margin-bottom: 5px;
+      }
+      .spike-field .costbox { width: 100%; padding: 8px 10px; }
+      .spike-field .costbox input { width: 100%; }
+
+      /* verdict board */
+      .judged-count { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+      .judged-count strong { color: var(--amber); }
+      .verdict-row {
+        display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+        background: var(--panel-2); border: 1px solid var(--line-soft);
+        border-radius: var(--radius); padding: 11px 12px; margin-bottom: 8px;
+      }
+      .verdict-row .meta { flex: 1 1 130px; min-width: 0; }
+      .verdict-row .name { font-weight: 600; font-size: 16px; line-height: 1.25; }
+      .verdict-row .cat { color: var(--faint); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+      .verdict-row .amt {
+        font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 16px;
+        white-space: nowrap;
+      }
+      .verdict-row .amt span { color: var(--faint); font-size: 12px; font-weight: 500; }
+      .verdict-btns { display: flex; gap: 6px; flex: 0 0 auto; }
+      .vbtn {
+        border-radius: 8px; padding: 9px 16px; cursor: pointer;
+        font-family: "Barlow", sans-serif; font-weight: 700; font-size: 15px;
+        border: 1px solid var(--line); background: var(--panel-3); color: var(--muted);
+        transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+      }
+      .vbtn.keep.active { background: var(--green); border-color: var(--green); color: #0a140d; }
+      .vbtn.kill.active { background: var(--red); border-color: var(--red); color: #170806; }
+      .verdict-row.is-kill { border-color: rgba(255, 81, 66, 0.5); }
+      .verdict-row.is-kill .name { text-decoration: line-through; text-decoration-color: var(--red); text-decoration-thickness: 2px; color: var(--muted); }
+      .verdict-row.is-keep { border-color: rgba(62, 207, 111, 0.4); }
+      .empty-note {
+        color: var(--faint); font-size: 15px; text-align: center;
+        padding: 18px 10px; border: 1px dashed var(--line); border-radius: var(--radius);
+        margin: 0;
+      }
+
+      /* report card */
+      .report {
+        background: #f5f2ea; color: #16130c;
+        border-radius: 12px; overflow: hidden;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+      }
+      .report .hazard { margin: 0; border-radius: 0; height: 10px; }
+      .report-body { padding: 20px 18px 18px; }
+      .report h3 {
+        font-family: "Oswald", sans-serif; font-weight: 700;
+        font-size: clamp(21px, 5.6vw, 28px); line-height: 1.1;
+        text-transform: uppercase; margin: 0 0 2px; letter-spacing: 0.01em;
+      }
+      .report .report-date { color: #6d675a; font-size: 13px; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; letter-spacing: 0.08em; }
+      table.kill-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+      table.kill-table th {
+        text-align: left; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+        color: #6d675a; border-bottom: 2px solid #16130c; padding: 4px 0;
+      }
+      table.kill-table th:last-child, table.kill-table td:last-child { text-align: right; }
+      table.kill-table td {
+        padding: 8px 0; border-bottom: 1px solid #ddd6c6;
+        font-size: 15px; font-weight: 600; vertical-align: top;
+      }
+      table.kill-table td.amt { font-family: "IBM Plex Mono", monospace; font-weight: 700; white-space: nowrap; }
+      table.kill-table td .cat { display: block; font-size: 11px; color: #6d675a; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+      .report-empty { color: #6d675a; font-size: 15px; padding: 10px 0 14px; margin: 0; }
+      .report-totals { border-top: 2px solid #16130c; padding-top: 12px; }
+      .rt-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 3px 0; }
+      .rt-row .k { font-size: 14px; font-weight: 600; color: #4c473c; }
+      .rt-row .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 16px; white-space: nowrap; }
+      .rt-row.big .k { font-family: "Oswald", sans-serif; font-size: 17px; text-transform: uppercase; color: #16130c; letter-spacing: 0.02em; }
+      .rt-row.big .v { font-size: clamp(22px, 6vw, 30px); color: #c2410c; }
+      .rt-row.annual .v { color: #b45309; }
+      .report-foot { color: #6d675a; font-size: 13px; margin: 12px 0 0; }
+      .btn-print {
+        margin-top: 16px; width: 100%;
+        background: #16130c; color: var(--amber);
+        border: 0; border-radius: 9px; padding: 14px;
+        font-family: "Oswald", sans-serif; font-weight: 600; font-size: 17px;
+        letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+      }
+      .btn-print:active { background: #2b2517; }
+
+      /* next steps */
+      .next-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 22px; }
+      @media (min-width: 620px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 12px; padding: 18px 16px;
+      }
+      a.next-card .tag {
+        font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--orange); margin: 0 0 6px;
+      }
+      a.next-card h3 {
+        font-family: "Oswald", sans-serif; font-weight: 600; font-size: 20px;
+        text-transform: uppercase; margin: 0 0 6px; line-height: 1.15;
+      }
+      a.next-card p { color: var(--muted); font-size: 14.5px; margin: 0 0 10px; }
+      a.next-card .go { color: var(--amber); font-weight: 700; font-size: 15px; }
+
+      .cta-banner {
+        margin-top: 14px; border-radius: 12px; padding: 20px 18px;
+        background: linear-gradient(135deg, #2a1c05, #1c1305 55%, #241105);
+        border: 1px solid rgba(255, 176, 32, 0.45);
+      }
+      .cta-banner h3 {
+        font-family: "Oswald", sans-serif; font-weight: 600; font-size: 21px;
+        text-transform: uppercase; margin: 0 0 8px; line-height: 1.2;
+      }
+      .cta-banner p { color: #d8d2c4; margin: 0 0 14px; font-size: 15.5px; }
+      .cta-banner a {
+        display: inline-block; background: var(--amber); color: #17130a;
+        font-weight: 700; font-size: 16px; text-decoration: none;
+        padding: 12px 20px; border-radius: 9px;
+      }
+
+      /* FAQ */
+      .faq { margin-top: 26px; }
+      .faq h2 {
+        font-family: "Oswald", sans-serif; font-weight: 600; font-size: 22px;
+        text-transform: uppercase; margin: 0 0 12px;
+      }
+      details.faq-item {
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: var(--radius); margin-bottom: 8px; padding: 0 16px;
+      }
+      details.faq-item summary {
+        cursor: pointer; font-weight: 700; font-size: 16px;
+        padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 10px;
+      }
+      details.faq-item summary::-webkit-details-marker { display: none; }
+      details.faq-item summary::after { content: "+"; color: var(--amber); font-weight: 700; font-size: 20px; line-height: 1; }
+      details.faq-item[open ] summary::after { content: "–"; }
+      details.faq-item p { color: var(--muted); margin: 0 0 14px; font-size: 15px; }
+      details.faq-item p strong { color: var(--ink); }
+
+      footer { color: var(--faint); font-size: 13px; text-align: center; padding: 26px 0 6px; margin: 0; }
+
+      /* sticky totals bar */
+      .sticky-bar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+        background: rgba(13, 13, 16, 0.96);
+        border-top: 1px solid var(--line);
+        backdrop-filter: blur(6px);
+        transform: translateY(105%);
+        transition: transform 0.25s ease;
+      }
+      .sticky-bar.show { transform: translateY(0); }
+      .sticky-bar .inner {
+        max-width: 780px; margin: 0 auto; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+        display: flex; align-items: center; gap: 14px;
+      }
+      .sticky-bar .cell { flex: 1 1 0; min-width: 0; }
+      .sticky-bar .k { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 0; }
+      .sticky-bar .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 16px; margin: 0; white-space: nowrap; }
+      .sticky-bar .cell.waste .v { color: var(--red); }
+      .sticky-bar .cell.annual .v { color: var(--amber); }
+      .sticky-bar a.jump {
+        flex: 0 0 auto; background: var(--amber); color: #17130a; text-decoration: none;
+        font-weight: 700; font-size: 14px; padding: 10px 14px; border-radius: 8px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .switch, .switch::after, .vbtn, .preset, .sticky-bar { transition: none; }
+      }
+
+      /* ---------- print: report card only ---------- */
+      @media print {
+        body { background: #fff; padding-bottom: 0; }
+        body * { visibility: hidden; }
+        #reportCard, #reportCard * { visibility: visible; }
+        #reportCard {
+          position: absolute; top: 0; left: 0; width: 100%;
+          box-shadow: none; border: 2px solid #16130c; border-radius: 0;
+        }
+        #reportCard .btn-print { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="hazard" aria-hidden="true"></div>
+        <h1>Subscription Audit <span class="accent">Worksheet</span></h1>
+        <p class="lede">Every recurring charge gets listed, priced, and judged. Toggle on what you're paying for, mark each one <strong>Keep</strong> or <strong>Kill</strong>, and walk away with a cancel plan that shows exactly what you save — per month and per year.</p>
+        <div class="stat-strip" aria-live="polite">
+          <div class="stat">
+            <p class="label">Total monthly spend</p>
+            <p class="value" id="statSpend">$0.00</p>
+          </div>
+          <div class="stat waste">
+            <p class="label">Monthly waste</p>
+            <p class="value" id="statWaste">$0.00</p>
+          </div>
+          <div class="stat annual">
+            <p class="label">Annual cash drain</p>
+            <p class="value" id="statAnnual">$0.00</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1title">
+        <div class="step-head">
+          <span class="step-num">STEP 1</span>
+          <h2 id="s1title">Streaming &amp; Entertainment</h2>
+        </div>
+        <p class="step-sub">Flip on everything you're subscribed to. Prices are typical plan rates — edit any of them to match your actual bill.</p>
+        <div id="presets1"></div>
+        <div id="customs1"></div>
+        <form class="custom-form" id="form1">
+          <input type="text" id="name1" placeholder="Add custom — e.g. Crunchyroll" autocomplete="off" />
+          <input type="number" id="cost1" placeholder="$/mo" min="0" step="0.01" inputmode="decimal" />
+          <button type="submit" class="btn-add">+ Add</button>
+        </form>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2title">
+        <div class="step-head">
+          <span class="step-num">STEP 2</span>
+          <h2 id="s2title">Delivery &amp; Membership Creep</h2>
+        </div>
+        <p class="step-sub">The quiet ones: delivery passes, warehouse memberships, cloud storage. Small charges, stacked monthly, forgotten fast.</p>
+        <div id="presets2"></div>
+        <div id="customs2"></div>
+        <form class="custom-form" id="form2">
+          <input type="text" id="name2" placeholder="Add custom — e.g. Costco membership" autocomplete="off" />
+          <input type="number" id="cost2" placeholder="$/mo" min="0" step="0.01" inputmode="decimal" />
+          <button type="submit" class="btn-add">+ Add</button>
+        </form>
+
+        <div class="spike-box">
+          <h3>Bill spikes this month</h3>
+          <p>A fixed bill that jumped this month — a utility spike, a phone overage — isn't a subscription, but it's still money out the door. Log the extra amount above your normal bill.</p>
+          <div class="spike-grid">
+            <div class="spike-field">
+              <label for="spikeUtility">Utility spike $</label>
+              <div class="costbox"><span class="cur">$</span><input type="number" id="spikeUtility" min="0" step="0.01" inputmode="decimal" placeholder="0.00" /></div>
+            </div>
+            <div class="spike-field">
+              <label for="spikePhone">Phone spike $</label>
+              <div class="costbox"><span class="cur">$</span><input type="number" id="spikePhone" min="0" step="0.01" inputmode="decimal" placeholder="0.00" /></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3title">
+        <div class="step-head">
+          <span class="step-num">STEP 3</span>
+          <h2 id="s3title">Keep vs. Kill</h2>
+        </div>
+        <p class="step-sub">One question per charge: <strong>would I sign up for this again today, at this price?</strong> If the answer isn't an instant yes, it goes on the Kill List.</p>
+        <p class="judged-count" id="judgedCount"></p>
+        <div id="verdictList"></div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4title">
+        <div class="step-head">
+          <span class="step-num">STEP 4</span>
+          <h2 id="s4title">Your Leak Report</h2>
+        </div>
+        <p class="step-sub">This is your cancel plan. Work the Kill List top to bottom, cancel each one, and the savings start next billing cycle.</p>
+
+        <div class="report" id="reportCard">
+          <div class="hazard" aria-hidden="true"></div>
+          <div class="report-body">
+            <h3>Monthly Leak Report &amp; Cancel Plan</h3>
+            <p class="report-date" id="reportDate"></p>
+            <div id="killTableWrap"></div>
+            <div class="report-totals">
+              <div class="rt-row"><span class="k">Total monthly spend (all charges)</span><span class="v" id="rSpend">$0.00</span></div>
+              <div class="rt-row"><span class="k">Bill spikes logged this month</span><span class="v" id="rSpikes">$0.00</span></div>
+              <div class="rt-row"><span class="k">Still paying after cuts</span><span class="v" id="rAfter">$0.00</span></div>
+              <div class="rt-row big"><span class="k">Total monthly savings</span><span class="v" id="rSaveMo">$0.00</span></div>
+              <div class="rt-row big annual"><span class="k">Total annual savings</span><span class="v" id="rSaveYr">$0.00</span></div>
+            </div>
+            <p class="report-foot">Cancel in this order: biggest charge first. Set a calendar reminder 3 days before each free trial or renewal date so nothing re-subscribes itself.</p>
+            <button type="button" class="btn-print" id="btnPrint">Print this report</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/subscription-drain-audit.html" target="_blank" rel="noopener">
+          <p class="tag">Go deeper</p>
+          <h3>Subscription Drain Audit</h3>
+          <p>Grade each subscription on cost vs. actual use and find the ones draining you on autopay.</p>
+          <span class="go">Run the audit →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" target="_blank" rel="noopener">
+          <p class="tag">Put savings to work</p>
+          <h3>Emergency Fund Runway Calculator</h3>
+          <p>See how many months of runway your freed-up cash builds — and how fast the Kill List gets you there.</p>
+          <span class="go">Check your runway →</span>
+        </a>
+      </div>
+
+      <div class="cta-banner">
+        <h3>Turn this audit into a monthly habit</h3>
+        <p>Grab the Subscription &amp; Bill Cut Audit printable and the Zero-Based Budgeting Binder on Gumroad — run this same teardown on paper every payday and the leaks never come back.</p>
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get the printables on Gumroad →</a>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq">
+        <h2>Quick answers</h2>
+        <details class="faq-item">
+          <summary>How often should I run this audit?</summary>
+          <p>Monthly is the habit that works — tie it to a payday so it takes five minutes while you're already looking at your money. At minimum, run it <strong>every 3 months</strong>: that's how long it takes a forgotten $12.99 charge to quietly become $39 gone. Any time you sign up for anything new, add it to the list the same day.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What's the free-trial trap?</summary>
+          <p>A "free" trial converts to a paid plan automatically unless you cancel before the deadline — and companies count on you forgetting. The defense is mechanical: <strong>the day you start any trial, set a phone reminder for 2–3 days before it ends</strong>. If you can't remember the last time you opened the app, cancel now and re-subscribe later if you miss it. You almost never do.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is annual billing actually cheaper than monthly?</summary>
+          <p>Usually — annual plans commonly run <strong>15–25% less</strong> than paying monthly (e.g. $119/year vs. $14.99/month = $179.88/year, a $60 difference). But the discount only wins if you'll use the service all year and you've already kept it through a full audit. Rule: <strong>monthly while you're testing, annual only for proven keeps</strong>. Paying a year upfront for something you kill in month three is the most expensive option of all.</p>
+        </details>
+      </div>
+
+      <footer>Built for hourly workers counting every dollar. Your entries stay on this page — nothing is uploaded or saved.</footer>
+    </div>
+
+    <!-- sticky totals -->
+    <div class="sticky-bar" aria-hidden="false">
+      <div class="inner">
+        <div class="cell"><p class="k">Spend / mo</p><p class="v" id="barSpend">$0.00</p></div>
+        <div class="cell waste"><p class="k">Waste / mo</p><p class="v" id="barWaste">$0.00</p></div>
+        <div class="cell annual"><p class="k">Drain / yr</p><p class="v" id="barAnnual">$0.00</p></div>
+        <a class="jump" href="#reportCard">Report ↓</a>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var PRESETS = [
+          { key: "netflix",   section: 1, name: "Netflix",                 note: "Standard plan",            cost: 15.49 },
+          { key: "spotify",   section: 1, name: "Spotify Premium",         note: "Individual plan",          cost: 11.99 },
+          { key: "disney",    section: 1, name: "Disney+",                 note: "With ads",                 cost: 9.99 },
+          { key: "hulu",      section: 1, name: "Hulu",                    note: "With ads",                 cost: 7.99 },
+          { key: "primevideo",section: 1, name: "Prime Video",             note: "Standalone subscription",  cost: 8.99 },
+          { key: "ytpremium", section: 1, name: "YouTube Premium",         note: "Individual plan",          cost: 13.99 },
+          { key: "gamepass",  section: 1, name: "PS Plus / Xbox Game Pass",note: "Game subscription",        cost: 16.99 },
+          { key: "gym",       section: 1, name: "Gym membership",          note: "Monthly dues",             cost: 39.99 },
+          { key: "dashpass",  section: 2, name: "DashPass",                note: "DoorDash delivery pass",   cost: 9.99 },
+          { key: "uberone",   section: 2, name: "Uber One",                note: "Rides + delivery",         cost: 9.99 },
+          { key: "walmartplus",section: 2, name: "Walmart+",               note: "Monthly plan",             cost: 12.95 },
+          { key: "prime",     section: 2, name: "Amazon Prime",            note: "Full membership",          cost: 14.99 },
+          { key: "cloud",     section: 2, name: "iCloud / Google storage",note: "Cloud storage plan",       cost: 2.99 }
+        ];
+        var CAT = { 1: "Streaming & Entertainment", 2: "Delivery & Memberships" };
+
+        var presetState = {}; // key -> { on, cost, verdict }
+        PRESETS.forEach(function (p) {
+          presetState[p.key] = { on: false, cost: p.cost, verdict: null };
+        });
+        var customs = []; // { id, name, cost, section, verdict }
+        var customSeq = 0;
+        var spikes = { utility: 0, phone: 0 };
+
+        function money(n) {
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function num(v) {
+          var n = parseFloat(v);
+          return isNaN(n) || n < 0 ? 0 : n;
+        }
+        function esc(s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+
+        // ---- active items (single source of truth for steps 3 & 4) ----
+        function activeItems() {
+          var out = [];
+          PRESETS.forEach(function (p) {
+            var st = presetState[p.key];
+            if (st.on) out.push({ id: "p-" + p.key, name: p.name, cost: st.cost, section: p.section, verdict: st.verdict, presetKey: p.key });
+          });
+          customs.forEach(function (c) {
+            out.push({ id: c.id, name: c.name, cost: c.cost, section: c.section, verdict: c.verdict, presetKey: null });
+          });
+          return out;
+        }
+        function setVerdict(item, v) {
+          if (item.presetKey) {
+            presetState[item.presetKey].verdict = presetState[item.presetKey].verdict === v ? null : v;
+          } else {
+            for (var i = 0; i < customs.length; i++) {
+              if (customs[i].id === item.id) { customs[i].verdict = customs[i].verdict === v ? null : v; break; }
+            }
+          }
+          refresh();
+        }
+
+        // ---- render: presets ----
+        function buildPresets() {
+          [1, 2].forEach(function (sec) {
+            var host = document.getElementById("presets" + sec);
+            PRESETS.filter(function (p) { return p.section === sec; }).forEach(function (p) {
+              var row = document.createElement("div");
+              row.className = "preset";
+              row.id = "preset-" + p.key;
+              row.innerHTML =
+                '<button type="button" class="switch" role="switch" aria-checked="false" aria-label="Toggle ' + esc(p.name) + '"></button>' +
+                '<div class="meta"><div class="name">' + esc(p.name) + '</div><div class="note">' + esc(p.note) + '</div></div>' +
+                '<div class="costbox"><span class="cur">$</span><input type="number" min="0" step="0.01" inputmode="decimal" value="' + p.cost.toFixed(2) + '" disabled aria-label="Monthly cost for ' + esc(p.name) + '" /><span class="per">/mo</span></div>';
+              var sw = row.querySelector(".switch");
+              var input = row.querySelector("input");
+              sw.addEventListener("click", function () {
+                var st = presetState[p.key];
+                st.on = !st.on;
+                sw.setAttribute("aria-checked", st.on ? "true" : "false");
+                input.disabled = !st.on;
+                row.classList.toggle("on", st.on);
+                refresh();
+              });
+              input.addEventListener("input", function () {
+                presetState[p.key].cost = num(input.value);
+                refresh();
+              });
+              host.appendChild(row);
+            });
+          });
+        }
+
+        // ---- render: customs ----
+        function renderCustoms() {
+          [1, 2].forEach(function (sec) {
+            var host = document.getElementById("customs" + sec);
+            host.innerHTML = "";
+            customs.filter(function (c) { return c.section === sec; }).forEach(function (c) {
+              var row = document.createElement("div");
+              row.className = "custom-row";
+              row.innerHTML =
+                '<div class="meta"><div class="name">' + esc(c.name) + '</div><div class="note">Custom charge</div></div>' +
+                '<div class="costbox"><span class="cur">$</span><input type="number" min="0" step="0.01" inputmode="decimal" value="' + c.cost.toFixed(2) + '" aria-label="Monthly cost for ' + esc(c.name) + '" /><span class="per">/mo</span></div>' +
+                '<button type="button" class="btn-remove" aria-label="Remove ' + esc(c.name) + '">×</button>';
+              row.querySelector("input").addEventListener("input", function (e) {
+                c.cost = num(e.target.value);
+                refresh(false);
+              });
+              row.querySelector(".btn-remove").addEventListener("click", function () {
+                customs = customs.filter(function (x) { return x.id !== c.id; });
+                renderCustoms();
+                refresh();
+              });
+              host.appendChild(row);
+            });
+          });
+        }
+
+        function bindCustomForm(sec) {
+          var form = document.getElementById("form" + sec);
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            var nameEl = document.getElementById("name" + sec);
+            var costEl = document.getElementById("cost" + sec);
+            var name = nameEl.value.trim();
+            if (!name) { nameEl.focus(); return; }
+            customSeq += 1;
+            customs.push({ id: "c-" + customSeq, name: name, cost: num(costEl.value), section: sec, verdict: null });
+            nameEl.value = ""; costEl.value = "";
+            renderCustoms();
+            refresh();
+            nameEl.focus();
+          });
+        }
+
+        // ---- render: verdicts, summary, report ----
+        function renderVerdicts(items) {
+          var host = document.getElementById("verdictList");
+          var count = document.getElementById("judgedCount");
+          if (!items.length) {
+            host.innerHTML = '<p class="empty-note">Nothing to judge yet — flip on your subscriptions in Steps 1 and 2, or add custom charges.</p>';
+            count.textContent = "";
+            return;
+          }
+          var judged = items.filter(function (i) { return i.verdict; }).length;
+          count.innerHTML = "Judged <strong>" + judged + " of " + items.length + "</strong> — every unjudged charge counts as still leaking.";
+          host.innerHTML = "";
+          items.forEach(function (item) {
+            var row = document.createElement("div");
+            row.className = "verdict-row" + (item.verdict === "kill" ? " is-kill" : item.verdict === "keep" ? " is-keep" : "");
+            row.innerHTML =
+              '<div class="meta"><div class="name">' + esc(item.name) + '</div><div class="cat">' + esc(CAT[item.section]) + '</div></div>' +
+              '<div class="amt">' + money(item.cost) + '<span>/mo</span></div>' +
+              '<div class="verdict-btns">' +
+                '<button type="button" class="vbtn keep' + (item.verdict === "keep" ? " active" : "") + '">Keep</button>' +
+                '<button type="button" class="vbtn kill' + (item.verdict === "kill" ? " active" : "") + '">Kill</button>' +
+              '</div>';
+            row.querySelector(".keep").addEventListener("click", function () { setVerdict(item, "keep"); });
+            row.querySelector(".kill").addEventListener("click", function () { setVerdict(item, "kill"); });
+            host.appendChild(row);
+          });
+        }
+
+        function renderReport(items, spend, waste, spikeTotal) {
+          var kills = items.filter(function (i) { return i.verdict === "kill"; })
+                           .sort(function (a, b) { return b.cost - a.cost; });
+          var wrap = document.getElementById("killTableWrap");
+          if (!kills.length) {
+            wrap.innerHTML = '<p class="report-empty">No kills yet. Mark charges as <strong>Kill</strong> in Step 3 and they land here with their savings, biggest first — your cancel order of work.</p>';
+          } else {
+            var rows = kills.map(function (i) {
+              return '<tr><td>' + esc(i.name) + '<span class="cat">' + esc(CAT[i.section]) + '</span></td><td class="amt">' + money(i.cost) + '/mo</td></tr>';
+            }).join("");
+            wrap.innerHTML = '<table class="kill-table"><thead><tr><th>Kill list — cancel in this order</th><th>You save</th></tr></thead><tbody>' + rows + '</tbody></table>';
+          }
+          document.getElementById("rSpend").textContent = money(spend);
+          document.getElementById("rSpikes").textContent = money(spikeTotal);
+          document.getElementById("rAfter").textContent = money(spend - waste);
+          document.getElementById("rSaveMo").textContent = money(waste);
+          document.getElementById("rSaveYr").textContent = money(waste * 12);
+        }
+
+        function refresh(rerenderVerdicts) {
+          var items = activeItems();
+          var spend = items.reduce(function (s, i) { return s + i.cost; }, 0);
+          var waste = items.reduce(function (s, i) { return s + (i.verdict === "kill" ? i.cost : 0); }, 0);
+          var spikeTotal = spikes.utility + spikes.phone;
+          document.getElementById("statSpend").textContent = money(spend);
+          document.getElementById("statWaste").textContent = money(waste);
+          document.getElementById("statAnnual").textContent = money(waste * 12);
+          document.getElementById("barSpend").textContent = money(spend);
+          document.getElementById("barWaste").textContent = money(waste);
+          document.getElementById("barAnnual").textContent = money(waste * 12);
+          renderVerdicts(items);
+          renderReport(items, spend, waste, spikeTotal);
+        }
+
+        // ---- init ----
+        buildPresets();
+        bindCustomForm(1);
+        bindCustomForm(2);
+        document.getElementById("spikeUtility").addEventListener("input", function (e) { spikes.utility = num(e.target.value); refresh(); });
+        document.getElementById("spikePhone").addEventListener("input", function (e) { spikes.phone = num(e.target.value); refresh(); });
+        document.getElementById("btnPrint").addEventListener("click", function () { window.print(); });
+        document.getElementById("reportDate").textContent =
+          "Audit date: " + new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+        var bar = document.querySelector(".sticky-bar");
+        function onScroll() { bar.classList.toggle("show", window.scrollY > 260); }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+        refresh();
+      })();
+    </script>
+  </body>
+</html>

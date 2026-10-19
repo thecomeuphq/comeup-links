@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Blue-Collar Paycheck &amp; Shift Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #121215;
+        --surface: #1c1c21;
+        --surface-2: #26262e;
+        --line: #34343e;
+        --text: #f3f3f0;
+        --muted: #a9a9b3;
+        --accent: #ffc61a;
+        --accent-ink: #161616;
+        --accent-soft: rgba(255, 198, 26, 0.12);
+        --green: #4ade80;
+        --green-bg: rgba(74, 222, 128, 0.13);
+        --amber: #fbbf24;
+        --amber-bg: rgba(251, 191, 36, 0.13);
+        --neutral-bg: rgba(169, 169, 179, 0.12);
+        --input-bg: #141418;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Barlow", system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+      .wrap {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 20px 16px 48px;
+      }
+
+      /* ---------- Header ---------- */
+      header { padding: 8px 2px 0; }
+      h1 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: clamp(34px, 9vw, 46px);
+        line-height: 1.02;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 0 0 10px;
+      }
+      h1 .hl { color: var(--accent); }
+      .sub {
+        color: var(--muted);
+        font-size: 17px;
+        margin: 0 0 18px;
+        max-width: 34em;
+      }
+      .stripe {
+        height: 7px;
+        border-radius: 2px;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--accent) 0 14px,
+          #17171b 14px 28px
+        );
+        margin-bottom: 22px;
+      }
+
+      /* ---------- Cards & sections ---------- */
+      section.card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 20px 18px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow);
+      }
+      h2 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 24px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin: 0 0 4px;
+      }
+      .section-note { color: var(--muted); font-size: 14.5px; margin: 0 0 16px; }
+
+      /* ---------- Inputs ---------- */
+      .field { margin-bottom: 16px; }
+      .field:last-child { margin-bottom: 0; }
+      .field-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 7px;
+      }
+      label.field-label {
+        font-weight: 600;
+        font-size: 15.5px;
+      }
+      .tip-wrap { position: relative; display: inline-flex; }
+      .tip-btn {
+        appearance: none;
+        border: 1px solid var(--line);
+        background: var(--surface-2);
+        color: var(--muted);
+        width: 20px; height: 20px;
+        border-radius: 50%;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        flex: none;
+      }
+      .tip-btn:hover, .tip-btn:focus-visible { color: var(--accent); border-color: var(--accent); outline: none; }
+      .tip {
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 9px);
+        transform: translateX(-50%);
+        width: 230px;
+        max-width: 70vw;
+        background: var(--surface-2);
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 13.5px;
+        font-weight: 400;
+        line-height: 1.4;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.15s ease;
+        z-index: 30;
+        pointer-events: none;
+      }
+      .tip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: var(--line);
+      }
+      .tip-wrap.open .tip,
+      .tip-wrap:hover .tip,
+      .tip-wrap:focus-within .tip {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .control {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .stepper {
+        display: flex;
+        align-items: stretch;
+        flex: 1;
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .stepper:focus-within { border-color: var(--accent); }
+      .step-btn {
+        appearance: none;
+        border: 0;
+        background: var(--surface-2);
+        color: var(--text);
+        width: 46px;
+        font-size: 22px;
+        font-weight: 600;
+        cursor: pointer;
+        flex: none;
+        touch-action: manipulation;
+      }
+      .step-btn:active { background: var(--accent); color: var(--accent-ink); }
+      .input-shell {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+        padding: 0 4px;
+      }
+      .prefix, .suffix {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 15px;
+        flex: none;
+      }
+      input[type="number"] {
+        appearance: textfield;
+        -moz-appearance: textfield;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+        font-size: 19px;
+        font-weight: 600;
+        width: 100%;
+        min-width: 0;
+        padding: 11px 4px;
+        text-align: center;
+      }
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type="number"]:focus { outline: none; }
+
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        color: var(--text);
+        font: inherit;
+        font-size: 16.5px;
+        font-weight: 600;
+        padding: 12px 40px 12px 14px;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23a9a9b3' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+      }
+      select:focus { outline: none; border-color: var(--accent); }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 14px;
+      }
+      @media (max-width: 420px) {
+        .grid-2 { grid-template-columns: 1fr; }
+      }
+
+      /* Segmented toggle */
+      .segmented {
+        display: flex;
+        background: var(--input-bg);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 4px;
+        gap: 4px;
+      }
+      .segmented button {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-weight: 600;
+        font-size: 15.5px;
+        padding: 10px 8px;
+        border-radius: 7px;
+        flex: 1;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      .segmented button[aria-pressed="true"] {
+        background: var(--accent);
+        color: var(--accent-ink);
+      }
+
+      .eff-rate {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        background: var(--accent-soft);
+        border: 1px dashed var(--accent);
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-top: 4px;
+        font-size: 15px;
+      }
+      .eff-rate strong { font-size: 19px; color: var(--accent); }
+
+      /* ---------- Breakdown ---------- */
+      .rows { margin-top: 6px; }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+        padding: 9px 2px;
+        border-bottom: 1px solid var(--line);
+        font-size: 16px;
+      }
+      .row .name { color: var(--text); }
+      .row .name .detail { color: var(--muted); font-size: 13.5px; display: block; }
+      .row .amt { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .row.zero { opacity: 0.45; }
+      .row.deduct .amt { color: var(--muted); }
+      .row.gross {
+        border-bottom: 2px solid var(--text);
+        font-weight: 700;
+        font-size: 17px;
+      }
+      .row.gross .amt { font-size: 18px; }
+      .annual-note {
+        color: var(--muted);
+        font-size: 13.5px;
+        margin: 10px 2px 0;
+      }
+      .net-box {
+        margin-top: 18px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        border-radius: 12px;
+        padding: 16px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .net-box .net-label {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 19px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        font-weight: 700;
+        line-height: 1.15;
+      }
+      .net-box .net-label span { display: block; font-size: 13.5px; font-weight: 600; letter-spacing: 0.02em; opacity: 0.75; text-transform: none; font-family: "Barlow", sans-serif; }
+      .net-box .net-amt {
+        font-size: clamp(34px, 9vw, 44px);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+
+      /* ---------- Extra shift ---------- */
+      .verdict {
+        margin-top: 18px;
+        border-top: 1px solid var(--line);
+        padding-top: 16px;
+      }
+      .verdict .big-line {
+        font-size: 21px;
+        font-weight: 700;
+        margin: 0 0 4px;
+      }
+      .verdict .big-line .pos { color: var(--accent); }
+      .verdict .per-hour { font-size: 17px; margin: 0 0 14px; }
+      .verdict .per-hour strong { font-variant-numeric: tabular-nums; }
+      .callout {
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-weight: 600;
+        font-size: 16px;
+        display: none;
+      }
+      .callout.show { display: block; }
+      .callout.good { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+      .callout.heavy { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber); }
+      .callout.solid { background: var(--neutral-bg); color: var(--text); border: 1px solid var(--line); }
+      .verdict .hint { color: var(--muted); font-size: 14.5px; margin: 0; display: none; }
+      .verdict .hint.show { display: block; }
+
+      /* ---------- FAQ / footer ---------- */
+      .faq details {
+        border-bottom: 1px solid var(--line);
+        padding: 4px 0;
+      }
+      .faq details:last-of-type { border-bottom: 0; }
+      .faq summary {
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16.5px;
+        padding: 12px 26px 12px 2px;
+        list-style: none;
+        position: relative;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after {
+        content: "+";
+        position: absolute;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 22px;
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq details p {
+        color: var(--muted);
+        margin: 0 2px 14px;
+        font-size: 15.5px;
+      }
+      .disclaimer {
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 18px 2px 0;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .tip { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Blue-Collar Paycheck <span class="hl">&amp; Shift</span> Calculator</h1>
+        <p class="sub">Know exact take-home pay before picking up extra shifts. No tax surprises — just real numbers.</p>
+        <div class="stripe" aria-hidden="true"></div>
+      </header>
+
+      <!-- ================= SECTION 1 ================= -->
+      <section class="card" aria-labelledby="sec1-h">
+        <h2 id="sec1-h">Your Paycheck</h2>
+        <p class="section-note">Every number updates live as you type.</p>
+
+        <div class="field">
+          <div class="field-row">
+            <label class="field-label" for="baseRate">Base hourly rate</label>
+            <span class="tip-wrap">
+              <button type="button" class="tip-btn" aria-label="About base hourly rate">?</button>
+              <span class="tip" role="tooltip">Your standard hourly wage before any extra shift pay, overtime, or night differentials get added.</span>
+            </span>
+          </div>
+          <div class="control">
+            <div class="stepper">
+              <button type="button" class="step-btn" data-step="-0.25" data-target="baseRate" aria-label="Decrease base rate">−</button>
+              <div class="input-shell">
+                <span class="prefix">$</span>
+                <input type="number" id="baseRate" inputmode="decimal" min="0" step="0.25" value="21" />
+                <span class="suffix">/hr</span>
+              </div>
+              <button type="button" class="step-btn" data-step="0.25" data-target="baseRate" aria-label="Increase base rate">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <div class="field-row">
+              <label class="field-label" for="nightDiff">Night shift differential</label>
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="About night shift differential">?</button>
+                <span class="tip" role="tooltip">The extra flat dollar amount added to your hourly rate for working late or night shifts (e.g., +$1.50/hr).</span>
+              </span>
+            </div>
+            <div class="control">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-step="-0.25" data-target="nightDiff" aria-label="Decrease night differential">−</button>
+                <div class="input-shell">
+                  <span class="prefix">$</span>
+                  <input type="number" id="nightDiff" inputmode="decimal" min="0" step="0.25" value="0" />
+                  <span class="suffix">/hr</span>
+                </div>
+                <button type="button" class="step-btn" data-step="0.25" data-target="nightDiff" aria-label="Increase night differential">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-row">
+              <label class="field-label" for="weekendMult">Weekend premium</label>
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="About weekend premium">?</button>
+                <span class="tip" role="tooltip">Select if your employer pays extra for weekend shifts.</span>
+              </span>
+            </div>
+            <select id="weekendMult">
+              <option value="1" selected>1.0× — none</option>
+              <option value="1.15">1.15×</option>
+              <option value="1.25">1.25×</option>
+              <option value="1.5">1.5×</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <div class="field-row">
+              <label class="field-label" for="regHours">Regular hours</label>
+            </div>
+            <div class="control">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-step="-1" data-target="regHours" aria-label="Decrease regular hours">−</button>
+                <div class="input-shell">
+                  <input type="number" id="regHours" inputmode="decimal" min="0" max="40" step="1" value="40" />
+                  <span class="suffix">hrs</span>
+                </div>
+                <button type="button" class="step-btn" data-step="1" data-target="regHours" aria-label="Increase regular hours">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-row">
+              <label class="field-label" for="otHours">Overtime hours (1.5×)</label>
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="About overtime hours">?</button>
+                <span class="tip" role="tooltip">Hours worked beyond 40 in a single week. Paid at 1.5 times your effective hourly rate.</span>
+              </span>
+            </div>
+            <div class="control">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-step="-1" data-target="otHours" aria-label="Decrease overtime hours">−</button>
+                <div class="input-shell">
+                  <input type="number" id="otHours" inputmode="decimal" min="0" step="1" value="0" />
+                  <span class="suffix">hrs</span>
+                </div>
+                <button type="button" class="step-btn" data-step="1" data-target="otHours" aria-label="Increase overtime hours">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-row">
+              <label class="field-label" for="dtHours">Double-time hours (2.0×)</label>
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="About double-time hours">?</button>
+                <span class="tip" role="tooltip">Special hours (like Sunday or over 12 hours in a shift) paid at double your effective hourly rate.</span>
+              </span>
+            </div>
+            <div class="control">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-step="-1" data-target="dtHours" aria-label="Decrease double-time hours">−</button>
+                <div class="input-shell">
+                  <input type="number" id="dtHours" inputmode="decimal" min="0" step="1" value="0" />
+                  <span class="suffix">hrs</span>
+                </div>
+                <button type="button" class="step-btn" data-step="1" data-target="dtHours" aria-label="Increase double-time hours">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-row">
+              <label class="field-label" for="holHours">Holiday hours (1.5×)</label>
+              <span class="tip-wrap">
+                <button type="button" class="tip-btn" aria-label="About holiday hours">?</button>
+                <span class="tip" role="tooltip">Hours worked on recognized company holidays, calculated at your premium holiday rate.</span>
+              </span>
+            </div>
+            <div class="control">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-step="-1" data-target="holHours" aria-label="Decrease holiday hours">−</button>
+                <div class="input-shell">
+                  <input type="number" id="holHours" inputmode="decimal" min="0" step="1" value="0" />
+                  <span class="suffix">hrs</span>
+                </div>
+                <button type="button" class="step-btn" data-step="1" data-target="holHours" aria-label="Increase holiday hours">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <span class="field-label" id="periodLabel">Pay period</span>
+          </div>
+          <div class="segmented" role="group" aria-labelledby="periodLabel">
+            <button type="button" id="periodWeekly" aria-pressed="true">Weekly</button>
+            <button type="button" id="periodBiweekly" aria-pressed="false">Bi-weekly</button>
+          </div>
+        </div>
+
+        <div class="eff-rate">
+          <span>Your effective hourly rate</span>
+          <strong id="effRate">$21.00/hr</strong>
+        </div>
+      </section>
+
+      <!-- ================= BREAKDOWN ================= -->
+      <section class="card" aria-labelledby="bd-h">
+        <h2 id="bd-h">Pay Breakdown</h2>
+        <p class="section-note" id="bdNote">Per weekly paycheck</p>
+        <div class="rows">
+          <div class="row" id="rowReg">
+            <span class="name">Regular pay<span class="detail" id="detReg"></span></span>
+            <span class="amt" id="amtReg">$0.00</span>
+          </div>
+          <div class="row" id="rowOt">
+            <span class="name">Overtime pay<span class="detail" id="detOt"></span></span>
+            <span class="amt" id="amtOt">$0.00</span>
+          </div>
+          <div class="row" id="rowDt">
+            <span class="name">Double-time pay<span class="detail" id="detDt"></span></span>
+            <span class="amt" id="amtDt">$0.00</span>
+          </div>
+          <div class="row" id="rowHol">
+            <span class="name">Holiday pay<span class="detail" id="detHol"></span></span>
+            <span class="amt" id="amtHol">$0.00</span>
+          </div>
+          <div class="row gross">
+            <span class="name">Gross pay</span>
+            <span class="amt" id="amtGross">$0.00</span>
+          </div>
+          <div class="row deduct">
+            <span class="name">FICA (Social Security + Medicare)<span class="detail">7.65% of gross</span></span>
+            <span class="amt" id="amtFica">−$0.00</span>
+          </div>
+          <div class="row deduct">
+            <span class="name">Federal income tax<span class="detail">2026 single filer, standard deduction</span></span>
+            <span class="amt" id="amtFed">−$0.00</span>
+          </div>
+          <div class="row deduct">
+            <span class="name">State tax estimate<span class="detail">Flat 4% of gross</span></span>
+            <span class="amt" id="amtState">−$0.00</span>
+          </div>
+        </div>
+        <p class="annual-note" id="annualNote"></p>
+        <div class="net-box">
+          <div class="net-label">Net take-home<span id="netPeriodLabel">per weekly paycheck</span></div>
+          <div class="net-amt" id="netAmt">$0.00</div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 2 ================= -->
+      <section class="card" aria-labelledby="sec2-h">
+        <h2 id="sec2-h">Is This Extra Shift Worth It?</h2>
+        <p class="section-note">Compares a straight 40-hour week at your rates above against the same week plus this shift — after taxes.</p>
+
+        <div class="grid-2">
+          <div class="field">
+            <div class="field-row">
+              <label class="field-label" for="extraHours">Extra shift hours</label>
+            </div>
+            <div class="control">
+              <div class="stepper">
+                <button type="button" class="step-btn" data-step="-1" data-target="extraHours" aria-label="Decrease extra shift hours">−</button>
+                <div class="input-shell">
+                  <input type="number" id="extraHours" inputmode="decimal" min="0" step="1" value="8" />
+                  <span class="suffix">hrs</span>
+                </div>
+                <button type="button" class="step-btn" data-step="1" data-target="extraHours" aria-label="Increase extra shift hours">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-row">
+              <label class="field-label" for="extraType">Shift type</label>
+            </div>
+            <select id="extraType">
+              <option value="ot" selected>Overtime (1.5×)</option>
+              <option value="dt">Double-time (2.0×)</option>
+              <option value="straight">Straight-time with differential</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="verdict">
+          <p class="big-line">Total extra take-home: <span class="pos" id="extraTotal">+$0.00</span></p>
+          <p class="per-hour" id="extraPerHour"></p>
+          <div class="callout" id="callout" role="status"></div>
+          <p class="hint" id="extraHint">Enter the shift hours above to see what it really pays after taxes.</p>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section class="card faq" aria-labelledby="faq-h">
+        <h2 id="faq-h">Questions</h2>
+        <details>
+          <summary>Why does my paycheck look smaller than this calculator shows?</summary>
+          <p>This calculator estimates taxes and FICA. It doesn't subtract optional payroll deductions like 401(k), health/dental insurance, or union dues.</p>
+        </details>
+        <details>
+          <summary>How does overtime affect my tax bracket?</summary>
+          <p>Taxes are progressive. Extra overtime pay won't ruin your baseline earnings, but it might push those extra dollars into a higher tax bracket.</p>
+        </details>
+        <details>
+          <summary>How does the night shift differential calculate on overtime?</summary>
+          <p>By federal law, shift differentials must be included in your regular rate before calculating your 1.5x overtime rate.</p>
+        </details>
+        <p class="disclaimer">Estimates only. Uses standard 2026 single-filer federal tax brackets and 7.65% FICA. Does not account for local taxes, 401(k), union dues, health insurance, or state variations. Check your paystub for exact deductions.</p>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var $ = function (id) { return document.getElementById(id); };
+
+        var els = {
+          baseRate: $("baseRate"),
+          nightDiff: $("nightDiff"),
+          weekendMult: $("weekendMult"),
+          regHours: $("regHours"),
+          otHours: $("otHours"),
+          dtHours: $("dtHours"),
+          holHours: $("holHours"),
+          extraHours: $("extraHours"),
+          extraType: $("extraType"),
+          periodWeekly: $("periodWeekly"),
+          periodBiweekly: $("periodBiweekly"),
+          effRate: $("effRate"),
+          bdNote: $("bdNote"),
+          detReg: $("detReg"), detOt: $("detOt"), detDt: $("detDt"), detHol: $("detHol"),
+          rowReg: $("rowReg"), rowOt: $("rowOt"), rowDt: $("rowDt"), rowHol: $("rowHol"),
+          amtReg: $("amtReg"), amtOt: $("amtOt"), amtDt: $("amtDt"), amtHol: $("amtHol"),
+          amtGross: $("amtGross"), amtFica: $("amtFica"), amtFed: $("amtFed"), amtState: $("amtState"),
+          annualNote: $("annualNote"),
+          netAmt: $("netAmt"), netPeriodLabel: $("netPeriodLabel"),
+          extraTotal: $("extraTotal"), extraPerHour: $("extraPerHour"),
+          callout: $("callout"), extraHint: $("extraHint")
+        };
+
+        var periodsPerYear = 52; // weekly default
+
+        function num(input) {
+          var v = parseFloat(input.value);
+          if (isNaN(v) || v < 0) return 0;
+          return v;
+        }
+
+        function money(v) {
+          return "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function hrsLabel(h) {
+          return (Math.round(h * 100) / 100) + (h === 1 ? " hr" : " hrs");
+        }
+
+        // 2026 single-filer federal tax on taxable income (after standard deduction).
+        function federalAnnualTax(taxable) {
+          if (taxable <= 0) return 0;
+          if (taxable <= 12400) return taxable * 0.10;
+          if (taxable <= 50400) return 1240 + (taxable - 12400) * 0.12;
+          var capped = Math.min(taxable, 105700);
+          return 5800 + (capped - 50400) * 0.22;
+        }
+
+        // Full paycheck computation for a set of hours at the current rates.
+        function compute(regH, otH, dtH, holH, periods) {
+          var base = num(els.baseRate);
+          var diff = num(els.nightDiff);
+          var mult = parseFloat(els.weekendMult.value) || 1;
+          var rEff = base * mult + diff;
+
+          var regPay = regH * rEff;
+          var otPay = otH * rEff * 1.5;
+          var dtPay = dtH * rEff * 2.0;
+          var holPay = holH * rEff * 1.5;
+          var gross = regPay + otPay + dtPay + holPay;
+
+          var annualized = gross * periods;
+          var fica = gross * 0.0765;
+          var taxable = Math.max(0, annualized - 16100);
+          var fed = federalAnnualTax(taxable) / periods;
+          var state = gross * 0.04;
+          var net = gross - fica - fed - state;
+
+          return {
+            rEff: rEff, regPay: regPay, otPay: otPay, dtPay: dtPay, holPay: holPay,
+            gross: gross, annualized: annualized, fica: fica, fed: fed, state: state, net: net
+          };
+        }
+
+        function recalc() {
+          var regH = Math.min(num(els.regHours), 40);
+          var otH = num(els.otHours);
+          var dtH = num(els.dtHours);
+          var holH = num(els.holHours);
+          var r = compute(regH, otH, dtH, holH, periodsPerYear);
+          var periodWord = periodsPerYear === 52 ? "weekly" : "bi-weekly";
+
+          els.effRate.textContent = money(r.rEff) + "/hr";
+          els.bdNote.textContent = "Per " + periodWord + " paycheck";
+
+          els.detReg.textContent = hrsLabel(regH) + " × " + money(r.rEff);
+          els.detOt.textContent = hrsLabel(otH) + " × " + money(r.rEff * 1.5);
+          els.detDt.textContent = hrsLabel(dtH) + " × " + money(r.rEff * 2.0);
+          els.detHol.textContent = hrsLabel(holH) + " × " + money(r.rEff * 1.5);
+
+          els.amtReg.textContent = money(r.regPay);
+          els.amtOt.textContent = money(r.otPay);
+          els.amtDt.textContent = money(r.dtPay);
+          els.amtHol.textContent = money(r.holPay);
+          els.amtGross.textContent = money(r.gross);
+          els.amtFica.textContent = "−" + money(r.fica);
+          els.amtFed.textContent = "−" + money(r.fed);
+          els.amtState.textContent = "−" + money(r.state);
+          els.netAmt.textContent = money(r.net);
+          els.netPeriodLabel.textContent = "per " + periodWord + " paycheck";
+
+          els.rowReg.classList.toggle("zero", regH === 0);
+          els.rowOt.classList.toggle("zero", otH === 0);
+          els.rowDt.classList.toggle("zero", dtH === 0);
+          els.rowHol.classList.toggle("zero", holH === 0);
+
+          els.annualNote.textContent =
+            "At this pace: " + money(r.annualized) + " gross per year · " +
+            money(r.net * periodsPerYear) + " take-home per year.";
+
+          recalcShift();
+        }
+
+        function recalcShift() {
+          var extraH = num(els.extraHours);
+          var type = els.extraType.value;
+          var base = num(els.baseRate);
+
+          // Baseline: straight 40-hour week at current rates (weekly math).
+          var baseline = compute(40, 0, 0, 0, 52);
+
+          var regH = 40, otH = 0, dtH = 0;
+          if (type === "ot") otH = extraH;
+          else if (type === "dt") dtH = extraH;
+          else regH = 40 + extraH;
+
+          var withShift = compute(regH, otH, dtH, 0, 52);
+          var marginal = withShift.net - baseline.net;
+
+          if (extraH <= 0) {
+            els.extraTotal.textContent = "+$0.00";
+            els.extraPerHour.textContent = "";
+            els.callout.className = "callout";
+            els.callout.textContent = "";
+            els.extraHint.classList.add("show");
+            return;
+          }
+          els.extraHint.classList.remove("show");
+
+          var effHourly = marginal / extraH;
+          els.extraTotal.textContent = "+" + money(marginal);
+          els.extraPerHour.innerHTML =
+            "You're making <strong>" + money(effHourly) + "/hr</strong> AFTER taxes for this shift.";
+
+          els.callout.className = "callout show";
+          if (effHourly >= base * 1.1) {
+            els.callout.classList.add("good");
+            els.callout.textContent = "HIGH VALUE SHIFT: Lock it in.";
+          } else if (effHourly < base * 0.85) {
+            els.callout.classList.add("heavy");
+            els.callout.textContent = "TAX HEAVY: Tax brackets are eating into this shift.";
+          } else {
+            els.callout.classList.add("solid");
+            els.callout.textContent = "Solid shift.";
+          }
+        }
+
+        // ---- wiring ----
+        var inputs = [els.baseRate, els.nightDiff, els.regHours, els.otHours, els.dtHours, els.holHours, els.extraHours];
+        inputs.forEach(function (el) {
+          el.addEventListener("input", recalc);
+          el.addEventListener("change", recalc);
+        });
+        els.weekendMult.addEventListener("change", recalc);
+        els.extraType.addEventListener("change", recalcShift);
+
+        function setPeriod(periods) {
+          periodsPerYear = periods;
+          els.periodWeekly.setAttribute("aria-pressed", periods === 52 ? "true" : "false");
+          els.periodBiweekly.setAttribute("aria-pressed", periods === 26 ? "true" : "false");
+          recalc();
+        }
+        els.periodWeekly.addEventListener("click", function () { setPeriod(52); });
+        els.periodBiweekly.addEventListener("click", function () { setPeriod(26); });
+
+        // Steppers
+        document.querySelectorAll(".step-btn").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var input = $(btn.getAttribute("data-target"));
+            var step = parseFloat(btn.getAttribute("data-step")) || 0;
+            var cur = parseFloat(input.value);
+            if (isNaN(cur)) cur = 0;
+            var next = cur + step;
+            var max = parseFloat(input.getAttribute("max"));
+            if (!isNaN(max) && next > max) next = max;
+            if (next < 0) next = 0;
+            input.value = Math.round(next * 100) / 100;
+            recalc();
+          });
+        });
+
+        // Tooltips: tap toggles (hover/focus handled in CSS)
+        document.querySelectorAll(".tip-btn").forEach(function (btn) {
+          btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            var wrap = btn.parentElement;
+            var wasOpen = wrap.classList.contains("open");
+            document.querySelectorAll(".tip-wrap.open").forEach(function (w) { w.classList.remove("open"); });
+            if (!wasOpen) wrap.classList.add("open");
+          });
+        });
+        document.addEventListener("click", function () {
+          document.querySelectorAll(".tip-wrap.open").forEach(function (w) { w.classList.remove("open"); });
+        });
+
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

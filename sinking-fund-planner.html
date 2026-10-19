@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Sinking Fund Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #101013;
+        --bg-raise: #18181c;
+        --bg-card: #1e1e23;
+        --bg-inset: #131316;
+        --line: #2c2c33;
+        --line-strong: #3d3d46;
+        --ink: #f2efe9;
+        --ink-dim: #b8b4aa;
+        --ink-faint: #7d7a72;
+        --amber: #f5a524;
+        --orange: #ff6b1a;
+        --amber-soft: rgba(245, 165, 36, 0.12);
+        --red: #ff5147;
+        --red-soft: rgba(255, 81, 71, 0.12);
+        --green: #4ade80;
+        --green-soft: rgba(74, 222, 128, 0.1);
+        --radius: 10px;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Archivo", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- Header ---------- */
+      header.hero { padding: 28px 0 8px; }
+      .hazard {
+        height: 8px;
+        border-radius: 2px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141416 14px 28px);
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(2rem, 8vw, 3rem);
+        line-height: 1.02;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+        margin: 0 0 10px;
+      }
+      h1 .accent { color: var(--amber); }
+      .lede { color: var(--ink-dim); font-size: 1.02rem; margin: 0; max-width: 56ch; }
+      .lede strong { color: var(--ink); }
+
+      /* ---------- Steps ---------- */
+      section.step { margin-top: 36px; }
+      .step-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+      .step-num {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: #141416;
+        background: var(--amber);
+        padding: 3px 8px;
+        border-radius: 4px;
+        letter-spacing: 0.05em;
+        flex: none;
+        transform: translateY(-2px);
+      }
+      h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 1.55rem;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0;
+      }
+      .step-sub { color: var(--ink-dim); margin: 0 0 16px; font-size: 0.95rem; }
+
+      /* ---------- Expense cards ---------- */
+      .fund-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+      @media (min-width: 620px) { .fund-grid { grid-template-columns: 1fr 1fr; } }
+      .fund-card {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 14px;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .fund-card.on { border-color: var(--amber); background: var(--bg-raise); }
+      .fund-top { display: flex; align-items: center; gap: 10px; }
+      .fund-icon {
+        width: 38px; height: 38px; flex: none;
+        display: grid; place-items: center;
+        background: var(--bg-inset);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink-dim);
+      }
+      .fund-card.on .fund-icon { color: var(--amber); border-color: var(--line-strong); }
+      .fund-icon svg { width: 20px; height: 20px; }
+      .fund-name { font-weight: 600; font-size: 0.98rem; line-height: 1.25; flex: 1; }
+      .fund-hint { display: block; font-weight: 400; font-size: 0.8rem; color: var(--ink-faint); }
+
+      /* Toggle switch */
+      .switch { position: relative; flex: none; }
+      .switch input {
+        -webkit-appearance: none; appearance: none;
+        position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+        background: transparent; border: none; border-radius: 999px; cursor: pointer;
+      }
+      .switch .track {
+        display: block; width: 46px; height: 26px; border-radius: 999px;
+        background: var(--bg-inset); border: 1px solid var(--line-strong);
+        transition: background 0.15s ease, border-color 0.15s ease;
+        pointer-events: none;
+      }
+      .switch .track::after {
+        content: ""; display: block; width: 18px; height: 18px; border-radius: 50%;
+        background: var(--ink-faint); margin: 3px; transition: transform 0.15s ease, background 0.15s ease;
+      }
+      .switch input:checked + .track { background: var(--amber); border-color: var(--amber); }
+      .switch input:checked + .track::after { transform: translateX(20px); background: #141416; }
+      .switch input:focus-visible + .track { outline: 2px solid var(--orange); outline-offset: 2px; }
+
+      .fund-fields { display: none; margin-top: 12px; gap: 10px; grid-template-columns: 1fr 1fr; }
+      .fund-card.on .fund-fields { display: grid; }
+      .field label {
+        display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+        letter-spacing: 0.07em; color: var(--ink-faint); margin-bottom: 4px;
+      }
+      .field input, .field select {
+        width: 100%; background: var(--bg-inset); color: var(--ink);
+        border: 1px solid var(--line-strong); border-radius: 7px;
+        padding: 9px 10px; font: inherit; font-size: 0.95rem;
+      }
+      .field input:focus, .field select:focus { outline: 2px solid var(--amber); outline-offset: 0; border-color: transparent; }
+      .money-wrap { position: relative; }
+      .money-wrap::before {
+        content: "$"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+        color: var(--ink-faint); font-size: 0.95rem; pointer-events: none;
+      }
+      .money-wrap input { padding-left: 22px; font-family: "JetBrains Mono", monospace; }
+      .fund-result {
+        grid-column: 1 / -1; display: none;
+        background: var(--amber-soft); border: 1px dashed var(--amber);
+        border-radius: 7px; padding: 8px 10px; font-size: 0.88rem; color: var(--ink);
+      }
+      .fund-card.on .fund-result { display: block; }
+      .fund-result b { font-family: "JetBrains Mono", monospace; color: var(--amber); font-size: 1rem; }
+      .fund-result .due-soon { color: var(--red); font-weight: 600; }
+
+      /* Custom rows */
+      .custom-list { display: grid; gap: 10px; margin-top: 10px; }
+      .custom-card { border-style: dashed; }
+      .custom-card .fund-name-input {
+        flex: 1; background: transparent; border: none; border-bottom: 1px dashed var(--line-strong);
+        color: var(--ink); font: inherit; font-weight: 600; font-size: 0.98rem; padding: 2px 2px 4px; border-radius: 0;
+        min-width: 0;
+      }
+      .custom-card .fund-name-input:focus { outline: none; border-bottom-color: var(--amber); }
+      .remove-btn {
+        flex: none; background: none; border: 1px solid var(--line-strong); color: var(--ink-dim);
+        width: 30px; height: 30px; border-radius: 7px; cursor: pointer; font-size: 1rem; line-height: 1;
+        display: grid; place-items: center;
+      }
+      .remove-btn:hover { border-color: var(--red); color: var(--red); }
+      .add-btn {
+        margin-top: 12px; width: 100%; padding: 12px;
+        background: transparent; color: var(--amber);
+        border: 1px dashed var(--line-strong); border-radius: var(--radius);
+        font: inherit; font-weight: 600; cursor: pointer;
+      }
+      .add-btn:hover { border-color: var(--amber); background: var(--amber-soft); }
+
+      /* ---------- Pay schedule ---------- */
+      .panel {
+        background: var(--bg-card); border: 1px solid var(--line);
+        border-radius: var(--radius); padding: 16px;
+      }
+      .freq-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+      .freq-row label { position: relative; }
+      .freq-row input {
+        -webkit-appearance: none; appearance: none;
+        position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+        background: transparent; border: none; border-radius: 8px; cursor: pointer;
+      }
+      .freq-row .freq-pill {
+        display: block; text-align: center; padding: 11px 6px; border-radius: 8px;
+        border: 1px solid var(--line-strong); background: var(--bg-inset);
+        font-weight: 600; font-size: 0.92rem; color: var(--ink-dim);
+      }
+      .freq-row .freq-pill small { display: block; font-weight: 400; font-size: 0.74rem; color: var(--ink-faint); margin-top: 1px; }
+      .freq-row input:checked + .freq-pill { border-color: var(--amber); background: var(--amber-soft); color: var(--ink); }
+      .freq-row input:checked + .freq-pill small { color: var(--amber); }
+      .freq-row input:focus-visible + .freq-pill { outline: 2px solid var(--orange); outline-offset: 2px; }
+      .pay-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 480px) { .pay-fields { grid-template-columns: 1fr; } }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        background: var(--bg-raise);
+        border: 2px solid var(--amber);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .blueprint-head {
+        padding: 18px 18px 14px;
+        border-bottom: 1px solid var(--line);
+        background: var(--amber-soft);
+      }
+      .blueprint-head h2 { font-size: 1.7rem; }
+      .blueprint-head p { margin: 4px 0 0; color: var(--ink-dim); font-size: 0.92rem; }
+      .bp-empty { padding: 26px 18px; text-align: center; color: var(--ink-faint); }
+      .bp-table { width: 100%; border-collapse: collapse; }
+      .bp-table th {
+        text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--ink-faint); font-weight: 600; padding: 12px 18px 6px;
+      }
+      .bp-table th.r, .bp-table td.r { text-align: right; }
+      .bp-table td { padding: 10px 18px; border-top: 1px solid var(--line); vertical-align: top; }
+      .bp-fund { font-weight: 600; }
+      .bp-meta { display: block; font-size: 0.8rem; color: var(--ink-faint); font-weight: 400; margin-top: 1px; }
+      .bp-amt { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.05rem; color: var(--amber); white-space: nowrap; }
+      .bp-amt small { display: block; font-size: 0.7rem; font-weight: 500; color: var(--ink-faint); font-family: "Archivo", sans-serif; text-align: right; }
+      .rank {
+        display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+        background: var(--bg-inset); border: 1px solid var(--line-strong);
+        font-family: "JetBrains Mono", monospace; font-size: 0.72rem; font-weight: 700; color: var(--ink-dim);
+        margin-right: 8px; vertical-align: 2px;
+      }
+      .urgent-tag {
+        display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+        color: var(--red); background: var(--red-soft); border: 1px solid var(--red);
+        padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: 2px;
+      }
+      .bp-total {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+        padding: 14px 18px; border-top: 2px solid var(--line-strong); flex-wrap: wrap;
+      }
+      .bp-total .lbl { font-weight: 600; font-size: 0.95rem; }
+      .bp-total .lbl small { display: block; color: var(--ink-faint); font-weight: 400; font-size: 0.8rem; }
+      .bp-total .val { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.5rem; color: var(--amber); }
+
+      .stress {
+        margin: 0 18px 16px; border-radius: 8px; padding: 12px 14px; font-size: 0.92rem;
+        display: none;
+      }
+      .stress.show { display: block; }
+      .stress.ok { background: var(--green-soft); border: 1px solid var(--green); }
+      .stress.warn { background: var(--red-soft); border: 1px solid var(--red); }
+      .stress strong { display: block; margin-bottom: 2px; }
+      .stress.warn strong { color: var(--red); }
+      .stress.ok strong { color: var(--green); }
+      .stress .pct { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+
+      .bp-actions { padding: 0 18px 18px; }
+      .print-btn {
+        width: 100%; padding: 13px; border: none; border-radius: 9px; cursor: pointer;
+        background: var(--amber); color: #141416;
+        font: inherit; font-weight: 700; font-size: 1rem;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+      }
+      .print-btn:hover { background: var(--orange); color: #fff; }
+      .print-btn svg { width: 18px; height: 18px; }
+
+      /* ---------- Next steps ---------- */
+      .next-grid { display: grid; gap: 10px; }
+      @media (min-width: 620px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px;
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card .nc-kicker { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber); }
+      a.next-card h3 { margin: 4px 0 4px; font-size: 1.05rem; }
+      a.next-card p { margin: 0; color: var(--ink-dim); font-size: 0.9rem; }
+      a.next-card .nc-arrow { color: var(--amber); font-weight: 700; }
+
+      .cta-banner {
+        margin-top: 14px; border-radius: var(--radius); padding: 18px;
+        background: linear-gradient(120deg, rgba(245,165,36,0.18), rgba(255,107,26,0.14));
+        border: 1px solid var(--amber);
+        display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+      }
+      .cta-banner p { margin: 0; flex: 1 1 260px; font-weight: 600; font-size: 1.02rem; }
+      .cta-banner p small { display: block; font-weight: 400; color: var(--ink-dim); font-size: 0.88rem; margin-top: 2px; }
+      .cta-banner a {
+        flex: none; background: var(--amber); color: #141416; text-decoration: none;
+        font-weight: 700; padding: 11px 18px; border-radius: 8px;
+      }
+      .cta-banner a:hover { background: var(--orange); color: #fff; }
+
+      /* ---------- FAQ ---------- */
+      .faq details {
+        background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 14px 16px; margin-bottom: 10px;
+      }
+      .faq summary { font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; color: var(--amber); font-weight: 700; font-size: 1.15rem; line-height: 1; }
+      .faq details[open] summary::after { content: "–"; }
+      .faq details p { margin: 10px 0 0; color: var(--ink-dim); font-size: 0.94rem; }
+
+      footer { margin-top: 40px; color: var(--ink-faint); font-size: 0.82rem; text-align: center; }
+
+      /* ---------- Print: blueprint only, clean ---------- */
+      @media print {
+        :root {
+          --bg: #fff; --bg-raise: #fff; --bg-card: #fff; --bg-inset: #f4f4f4;
+          --line: #ccc; --line-strong: #999; --ink: #111; --ink-dim: #444; --ink-faint: #666;
+          --amber: #b06f00; --orange: #b34a00; --amber-soft: #fdf3e0;
+          --red: #b02020; --red-soft: #fdeeee; --green: #1d7a3f; --green-soft: #eafaf0;
+        }
+        body { background: #fff; }
+        header.hero, section.step, .next-steps, .cta-banner, .faq, footer, .bp-actions { display: none !important; }
+        .blueprint-wrap { margin-top: 0 !important; }
+        .blueprint { border: 2px solid #111; }
+        .wrap { padding: 0; max-width: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <div class="hazard" aria-hidden="true"></div>
+        <h1>Sinking Funds &amp;<br /><span class="accent">Irregular Expense</span> Planner</h1>
+        <p class="lede">Car insurance, registration, holidays — the bills that "come out of nowhere" are actually predictable. Pick your stealth bills below, set the cost and due date, and this planner splits each one into an <strong>exact per-paycheck set-aside</strong> so the money is already sitting there when the bill lands.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1">Pick Your Stealth Bills</h2></div>
+        <p class="step-sub">Flip on every irregular bill you know is coming. Adjust the cost and due date to match your real numbers.</p>
+        <div class="fund-grid" id="fundGrid"></div>
+        <div class="custom-list" id="customList"></div>
+        <button type="button" class="add-btn" id="addCustom">+ Add a custom expense</button>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2">Your Pay Schedule</h2></div>
+        <p class="step-sub">How often you get paid decides how many paychecks you have to spread each bill across.</p>
+        <div class="panel">
+          <div class="freq-row" role="radiogroup" aria-label="Pay frequency">
+            <label><input type="radio" name="freq" value="weekly" /><span class="freq-pill">Weekly<small>52 checks / yr</small></span></label>
+            <label><input type="radio" name="freq" value="biweekly" checked /><span class="freq-pill">Bi-Weekly<small>26 checks / yr</small></span></label>
+            <label><input type="radio" name="freq" value="semimonthly" /><span class="freq-pill">Semi-Monthly<small>24 checks / yr</small></span></label>
+          </div>
+          <div class="pay-fields">
+            <div class="field">
+              <label for="nextPayday">Next payday</label>
+              <input type="date" id="nextPayday" />
+            </div>
+            <div class="field">
+              <label for="netPay">Net (take-home) pay per check</label>
+              <div class="money-wrap"><input type="number" id="netPay" inputmode="decimal" min="0" step="1" value="850" /></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEPS 3 + 4 / BLUEPRINT -->
+      <section class="step blueprint-wrap" aria-labelledby="bpTitle">
+        <div class="step-head"><span class="step-num">STEP 3–4</span><h2>Set-Asides, Ranked by Urgency</h2></div>
+        <p class="step-sub">Each fund's amount is its target ÷ the paychecks left before it's due. The blueprint below re-sorts itself live — soonest due date first — and stress-checks the total against your paycheck.</p>
+
+        <div class="blueprint" id="blueprint">
+          <div class="blueprint-head">
+            <h2 id="bpTitle">Paycheck Sinking Fund Blueprint</h2>
+            <p id="bpSub">Your per-paycheck auto-transfer plan.</p>
+          </div>
+          <div class="bp-empty" id="bpEmpty">No funds switched on yet — flip on at least one bill in Step 1 and your blueprint builds itself here.</div>
+          <table class="bp-table" id="bpTable" hidden>
+            <thead>
+              <tr><th>Fund (soonest due first)</th><th class="r">Per paycheck</th></tr>
+            </thead>
+            <tbody id="bpBody"></tbody>
+          </table>
+          <div class="bp-total" id="bpTotal" hidden>
+            <span class="lbl">Total per-paycheck commitment<small id="bpTotalMeta"></small></span>
+            <span class="val" id="bpTotalVal">$0.00</span>
+          </div>
+          <div class="stress" id="stressBox" role="status"></div>
+          <div class="bp-actions">
+            <button type="button" class="print-btn" id="printBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Print My Blueprint
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <section class="step next-steps" aria-labelledby="ns">
+        <div class="step-head"><span class="step-num">NEXT</span><h2 id="ns">Put the Rest of the Check to Work</h2></div>
+        <p class="step-sub">Your sinking funds cover the future bills. These tools handle the rest of the paycheck — and what your spare cash could grow into.</p>
+        <div class="next-grid">
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" target="_blank" rel="noopener">
+            <span class="nc-kicker">Free tool</span>
+            <h3>Paycheck Budget Splitter <span class="nc-arrow">→</span></h3>
+            <p>Split what's left of each check into needs, wants, and goals with a simple percentage plan built for hourly and shift pay.</p>
+          </a>
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html" target="_blank" rel="noopener">
+            <span class="nc-kicker">Free tool</span>
+            <h3>Compound Interest Velocity Calculator <span class="nc-arrow">→</span></h3>
+            <p>See how fast small, steady deposits snowball over time — and what starting one paycheck earlier is worth.</p>
+          </a>
+        </div>
+        <div class="cta-banner">
+          <p>Keep every fund on track with the Sinking Funds Tracker and the Truck &amp; Equipment Maintenance Log on Gumroad.
+            <small>Printable trackers that pair with this planner — check off each deposit and watch every fund fill up.</small>
+          </p>
+          <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get the Trackers →</a>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="step faq" aria-labelledby="faqH">
+        <div class="step-head"><span class="step-num">FAQ</span><h2 id="faqH">Quick Answers</h2></div>
+        <details>
+          <summary>What is a sinking fund?</summary>
+          <p>A sinking fund is money you set aside a little at a time for a specific, predictable expense you know is coming — car insurance, registration, Christmas, annual subscriptions. Instead of one big bill wrecking a paycheck, you split it across every paycheck between now and the due date. The expense stops being an emergency because you funded it on purpose, in advance.</p>
+        </details>
+        <details>
+          <summary>Sinking fund vs. emergency fund — what's the difference?</summary>
+          <p>An emergency fund is for expenses you <em>can't</em> predict: a blown transmission, a cut shift, a medical surprise. A sinking fund is for expenses you <em>can</em> predict — you know the amount and roughly when it's due. Mixing the two is how emergency funds quietly drain away on normal bills. Keep them separate: sinking funds handle the known bills so the emergency fund survives for actual emergencies.</p>
+        </details>
+        <details>
+          <summary>What if a bill is due next week?</summary>
+          <p>Then the math gets blunt: with only one paycheck left, the "set-aside" is basically the whole bill. This planner will show you that number honestly rather than pretend a small deposit covers it. Your options: pay it from savings or the emergency fund this once, ask the provider about a payment plan or a due-date move, and — most important — restart the fund the day after you pay it, so next time you get the full runway of paychecks. A short runway is exactly what the stress check above is warning about.</p>
+        </details>
+      </section>
+
+      <footer>Runs entirely in your browser — your numbers are yours alone. Amounts are planning estimates based on the dates and costs you enter.</footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var ICONS = {
+          shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>',
+          tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>',
+          wrench: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/></svg>',
+          gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13"/><path d="M19 12v9H5v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>',
+          refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>',
+          heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 12.6L12 20l-7.5-7.4A5 5 0 1 1 12 6.2a5 5 0 1 1 7.5 6.4z"/><path d="M3.5 12h4l1.5-3 3 6 1.5-3h4"/></svg>',
+          briefcase: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>',
+          box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></svg>'
+        };
+
+        function addMonths(date, n) {
+          var d = new Date(date.getFullYear(), date.getMonth() + n, date.getDate());
+          return d;
+        }
+        function fmtDate(d) {
+          var y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, "0"), day = String(d.getDate()).padStart(2, "0");
+          return y + "-" + m + "-" + day;
+        }
+        function parseDate(v) {
+          if (!v) return null;
+          var p = v.split("-");
+          var d = new Date(+p[0], +p[1] - 1, +p[2]);
+          return isNaN(d.getTime()) ? null : d;
+        }
+        function money(n) {
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function prettyDate(d) {
+          return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        }
+
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var inOneYear = new Date(today); inOneYear.setFullYear(inOneYear.getFullYear() + 1);
+
+        var PRESETS = [
+          { id: "insurance", name: "Car Insurance Renewal", hint: "6-month or annual premium", icon: "shield", cost: 780, due: addMonths(today, 4) },
+          { id: "registration", name: "Registration / Tags", hint: "Plate renewal + emissions", icon: "tag", cost: 120, due: addMonths(today, 6) },
+          { id: "maintenance", name: "Vehicle Maintenance", hint: "Tires, brakes, battery, oil", icon: "wrench", cost: 450, due: addMonths(today, 3) },
+          { id: "holidays", name: "Holidays & Gifts", hint: "Christmas, birthdays, events", icon: "gift", cost: 600, due: (function(){ var d = new Date(today.getFullYear(), 11, 20); return d < today ? new Date(today.getFullYear() + 1, 11, 20) : d; })() },
+          { id: "subs", name: "Annual Subscriptions", hint: "Streaming, apps, memberships", icon: "refresh", cost: 240, due: addMonths(today, 5) },
+          { id: "medical", name: "Medical Co-Pays", hint: "Dental, vision, checkups", icon: "heart", cost: 300, due: addMonths(today, 7) },
+          { id: "supplies", name: "Home & Work Supplies", hint: "Boots, tools, household gear", icon: "briefcase", cost: 200, due: addMonths(today, 2) }
+        ];
+
+        var grid = document.getElementById("fundGrid");
+        var customList = document.getElementById("customList");
+        var customCount = 0;
+
+        function cardHTML(f, isCustom) {
+          var namePart = isCustom
+            ? '<input class="fund-name-input" type="text" value="' + f.name + '" aria-label="Custom expense name" />'
+            : '<span class="fund-name">' + f.name + '<span class="fund-hint">' + (f.hint || "") + "</span></span>";
+          var removePart = isCustom ? '<button type="button" class="remove-btn" aria-label="Remove this expense">×</button>' : "";
+          return (
+            '<div class="fund-top">' +
+              '<span class="fund-icon">' + (ICONS[f.icon] || ICONS.box) + "</span>" +
+              namePart +
+              removePart +
+              '<label class="switch"><input type="checkbox" class="fund-toggle" aria-label="Include ' + (isCustom ? "custom expense" : f.name) + '" /><span class="track"></span></label>' +
+            "</div>" +
+            '<div class="fund-fields">' +
+              '<div class="field"><label>Total cost</label><div class="money-wrap"><input type="number" class="fund-cost" inputmode="decimal" min="0" step="1" value="' + f.cost + '" /></div></div>' +
+              '<div class="field"><label>Due date</label><input type="date" class="fund-due" value="' + fmtDate(f.due) + '" /></div>' +
+              '<div class="fund-result" aria-live="polite"></div>' +
+            "</div>"
+          );
+        }
+
+        function wireCard(card) {
+          var toggle = card.querySelector(".fund-toggle");
+          toggle.addEventListener("change", function () {
+            card.classList.toggle("on", toggle.checked);
+            recalc();
+          });
+          card.querySelectorAll("input").forEach(function (el) {
+            el.addEventListener("input", recalc);
+            el.addEventListener("change", recalc);
+          });
+          var rm = card.querySelector(".remove-btn");
+          if (rm) rm.addEventListener("click", function () { card.remove(); recalc(); });
+        }
+
+        PRESETS.forEach(function (f) {
+          var card = document.createElement("article");
+          card.className = "fund-card";
+          card.dataset.fundId = f.id;
+          card.dataset.fundName = f.name;
+          card.innerHTML = cardHTML(f, false);
+          grid.appendChild(card);
+          wireCard(card);
+        });
+
+        // Sensible starter: the two most common stealth bills on by default.
+        ["insurance", "holidays"].forEach(function (id) {
+          var card = grid.querySelector('[data-fund-id="' + id + '"]');
+          if (card) {
+            var t = card.querySelector(".fund-toggle");
+            t.checked = true;
+            card.classList.add("on");
+          }
+        });
+
+        document.getElementById("addCustom").addEventListener("click", function () {
+          customCount++;
+          var card = document.createElement("article");
+          card.className = "fund-card custom-card on";
+          card.dataset.custom = "1";
+          card.innerHTML = cardHTML({ name: "Custom expense " + customCount, icon: "box", cost: 300, due: addMonths(today, 4) }, true);
+          card.querySelector(".fund-toggle").checked = true;
+          customList.appendChild(card);
+          wireCard(card);
+          var nameInput = card.querySelector(".fund-name-input");
+          nameInput.focus();
+          nameInput.select();
+          recalc();
+        });
+
+        // ---- Pay schedule defaults: next Friday as a starting payday ----
+        var nextPaydayEl = document.getElementById("nextPayday");
+        (function () {
+          var d = new Date(today);
+          var add = (5 - d.getDay() + 7) % 7;
+          if (add === 0) add = 7;
+          d.setDate(d.getDate() + add);
+          nextPaydayEl.value = fmtDate(d);
+        })();
+
+        document.querySelectorAll('input[name="freq"]').forEach(function (r) {
+          r.addEventListener("change", recalc);
+        });
+        nextPaydayEl.addEventListener("change", recalc);
+        nextPaydayEl.addEventListener("input", recalc);
+        document.getElementById("netPay").addEventListener("input", recalc);
+
+        function getFreq() {
+          var el = document.querySelector('input[name="freq"]:checked');
+          return el ? el.value : "biweekly";
+        }
+
+        // Count paychecks from the next payday up to and including the due date. Minimum 1.
+        function paychecksUntil(due, nextPay, freq) {
+          if (!due || !nextPay) return 1;
+          var count = 0;
+          var d = new Date(nextPay.getFullYear(), nextPay.getMonth(), nextPay.getDate());
+          var guard = 0;
+          while (d <= due && guard < 600) {
+            count++;
+            guard++;
+            if (freq === "weekly") {
+              d.setDate(d.getDate() + 7);
+            } else if (freq === "biweekly") {
+              d.setDate(d.getDate() + 14);
+            } else {
+              // Semi-monthly: next payday is the 1st or 15th of the month.
+              if (d.getDate() < 15) d.setDate(15);
+              else { d = new Date(d.getFullYear(), d.getMonth() + 1, 1); }
+            }
+          }
+          return Math.max(count, 1);
+        }
+
+        function collectFunds() {
+          var funds = [];
+          document.querySelectorAll(".fund-card").forEach(function (card) {
+            var toggle = card.querySelector(".fund-toggle");
+            if (!toggle.checked) { card.querySelector(".fund-result").innerHTML = ""; return; }
+            var name;
+            if (card.dataset.custom) {
+              name = (card.querySelector(".fund-name-input").value || "Custom expense").trim() || "Custom expense";
+            } else {
+              name = card.dataset.fundName;
+            }
+            var cost = parseFloat(card.querySelector(".fund-cost").value);
+            if (isNaN(cost) || cost < 0) cost = 0;
+            var due = parseDate(card.querySelector(".fund-due").value);
+            funds.push({ card: card, name: name, cost: cost, due: due });
+          });
+          return funds;
+        }
+
+        function recalc() {
+          var freq = getFreq();
+          var nextPay = parseDate(nextPaydayEl.value) || today;
+          var netPay = parseFloat(document.getElementById("netPay").value);
+          if (isNaN(netPay) || netPay < 0) netPay = 0;
+
+          var funds = collectFunds();
+          var computed = funds.map(function (f) {
+            var checks = f.due ? paychecksUntil(f.due, nextPay, freq) : 1;
+            var per = checks > 0 ? f.cost / checks : f.cost;
+            var days = f.due ? Math.round((f.due - today) / 86400000) : null;
+            return { name: f.name, cost: f.cost, due: f.due, checks: checks, per: per, days: days, card: f.card };
+          });
+
+          // Live per-card result line (Step 3 engine output on each card)
+          computed.forEach(function (c) {
+            var box = c.card.querySelector(".fund-result");
+            var dueTxt = c.due ? prettyDate(c.due) : "no date set";
+            var soon = c.days !== null && c.days <= 14 ? ' <span class="due-soon">Due in ' + Math.max(c.days, 0) + ' days — almost no runway</span>' : "";
+            box.innerHTML = "Set aside <b>" + money(c.per) + "</b> per paycheck · " + c.checks + " paycheck" + (c.checks === 1 ? "" : "s") + " before " + dueTxt + soon;
+          });
+
+          // Priority ranking: due soonest first (Step 4)
+          computed.sort(function (a, b) {
+            var da = a.due ? a.due.getTime() : Infinity;
+            var db = b.due ? b.due.getTime() : Infinity;
+            return da - db;
+          });
+
+          var empty = document.getElementById("bpEmpty");
+          var table = document.getElementById("bpTable");
+          var body = document.getElementById("bpBody");
+          var totalRow = document.getElementById("bpTotal");
+          var totalVal = document.getElementById("bpTotalVal");
+          var totalMeta = document.getElementById("bpTotalMeta");
+          var stress = document.getElementById("stressBox");
+          var bpSub = document.getElementById("bpSub");
+
+          if (computed.length === 0) {
+            empty.style.display = "block";
+            table.hidden = true;
+            totalRow.hidden = true;
+            stress.className = "stress";
+            stress.innerHTML = "";
+            bpSub.textContent = "Your per-paycheck auto-transfer plan.";
+            return;
+          }
+          empty.style.display = "none";
+          table.hidden = false;
+          totalRow.hidden = false;
+
+          var total = 0;
+          body.innerHTML = "";
+          computed.forEach(function (c, i) {
+            total += c.per;
+            var tr = document.createElement("tr");
+            var urgent = c.days !== null && c.days <= 30;
+            var meta = "Target " + money(c.cost) + (c.due ? " · Due " + prettyDate(c.due) : "") + " · " + c.checks + " paycheck" + (c.checks === 1 ? "" : "s") + " left";
+            tr.innerHTML =
+              '<td><span class="rank">' + (i + 1) + '</span><span class="bp-fund"></span>' +
+              (urgent ? '<span class="urgent-tag">Urgent</span>' : "") +
+              '<span class="bp-meta">' + meta + "</span></td>" +
+              '<td class="r"><span class="bp-amt">' + money(c.per) + "<small>per paycheck</small></span></td>";
+            tr.querySelector(".bp-fund").textContent = c.name;
+            body.appendChild(tr);
+          });
+
+          totalVal.textContent = money(total);
+          var freqLabel = freq === "weekly" ? "weekly" : freq === "biweekly" ? "bi-weekly" : "semi-monthly";
+          totalMeta.textContent = "Across " + computed.length + " fund" + (computed.length === 1 ? "" : "s") + " · " + freqLabel + " pay";
+          bpSub.textContent = "Auto-transfer these amounts every payday, starting " + prettyDate(nextPay) + ".";
+
+          // Stress check: total vs 15% of net paycheck
+          if (netPay > 0) {
+            var pct = (total / netPay) * 100;
+            stress.className = "stress show " + (pct > 15 ? "warn" : "ok");
+            if (pct > 15) {
+              stress.innerHTML =
+                "<strong>⚠ Stress check: over the 15% line</strong>" +
+                "Your sinking funds take <span class='pct'>" + pct.toFixed(1) + "%</span> of your " + money(netPay) + " net paycheck — above the 15% comfort cap (" + money(netPay * 0.15) + "). " +
+                "That pace risks squeezing rent, gas, and groceries. Ease it by pushing a due date out, trimming a target, or splitting a big bill (like insurance) into monthly payments instead.";
+            } else {
+              stress.innerHTML =
+                "<strong>✓ Stress check: within budget</strong>" +
+                "Your sinking funds take <span class='pct'>" + pct.toFixed(1) + "%</span> of your " + money(netPay) + " net paycheck — under the 15% comfort cap (" + money(netPay * 0.15) + "). This pace leaves the rest of the check breathing room.";
+            }
+          } else {
+            stress.className = "stress";
+            stress.innerHTML = "";
+          }
+        }
+
+        document.getElementById("printBtn").addEventListener("click", function () {
+          window.print();
+        });
+
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

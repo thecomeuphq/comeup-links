@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Windfall Stash Maximizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0b0c0e;
+        --bg-2: #101214;
+        --panel: #16181b;
+        --panel-2: #1c1f23;
+        --line: #2a2e33;
+        --line-soft: #22252a;
+        --ink: #ece9e2;
+        --ink-dim: #b7b2a6;
+        --muted: #8d887c;
+        --amber: #f6a821;
+        --orange: #ff7a1a;
+        --amber-ink: #1a1204;
+        --green: #7fc96b;
+        --red: #e5604f;
+        --radius: 10px;
+        --num: "Barlow Semi Condensed", "Barlow", sans-serif;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(900px 420px at 85% -80px, rgba(246,168,33,.10), rgba(246,168,33,0) 60%),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 22px 16px 56px; }
+
+      /* ---------- header ---------- */
+      .hazard {
+        height: 8px; border-radius: 4px; margin-bottom: 20px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141518 14px 28px);
+        opacity: .9;
+      }
+      h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(30px, 7.4vw, 44px);
+        line-height: 1.02; letter-spacing: .4px; text-transform: uppercase;
+        margin: 0 0 8px; font-weight: 700;
+      }
+      h1 .hot { color: var(--amber); }
+      .lede { color: var(--ink-dim); margin: 0 0 6px; max-width: 56ch; font-size: 16.5px; }
+      .lede strong { color: var(--ink); }
+
+      /* ---------- steps ---------- */
+      .step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px 16px 20px;
+        margin-top: 20px;
+      }
+      .step-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+      .step-no {
+        font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+        background: var(--amber); color: var(--amber-ink);
+        font-size: 14px; letter-spacing: 1px;
+        padding: 2px 9px; border-radius: 4px; white-space: nowrap;
+      }
+      .step h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 24px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase;
+        margin: 0;
+      }
+      .step-sub { color: var(--muted); font-size: 14.5px; margin: 2px 0 14px; }
+
+      label.field-label { display: block; font-weight: 600; font-size: 14px; letter-spacing: .4px; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 8px; }
+
+      /* amount input */
+      .amount-row { display: flex; gap: 10px; flex-wrap: wrap; }
+      .amount-box {
+        flex: 1 1 200px; display: flex; align-items: center;
+        background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px;
+        padding: 0 14px;
+      }
+      .amount-box span { font-family: var(--num); font-size: 26px; color: var(--amber); margin-right: 6px; }
+      .amount-box input {
+        width: 100%; background: none; border: 0; outline: 0; color: var(--ink);
+        font-family: var(--num); font-size: 30px; font-weight: 600; padding: 10px 0;
+        font-variant-numeric: tabular-nums;
+      }
+      .quick { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+      .quick button, .chip {
+        background: var(--panel-2); color: var(--ink-dim);
+        border: 1px solid var(--line); border-radius: 999px;
+        padding: 8px 14px; font: 600 14px "Barlow", sans-serif; cursor: pointer;
+      }
+      .quick button:active, .chip:active { transform: translateY(1px); }
+      .chip[aria-pressed="true"] {
+        background: var(--amber); border-color: var(--amber); color: var(--amber-ink);
+      }
+
+      .source-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+      /* foundation questions */
+      .fq {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        padding: 13px 0; border-bottom: 1px solid var(--line-soft);
+      }
+      .fq:last-of-type { border-bottom: 0; }
+      .fq p { margin: 0; font-weight: 500; font-size: 16px; }
+      .fq p small { display: block; color: var(--muted); font-weight: 400; font-size: 13.5px; margin-top: 2px; }
+      .yn { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; flex: 0 0 auto; }
+      .yn button {
+        background: var(--bg-2); color: var(--muted); border: 0; cursor: pointer;
+        font: 700 14px "Barlow", sans-serif; padding: 9px 16px; letter-spacing: .5px;
+      }
+      .yn button[aria-pressed="true"] { background: var(--amber); color: var(--amber-ink); }
+      .yn button[aria-pressed="true"].no-btn { background: #3a3e44; color: var(--ink); }
+      .foundation-note {
+        margin-top: 12px; background: rgba(246,168,33,.08);
+        border: 1px solid rgba(246,168,33,.35); border-radius: 8px;
+        padding: 11px 13px; font-size: 14.5px; color: var(--ink-dim);
+      }
+      .foundation-note strong { color: var(--amber); }
+
+      /* strategy chips + sliders */
+      .strategy-grid { display: grid; gap: 10px; margin-bottom: 18px; }
+      @media (min-width: 620px) { .strategy-grid { grid-template-columns: repeat(3, 1fr); } }
+      .strategy {
+        text-align: left; background: var(--panel-2); border: 1px solid var(--line);
+        border-radius: 8px; padding: 12px 13px; cursor: pointer; color: var(--ink);
+        font-family: "Barlow", sans-serif; position: relative;
+      }
+      .strategy h3 { margin: 0 0 3px; font-family: "Barlow Condensed", sans-serif; font-size: 19px; letter-spacing: .4px; text-transform: uppercase; font-weight: 600; }
+      .strategy p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.4; }
+      .strategy .split { font-family: var(--num); color: var(--amber); font-weight: 600; font-size: 15px; }
+      .strategy[aria-pressed="true"] { border-color: var(--amber); background: rgba(246,168,33,.09); box-shadow: inset 0 0 0 1px var(--amber); }
+      .rec-tag {
+        position: absolute; top: -9px; right: 10px;
+        background: var(--orange); color: #1c0e00; font-size: 11px; font-weight: 700;
+        letter-spacing: .6px; text-transform: uppercase; padding: 2px 8px; border-radius: 999px;
+        display: none;
+      }
+      .strategy.recommended .rec-tag { display: block; }
+
+      .bar {
+        display: flex; height: 18px; border-radius: 5px; overflow: hidden;
+        border: 1px solid var(--line); margin: 4px 0 16px; background: var(--bg-2);
+      }
+      .bar div { height: 100%; transition: width .18s ease; min-width: 0; }
+      .bar .b-debt { background: var(--red); }
+      .bar .b-save { background: var(--amber); }
+      .bar .b-reward { background: var(--green); }
+
+      .slider-row { padding: 10px 0; border-bottom: 1px solid var(--line-soft); }
+      .slider-row:last-of-type { border-bottom: 0; }
+      .slider-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+      .slider-top .name { font-weight: 600; font-size: 15.5px; }
+      .slider-top .name i { font-style: normal; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; }
+      .dot-debt { background: var(--red); } .dot-save { background: var(--amber); } .dot-reward { background: var(--green); }
+      .slider-top .vals { font-family: var(--num); font-variant-numeric: tabular-nums; text-align: right; }
+      .slider-top .vals .pct { font-size: 20px; font-weight: 600; }
+      .slider-top .vals .amt { display: block; color: var(--muted); font-size: 14px; }
+      input[type="range"] {
+        width: 100%; margin: 10px 0 2px; accent-color: var(--amber); height: 28px; cursor: pointer;
+      }
+      .total-line { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); margin-top: 10px; }
+      .total-line strong { color: var(--green); font-variant-numeric: tabular-nums; }
+      .total-line strong.bad { color: var(--red); }
+
+      .pace-grid { display: grid; gap: 12px; margin-top: 16px; }
+      @media (min-width: 620px) { .pace-grid { grid-template-columns: 1fr 1fr; } }
+      .pace-grid .mini-box { background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; padding: 0 13px; display: flex; align-items: center; }
+      .pace-grid .mini-box span { font-family: var(--num); font-size: 20px; color: var(--amber); margin-right: 5px; }
+      .pace-grid input {
+        width: 100%; background: none; border: 0; outline: 0; color: var(--ink);
+        font-family: var(--num); font-size: 22px; font-weight: 600; padding: 9px 0; font-variant-numeric: tabular-nums;
+      }
+      .pace-grid label { display: block; font-size: 13.5px; color: var(--muted); margin-bottom: 5px; font-weight: 500; }
+
+      /* blueprint */
+      .blueprint {
+        background: linear-gradient(180deg, #1a1c17, var(--panel));
+        border: 1px solid var(--amber); border-radius: var(--radius);
+        padding: 20px 16px; margin-top: 20px;
+        box-shadow: 0 0 0 4px rgba(246,168,33,.07);
+      }
+      .blueprint .bp-tag { font-size: 12px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: var(--amber); }
+      .blueprint h2 { font-family: "Barlow Condensed", sans-serif; font-size: 30px; text-transform: uppercase; letter-spacing: .5px; margin: 4px 0 2px; }
+      .bp-meta { color: var(--muted); font-size: 14.5px; margin: 0 0 14px; }
+      .bp-meta strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+      .bp-row {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+        padding: 12px 0; border-top: 1px dashed var(--line);
+      }
+      .bp-row .lbl { font-weight: 600; font-size: 16px; }
+      .bp-row .lbl small { display: block; color: var(--muted); font-weight: 400; font-size: 13.5px; margin-top: 1px; }
+      .bp-row .fig { font-family: var(--num); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+      .bp-row .fig .big { font-size: 24px; font-weight: 600; }
+      .bp-row .fig .pct { color: var(--muted); font-size: 14px; display: block; }
+      .bp-row.reward-row .fig .big { color: var(--green); }
+      .score-box {
+        margin-top: 16px; background: var(--bg-2); border: 1px solid var(--line);
+        border-radius: 8px; padding: 14px;
+      }
+      .score-box .score-label { font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted); }
+      .score-num { font-family: var(--num); font-size: 44px; font-weight: 600; color: var(--amber); line-height: 1.1; font-variant-numeric: tabular-nums; }
+      .score-num small { font-size: 19px; color: var(--ink-dim); font-weight: 500; }
+      .score-detail { color: var(--ink-dim); font-size: 14.5px; margin: 4px 0 0; }
+      .bp-notes { margin: 14px 0 0; padding: 0; list-style: none; }
+      .bp-notes li { padding: 7px 0 7px 22px; position: relative; color: var(--ink-dim); font-size: 14.5px; border-top: 1px solid var(--line-soft); }
+      .bp-notes li::before { content: "▸"; position: absolute; left: 4px; color: var(--amber); font-weight: 700; }
+      .bp-notes li strong { color: var(--ink); }
+      .copy-btn {
+        margin-top: 16px; width: 100%; background: var(--amber); color: var(--amber-ink);
+        border: 0; border-radius: 8px; padding: 13px; cursor: pointer;
+        font: 700 16px "Barlow", sans-serif; letter-spacing: .3px;
+      }
+      .copy-btn:active { transform: translateY(1px); }
+
+      /* next steps + CTA */
+      .next-grid { display: grid; gap: 12px; margin-top: 26px; }
+      @media (min-width: 620px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px;
+      }
+      .next-card h3 { margin: 0 0 5px; font-family: "Barlow Condensed", sans-serif; font-size: 21px; letter-spacing: .4px; text-transform: uppercase; font-weight: 600; }
+      .next-card h3 .arr { color: var(--amber); }
+      .next-card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+      .cta {
+        margin-top: 14px; display: block; text-decoration: none;
+        background: linear-gradient(120deg, #2a1c05, #3a2405 55%, #2a1c05);
+        border: 1px solid var(--orange); border-radius: var(--radius);
+        padding: 18px 16px; color: var(--ink);
+      }
+      .cta .cta-tag { font-size: 12px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: var(--orange); }
+      .cta p { margin: 6px 0 8px; font-size: 17px; line-height: 1.45; }
+      .cta .cta-go { font-weight: 700; color: var(--amber); }
+
+      /* FAQ */
+      .faq { margin-top: 30px; }
+      .faq h2 { font-family: "Barlow Condensed", sans-serif; font-size: 26px; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 10px; }
+      details { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; }
+      summary { cursor: pointer; padding: 14px 16px; font-weight: 600; font-size: 16px; list-style: none; }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "+"; float: right; color: var(--amber); font-weight: 700; }
+      details[open ] summary::after { content: "–"; }
+      details p { margin: 0; padding: 0 16px 15px; color: var(--ink-dim); font-size: 15px; }
+      .foot { color: var(--muted); font-size: 13px; text-align: center; margin-top: 28px; }
+      @media (prefers-reduced-motion: reduce) { .bar div { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hazard" aria-hidden="true"></div>
+      <h1>One lump sum. <span class="hot">Zero leaks.</span></h1>
+      <p class="lede">A tax refund, bonus, or retro check hits your account — and without a plan it's gone in two weeks. Run it through the four steps below and walk away with an <strong>exact-dollar routing plan</strong>: debt killed, buffer built, and a reward you can spend without guilt.</p>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-no">STEP 1</span><h2 id="s1">Windfall Input</h2></div>
+        <p class="step-sub">How much is landing, and where is it coming from?</p>
+        <label class="field-label" for="amount">Lump sum amount</label>
+        <div class="amount-row">
+          <div class="amount-box"><span>$</span><input id="amount" type="number" inputmode="decimal" min="0" step="any" value="2500" aria-label="Windfall amount in dollars" /></div>
+        </div>
+        <div class="quick" role="group" aria-label="Quick amounts">
+          <button type="button" data-amt="500">$500</button>
+          <button type="button" data-amt="1000">$1,000</button>
+          <button type="button" data-amt="2500">$2,500</button>
+          <button type="button" data-amt="5000">$5,000</button>
+          <button type="button" data-amt="8000">$8,000</button>
+        </div>
+        <label class="field-label" style="margin-top:18px;">Source of the money</label>
+        <div class="source-grid" id="sources" role="group" aria-label="Windfall source">
+          <button type="button" class="chip" data-source="Tax Refund" aria-pressed="true">Tax Refund</button>
+          <button type="button" class="chip" data-source="Work Bonus" aria-pressed="false">Work Bonus</button>
+          <button type="button" class="chip" data-source="Retro / Back Pay" aria-pressed="false">Retro / Back Pay</button>
+          <button type="button" class="chip" data-source="Safety Incentive" aria-pressed="false">Safety Incentive</button>
+          <button type="button" class="chip" data-source="Gift / Settlement" aria-pressed="false">Gift / Settlement</button>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-no">STEP 2</span><h2 id="s2">Foundation Check</h2></div>
+        <p class="step-sub">Three fast answers. They decide which strategy gets recommended in Step 3.</p>
+
+        <div class="fq">
+          <p>Do you have $1,000+ in emergency savings?<small>The starter cushion that keeps a flat tire off a credit card.</small></p>
+          <div class="yn" data-q="emergency">
+            <button type="button" data-val="yes" aria-pressed="true">YES</button>
+            <button type="button" class="no-btn" data-val="no" aria-pressed="false">NO</button>
+          </div>
+        </div>
+        <div class="fq">
+          <p>Are you carrying debt over 20% APR?<small>Credit cards and store cards in the 20s and 30s.</small></p>
+          <div class="yn" data-q="highApr">
+            <button type="button" data-val="yes" aria-pressed="false">YES</button>
+            <button type="button" class="no-btn" data-val="no" aria-pressed="true">NO</button>
+          </div>
+        </div>
+        <div class="fq">
+          <p>Are any sinking funds behind schedule?<small>Tires, insurance, registration, holidays — bills you know are coming.</small></p>
+          <div class="yn" data-q="sinking">
+            <button type="button" data-val="yes" aria-pressed="false">YES</button>
+            <button type="button" class="no-btn" data-val="no" aria-pressed="true">NO</button>
+          </div>
+        </div>
+        <div class="foundation-note" id="foundationNote"></div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head"><span class="step-no">STEP 3</span><h2 id="s3">Allocation Matrix</h2></div>
+        <p class="step-sub">Pick a battle-tested split, or drag the sliders to build your own. Dollar amounts update live.</p>
+
+        <div class="strategy-grid" id="strategies">
+          <button type="button" class="strategy" data-preset="surge" aria-pressed="false">
+            <span class="rec-tag">Recommended</span>
+            <h3>Debt Elimination Surge</h3>
+            <p><span class="split">70% debt · 20% savings · 10% reward</span><br />Maximum attack on high-interest balances.</p>
+          </button>
+          <button type="button" class="strategy" data-preset="buffer" aria-pressed="false">
+            <span class="rec-tag">Recommended</span>
+            <h3>Buffer Fortification</h3>
+            <p><span class="split">30% debt · 60% savings · 10% reward</span><br />Build the cushion so the next emergency isn't debt.</p>
+          </button>
+          <button type="button" class="strategy" data-preset="balanced" aria-pressed="true">
+            <span class="rec-tag">Recommended</span>
+            <h3>Balanced Empire Growth</h3>
+            <p><span class="split">40% debt · 40% savings · 20% reward</span><br />Steady progress on both fronts, bigger reward.</p>
+          </button>
+        </div>
+
+        <div class="bar" aria-hidden="true">
+          <div class="b-debt" id="barDebt"></div>
+          <div class="b-save" id="barSave"></div>
+          <div class="b-reward" id="barReward"></div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-top">
+            <span class="name"><i class="dot-debt"></i>Debt Payoff</span>
+            <span class="vals"><span class="pct" id="pctDebt">40%</span><span class="amt" id="amtDebt">$0.00</span></span>
+          </div>
+          <input type="range" id="rngDebt" min="0" max="100" step="1" value="40" aria-label="Percent to debt payoff" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-top">
+            <span class="name"><i class="dot-save"></i>Savings &amp; Buffer</span>
+            <span class="vals"><span class="pct" id="pctSave">40%</span><span class="amt" id="amtSave">$0.00</span></span>
+          </div>
+          <input type="range" id="rngSave" min="0" max="100" step="1" value="40" aria-label="Percent to savings and buffer" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-top">
+            <span class="name"><i class="dot-reward"></i>Guilt-Free Reward</span>
+            <span class="vals"><span class="pct" id="pctReward">20%</span><span class="amt" id="amtReward">$0.00</span></span>
+          </div>
+          <input type="range" id="rngReward" min="0" max="100" step="1" value="20" aria-label="Percent to guilt-free reward" />
+        </div>
+        <div class="total-line"><span>Total allocated</span><strong id="totalPct">100%</strong></div>
+
+        <div class="pace-grid">
+          <div>
+            <label for="paceDebt">What you normally pay toward debt each month</label>
+            <div class="mini-box"><span>$</span><input id="paceDebt" type="number" inputmode="decimal" min="0" step="any" value="150" /></div>
+          </div>
+          <div>
+            <label for="paceSave">What you normally save each month</label>
+            <div class="mini-box"><span>$</span><input id="paceSave" type="number" inputmode="decimal" min="0" step="any" value="100" /></div>
+          </div>
+        </div>
+        <p class="step-sub" style="margin:10px 0 0;">These two numbers power your Net Worth Acceleration Score in the blueprint below.</p>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="blueprint" aria-labelledby="s4">
+        <span class="bp-tag">Step 4 · Windfall Routing Plan</span>
+        <h2 id="s4">Windfall Allocation Blueprint</h2>
+        <p class="bp-meta">Routing <strong id="bpAmount">$2,500.00</strong> from your <strong id="bpSource">Tax Refund</strong> — move the money within 48 hours, before it dissolves into everyday spending.</p>
+
+        <div class="bp-row">
+          <span class="lbl">Debt Payoff<small id="bpDebtNote">Throw it at your highest-APR balance first.</small></span>
+          <span class="fig"><span class="big" id="bpDebt">$0.00</span><span class="pct" id="bpDebtPct">40%</span></span>
+        </div>
+        <div class="bp-row">
+          <span class="lbl">Savings &amp; Buffer<small id="bpSaveNote">Emergency fund and sinking funds, in a separate account.</small></span>
+          <span class="fig"><span class="big" id="bpSave">$0.00</span><span class="pct" id="bpSavePct">40%</span></span>
+        </div>
+        <div class="bp-row reward-row">
+          <span class="lbl">Guilt-Free Reward<small>Spend every cent of this on purpose. No apology, no drift.</small></span>
+          <span class="fig"><span class="big" id="bpReward">$0.00</span><span class="pct" id="bpRewardPct">20%</span></span>
+        </div>
+
+        <div class="score-box">
+          <span class="score-label">Net Worth Acceleration Score</span>
+          <div class="score-num"><span id="scoreMonths">0.0</span> <small>months skipped forward</small></div>
+          <p class="score-detail" id="scoreDetail"></p>
+        </div>
+
+        <ul class="bp-notes" id="bpNotes"></ul>
+        <button type="button" class="copy-btn" id="copyBtn">Copy My Blueprint</button>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html" target="_blank" rel="noopener">
+          <h3>Compound Interest Velocity Calculator <span class="arr">→</span></h3>
+          <p>See what the savings bucket turns into when it starts compounding — and how much faster it grows with every future windfall routed the same way.</p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/debt-snowball-vs-avalanche-calculator.html" target="_blank" rel="noopener">
+          <h3>Snowball vs. Avalanche Calculator <span class="arr">→</span></h3>
+          <p>Your debt bucket is loaded — now aim it. Compare both payoff orders side by side and see which one gets you debt-free sooner.</p>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+        <span class="cta-tag">Keep the system running</span>
+        <p>Make the next windfall automatic with the 52-Week Cash Stash Thermometer and the Debt Snowball vs Avalanche Battle Plan on Gumroad — grab the free Paycheck Protection Checklist too.</p>
+        <span class="cta-go">Browse the shop →</span>
+      </a>
+
+      <!-- FAQ -->
+      <section class="faq" aria-labelledby="faqH">
+        <h2 id="faqH">Windfall Questions</h2>
+        <details>
+          <summary>Why do windfalls vanish in about 14 days?</summary>
+          <p>Because unassigned money gets absorbed by everyday spending — a bigger grocery run here, a "we earned it" splurge there. Psychologists call it mental accounting: a lump sum feels like bonus money, not real money, so the usual rules switch off. The fix isn't willpower, it's speed and assignment. Give every dollar a job and move it out of your spending account within 48 hours, before the leak starts.</p>
+        </details>
+        <details>
+          <summary>What's the 10% reward rule?</summary>
+          <p>Every windfall plan in this tool reserves a slice — 10% on the aggressive presets, 20% on the balanced one — as a designated guilt-free reward. Plans that demand 100% sacrifice almost always collapse into a revenge-spending binge that wipes out the progress. A planned reward makes the other 80–90% stick: you get to enjoy the money on purpose, in a fixed amount, instead of leaking it everywhere by accident.</p>
+        </details>
+        <details>
+          <summary>What counts as a windfall?</summary>
+          <p>Any money that lands outside your normal paycheck rhythm: a tax refund, a work or safety bonus, retro/back pay from a corrected rate, overtime settlements, a tax credit, an insurance payout, a gift, or selling something big. If it arrives as a lump sum and wasn't in this month's budget, it's a windfall — and it deserves a routing plan before it touches your spending account.</p>
+        </details>
+        <details>
+          <summary>Should debt or savings really come first?</summary>
+          <p>It depends on your foundation, which is why Step 2 exists. With no $1,000 starter cushion, one emergency sends you straight back to a credit card — so the buffer usually wins first. With debt over 20% APR, the interest bleed is so expensive that the surge strategy wins once a basic cushion exists. Behind-schedule sinking funds are tomorrow's debt in disguise, so catching them up counts as savings that prevents borrowing.</p>
+        </details>
+      </section>
+
+      <p class="foot">Built for shift workers: irregular pay, real bills, no lectures. Estimates only — not financial advice.</p>
+    </div>
+
+    <script>
+      (function () {
+        var PRESETS = {
+          surge:    { debt: 70, save: 20, reward: 10, name: "Debt Elimination Surge" },
+          buffer:   { debt: 30, save: 60, reward: 10, name: "Buffer Fortification" },
+          balanced: { debt: 40, save: 40, reward: 20, name: "Balanced Empire Growth" }
+        };
+        var state = {
+          amount: 2500,
+          source: "Tax Refund",
+          foundation: { emergency: true, highApr: false, sinking: false },
+          alloc: { debt: 40, save: 40, reward: 20 },
+          activePreset: "balanced",
+          paceDebt: 150,
+          paceSave: 100
+        };
+
+        var $ = function (id) { return document.getElementById(id); };
+        var fmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        var fmt0 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        function dollars() {
+          var a = Math.max(0, state.amount || 0);
+          var debt = a * state.alloc.debt / 100;
+          var save = a * state.alloc.save / 100;
+          var reward = a - debt - save; // remainder keeps the three buckets summing exactly to the total
+          return { total: a, debt: debt, save: save, reward: reward };
+        }
+
+        function recommended() {
+          if (state.foundation.highApr) return "surge";
+          if (!state.foundation.emergency) return "buffer";
+          if (state.foundation.sinking) return "buffer";
+          return "balanced";
+        }
+
+        function applyPreset(key, silent) {
+          var p = PRESETS[key];
+          state.alloc = { debt: p.debt, save: p.save, reward: p.reward };
+          state.activePreset = key;
+          syncStrategyChips();
+          render();
+        }
+
+        function syncStrategyChips() {
+          var rec = recommended();
+          document.querySelectorAll(".strategy").forEach(function (el) {
+            var key = el.getAttribute("data-preset");
+            el.setAttribute("aria-pressed", state.activePreset === key ? "true" : "false");
+            el.classList.toggle("recommended", rec === key);
+          });
+        }
+
+        function setAlloc(key, val) {
+          val = Math.max(0, Math.min(100, Math.round(val)));
+          var keys = ["debt", "save", "reward"];
+          var others = keys.filter(function (k) { return k !== key; });
+          var remaining = 100 - val;
+          var oSum = state.alloc[others[0]] + state.alloc[others[1]];
+          var a, b;
+          if (oSum === 0) { a = Math.round(remaining / 2); b = remaining - a; }
+          else { a = Math.round(remaining * state.alloc[others[0]] / oSum); b = remaining - a; }
+          state.alloc[key] = val;
+          state.alloc[others[0]] = a;
+          state.alloc[others[1]] = b;
+          state.activePreset = null;
+          syncStrategyChips();
+          render();
+        }
+
+        function foundationText() {
+          var f = state.foundation, parts = [];
+          if (!f.emergency) parts.push("<strong>Foundation gap:</strong> no $1,000 starter cushion yet — the savings bucket builds it first, before extra debt payments.");
+          if (f.highApr) parts.push("<strong>Interest bleed:</strong> debt over 20% APR is costing you every single month — the Debt Elimination Surge is recommended.");
+          if (f.sinking) parts.push("<strong>Sinking funds behind:</strong> part of the savings bucket should catch those up before they turn into new card debt.");
+          if (!parts.length) parts.push("<strong>Foundation solid:</strong> cushion in place, no toxic APR, sinking funds on track — Balanced Empire Growth keeps all fronts moving.");
+          else if (!f.highApr && (!f.emergency || f.sinking)) parts.push("Buffer Fortification is recommended for your answers.");
+          return parts.join(" ");
+        }
+
+        function render() {
+          var d = dollars();
+          var f = state.foundation;
+
+          // sliders + bars
+          $("rngDebt").value = state.alloc.debt;
+          $("rngSave").value = state.alloc.save;
+          $("rngReward").value = state.alloc.reward;
+          $("pctDebt").textContent = state.alloc.debt + "%";
+          $("pctSave").textContent = state.alloc.save + "%";
+          $("pctReward").textContent = state.alloc.reward + "%";
+          $("amtDebt").textContent = fmt.format(d.debt);
+          $("amtSave").textContent = fmt.format(d.save);
+          $("amtReward").textContent = fmt.format(d.reward);
+          $("barDebt").style.width = state.alloc.debt + "%";
+          $("barSave").style.width = state.alloc.save + "%";
+          $("barReward").style.width = state.alloc.reward + "%";
+          var total = state.alloc.debt + state.alloc.save + state.alloc.reward;
+          $("totalPct").textContent = total + "%";
+          $("totalPct").classList.toggle("bad", total !== 100);
+
+          // foundation note
+          $("foundationNote").innerHTML = foundationText();
+
+          // blueprint
+          $("bpAmount").textContent = fmt.format(d.total);
+          $("bpSource").textContent = state.source;
+          $("bpDebt").textContent = fmt.format(d.debt);
+          $("bpSave").textContent = fmt.format(d.save);
+          $("bpReward").textContent = fmt.format(d.reward);
+          $("bpDebtPct").textContent = state.alloc.debt + "% of windfall";
+          $("bpSavePct").textContent = state.alloc.save + "% of windfall";
+          $("bpRewardPct").textContent = state.alloc.reward + "% of windfall";
+          $("bpDebtNote").textContent = f.highApr
+            ? "Aim at the highest-APR balance first — that's the leak costing you the most."
+            : "Extra principal on top of your regular payment shortens the payoff clock.";
+          $("bpSaveNote").textContent = !f.emergency
+            ? "First " + fmt0.format(Math.min(1000, d.save)) + " of this builds your $1,000 starter emergency fund."
+            : (f.sinking ? "Catch up behind-schedule sinking funds, then top up the emergency fund." : "Emergency fund and sinking funds, in a separate account.");
+
+          // acceleration score
+          var mDebt = state.paceDebt > 0 ? d.debt / state.paceDebt : 0;
+          var mSave = state.paceSave > 0 ? d.save / state.paceSave : 0;
+          var totalMonths = mDebt + mSave;
+          $("scoreMonths").textContent = totalMonths.toFixed(1);
+          var bits = [];
+          if (d.debt > 0) bits.push("the debt bucket alone equals <strong>" + mDebt.toFixed(1) + " months</strong> of your normal " + fmt0.format(state.paceDebt) + "/mo debt payments");
+          if (d.save > 0) bits.push("the savings bucket equals <strong>" + mSave.toFixed(1) + " months</strong> of your normal " + fmt0.format(state.paceSave) + "/mo saving");
+          $("scoreDetail").innerHTML = bits.length
+            ? "In one move you just did what " + bits.join(", and ") + " would have taken. That's time your future self doesn't have to grind through."
+            : "Add your normal monthly debt payment and savings rate in Step 3 to see how much time this windfall buys back.";
+
+          // blueprint action notes
+          var notes = [];
+          notes.push("<strong>Move it within 48 hours.</strong> Money that sits in checking past the first weekend becomes spending money.");
+          if (!f.emergency && d.save > 0) notes.push("<strong>Starter fund first:</strong> the first " + fmt0.format(Math.min(1000, d.save)) + " of the savings bucket is untouchable emergency money — separate account, no debit card.");
+          if (f.highApr && d.debt > 0) notes.push("<strong>Kill order:</strong> send the full " + fmt.format(d.debt) + " to the single highest-APR balance, not spread thin across cards.");
+          if (f.sinking && d.save > 0) notes.push("<strong>Sinking fund catch-up:</strong> refill the funds that are behind (tires, insurance, registration) from the savings bucket before they hit a card.");
+          if (d.reward > 0) notes.push("<strong>Reward rules:</strong> " + fmt.format(d.reward) + " is yours to enjoy — decide what it buys today, spend it, done. The plan only works if the reward is real.");
+          $("bpNotes").innerHTML = notes.map(function (n) { return "<li>" + n + "</li>"; }).join("");
+        }
+
+        /* ---------- events ---------- */
+        $("amount").addEventListener("input", function (e) {
+          state.amount = parseFloat(e.target.value) || 0;
+          render();
+        });
+        document.querySelectorAll(".quick button").forEach(function (b) {
+          b.addEventListener("click", function () {
+            state.amount = parseFloat(b.getAttribute("data-amt"));
+            $("amount").value = state.amount;
+            render();
+          });
+        });
+        document.querySelectorAll("#sources .chip").forEach(function (c) {
+          c.addEventListener("click", function () {
+            state.source = c.getAttribute("data-source");
+            document.querySelectorAll("#sources .chip").forEach(function (x) {
+              x.setAttribute("aria-pressed", x === c ? "true" : "false");
+            });
+            render();
+          });
+        });
+        document.querySelectorAll(".yn").forEach(function (group) {
+          var q = group.getAttribute("data-q");
+          group.querySelectorAll("button").forEach(function (b) {
+            b.addEventListener("click", function () {
+              state.foundation[q] = b.getAttribute("data-val") === "yes";
+              group.querySelectorAll("button").forEach(function (x) {
+                x.setAttribute("aria-pressed", x === b ? "true" : "false");
+              });
+              // Foundation answers weight the plan: auto-apply the recommended strategy.
+              applyPreset(recommended());
+            });
+          });
+        });
+        document.querySelectorAll(".strategy").forEach(function (el) {
+          el.addEventListener("click", function () { applyPreset(el.getAttribute("data-preset")); });
+        });
+        $("rngDebt").addEventListener("input", function (e) { setAlloc("debt", parseFloat(e.target.value)); });
+        $("rngSave").addEventListener("input", function (e) { setAlloc("save", parseFloat(e.target.value)); });
+        $("rngReward").addEventListener("input", function (e) { setAlloc("reward", parseFloat(e.target.value)); });
+        $("paceDebt").addEventListener("input", function (e) { state.paceDebt = parseFloat(e.target.value) || 0; render(); });
+        $("paceSave").addEventListener("input", function (e) { state.paceSave = parseFloat(e.target.value) || 0; render(); });
+
+        $("copyBtn").addEventListener("click", function () {
+          var d = dollars();
+          var mDebt = state.paceDebt > 0 ? d.debt / state.paceDebt : 0;
+          var mSave = state.paceSave > 0 ? d.save / state.paceSave : 0;
+          var lines = [
+            "WINDFALL ALLOCATION BLUEPRINT",
+            "Source: " + state.source + " — " + fmt.format(d.total),
+            "Debt Payoff (" + state.alloc.debt + "%): " + fmt.format(d.debt),
+            "Savings & Buffer (" + state.alloc.save + "%): " + fmt.format(d.save),
+            "Guilt-Free Reward (" + state.alloc.reward + "%): " + fmt.format(d.reward),
+            "Net Worth Acceleration: ~" + (mDebt + mSave).toFixed(1) + " months of progress skipped forward",
+            "Rule: move the money within 48 hours."
+          ].join("\n");
+          var btn = $("copyBtn");
+          function done() {
+            btn.textContent = "Copied ✓ — now move the money";
+            setTimeout(function () { btn.textContent = "Copy My Blueprint"; }, 2600);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(lines).then(done, done);
+          } else { done(); }
+        });
+
+        syncStrategyChips();
+        render();
+      })();
+    </script>
+  </body>
+</html>

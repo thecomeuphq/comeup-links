@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Vehicle Maintenance Defense Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#101010;
+        --bg-2:#161616;
+        --panel:#1b1b1b;
+        --panel-2:#212121;
+        --line:#2e2e2e;
+        --line-soft:#262626;
+        --ink:#f2ede4;
+        --ink-dim:#b8b2a6;
+        --ink-faint:#8a857a;
+        --amber:#f5a623;
+        --orange:#ff6b1a;
+        --amber-dim:rgba(245,166,35,.14);
+        --red:#e5484d;
+        --red-dim:rgba(229,72,77,.13);
+        --green:#43b581;
+        --green-dim:rgba(67,181,129,.13);
+        --radius:10px;
+      }
+      *{ box-sizing:border-box; }
+      html{ -webkit-text-size-adjust:100%; }
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:"Barlow", system-ui, sans-serif;
+        font-size:16px;
+        line-height:1.5;
+      }
+      .hazard{
+        height:8px;
+        background:repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141414 14px 28px);
+      }
+      .wrap{ max-width:980px; margin:0 auto; padding:0 16px 64px; }
+
+      /* ---------- Hero ---------- */
+      .hero{ padding:34px 0 8px; }
+      .hero .kicker{
+        display:inline-flex; align-items:center; gap:8px;
+        font-family:"JetBrains Mono", monospace; font-size:12px; letter-spacing:.14em;
+        color:var(--amber); text-transform:uppercase;
+        border:1px solid var(--line); border-radius:999px; padding:5px 12px;
+        background:var(--bg-2);
+      }
+      .hero .kicker svg{ width:14px; height:14px; }
+      .hero h1{
+        font-family:"Barlow Condensed", sans-serif;
+        font-size:clamp(40px, 9vw, 64px); line-height:.98; font-weight:700;
+        text-transform:uppercase; letter-spacing:.01em;
+        margin:16px 0 10px;
+      }
+      .hero h1 .accent{ color:var(--amber); }
+      .hero p{ color:var(--ink-dim); max-width:620px; margin:0; font-size:17px; }
+      .hero .stat-row{
+        display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;
+      }
+      .hero .stat-chip{
+        background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+        padding:10px 14px; min-width:150px; flex:1 1 150px;
+      }
+      .stat-chip .lbl{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; }
+      .stat-chip .val{ font-family:"JetBrains Mono", monospace; font-size:20px; font-weight:700; color:var(--ink); margin-top:2px; }
+      .stat-chip .val.amber{ color:var(--amber); }
+
+      /* ---------- Steps ---------- */
+      .step{
+        background:var(--panel);
+        border:1px solid var(--line);
+        border-radius:14px;
+        margin-top:26px;
+        overflow:hidden;
+      }
+      .step-head{
+        display:flex; align-items:center; gap:14px;
+        padding:18px 20px 14px;
+        border-bottom:1px solid var(--line-soft);
+      }
+      .step-num{
+        font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:22px;
+        background:var(--amber); color:#161616;
+        width:40px; height:40px; border-radius:8px;
+        display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+      }
+      .step-head h2{
+        font-family:"Barlow Condensed", sans-serif; font-size:24px; font-weight:600;
+        text-transform:uppercase; letter-spacing:.03em; margin:0; line-height:1.1;
+      }
+      .step-head p{ margin:2px 0 0; color:var(--ink-faint); font-size:14px; }
+      .step-body{ padding:18px 20px 22px; }
+
+      label.field-lbl{
+        display:block; font-size:12px; font-weight:600; letter-spacing:.1em;
+        text-transform:uppercase; color:var(--ink-dim); margin-bottom:7px;
+      }
+      .money-input, .num-input, .text-input{
+        width:100%;
+        background:var(--bg-2); border:1px solid var(--line); border-radius:8px;
+        color:var(--ink); font-family:"JetBrains Mono", monospace; font-size:17px; font-weight:500;
+        padding:11px 13px; outline:none;
+      }
+      .text-input{ font-family:"Barlow", sans-serif; }
+      .money-input:focus, .num-input:focus, .text-input:focus{ border-color:var(--amber); }
+      .money-wrap{ position:relative; }
+      .money-wrap::before{
+        content:"$"; position:absolute; left:13px; top:50%; transform:translateY(-50%);
+        color:var(--ink-faint); font-family:"JetBrains Mono", monospace; font-size:16px;
+      }
+      .money-wrap .money-input{ padding-left:26px; }
+      .grid-2{ display:grid; grid-template-columns:1fr; gap:16px; }
+      @media (min-width:640px){ .grid-2{ grid-template-columns:1fr 1fr; } }
+      .field-hint{ font-size:13px; color:var(--ink-faint); margin-top:6px; }
+
+      /* segmented radio */
+      .segmented{ display:grid; grid-template-columns:1fr; gap:8px; }
+      @media (min-width:640px){ .segmented{ grid-template-columns:repeat(3,1fr); } }
+      .segmented > div{ position:relative; }
+      .segmented input{
+        -webkit-appearance:none; appearance:none;
+        position:absolute; top:13px; right:13px; z-index:2;
+        width:18px; height:18px; margin:0; border-radius:50%;
+        border:2px solid #5a564d; background:transparent; cursor:pointer;
+      }
+      .segmented input:checked{
+        border-color:var(--amber);
+        background:radial-gradient(circle, var(--amber) 0 5px, transparent 6.5px);
+      }
+      .segmented input:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
+      .segmented label{
+        display:block; cursor:pointer;
+        background:var(--bg-2); border:1px solid var(--line); border-radius:8px;
+        padding:12px 40px 12px 14px; transition:border-color .15s, background .15s;
+      }
+      .segmented label .t{ font-weight:600; font-size:15px; display:block; }
+      .segmented label .d{ font-size:13px; color:var(--ink-faint); display:block; margin-top:2px; }
+      .segmented input:checked + label{ border-color:var(--amber); background:var(--amber-dim); }
+      .segmented input:checked + label .t{ color:var(--amber); }
+      .segmented input:focus-visible + label{ outline:2px solid var(--amber); outline-offset:2px; }
+      .segmented.freq{ grid-template-columns:repeat(3,1fr); }
+      .segmented.freq label{ text-align:center; padding:32px 6px 11px; }
+      .segmented.freq input{ top:8px; right:auto; left:50%; transform:translateX(-50%); }
+      .segmented.freq label .t{ font-size:15px; }
+      .segmented.freq label .d{ font-size:12px; }
+
+      /* ---------- Wear item rows ---------- */
+      .wear-list{ display:flex; flex-direction:column; gap:10px; }
+      .wear-row{
+        display:flex; align-items:center; gap:12px;
+        background:var(--bg-2); border:1px solid var(--line); border-radius:10px;
+        padding:12px 14px;
+      }
+      .wear-row.off{ opacity:.55; }
+      .wear-row .meta{ flex:1 1 auto; min-width:0; }
+      .wear-row .name{ font-weight:600; font-size:15.5px; line-height:1.25; }
+      .wear-row .note{ font-size:13px; color:var(--ink-faint); margin-top:1px; }
+      .wear-row .cost{ flex:0 0 108px; }
+      .wear-row .cost .money-input{ padding:8px 10px 8px 24px; font-size:15px; }
+      .wear-row .cost .money-wrap::before{ left:10px; font-size:14px; }
+      .wear-row .remove{
+        flex:0 0 auto; background:none; border:1px solid var(--line); color:var(--ink-dim);
+        border-radius:7px; width:32px; height:32px; cursor:pointer; font-size:16px; line-height:1;
+      }
+      .wear-row .remove:hover{ border-color:var(--red); color:var(--red); }
+      /* toggle switch — the checkbox itself is the visible, tappable control */
+      .switch{ flex:0 0 auto; display:block; }
+      .switch input{
+        -webkit-appearance:none; appearance:none;
+        display:block; width:46px; height:26px; margin:0;
+        border-radius:999px; background:#333; border:1px solid var(--line);
+        cursor:pointer; position:relative; transition:background .15s, border-color .15s;
+      }
+      .switch input::after{
+        content:""; position:absolute; top:2px; left:2px; width:20px; height:20px;
+        border-radius:50%; background:#9a958a; transition:transform .15s, background .15s;
+      }
+      .switch input:checked{ background:var(--amber); border-color:var(--amber); }
+      .switch input:checked::after{ transform:translateX(20px); background:#171717; }
+      .switch input:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
+
+      .add-btn{
+        margin-top:12px; width:100%;
+        background:none; border:1.5px dashed #3d3d3d; border-radius:10px; color:var(--amber);
+        font-family:"Barlow", sans-serif; font-weight:600; font-size:15px;
+        padding:11px; cursor:pointer;
+      }
+      .add-btn:hover{ border-color:var(--amber); background:var(--amber-dim); }
+      .subtotal-bar{
+        display:flex; justify-content:space-between; align-items:baseline;
+        margin-top:16px; padding-top:14px; border-top:1px solid var(--line-soft);
+      }
+      .subtotal-bar .lbl{ font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-dim); font-weight:600; }
+      .subtotal-bar .val{ font-family:"JetBrains Mono", monospace; font-size:24px; font-weight:700; color:var(--amber); }
+
+      /* exposure readout */
+      .gap-readout{
+        margin-top:16px; border-radius:10px; padding:14px 16px;
+        display:flex; justify-content:space-between; align-items:center; gap:12px;
+        border:1px solid var(--line); background:var(--bg-2);
+      }
+      .gap-readout .lbl{ font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; color:var(--ink-dim); }
+      .gap-readout .sub{ font-size:13px; color:var(--ink-faint); margin-top:2px; }
+      .gap-readout .val{ font-family:"JetBrains Mono", monospace; font-size:24px; font-weight:700; white-space:nowrap; }
+      .gap-readout.danger{ border-color:var(--red); background:var(--red-dim); }
+      .gap-readout.danger .val{ color:var(--red); }
+      .gap-readout.safe{ border-color:var(--green); background:var(--green-dim); }
+      .gap-readout.safe .val{ color:var(--green); }
+
+      .setaside-big{ text-align:center; padding:8px 0 2px; }
+      .setaside-big .amount{
+        font-family:"JetBrains Mono", monospace; font-weight:700;
+        font-size:clamp(44px, 11vw, 60px); color:var(--amber); line-height:1;
+      }
+      .setaside-big .per{ color:var(--ink-dim); font-size:15px; margin-top:6px; }
+      .setaside-big .per strong{ color:var(--ink); }
+
+      /* ---------- Plan card ---------- */
+      .plan{
+        margin-top:30px; border-radius:16px; overflow:hidden;
+        border:1px solid #3a3a3a; background:var(--panel);
+      }
+      .plan-top{ background:var(--panel-2); border-bottom:1px solid var(--line); }
+      .plan-head{
+        display:flex; align-items:center; justify-content:space-between; gap:12px;
+        padding:16px 20px 0;
+      }
+      .plan-head .ttl{
+        font-family:"Barlow Condensed", sans-serif; font-size:20px; font-weight:600;
+        text-transform:uppercase; letter-spacing:.06em; color:var(--ink-dim);
+      }
+      .print-btn{
+        display:inline-flex; align-items:center; gap:7px;
+        background:var(--amber); color:#171717; border:none; border-radius:8px;
+        font-family:"Barlow", sans-serif; font-weight:700; font-size:14px;
+        padding:9px 15px; cursor:pointer;
+      }
+      .print-btn:hover{ background:#ffb63e; }
+      .print-btn svg{ width:15px; height:15px; }
+      .plan-main{ display:flex; flex-direction:column; gap:8px; padding:8px 20px 4px; align-items:center; text-align:center; }
+      @media (min-width:680px){
+        .plan-main{ flex-direction:row; text-align:left; align-items:center; gap:26px; }
+      }
+      .gauge-wrap{ flex:0 0 auto; padding-top:10px; }
+      .tier-block{ flex:1 1 auto; padding-bottom:6px; }
+      .tier-name{
+        font-family:"Barlow Condensed", sans-serif; font-weight:700;
+        font-size:clamp(34px, 7.5vw, 46px); line-height:1; text-transform:uppercase;
+      }
+      .tier-name.high{ color:var(--red); }
+      .tier-name.mod{ color:var(--amber); }
+      .tier-name.fort{ color:var(--green); }
+      .score-line{ font-family:"JetBrains Mono", monospace; color:var(--ink-dim); font-size:14px; margin-top:6px; }
+      .strategy{ color:var(--ink-dim); font-size:15.5px; margin-top:10px; max-width:520px; }
+      .strategy strong{ color:var(--ink); }
+
+      .plan-stats{
+        display:grid; grid-template-columns:1fr 1fr; gap:1px;
+        background:var(--line-soft); border-top:1px solid var(--line);
+      }
+      @media (min-width:680px){ .plan-stats{ grid-template-columns:repeat(4,1fr); } }
+      .plan-stat{ background:var(--panel); padding:15px 18px; }
+      .plan-stat .lbl{ font-size:11px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; }
+      .plan-stat .val{ font-family:"JetBrains Mono", monospace; font-size:21px; font-weight:700; margin-top:3px; }
+      .plan-stat .val.amber{ color:var(--amber); }
+      .plan-stat .val.red{ color:var(--red); }
+      .plan-stat .val.green{ color:var(--green); }
+
+      .breakdown{ padding:18px 20px 22px; border-top:1px solid var(--line); background:var(--panel); }
+      .breakdown h3{
+        font-family:"Barlow Condensed", sans-serif; font-size:17px; font-weight:600;
+        text-transform:uppercase; letter-spacing:.05em; margin:0 0 12px; color:var(--ink-dim);
+      }
+      .bd-row{ margin-bottom:12px; }
+      .bd-row:last-child{ margin-bottom:0; }
+      .bd-row .top{ display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; }
+      .bd-row .top .nm{ color:var(--ink-dim); font-weight:500; }
+      .bd-row .top .pts{ font-family:"JetBrains Mono", monospace; font-weight:700; }
+      .bd-bar{ height:8px; border-radius:99px; background:#2a2a2a; overflow:hidden; }
+      .bd-fill{ height:100%; border-radius:99px; background:var(--amber); transition:width .35s ease; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title{
+        font-family:"Barlow Condensed", sans-serif; font-size:26px; font-weight:600;
+        text-transform:uppercase; letter-spacing:.03em; margin:38px 0 14px;
+      }
+      .next-grid{ display:grid; grid-template-columns:1fr; gap:14px; }
+      @media (min-width:680px){ .next-grid{ grid-template-columns:1fr 1fr; } }
+      .next-card{
+        display:block; text-decoration:none; color:var(--ink);
+        background:var(--panel); border:1px solid var(--line); border-radius:12px;
+        padding:20px; transition:border-color .15s;
+      }
+      .next-card:hover{ border-color:var(--amber); }
+      .next-card .ic{
+        width:42px; height:42px; border-radius:9px; background:var(--amber-dim);
+        display:flex; align-items:center; justify-content:center; margin-bottom:12px;
+      }
+      .next-card .ic svg{ width:22px; height:22px; stroke:var(--amber); }
+      .next-card h3{ font-family:"Barlow Condensed", sans-serif; font-size:21px; font-weight:600; text-transform:uppercase; letter-spacing:.02em; margin:0 0 5px; }
+      .next-card p{ color:var(--ink-dim); font-size:14.5px; margin:0; }
+      .next-card .go{ color:var(--amber); font-weight:600; font-size:14px; margin-top:12px; display:inline-block; }
+
+      .cta{
+        margin-top:26px; border-radius:14px; overflow:hidden; border:1px solid #3a3a3a;
+        background:var(--panel-2);
+      }
+      .cta-inner{ padding:24px 22px; }
+      .cta h3{
+        font-family:"Barlow Condensed", sans-serif; font-size:25px; font-weight:700;
+        text-transform:uppercase; margin:0 0 8px; line-height:1.15;
+      }
+      .cta h3 .accent{ color:var(--amber); }
+      .cta p{ color:var(--ink-dim); margin:0 0 16px; max-width:600px; }
+      .cta a.btn{
+        display:inline-block; background:var(--orange); color:#fff; text-decoration:none;
+        font-weight:700; font-size:15px; padding:12px 20px; border-radius:9px;
+      }
+      .cta a.btn:hover{ background:#ff7d33; }
+
+      .faq-item{
+        background:var(--panel); border:1px solid var(--line); border-radius:10px;
+        margin-bottom:10px; overflow:hidden;
+      }
+      .faq-item summary{
+        cursor:pointer; padding:15px 18px; font-weight:600; font-size:16px;
+        list-style:none; display:flex; justify-content:space-between; align-items:center; gap:12px;
+      }
+      .faq-item summary::-webkit-details-marker{ display:none; }
+      .faq-item summary::after{ content:"+"; color:var(--amber); font-size:22px; font-weight:700; line-height:1; }
+      .faq-item[open ] summary::after{ content:"–"; }
+      .faq-item .a{ padding:0 18px 16px; color:var(--ink-dim); font-size:15px; }
+      .faq-item .a p{ margin:0 0 8px; }
+      .faq-item .a p:last-child{ margin-bottom:0; }
+
+      footer{ margin-top:44px; color:var(--ink-faint); font-size:13px; text-align:center; }
+      footer .hazard{ margin-bottom:18px; }
+
+      @media (prefers-reduced-motion: reduce){
+        *{ transition:none !important; }
+      }
+
+      /* ---------- Print ---------- */
+      @media print{
+        body{ background:#fff; color:#111; }
+        .no-print{ display:none !important; }
+        .wrap{ max-width:100%; padding:0; }
+        .plan{ border:2px solid #111; border-radius:0; margin:0; }
+        .plan, .plan-top, .plan-stat, .breakdown{ background:#fff !important; }
+        .plan-head .ttl, .strategy, .score-line, .bd-row .top .nm, .plan-stat .lbl, .breakdown h3{ color:#333 !important; }
+        .strategy strong, .plan-stat .val, .bd-row .top .pts{ color:#111 !important; }
+        .tier-name.high{ color:#b91c1c !important; }
+        .tier-name.mod{ color:#b45309 !important; }
+        .tier-name.fort{ color:#15803d !important; }
+        .bd-bar{ background:#e5e5e5 !important; }
+        .bd-fill{ background:#111 !important; }
+        #gauge-arc{ stroke:#111 !important; }
+        #gauge-num{ fill:#111 !important; }
+        .plan-stat .val.amber, .plan-stat .val.red, .plan-stat .val.green{ color:#111 !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hazard no-print"></div>
+    <div class="wrap">
+
+      <header class="hero no-print">
+        <span class="kicker">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z"/></svg>
+          Maintenance Defense System
+        </span>
+        <h1>Vehicle &amp; Equipment<br />Maintenance<br /><span class="accent">Defense Planner</span></h1>
+        <p>Your vehicle is your paycheck's lifeline. Profile it, scan what's likely to break in the next 12 months, check your exposure, and get the exact per-paycheck set-aside that keeps a breakdown from becoming a missed shift.</p>
+        <div class="stat-row">
+          <div class="stat-chip"><div class="lbl">Predicted 12-Mo Cost</div><div class="val amber" id="chip-cost">$0</div></div>
+          <div class="stat-chip"><div class="lbl">Per-Paycheck Set-Aside</div><div class="val amber" id="chip-setaside">$0</div></div>
+          <div class="stat-chip"><div class="lbl">Defense Score</div><div class="val" id="chip-score">— / 100</div></div>
+        </div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step no-print" aria-labelledby="s1h">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div>
+            <h2 id="s1h">Vehicle Profile</h2>
+            <p>Age, miles, and how hard you run it set the risk baseline.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="grid-2">
+            <div>
+              <label class="field-lbl" for="mileage">Odometer Reading (miles)</label>
+              <input class="num-input" type="number" id="mileage" inputmode="numeric" min="0" max="999999" step="1000" value="120000" />
+              <div class="field-hint">Wear accelerates hard after 100k — that's where surprise repairs live.</div>
+            </div>
+            <div>
+              <label class="field-lbl" for="age">Vehicle Age (years)</label>
+              <input class="num-input" type="number" id="age" inputmode="numeric" min="0" max="40" step="1" value="8" />
+              <div class="field-hint">Rubber, belts, hoses, and seals age out even on low-mile vehicles.</div>
+            </div>
+          </div>
+          <div style="margin-top:18px;">
+            <span class="field-lbl" id="sev-lbl">Commute Severity</span>
+            <div class="segmented" role="radiogroup" aria-labelledby="sev-lbl">
+              <div>
+                <input type="radio" name="severity" id="sev-city" value="city" checked />
+                <label for="sev-city"><span class="t">Daily City Commute</span><span class="d">Stop-and-go — brakes, battery, and transmission take the beating.</span></label>
+              </div>
+              <div>
+                <input type="radio" name="severity" id="sev-hwy" value="highway" />
+                <label for="sev-hwy"><span class="t">Heavy Highway</span><span class="d">Long steady miles — gentlest per mile, but miles pile up fast.</span></label>
+              </div>
+              <div>
+                <input type="radio" name="severity" id="sev-haul" value="hauling" />
+                <label for="sev-haul"><span class="t">Hauling &amp; Work Site</span><span class="d">Loads, towing, rough ground — suspension and tires wear first.</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step no-print" aria-labelledby="s2h">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <div>
+            <h2 id="s2h">Predictive Maintenance Scan</h2>
+            <p>Toggle what's likely to come due in the next 12 months. Adjust the cost to your shop's prices.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="wear-list" id="wear-list"></div>
+          <button class="add-btn" id="add-item" type="button">+ Add Custom Item</button>
+          <div class="subtotal-bar">
+            <span class="lbl">Predicted 12-Month Total</span>
+            <span class="val" id="wear-total">$0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step no-print" aria-labelledby="s3h">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <div>
+            <h2 id="s3h">Exposure Check</h2>
+            <p>If a wreck or major claim hit tomorrow, could you cover the deductible in cash?</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="grid-2">
+            <div>
+              <label class="field-lbl" for="deductible">Auto Insurance Deductible</label>
+              <div class="money-wrap"><input class="money-input" type="number" id="deductible" inputmode="decimal" min="0" step="50" value="1000" /></div>
+              <div class="field-hint">Check your policy declarations page — $500 and $1,000 are most common.</div>
+            </div>
+            <div>
+              <label class="field-lbl" for="cash">Liquid Cash Available for Repairs</label>
+              <div class="money-wrap"><input class="money-input" type="number" id="cash" inputmode="decimal" min="0" step="25" value="300" /></div>
+              <div class="field-hint">Cash you could actually hand a shop this week — not credit, not next paycheck.</div>
+            </div>
+          </div>
+          <div class="gap-readout danger" id="gap-box">
+            <div>
+              <div class="lbl">Coverage Gap</div>
+              <div class="sub" id="gap-sub">Deductible minus cash on hand.</div>
+            </div>
+            <div class="val" id="gap-val">$0</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step no-print" aria-labelledby="s4h">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <div>
+            <h2 id="s4h">Paycheck Set-Aside Engine</h2>
+            <p>The predicted 12-month bill, split evenly across every paycheck.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <span class="field-lbl" id="freq-lbl">Pay Frequency</span>
+          <div class="segmented freq" role="radiogroup" aria-labelledby="freq-lbl">
+            <div>
+              <input type="radio" name="freq" id="freq-w" value="52" />
+              <label for="freq-w"><span class="t">Weekly</span><span class="d">52 checks/yr</span></label>
+            </div>
+            <div>
+              <input type="radio" name="freq" id="freq-bw" value="26" checked />
+              <label for="freq-bw"><span class="t">Bi-Weekly</span><span class="d">26 checks/yr</span></label>
+            </div>
+            <div>
+              <input type="radio" name="freq" id="freq-sm" value="24" />
+              <label for="freq-sm"><span class="t">Semi-Monthly</span><span class="d">24 checks/yr</span></label>
+            </div>
+          </div>
+          <div class="setaside-big">
+            <div class="amount" id="setaside-amount">$0.00</div>
+            <div class="per">required per paycheck &middot; <strong id="setaside-monthly">$0/mo</strong> &middot; funds the full predicted bill in 12 months</div>
+          </div>
+          <div style="margin-top:18px;">
+            <label class="field-lbl" for="committed">What You'll Actually Set Aside Per Paycheck</label>
+            <div class="money-wrap"><input class="money-input" type="number" id="committed" inputmode="decimal" min="0" step="1" value="48.08" /></div>
+            <div class="field-hint" id="funded-line">Starts matched to the required amount. Lower it to what you can honestly commit — your coverage score tracks what this set-aside actually funds.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLAN CARD -->
+      <section class="plan" id="plan-card" aria-labelledby="plan-title">
+        <div class="plan-top">
+          <div class="plan-head">
+            <span class="ttl" id="plan-title">Maintenance Defense Plan</span>
+            <button class="print-btn no-print" id="print-btn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Print Plan
+            </button>
+          </div>
+          <div class="plan-main">
+            <div class="gauge-wrap">
+              <svg width="190" height="112" viewBox="0 0 190 112" role="img" aria-label="Defense score gauge">
+                <path d="M 15 100 A 80 80 0 0 1 175 100" fill="none" stroke="#2c2c2c" stroke-width="15" stroke-linecap="round" />
+                <path id="gauge-arc" d="M 15 100 A 80 80 0 0 1 175 100" fill="none" stroke="#f5a623" stroke-width="15" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3" style="transition:stroke-dashoffset .45s ease, stroke .3s;" />
+                <text id="gauge-num" x="95" y="92" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="40" font-weight="700" fill="#f2ede4">0</text>
+                <text x="95" y="110" text-anchor="middle" font-family="Barlow, sans-serif" font-size="10.5" letter-spacing="2" fill="#8a857a">DEFENSE SCORE</text>
+              </svg>
+            </div>
+            <div class="tier-block">
+              <div class="tier-name mod" id="tier-name">Moderate Exposure</div>
+              <div class="score-line" id="score-line">Score 0 of 100</div>
+              <p class="strategy" id="strategy-text"></p>
+            </div>
+          </div>
+        </div>
+        <div class="plan-stats">
+          <div class="plan-stat"><div class="lbl">Predicted 12-Mo Maintenance</div><div class="val amber" id="stat-total">$0</div></div>
+          <div class="plan-stat"><div class="lbl">Per-Paycheck Set-Aside</div><div class="val amber" id="stat-setaside">$0.00</div></div>
+          <div class="plan-stat"><div class="lbl">Exposure Gap</div><div class="val" id="stat-gap">$0</div></div>
+          <div class="plan-stat"><div class="lbl">Paychecks / Year</div><div class="val" id="stat-checks">26</div></div>
+        </div>
+        <div class="breakdown">
+          <h3>How Your Score Breaks Down</h3>
+          <div class="bd-row">
+            <div class="top"><span class="nm">Maintenance coverage — predicted bill vs. what your set-aside funds in 12 months (40 pts)</span><span class="pts" id="bd-cov-pts">0 / 40</span></div>
+            <div class="bd-bar"><div class="bd-fill" id="bd-cov" style="width:0%"></div></div>
+          </div>
+          <div class="bd-row">
+            <div class="top"><span class="nm">Exposure — cash on hand vs. insurance deductible (30 pts)</span><span class="pts" id="bd-exp-pts">0 / 30</span></div>
+            <div class="bd-bar"><div class="bd-fill" id="bd-exp" style="width:0%"></div></div>
+          </div>
+          <div class="bd-row">
+            <div class="top"><span class="nm">Vehicle risk — age, mileage &amp; commute severity (30 pts)</span><span class="pts" id="bd-risk-pts">0 / 30</span></div>
+            <div class="bd-bar"><div class="bd-fill" id="bd-risk" style="width:0%"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="no-print">
+        <h2 class="section-title">Next Steps</h2>
+        <div class="next-grid">
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <h3>Emergency Fund Runway Calculator</h3>
+            <p>Your repair fund is layer one. Find out how many weeks your total cash cushion actually covers if the checks stop.</p>
+            <span class="go">Run the numbers &rarr;</span>
+          </a>
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v10l7 7"/><path d="M12 12L4.5 7"/></svg></div>
+            <h3>Paycheck Budget Splitter</h3>
+            <p>Slot the per-paycheck set-aside from this plan into your full budget split so the repair bucket gets funded first, not last.</p>
+            <span class="go">Split my paycheck &rarr;</span>
+          </a>
+        </div>
+
+        <div class="cta">
+          <div class="hazard"></div>
+          <div class="cta-inner">
+            <h3>Run This Plan Like a <span class="accent">Shop Log</span></h3>
+            <p>Log every repair with the <strong>Truck &amp; Equipment Maintenance Log</strong> and track the fund with the <strong>Sinking Funds Tracker</strong> on Gumroad — grab the free <strong>Paycheck Protection Checklist</strong> too.</p>
+            <a class="btn" href="https://bradley57.gumroad.com/">Get the Tools on Gumroad</a>
+          </div>
+        </div>
+
+        <h2 class="section-title">Field Questions</h2>
+        <div class="faq-item">
+          <details>
+            <summary>Why does a breakdown hit shift workers harder than anyone else?</summary>
+            <div class="a">
+              <p>Office workers can work from a couch with a dead car. A shift worker can't. No ride means no shift, no shift means no check — and most warehouse and plant jobs run on strict attendance point systems, so one breakdown can cost the job itself, not just a day's pay.</p>
+              <p>That turns a $600 repair into a five-figure income problem. For anyone whose paycheck depends on physically showing up, the vehicle isn't transportation — it's income equipment, and it has to be defended like it.</p>
+            </div>
+          </details>
+        </div>
+        <div class="faq-item">
+          <details>
+            <summary>Repair it or replace it — how does the math actually work?</summary>
+            <div class="a">
+              <p>Compare the repair against one year of payments on the replacement. A $1,800 transmission job feels brutal — but a $350/month car note is $4,200 a year, plus higher insurance, plus a down payment gone. If the repair buys you another year or more of driving, it usually wins by thousands.</p>
+              <p>Replace when repairs stack past roughly 50% of the vehicle's value in a single year, when the frame or structure is compromised, or when it leaves you stranded repeatedly — reliability is the whole point. Run the predicted total from Step 2 against your vehicle's value: that's your repair-vs-replace line.</p>
+            </div>
+          </details>
+        </div>
+        <div class="faq-item">
+          <details>
+            <summary>What's the $500 buffer rule?</summary>
+            <div class="a">
+              <p>Before aggressive extra debt payments, stack $500 in a dedicated repair buffer. $500 covers the most common job-killers — a battery, a starter, a set of brake pads, a tow plus a minor fix — in cash, same day, no credit card.</p>
+              <p>Without it, every breakdown goes on a card at 25%+ interest, and the "extra debt payment" you just made comes right back with interest attached. Buffer first, then attack debt, then grow the buffer into a full maintenance fund using the per-paycheck set-aside from this plan.</p>
+            </div>
+          </details>
+        </div>
+
+        <footer>
+          <div class="hazard"></div>
+          Estimates are planning figures, not quotes — get your shop's real numbers and swap them into Step 2. This planner runs entirely on this page; nothing you enter is sent anywhere.
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        "use strict";
+        var $ = function(id){ return document.getElementById(id); };
+        var fmt0 = function(n){ return "$" + Math.round(n).toLocaleString("en-US"); };
+        var fmt2 = function(n){ return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2, maximumFractionDigits:2}); };
+        var num = function(el){ var v = parseFloat(el.value); return isNaN(v) || v < 0 ? 0 : v; };
+        var clamp = function(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); };
+
+        var DEFAULT_ITEMS = [
+          { name:"Tires (set of 4)", note:"Most common big-ticket wear item — tread under 4/32\" is on borrowed time.", cost:800, on:true },
+          { name:"Brakes (pads & rotors)", note:"City driving eats these. Grinding means the cheap job just got expensive.", cost:450, on:true },
+          { name:"Battery", note:"Heat and age kill them at 3–5 years — usually with zero warning.", cost:200, on:false },
+          { name:"Suspension / Belts", note:"Shocks, struts, serpentine & timing belts — labor-heavy, mileage-driven.", cost:600, on:false },
+          { name:"Major Service Interval (30k/60k/90k)", note:"Fluids, plugs, filters, inspection — the milestone service that prevents the big failures.", cost:550, on:false }
+        ];
+
+        var wearList = $("wear-list");
+
+        function makeRow(item, isCustom){
+          var row = document.createElement("div");
+          row.className = "wear-row" + (item.on ? "" : " off");
+
+          var sw = document.createElement("label");
+          sw.className = "switch";
+          var cb = document.createElement("input");
+          cb.type = "checkbox"; cb.checked = !!item.on;
+          cb.setAttribute("aria-label", "Include " + item.name);
+          sw.appendChild(cb);
+
+          var meta = document.createElement("div");
+          meta.className = "meta";
+          if (isCustom){
+            var nameInput = document.createElement("input");
+            nameInput.type = "text"; nameInput.className = "text-input";
+            nameInput.placeholder = "Custom item name"; nameInput.value = item.name || "";
+            nameInput.style.padding = "7px 10px"; nameInput.style.fontSize = "15px";
+            nameInput.setAttribute("aria-label", "Custom item name");
+            meta.appendChild(nameInput);
+          } else {
+            var nm = document.createElement("div");
+            nm.className = "name"; nm.textContent = item.name;
+            var nt = document.createElement("div");
+            nt.className = "note"; nt.textContent = item.note;
+            meta.appendChild(nm); meta.appendChild(nt);
+          }
+
+          var costWrap = document.createElement("div");
+          costWrap.className = "cost";
+          var mw = document.createElement("div");
+          mw.className = "money-wrap";
+          var cost = document.createElement("input");
+          cost.type = "number"; cost.className = "money-input cost-input";
+          cost.inputMode = "decimal"; cost.min = "0"; cost.step = "10";
+          cost.value = item.cost;
+          cost.setAttribute("aria-label", "Estimated cost for " + (item.name || "custom item"));
+          mw.appendChild(cost); costWrap.appendChild(mw);
+
+          row.appendChild(sw); row.appendChild(meta); row.appendChild(costWrap);
+
+          if (isCustom){
+            var rm = document.createElement("button");
+            rm.type = "button"; rm.className = "remove"; rm.textContent = "×";
+            rm.setAttribute("aria-label", "Remove custom item");
+            rm.addEventListener("click", function(){ row.remove(); recalc(); });
+            row.appendChild(rm);
+          }
+          return row;
+        }
+
+        DEFAULT_ITEMS.forEach(function(it){ wearList.appendChild(makeRow(it, false)); });
+
+        $("add-item").addEventListener("click", function(){
+          var row = makeRow({ name:"", cost:300, on:true }, true);
+          wearList.appendChild(row);
+          var nameInput = row.querySelector(".text-input");
+          if (nameInput) nameInput.focus();
+          recalc();
+        });
+
+        function wearTotal(){
+          var total = 0;
+          var rows = wearList.querySelectorAll(".wear-row");
+          rows.forEach(function(row){
+            var cb = row.querySelector('.switch input');
+            var cost = row.querySelector(".cost-input");
+            if (cb && cb.checked && cost) total += num(cost);
+          });
+          return total;
+        }
+
+        function mileagePts(m){
+          if (m <= 50000) return 12;
+          if (m <= 80000) return 10;
+          if (m <= 110000) return 8;
+          if (m <= 140000) return 6;
+          if (m <= 175000) return 4;
+          if (m <= 220000) return 2;
+          return 0;
+        }
+        function agePts(a){
+          if (a <= 3) return 10;
+          if (a <= 5) return 9;
+          if (a <= 8) return 7;
+          if (a <= 11) return 5;
+          if (a <= 15) return 3;
+          return 1;
+        }
+        function severityPts(s){
+          if (s === "highway") return 8;
+          if (s === "city") return 5;
+          return 2; /* hauling */
+        }
+
+        var TIERS = [
+          { max:39, name:"High Breakdown Risk", cls:"high", color:"#e5484d",
+            strategy:"<strong>Strategy: Breakdown Emergency Freeze.</strong> Pause aggressive extra debt paydowns and build a $500 rapid repair buffer first — one breakdown right now lands on a credit card or costs you shifts. Once the buffer is set, restart the set-aside below." },
+          { max:74, name:"Moderate Exposure", cls:"mod", color:"#f5a623",
+            strategy:"<strong>Strategy: Maintenance Sinking Fund.</strong> Routine maintenance is covered, but a single $1,000+ repair would still hurt. Route the per-paycheck set-aside below ($25–$50/paycheck is the typical range) into a dedicated repair bucket and don't let anything else touch it." },
+          { max:100, name:"Fortified Fleet", cls:"fort", color:"#43b581",
+            strategy:"<strong>Strategy: Asset Longevity &amp; Resale Optimization.</strong> Your repair stash is locked in. Keep the set-aside running, stay ahead of the service intervals, and keep records — a documented maintenance history is real money at resale time." }
+        ];
+
+        var committedEdited = false;
+        $("committed").addEventListener("input", function(){ committedEdited = true; });
+
+        function recalc(){
+          var miles = num($("mileage"));
+          var age = num($("age"));
+          var sevEl = document.querySelector('input[name="severity"]:checked');
+          var sev = sevEl ? sevEl.value : "city";
+          var total = wearTotal();
+          var deductible = num($("deductible"));
+          var cash = num($("cash"));
+          var freqEl = document.querySelector('input[name="freq"]:checked');
+          var checks = freqEl ? parseInt(freqEl.value, 10) : 26;
+
+          var setAside = checks > 0 ? total / checks : 0;
+          var monthly = setAside * checks / 12;
+          var gap = deductible - cash;
+
+          /* committed set-aside: auto-matches the required amount until the user overrides it */
+          if (!committedEdited) $("committed").value = setAside.toFixed(2);
+          var committed = num($("committed"));
+          var funded = committed * checks;
+
+          /* scores */
+          var riskPts = mileagePts(miles) + agePts(age) + severityPts(sev);
+          var expPts = deductible <= 0 ? 30 : Math.round(30 * clamp(cash / deductible, 0, 1));
+          var covPts = total <= 0 ? 40 : Math.round(40 * clamp(funded / total, 0, 1));
+          var score = clamp(covPts + expPts + riskPts, 0, 100);
+
+          var tier = score <= 39 ? TIERS[0] : (score <= 74 ? TIERS[1] : TIERS[2]);
+
+          /* hero chips + step readouts */
+          $("chip-cost").textContent = fmt0(total);
+          $("chip-setaside").textContent = fmt2(setAside);
+          $("chip-score").textContent = score + " / 100";
+          $("wear-total").textContent = fmt0(total);
+          $("setaside-amount").textContent = fmt2(setAside);
+          $("setaside-monthly").textContent = fmt0(monthly) + "/mo";
+          if (total <= 0){
+            $("funded-line").textContent = "No predicted costs selected in Step 2 — toggle what's coming due and this set-aside gets a target.";
+          } else if (funded >= total - 0.5){
+            $("funded-line").textContent = "Your set-aside funds the full " + fmt0(total) + " predicted bill over 12 months. That's full maintenance coverage.";
+          } else {
+            $("funded-line").textContent = "Your set-aside funds " + fmt0(funded) + " of the " + fmt0(total) + " predicted bill — a " + fmt0(total - funded) + " shortfall the repair would still land on you. Starts matched to the required amount; raise it back or trim Step 2 to close the gap.";
+          }
+
+          var gapBox = $("gap-box");
+          if (gap > 0){
+            gapBox.className = "gap-readout danger";
+            $("gap-val").textContent = fmt0(gap);
+            $("gap-sub").textContent = "Unprotected exposure — a claim today leaves this much to scramble for.";
+          } else {
+            gapBox.className = "gap-readout safe";
+            $("gap-val").textContent = fmt0(0);
+            $("gap-sub").textContent = cash > deductible
+              ? "Deductible fully covered, with " + fmt0(cash - deductible) + " of cash to spare."
+              : "Deductible fully covered by cash on hand.";
+          }
+
+          /* plan card */
+          var arc = $("gauge-arc");
+          var arcLen = 251.3;
+          arc.style.strokeDashoffset = (arcLen * (1 - score / 100)).toFixed(1);
+          arc.style.stroke = tier.color;
+          $("gauge-num").textContent = score;
+          var tn = $("tier-name");
+          tn.textContent = tier.name;
+          tn.className = "tier-name " + tier.cls;
+          $("score-line").textContent = "Defense Score: " + score + " of 100";
+          $("strategy-text").innerHTML = tier.strategy;
+
+          $("stat-total").textContent = fmt0(total);
+          $("stat-setaside").textContent = fmt2(setAside);
+          var sg = $("stat-gap");
+          if (gap > 0){ sg.textContent = fmt0(gap); sg.className = "val red"; }
+          else { sg.textContent = "$0 — covered"; sg.className = "val green"; }
+          $("stat-checks").textContent = checks;
+
+          $("bd-cov").style.width = (covPts / 40 * 100) + "%";
+          $("bd-cov-pts").textContent = covPts + " / 40";
+          $("bd-exp").style.width = (expPts / 30 * 100) + "%";
+          $("bd-exp-pts").textContent = expPts + " / 30";
+          $("bd-risk").style.width = (riskPts / 30 * 100) + "%";
+          $("bd-risk-pts").textContent = riskPts + " / 30";
+        }
+
+        document.querySelectorAll("input").forEach(function(el){
+          el.addEventListener("input", recalc);
+          el.addEventListener("change", recalc);
+        });
+        wearList.addEventListener("input", recalc);
+        wearList.addEventListener("change", function(e){
+          var row = e.target.closest(".wear-row");
+          if (row && e.target.matches('.switch input')){
+            row.classList.toggle("off", !e.target.checked);
+          }
+          recalc();
+        });
+
+        $("print-btn").addEventListener("click", function(){ window.print(); });
+
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

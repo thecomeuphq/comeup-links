@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Ticket Defense Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#101010;
+        --bg2:#161616;
+        --panel:#1b1b1b;
+        --panel2:#222222;
+        --line:#33302a;
+        --line-soft:#2a2a2a;
+        --ink:#f2ede4;
+        --ink-dim:#b8b2a6;
+        --ink-faint:#8a857a;
+        --amber:#f5a623;
+        --amber-deep:#ff7a1a;
+        --amber-soft:rgba(245,166,35,.12);
+        --red:#ff4b2e;
+        --red-soft:rgba(255,75,46,.12);
+        --green:#57c96b;
+        --green-soft:rgba(87,201,107,.12);
+        --radius:10px;
+      }
+      *{ box-sizing:border-box; }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:"Barlow", system-ui, sans-serif;
+        font-size:16px;
+        line-height:1.5;
+        -webkit-font-smoothing:antialiased;
+      }
+      .wrap{ max-width:780px; margin:0 auto; padding:0 16px 64px; }
+      .mono{ font-family:"IBM Plex Mono", ui-monospace, monospace; }
+      h1,h2,h3{ font-family:"Barlow Condensed", sans-serif; text-transform:uppercase; letter-spacing:.02em; margin:0; }
+
+      /* ---------- hazard stripe ---------- */
+      .hazard{
+        height:10px;
+        background:repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141414 14px 28px);
+      }
+
+      /* ---------- hero ---------- */
+      .hero{ padding:30px 0 8px; }
+      .hero .kicker{
+        font-family:"IBM Plex Mono", monospace;
+        font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+        color:var(--amber);
+        display:flex; align-items:center; gap:10px;
+      }
+      .hero .kicker::after{ content:""; flex:1; height:1px; background:var(--line); }
+      .hero h1{
+        font-size:clamp(38px, 9.5vw, 58px);
+        line-height:.98; font-weight:700;
+        margin:14px 0 12px;
+      }
+      .hero h1 .strike{ color:var(--amber-deep); }
+      .hero h1 .stop{
+        display:inline-block;
+        background:var(--amber);
+        color:#141414;
+        padding:0 10px 2px;
+        transform:rotate(-1deg);
+      }
+      .hero p{
+        color:var(--ink-dim);
+        font-size:17px;
+        max-width:56ch;
+        margin:0;
+      }
+      .hero p strong{ color:var(--ink); }
+
+      /* ---------- steps ---------- */
+      .step{
+        background:var(--panel);
+        border:1px solid var(--line-soft);
+        border-radius:var(--radius);
+        margin-top:22px;
+        overflow:hidden;
+      }
+      .step-head{
+        display:flex; align-items:center; gap:12px;
+        padding:14px 18px;
+        background:var(--bg2);
+        border-bottom:1px solid var(--line-soft);
+      }
+      .step-num{
+        font-family:"Barlow Condensed", sans-serif;
+        font-weight:700; font-size:20px;
+        background:var(--amber); color:#141414;
+        width:34px; height:34px; border-radius:6px;
+        display:flex; align-items:center; justify-content:center;
+        flex:none;
+      }
+      .step-head h2{ font-size:24px; font-weight:600; line-height:1; }
+      .step-head .sub{ margin-left:auto; text-align:right; font-size:12px; color:var(--ink-faint); font-family:"IBM Plex Mono", monospace; letter-spacing:.08em; text-transform:uppercase; }
+      .step-body{ padding:18px; }
+
+      fieldset{ border:0; margin:0 0 18px; padding:0; }
+      fieldset:last-child{ margin-bottom:0; }
+      legend, .f-label{
+        font-family:"IBM Plex Mono", monospace;
+        font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+        color:var(--ink-dim);
+        margin-bottom:10px; padding:0;
+        display:block;
+      }
+      .opt-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+      .opt-grid.one{ grid-template-columns:1fr; }
+      .opt{ position:relative; }
+      .opt input{
+        -webkit-appearance:none; appearance:none;
+        position:absolute; top:13px; left:12px; z-index:2;
+        width:17px; height:17px; margin:0; flex:none;
+        border:2px solid #5a554d; border-radius:50%;
+        background:#101010; cursor:pointer;
+      }
+      .opt input:checked{
+        border-color:var(--amber);
+        background:radial-gradient(circle, var(--amber) 0 5px, transparent 6px);
+      }
+      .opt.danger input:checked{
+        border-color:var(--red);
+        background:radial-gradient(circle, var(--red) 0 5px, transparent 6px);
+      }
+      .opt input:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
+      .opt .card{
+        display:block;
+        border:1px solid var(--line);
+        border-radius:8px;
+        padding:11px 13px 11px 40px;
+        background:var(--panel2);
+        font-size:15px; font-weight:500;
+        line-height:1.3;
+        transition:border-color .15s, background .15s;
+        height:100%;
+      }
+      .opt .card small{ display:block; color:var(--ink-faint); font-weight:400; font-size:12.5px; margin-top:2px; }
+      .opt input:checked + .card{
+        border-color:var(--amber);
+        background:var(--amber-soft);
+        color:#fff;
+        box-shadow:inset 0 0 0 1px var(--amber);
+      }
+      .opt.danger input:checked + .card{ border-color:var(--red); background:var(--red-soft); box-shadow:inset 0 0 0 1px var(--red); }
+
+      .money-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .money-row.three{ grid-template-columns:1fr 1fr 1fr; }
+      .field label{ display:block; font-size:13.5px; color:var(--ink-dim); margin-bottom:6px; font-weight:500; }
+      .money{
+        display:flex; align-items:center;
+        background:var(--bg);
+        border:1px solid var(--line);
+        border-radius:8px;
+        overflow:hidden;
+      }
+      .money:focus-within{ border-color:var(--amber); box-shadow:0 0 0 1px var(--amber); }
+      .money span{
+        padding:0 4px 0 12px; color:var(--amber);
+        font-family:"IBM Plex Mono", monospace; font-weight:600;
+      }
+      .money input{
+        width:100%; min-width:0;
+        background:transparent; border:0; outline:0;
+        color:var(--ink);
+        font-family:"IBM Plex Mono", monospace;
+        font-size:19px; font-weight:600;
+        padding:11px 10px 11px 2px;
+      }
+      .money input::placeholder{ color:var(--ink-faint); }
+
+      .seg{ display:flex; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:3px; gap:3px; }
+      .seg .opt{ flex:1; }
+      .seg .opt input{
+        top:50%; left:9px; transform:translateY(-50%);
+        width:13px; height:13px; border-width:2px;
+      }
+      .seg .opt input:checked{
+        border-color:#141414;
+        background:radial-gradient(circle, #141414 0 3.5px, transparent 4.5px);
+      }
+      .seg .opt .card{
+        text-align:center; padding:8px 4px 8px 24px; border:0; background:transparent;
+        font-family:"IBM Plex Mono", monospace; font-size:14px;
+      }
+      .seg .opt input:checked + .card{ background:var(--amber); color:#141414; box-shadow:none; font-weight:600; }
+
+      /* ---------- triage readouts ---------- */
+      .readouts{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .readout{
+        background:var(--bg);
+        border:1px solid var(--line-soft);
+        border-radius:8px;
+        padding:14px;
+      }
+      .readout.wide{ grid-column:1 / -1; }
+      .readout .r-label{
+        font-family:"IBM Plex Mono", monospace;
+        font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+        color:var(--ink-faint); margin-bottom:6px;
+      }
+      .readout .r-value{
+        font-family:"IBM Plex Mono", monospace;
+        font-size:30px; font-weight:600; line-height:1;
+        color:var(--ink);
+      }
+      .readout .r-value.amber{ color:var(--amber); }
+      .readout .r-value.red{ color:var(--red); }
+      .readout .r-note{ font-size:13px; color:var(--ink-dim); margin-top:6px; line-height:1.4; }
+      .bar-track{ height:8px; background:var(--panel2); border-radius:99px; margin-top:10px; overflow:hidden; }
+      .bar-fill{ height:100%; background:linear-gradient(90deg, var(--amber), var(--red)); border-radius:99px; transition:width .4s ease; }
+      .risk-lines{ margin-top:10px; border-top:1px dashed var(--line); padding-top:10px; display:grid; gap:5px; }
+      .risk-lines .rl{ display:flex; justify-content:space-between; font-size:13.5px; color:var(--ink-dim); }
+      .risk-lines .rl b{ font-family:"IBM Plex Mono", monospace; color:var(--ink); font-weight:500; }
+      .pay-controls{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+      .pay-controls .f-label{ margin-bottom:6px; }
+
+      /* ---------- tiers ---------- */
+      .tier{
+        border:1px solid var(--line-soft);
+        border-radius:8px;
+        background:var(--bg);
+        margin-bottom:14px;
+        overflow:hidden;
+      }
+      .tier:last-child{ margin-bottom:0; }
+      .tier.active{ border-color:var(--amber); box-shadow:0 0 0 1px var(--amber); }
+      .tier-head{ padding:14px 16px 10px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; }
+      .tier-tag{
+        font-family:"IBM Plex Mono", monospace; font-size:11px; font-weight:600;
+        letter-spacing:.12em; text-transform:uppercase;
+        padding:3px 8px; border-radius:4px;
+        background:var(--panel2); color:var(--ink-dim);
+        border:1px solid var(--line);
+      }
+      .tier.t1 .tier-tag{ color:var(--red); border-color:var(--red); }
+      .tier.t2 .tier-tag{ color:var(--amber); border-color:var(--amber); }
+      .tier.t3 .tier-tag{ color:var(--green); border-color:var(--green); }
+      .tier-head h3{ font-size:22px; font-weight:600; }
+      .yours{
+        margin-left:auto;
+        font-family:"IBM Plex Mono", monospace; font-size:11px; font-weight:600;
+        letter-spacing:.1em; text-transform:uppercase;
+        background:var(--amber); color:#141414;
+        padding:4px 9px; border-radius:4px;
+        display:none;
+      }
+      .tier.active .yours{ display:inline-block; }
+      .tier p.why{ margin:0; padding:0 16px 12px; color:var(--ink-dim); font-size:14.5px; }
+      .script-box{
+        margin:0 16px 14px;
+        background:#0c0c0c;
+        border:1px solid var(--line-soft);
+        border-left:3px solid var(--amber);
+        border-radius:6px;
+        padding:13px 14px;
+        font-size:14px; line-height:1.6; color:#ddd6c8;
+        white-space:pre-wrap;
+      }
+      .tier.t1 .script-box{ border-left-color:var(--red); }
+      .tier.t3 .script-box{ border-left-color:var(--green); }
+      .copy-btn{
+        margin:0 16px 16px;
+        appearance:none; cursor:pointer;
+        background:var(--amber); color:#141414;
+        border:0; border-radius:7px;
+        font-family:"Barlow", sans-serif; font-weight:700; font-size:14.5px;
+        padding:10px 18px;
+        display:inline-flex; align-items:center; gap:8px;
+      }
+      .copy-btn:active{ transform:translateY(1px); }
+      .copy-btn.ghost{ background:transparent; color:var(--amber); border:1px solid var(--amber); }
+      .plan-rows{ margin:0 16px 14px; display:grid; gap:6px; }
+      .plan-row{
+        display:flex; justify-content:space-between; gap:10px;
+        background:var(--panel2); border:1px solid var(--line-soft);
+        border-radius:6px; padding:9px 12px; font-size:14px;
+      }
+      .plan-row .mono{ font-weight:600; }
+      .plan-row .rem{ color:var(--ink-faint); font-size:13px; }
+
+      /* ---------- blueprint ---------- */
+      .blueprint{
+        margin-top:26px;
+        background:linear-gradient(180deg, #1d1a14, #161513);
+        border:2px solid var(--amber);
+        border-radius:12px;
+        overflow:hidden;
+      }
+      .bp-head{
+        padding:18px 20px 14px;
+        border-bottom:1px dashed var(--line);
+        display:flex; flex-wrap:wrap; gap:14px; align-items:center;
+      }
+      .bp-head .bp-title{ flex:1 1 220px; }
+      .bp-head .bp-kicker{
+        font-family:"IBM Plex Mono", monospace; font-size:11px;
+        letter-spacing:.2em; text-transform:uppercase; color:var(--amber);
+      }
+      .bp-head h2{ font-size:30px; font-weight:700; line-height:1.02; margin-top:4px; }
+      .bp-head .bp-sub{ font-size:13px; color:var(--ink-dim); margin-top:4px; }
+      .gauge{ flex:none; text-align:center; }
+      .gauge svg{ display:block; margin:0 auto; }
+      .gauge .g-num{
+        font-family:"IBM Plex Mono", monospace; font-size:30px; font-weight:600; line-height:1;
+      }
+      .gauge .g-label{
+        font-family:"IBM Plex Mono", monospace; font-size:10px;
+        letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint);
+        max-width:130px; margin:5px auto 0; line-height:1.35;
+      }
+      .bp-grid{
+        display:grid; grid-template-columns:1fr 1fr;
+        gap:1px; background:var(--line-soft);
+        border-bottom:1px dashed var(--line);
+      }
+      .bp-cell{ background:#181613; padding:13px 20px; }
+      .bp-cell .c-label{
+        font-family:"IBM Plex Mono", monospace; font-size:10.5px;
+        letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint);
+      }
+      .bp-cell .c-value{ font-family:"IBM Plex Mono", monospace; font-size:21px; font-weight:600; margin-top:3px; }
+      .bp-cell .c-value.amber{ color:var(--amber); }
+      .bp-cell .c-value.red{ color:var(--red); }
+      .bp-cell .c-value.green{ color:var(--green); }
+      .bp-cell .c-note{ font-size:12.5px; color:var(--ink-dim); margin-top:2px; }
+      .risk-pill{
+        display:inline-block; font-family:"IBM Plex Mono", monospace;
+        font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+        padding:3px 10px; border-radius:99px; margin-top:3px;
+      }
+      .risk-pill.mod{ background:var(--amber-soft); color:var(--amber); border:1px solid var(--amber); }
+      .risk-pill.high{ background:var(--red-soft); color:#ff8a75; border:1px solid var(--red); }
+      .risk-pill.crit{ background:var(--red); color:#fff; border:1px solid var(--red); }
+      .bp-script{ padding:16px 20px 6px; }
+      .bp-script .f-label{ margin-bottom:8px; color:var(--amber); }
+      .bp-script .script-box{ margin:0 0 12px; }
+      .bp-actions{ padding:4px 20px 20px; display:flex; flex-wrap:wrap; gap:10px; }
+      .bp-actions .copy-btn{ margin:0; }
+      .bp-foot{
+        padding:10px 20px 16px;
+        font-size:12px; color:var(--ink-faint);
+        border-top:1px dashed var(--line);
+      }
+
+      /* ---------- next steps / CTA / FAQ ---------- */
+      .section-title{
+        font-size:26px; font-weight:600; margin:34px 0 6px;
+        display:flex; align-items:center; gap:12px;
+      }
+      .section-title::after{ content:""; flex:1; height:1px; background:var(--line-soft); }
+      .section-sub{ color:var(--ink-dim); font-size:15px; margin:0 0 14px; }
+      .next-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+      .next-card{
+        display:block; text-decoration:none; color:var(--ink);
+        background:var(--panel); border:1px solid var(--line-soft);
+        border-radius:var(--radius); padding:18px;
+        transition:border-color .15s;
+      }
+      .next-card:hover{ border-color:var(--amber); }
+      .next-card .n-kicker{
+        font-family:"IBM Plex Mono", monospace; font-size:11px;
+        letter-spacing:.16em; text-transform:uppercase; color:var(--amber);
+      }
+      .next-card h3{ font-size:23px; font-weight:600; margin:6px 0 6px; }
+      .next-card p{ margin:0; color:var(--ink-dim); font-size:14.5px; }
+      .next-card .go{ margin-top:12px; font-weight:700; color:var(--amber); font-size:14.5px; }
+      .cta{
+        margin-top:14px;
+        display:block; text-decoration:none;
+        background:var(--amber); color:#161310;
+        border-radius:var(--radius);
+        padding:20px;
+      }
+      .cta h3{ font-size:26px; font-weight:700; line-height:1.05; color:#161310; }
+      .cta p{ margin:6px 0 0; font-size:15px; color:#3d2f10; font-weight:500; }
+      .cta .go{ display:inline-block; margin-top:12px; font-weight:700; background:#161310; color:var(--amber); padding:8px 14px; border-radius:6px; font-size:14.5px; }
+
+      .faq{ margin-top:6px; }
+      details{
+        background:var(--panel); border:1px solid var(--line-soft);
+        border-radius:8px; margin-bottom:10px;
+      }
+      summary{
+        cursor:pointer; padding:15px 18px;
+        font-weight:600; font-size:16.5px; list-style:none;
+        display:flex; justify-content:space-between; align-items:center; gap:12px;
+      }
+      summary::-webkit-details-marker{ display:none; }
+      summary::after{ content:"+"; color:var(--amber); font-size:22px; font-weight:700; line-height:1; }
+      details[open ] summary::after{ content:"–"; }
+      details .a{ padding:0 18px 16px; color:var(--ink-dim); font-size:15px; }
+      details .a strong{ color:var(--ink); }
+
+      footer{
+        margin-top:36px; padding-top:16px;
+        border-top:1px solid var(--line-soft);
+        color:var(--ink-faint); font-size:12.5px; line-height:1.6;
+      }
+
+      @media (max-width:560px){
+        .opt-grid, .money-row, .money-row.three, .readouts, .pay-controls, .next-grid, .bp-grid{ grid-template-columns:1fr; }
+        .readout.wide{ grid-column:auto; }
+        .step-head .sub{ display:none; }
+        .hero{ padding-top:22px; }
+      }
+      @media (prefers-reduced-motion: reduce){
+        .bar-fill{ transition:none; }
+        html{ scroll-behavior:auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <header class="hero">
+        <div class="kicker">Ticket Defense Engine</div>
+        <h1>That $75 toll is now $300 — <span class="strike">and your license is next.</span> <span class="stop">Stop the snowball.</span></h1>
+        <p>Unpaid tolls, camera fines, and parking tickets don't sit still. Late fees stack, the balance goes to collections, and the next stop is a <strong>registration hold or license suspension</strong>. Run your numbers, get your risk level, and walk in with a script that works.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <h2 id="s1">Citation Snapshot</h2>
+          <div class="sub">What you owe</div>
+        </div>
+        <div class="step-body">
+          <fieldset>
+            <legend>Ticket type</legend>
+            <div class="opt-grid">
+              <label class="opt"><input type="radio" name="ttype" value="Unpaid toll surcharges" checked /><span class="card">Unpaid toll surcharges<small>Missed toll-by-plate invoices &amp; admin fees</small></span></label>
+              <label class="opt"><input type="radio" name="ttype" value="Red-light / speed camera fine" /><span class="card">Red-light or speed camera fine<small>Automated camera citation</small></span></label>
+              <label class="opt"><input type="radio" name="ttype" value="Parking violations" /><span class="card">Parking violations<small>Meters, zones, expired tags on the street</small></span></label>
+              <label class="opt"><input type="radio" name="ttype" value="Traffic citation" /><span class="card">Traffic citation<small>Moving violation issued by an officer</small></span></label>
+            </div>
+          </fieldset>
+          <div class="money-row">
+            <div class="field">
+              <label for="fine">Original fine amount</label>
+              <div class="money"><span>$</span><input id="fine" type="number" inputmode="decimal" min="0" value="75" /></div>
+            </div>
+            <div class="field">
+              <label for="late">Late penalties added so far</label>
+              <div class="money"><span>$</span><input id="late" type="number" inputmode="decimal" min="0" value="225" /></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <h2 id="s2">Risk Scan</h2>
+          <div class="sub">How close is the cliff</div>
+        </div>
+        <div class="step-body">
+          <fieldset>
+            <legend>Enforcement status — latest notice you received</legend>
+            <div class="opt-grid one">
+              <label class="opt"><input type="radio" name="status" value="first" /><span class="card">First notice<small>Bill or citation just arrived. Clock is running, nothing filed yet.</small></span></label>
+              <label class="opt"><input type="radio" name="status" value="final" checked /><span class="card">Final notice or collections<small>Balance sent to collections or flagged as final warning.</small></span></label>
+              <label class="opt danger"><input type="radio" name="status" value="hold" /><span class="card">Registration hold / suspension pending<small>The state is about to block your registration or suspend your license.</small></span></label>
+            </div>
+          </fieldset>
+          <div class="money-row three">
+            <div class="field">
+              <label for="cash">Liquid cash available now</label>
+              <div class="money"><span>$</span><input id="cash" type="number" inputmode="decimal" min="0" value="150" /></div>
+            </div>
+            <div class="field">
+              <label for="wage">Your hourly pay (wage-risk estimate)</label>
+              <div class="money"><span>$</span><input id="wage" type="number" inputmode="decimal" min="0" value="19" /></div>
+            </div>
+            <div class="field">
+              <label>Do you need your license for work?</label>
+              <div class="seg" role="radiogroup" aria-label="Need license for work">
+                <label class="opt"><input type="radio" name="needlic" value="yes" checked /><span class="card">YES</span></label>
+                <label class="opt"><input type="radio" name="needlic" value="no" /><span class="card">NO</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <h2 id="s3">Triage Engine</h2>
+          <div class="sub">Live numbers</div>
+        </div>
+        <div class="step-body">
+          <div class="readouts">
+            <div class="readout">
+              <div class="r-label">Total owed right now</div>
+              <div class="r-value" id="r-total">$300</div>
+              <div class="r-note" id="r-total-note">Original fine + every penalty stacked on top.</div>
+            </div>
+            <div class="readout">
+              <div class="r-label">Penalty inflation</div>
+              <div class="r-value amber" id="r-inflation">300%</div>
+              <div class="bar-track"><div class="bar-fill" id="r-inflation-bar" style="width:100%"></div></div>
+              <div class="r-note" id="r-inflation-note">How much the late fees have grown the original fine.</div>
+            </div>
+            <div class="readout wide">
+              <div class="r-label">Mobility loss risk — what losing your license would cost</div>
+              <div class="r-value red" id="r-mobility">$706</div>
+              <div class="risk-lines">
+                <div class="rl"><span>License / registration reinstatement fees (est.)</span><b id="r-reinstate">$100</b></div>
+                <div class="rl"><span>Tow &amp; impound exposure if caught driving on a hold (est.)</span><b id="r-impound">$150</b></div>
+                <div class="rl"><span>Wages at risk if you can't drive to work (est.)</span><b id="r-wages">$456</b></div>
+              </div>
+              <div class="r-note">Estimates based on typical state fee schedules. Your exact reinstatement and impound fees vary by state and city — the point stands: the fallout costs far more than the ticket.</div>
+            </div>
+            <div class="readout wide">
+              <div class="r-label">Per-paycheck clearance target</div>
+              <div class="r-value amber" id="r-target">$100.00</div>
+              <div class="r-note" id="r-target-note">Set aside this much each paycheck and the balance is gone before the next penalty wave.</div>
+              <div class="pay-controls">
+                <div>
+                  <span class="f-label">Pay periods to clear it</span>
+                  <div class="seg" role="radiogroup" aria-label="Pay periods">
+                    <label class="opt"><input type="radio" name="periods" value="2" /><span class="card">2</span></label>
+                    <label class="opt"><input type="radio" name="periods" value="3" checked /><span class="card">3</span></label>
+                    <label class="opt"><input type="radio" name="periods" value="4" /><span class="card">4</span></label>
+                  </div>
+                </div>
+                <div>
+                  <span class="f-label">Pay schedule</span>
+                  <div class="seg" role="radiogroup" aria-label="Pay schedule">
+                    <label class="opt"><input type="radio" name="freq" value="weekly" /><span class="card">WEEKLY</span></label>
+                    <label class="opt"><input type="radio" name="freq" value="biweekly" checked /><span class="card">BI-WEEKLY</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <h2 id="s4">Defense Strategy</h2>
+          <div class="sub">Three tiers — run yours</div>
+        </div>
+        <div class="step-body">
+
+          <article class="tier t1" id="tier1">
+            <div class="tier-head">
+              <span class="tier-tag">Tier 1 · Suspension imminent</span>
+              <h3>Hardship &amp; Stay Protocol</h3>
+              <span class="yours">Your protocol — run this</span>
+            </div>
+            <p class="why">Use when a registration hold or suspension is pending. The goal isn't winning an argument — it's getting a <strong>stay</strong> (a freeze on the suspension) plus a payment arrangement before the state acts. Clerks grant these every day; almost nobody asks correctly.</p>
+            <div class="script-box" id="script1"></div>
+            <button class="copy-btn" type="button" data-copy="script1">Copy the clerk script</button>
+          </article>
+
+          <article class="tier t2" id="tier2">
+            <div class="tier-head">
+              <span class="tier-tag">Tier 2 · High inflation</span>
+              <h3>Appeal Protocol</h3>
+              <span class="yours">Your protocol — run this</span>
+            </div>
+            <p class="why">Use when penalties have grown the fine by more than 50%. Automated surcharges — per-notice fees, collections markups, admin charges — are the most negotiable part of the balance. This letter disputes them formally and asks for the original fine only.</p>
+            <div class="script-box" id="script2"></div>
+            <button class="copy-btn" type="button" data-copy="script2">Copy the dispute letter</button>
+          </article>
+
+          <article class="tier t3" id="tier3">
+            <div class="tier-head">
+              <span class="tier-tag">Tier 3 · Standard fine</span>
+              <h3>Clear-and-Lock Plan</h3>
+              <span class="yours">Your protocol — run this</span>
+            </div>
+            <p class="why">Use when the fine is still near its original size. No letters, no hearings — just a sinking-fund schedule that clears the balance before the first late-fee wave hits, then locks it so it never comes back.</p>
+            <div class="plan-rows" id="plan3"></div>
+            <div class="script-box" id="script3"></div>
+            <button class="copy-btn" type="button" data-copy="script3">Copy the lock-in rules</button>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bp-title">
+        <div class="bp-head">
+          <div class="bp-title">
+            <div class="bp-kicker">Official output · Screenshot this</div>
+            <h2 id="bp-title">Municipal Ticket Defense Blueprint</h2>
+            <div class="bp-sub" id="bp-sub">Unpaid toll surcharges · Final notice or collections</div>
+          </div>
+          <div class="gauge">
+            <svg width="118" height="118" viewBox="0 0 118 118" aria-hidden="true">
+              <circle cx="59" cy="59" r="50" fill="none" stroke="#2c2c2c" stroke-width="10" />
+              <circle id="gauge-arc" cx="59" cy="59" r="50" fill="none" stroke="#f5a623" stroke-width="10" stroke-linecap="round" transform="rotate(-90 59 59)" stroke-dasharray="314.16" stroke-dashoffset="160" />
+            </svg>
+            <div class="g-num" id="bp-score">47</div>
+            <div class="g-label">Driver Mobility Protection Score</div>
+          </div>
+        </div>
+        <div class="bp-grid">
+          <div class="bp-cell">
+            <div class="c-label">Total owed</div>
+            <div class="c-value" id="bp-total">$300</div>
+            <div class="c-note" id="bp-total-note">$75 fine + $225 in penalties</div>
+          </div>
+          <div class="bp-cell">
+            <div class="c-label">Penalty markup</div>
+            <div class="c-value amber" id="bp-inflation">+300%</div>
+            <div class="c-note">Late fees vs. the original fine</div>
+          </div>
+          <div class="bp-cell">
+            <div class="c-label">License risk level</div>
+            <div><span class="risk-pill high" id="bp-risk">High</span></div>
+            <div class="c-note" id="bp-risk-note">Final notice stage — escalation is active</div>
+          </div>
+          <div class="bp-cell">
+            <div class="c-label">Mobility loss exposure</div>
+            <div class="c-value red" id="bp-mobility">$706</div>
+            <div class="c-note">Reinstatement + impound + lost wages (est.)</div>
+          </div>
+          <div class="bp-cell">
+            <div class="c-label">Per-paycheck target</div>
+            <div class="c-value amber" id="bp-target">$100.00</div>
+            <div class="c-note" id="bp-target-note">× 3 bi-weekly paychecks</div>
+          </div>
+          <div class="bp-cell">
+            <div class="c-label">Active protocol</div>
+            <div class="c-value green" id="bp-tier" style="font-size:17px; line-height:1.25;">Tier 2 — Appeal Protocol</div>
+            <div class="c-note" id="bp-tier-note">Dispute the automated surcharges</div>
+          </div>
+        </div>
+        <div class="bp-script">
+          <span class="f-label" id="bp-script-label">Your script — Tier 2 Appeal Protocol</span>
+          <div class="script-box" id="bp-script-box"></div>
+        </div>
+        <div class="bp-script" id="bp-hardship-wrap">
+          <span class="f-label">Clerk hardship script — Tier 1 Hardship &amp; Stay</span>
+          <div class="script-box" id="bp-hardship-box" style="border-left-color:var(--red)"></div>
+          <button class="copy-btn ghost" type="button" data-copy="bp-hardship-box" style="margin:0 0 6px;">Copy the hardship script</button>
+        </div>
+        <div class="bp-actions">
+          <button class="copy-btn" type="button" data-copy="bp-script-box">Copy this script</button>
+          <button class="copy-btn ghost" type="button" id="copy-blueprint">Copy full blueprint as text</button>
+        </div>
+        <div class="bp-foot">Score = how safely you can clear this without losing your license or reaching for a payday loan. Higher cash coverage, lower penalty inflation, and earlier action all raise it. Estimates only — confirm fees and deadlines with your court or tolling authority.</div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <h2 class="section-title">Keep the defense going</h2>
+      <p class="section-sub">A ticket is rarely the only leak. These two tools cover the money side of the same fight.</p>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/legal-fee-shield.html">
+          <div class="n-kicker">Next tool</div>
+          <h3>Legal Fee Shield</h3>
+          <p>Attorney quotes, court costs, and payment-plan traps — see what a legal bill really costs before you sign anything.</p>
+          <div class="go">Open Legal Fee Shield →</div>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html">
+          <div class="n-kicker">Next tool</div>
+          <h3>Payday Cash Flow Allocator</h3>
+          <p>Split each paycheck across bills, debt, and this clearance target — so the plan survives contact with real life.</p>
+          <div class="go">Open the Allocator →</div>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/">
+        <h3>Keep your license, keep your paycheck</h3>
+        <p>The Paycheck-to-Paycheck Weekly Planner and the $1,000 Emergency Fund Starter Pack — the paper system that makes sure one ticket never empties your account again.</p>
+        <span class="go">Get them on Gumroad →</span>
+      </a>
+
+      <!-- FAQ -->
+      <h2 class="section-title">Straight answers</h2>
+      <div class="faq">
+        <details>
+          <summary>Can you really get ticket penalties waived?</summary>
+          <div class="a">Often, yes — especially the automated ones. First-time offenders who call <strong>before</strong> the balance hits collections regularly get late fees reduced or removed, and many tolling authorities run amnesty windows that slash penalties to the original toll. What clerks respond to: a hardship reason, a clean record, and a specific payment offer. What they ignore: ignoring the notices. The scripts above are built around what actually works.</div>
+        </details>
+        <details>
+          <summary>What actually triggers a license suspension?</summary>
+          <div class="a">It varies by state, but the usual chain is: unpaid balance → final notice → the account is sent to collections → the state places a <strong>registration hold</strong> (you can't renew your tags) or suspends the license outright. Unpaid parking tickets stack the same way in most cities — often just 3–5 unpaid tickets is enough. Driving on a suspension is where it gets expensive: impound fees, reinstatement fees, and a new criminal citation on top of the old one.</div>
+        </details>
+        <details>
+          <summary>Do payment plans stop collections?</summary>
+          <div class="a">A formal payment plan with the court or tolling authority usually <strong>pauses</strong> collections and holds off suspension while you're current on it — that's the whole point of asking for one. But miss a payment and the plan typically voids: collections resume, the hold snaps back, and sometimes the waived penalties return too. That's why the per-paycheck target above matters more than the total — pick the plan size you can actually hit every single paycheck.</div>
+        </details>
+      </div>
+
+      <footer>
+        Ticket Defense Engine is an educational planning tool, not legal advice. Penalty amounts, reinstatement fees, and suspension rules differ by state, city, and tolling authority — verify your exact balance and deadlines on the notice you received or with the issuing court before acting. Wage-loss and impound figures are planning estimates, not quotes.
+      </footer>
+
+    </div>
+    <div class="hazard" aria-hidden="true"></div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var els = {
+          fine: $('fine'), late: $('late'), cash: $('cash'), wage: $('wage'),
+          rTotal: $('r-total'), rTotalNote: $('r-total-note'),
+          rInflation: $('r-inflation'), rInflationBar: $('r-inflation-bar'), rInflationNote: $('r-inflation-note'),
+          rMobility: $('r-mobility'), rReinstate: $('r-reinstate'), rImpound: $('r-impound'), rWages: $('r-wages'),
+          rTarget: $('r-target'), rTargetNote: $('r-target-note'),
+          script1: $('script1'), script2: $('script2'), script3: $('script3'), plan3: $('plan3'),
+          bpSub: $('bp-sub'), bpScore: $('bp-score'), gaugeArc: $('gauge-arc'),
+          bpTotal: $('bp-total'), bpTotalNote: $('bp-total-note'),
+          bpInflation: $('bp-inflation'), bpRisk: $('bp-risk'), bpRiskNote: $('bp-risk-note'),
+          bpMobility: $('bp-mobility'), bpTarget: $('bp-target'), bpTargetNote: $('bp-target-note'),
+          bpTier: $('bp-tier'), bpTierNote: $('bp-tier-note'),
+          bpScriptLabel: $('bp-script-label'), bpScriptBox: $('bp-script-box'),
+          bpHardshipWrap: $('bp-hardship-wrap'), bpHardshipBox: $('bp-hardship-box'),
+          tier1: $('tier1'), tier2: $('tier2'), tier3: $('tier3')
+        };
+
+        function radioVal(name) {
+          var el = document.querySelector('input[name="' + name + '"]:checked');
+          return el ? el.value : '';
+        }
+        function num(el) {
+          var v = parseFloat(el.value);
+          return isNaN(v) || v < 0 ? 0 : v;
+        }
+        function money(v, cents) {
+          return '$' + v.toLocaleString('en-US', { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 });
+        }
+
+        var STATUS = {
+          first: { label: 'First notice', reinstate: 0,   impound: 0,   daysLost: 0, riskText: 'Moderate', riskClass: 'mod',  riskNote: 'Early stage — cheapest moment to act', scoreHit: 0 },
+          final: { label: 'Final notice or collections', reinstate: 100, impound: 150, daysLost: 3, riskText: 'High', riskClass: 'high', riskNote: 'Final notice stage — escalation is active', scoreHit: 22 },
+          hold:  { label: 'Registration hold / suspension pending', reinstate: 150, impound: 350, daysLost: 5, riskText: 'Critical', riskClass: 'crit', riskNote: 'Hold or suspension pending — act this week', scoreHit: 45 }
+        };
+
+        function recalc() {
+          var type = radioVal('ttype');
+          var statusKey = radioVal('status') || 'final';
+          var st = STATUS[statusKey];
+          var fine = num(els.fine), late = num(els.late), cash = num(els.cash), wage = num(els.wage);
+          var needLic = radioVal('needlic') === 'yes';
+          var periods = parseInt(radioVal('periods'), 10) || 3;
+          var freq = radioVal('freq') || 'biweekly';
+          var freqLabel = freq === 'weekly' ? 'weekly' : 'bi-weekly';
+
+          var total = fine + late;
+          var inflation = fine > 0 ? (late / fine) * 100 : (late > 0 ? 999 : 0);
+          var inflationShown = Math.round(inflation);
+
+          var wagesRisk = needLic ? wage * 8 * st.daysLost : 0;
+          var mobility = st.reinstate + st.impound + wagesRisk;
+
+          var target = periods > 0 ? total / periods : total;
+          var weeks = freq === 'weekly' ? periods : periods * 2;
+
+          /* ---- Score ---- */
+          var score = 100 - st.scoreHit;
+          if (inflation > 200) score -= 25; else if (inflation > 100) score -= 18; else if (inflation > 50) score -= 12; else if (inflation > 0) score -= 5;
+          if (total > 0) {
+            var cover = cash / total;
+            if (cover >= 1) score -= 0; else if (cover >= 0.5) score -= 8; else if (cover > 0) score -= 15; else score -= 20;
+          }
+          if (needLic && statusKey === 'hold') score -= 10; else if (needLic && statusKey === 'final') score -= 5;
+          if (score < 0) score = 0; if (score > 100) score = 100;
+
+          /* ---- Tier ---- */
+          var tier = statusKey === 'hold' ? 1 : (inflation > 50 ? 2 : 3);
+
+          /* ---- Step 3 readouts ---- */
+          els.rTotal.textContent = money(total);
+          els.rTotalNote.textContent = money(fine) + ' original fine + ' + money(late) + ' in late penalties.';
+          els.rInflation.textContent = inflationShown + '%';
+          els.rInflationBar.style.width = Math.min(100, inflation) + '%';
+          els.rInflationNote.textContent = inflation > 50
+            ? 'Over the 50% line — the penalties themselves are now worth disputing (Tier 2).'
+            : 'Penalties are still a small share of the bill — clear it before they compound.';
+          els.rMobility.textContent = money(mobility);
+          els.rReinstate.textContent = money(st.reinstate);
+          els.rImpound.textContent = money(st.impound);
+          els.rWages.textContent = money(wagesRisk) + (needLic && st.daysLost ? ' (' + st.daysLost + ' workdays)' : '');
+          els.rTarget.textContent = money(target, true);
+          els.rTargetNote.textContent = 'Across ' + periods + ' ' + freqLabel + ' paychecks you are clear in about ' + weeks + ' weeks — before the next penalty wave. Cash on hand covers ' + (total > 0 ? Math.min(100, Math.round((cash / total) * 100)) : 0) + '% of the balance today.';
+
+          /* ---- Scripts ---- */
+          els.script1.textContent =
+            'Hello, my name is [YOUR NAME], calling about citation number [CITATION #].\n\n' +
+            'I owe ' + money(total) + ' total — a ' + money(fine) + ' original fine plus ' + money(late) + ' in late penalties — and I have received notice that my registration is on hold / my license faces suspension.\n\n' +
+            'I am asking for three things today:\n' +
+            '1) A STAY on the suspension and hold while I pay this off — I need my license to get to my job, and losing it means losing the income to pay you.\n' +
+            '2) A hardship waiver or reduction of the ' + money(late) + ' in late penalties.\n' +
+            '3) An emergency payment arrangement of ' + money(target, true) + ' per paycheck over ' + periods + ' paychecks, starting [DATE]. I have ' + money(cash) + ' I can pay today as a good-faith first payment.\n\n' +
+            'Can you note my account that I called today, before the deadline, to arrange this? And can I get the agreement and the stay confirmation in writing?';
+
+          els.script2.textContent =
+            'Re: Formal dispute of automated surcharges — [YOUR NAME], Citation #[CITATION #]\n\n' +
+            'Dear Clerk / Hearing Officer,\n\n' +
+            'I am writing to dispute the penalty portion of the balance on my ' + type.toLowerCase() + '. The original fine was ' + money(fine) + '. With automated late fees, per-notice charges, and collections surcharges, the balance has grown to ' + money(total) + ' — a ' + inflationShown + '% markup over the original fine.\n\n' +
+            'I am not disputing the original ' + money(fine) + ' fine. I am requesting removal or reduction of the ' + money(late) + ' in automated surcharges on hardship grounds, and I am prepared to pay the original fine in full immediately upon adjustment.\n\n' +
+            'If a full waiver is not possible, I request a breakdown of each surcharge and the authority for it, and a payment plan of ' + money(target, true) + ' per paycheck. Please respond in writing so I can act before further penalties post.\n\n' +
+            'Sincerely, [YOUR NAME] · [PHONE] · [DATE]';
+
+          var rows = '';
+          var remaining = total;
+          for (var i = 1; i <= periods; i++) {
+            var pay = i === periods ? remaining : Math.min(target, remaining);
+            remaining = Math.max(0, remaining - pay);
+            rows += '<div class="plan-row"><span>Paycheck ' + i + ' — set aside</span><span><span class="mono">' + money(pay, true) + '</span> <span class="rem">· ' + money(remaining, true) + ' left</span></span></div>';
+          }
+          els.plan3.innerHTML = rows;
+          els.script3.textContent =
+            'CLEAR-AND-LOCK RULES\n\n' +
+            '1) On every payday, move ' + money(target, true) + ' into a separate "ticket fund" the same day — before anything else gets spent.\n' +
+            '2) Pay the citation the moment the fund covers it — do not wait for the due date; penalties post on their schedule, not yours.\n' +
+            '3) After it clears, keep the habit for 2 more paychecks and roll the same ' + money(target, true) + ' into a starter emergency fund. The next ticket, tow, or breakdown then costs cash — not your license.';
+
+          /* ---- Active tier highlight ---- */
+          els.tier1.classList.toggle('active', tier === 1);
+          els.tier2.classList.toggle('active', tier === 2);
+          els.tier3.classList.toggle('active', tier === 3);
+
+          /* ---- Blueprint ---- */
+          els.bpSub.textContent = type + ' · ' + st.label;
+          els.bpScore.textContent = score;
+          var circ = 314.16;
+          els.gaugeArc.style.strokeDashoffset = (circ - (score / 100) * circ).toFixed(1);
+          els.gaugeArc.style.stroke = score >= 70 ? '#57c96b' : (score >= 40 ? '#f5a623' : '#ff4b2e');
+          els.bpTotal.textContent = money(total);
+          els.bpTotalNote.textContent = money(fine) + ' fine + ' + money(late) + ' in penalties';
+          els.bpInflation.textContent = '+' + inflationShown + '%';
+          els.bpRisk.textContent = st.riskText;
+          els.bpRisk.className = 'risk-pill ' + st.riskClass;
+          els.bpRiskNote.textContent = st.riskNote;
+          els.bpMobility.textContent = money(mobility);
+          els.bpTarget.textContent = money(target, true);
+          els.bpTargetNote.textContent = '× ' + periods + ' ' + freqLabel + ' paychecks · clear in ~' + weeks + ' weeks';
+
+          var tierNames = { 1: 'Tier 1 — Hardship & Stay', 2: 'Tier 2 — Appeal Protocol', 3: 'Tier 3 — Clear-and-Lock' };
+          var tierNotes = { 1: 'Get the stay first, then pay', 2: 'Dispute the automated surcharges', 3: 'Sinking plan — clear before fees trigger' };
+          var tierScripts = { 1: els.script1.textContent, 2: els.script2.textContent, 3: els.script3.textContent };
+          els.bpTier.textContent = tierNames[tier];
+          els.bpTierNote.textContent = tierNotes[tier];
+          els.bpScriptLabel.textContent = 'Your script — ' + tierNames[tier];
+          els.bpScriptBox.textContent = tierScripts[tier];
+          /* The blueprint always carries the Tier 1 clerk hardship script;
+             when Tier 1 is the active protocol it already sits above. */
+          els.bpHardshipWrap.style.display = tier === 1 ? 'none' : '';
+          els.bpHardshipBox.textContent = tierScripts[1];
+
+          /* stash for full-blueprint copy */
+          els.bpScriptBox.setAttribute('data-blueprint',
+            'MUNICIPAL TICKET DEFENSE BLUEPRINT\n' +
+            'Citation: ' + type + ' · Status: ' + st.label + '\n' +
+            'Total owed: ' + money(total) + ' (' + money(fine) + ' fine + ' + money(late) + ' penalties)\n' +
+            'Penalty markup: +' + inflationShown + '%\n' +
+            'License risk: ' + st.riskText + '\n' +
+            'Mobility loss exposure (est.): ' + money(mobility) + '\n' +
+            'Per-paycheck target: ' + money(target, true) + ' × ' + periods + ' ' + freqLabel + ' paychecks\n' +
+            'Driver Mobility Protection Score: ' + score + '/100\n' +
+            'Protocol: ' + tierNames[tier] + '\n\n' +
+            'SCRIPT:\n' + tierScripts[tier] +
+            (tier === 1 ? '' : '\n\nCLERK HARDSHIP SCRIPT (Tier 1 — Hardship & Stay):\n' + tierScripts[1]));
+        }
+
+        function copyText(text, btn) {
+          function done() {
+            var old = btn.textContent;
+            btn.textContent = 'Copied ✓';
+            setTimeout(function () { btn.textContent = old; }, 1800);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) {}
+            document.body.removeChild(ta);
+          }
+        }
+
+        document.querySelectorAll('[data-copy]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            copyText($(btn.getAttribute('data-copy')).textContent, btn);
+          });
+        });
+        $('copy-blueprint').addEventListener('click', function () {
+          copyText(els.bpScriptBox.getAttribute('data-blueprint') || '', this);
+        });
+
+        document.querySelectorAll('input').forEach(function (el) {
+          el.addEventListener('input', recalc);
+          el.addEventListener('change', recalc);
+        });
+        recalc();
+      })();
+    </script>
+  </body>
+</html>
