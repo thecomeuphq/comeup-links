@@ -4,20 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Come Up — Links</title>
-<meta name="description" content="Free money tools for hourly & shift workers. Calculators, quizzes & planners to kill debt and build wealth.">
+<meta name="description" content="Free money defense tools for hourly & shift workers. Pick your emergency, get your exact next move.">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:#141414; color:#f5f5f5; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; min-height:100vh; display:flex; justify-content:center; }
   .wrap { width:100%; max-width:480px; padding:36px 20px 48px; }
   .logo { width:88px; height:88px; border-radius:50%; background:#1f1f1f; border:2px solid #f5a623; display:flex; align-items:center; justify-content:center; font-size:34px; margin:0 auto 14px; }
   h1 { text-align:center; font-size:22px; letter-spacing:.5px; }
-  .tag { text-align:center; color:#bdbdbd; font-size:14px; margin:8px 0 26px; line-height:1.5; padding:0 8px; }
+  .tag { text-align:center; color:#bdbdbd; font-size:14px; margin:8px 0 22px; line-height:1.5; padding:0 8px; }
+  .hub-label { font-size:12px; font-weight:800; letter-spacing:1.5px; color:#f5a623; margin:20px 4px 10px; }
+  details.hub { background:#1f1f1f; border:1px solid #333; border-radius:14px; margin-bottom:12px; overflow:hidden; }
+  details.hub[open] { border-color:#f5a623; }
+  details.hub summary { list-style:none; cursor:pointer; padding:16px 18px; display:flex; align-items:center; gap:12px; }
+  details.hub summary::-webkit-details-marker { display:none; }
+  details.hub summary .ico { font-size:26px; }
+  details.hub summary .ht { font-size:16px; font-weight:700; flex:1; }
+  details.hub summary .hd { font-size:12px; color:#bdbdbd; }
+  details.hub summary .chev { color:#f5a623; font-size:14px; transition:transform .2s; }
+  details.hub[open] summary .chev { transform:rotate(90deg); }
+  .hub .tools { padding:4px 12px 12px; }
+  .hub .tools a { display:block; text-decoration:none; color:#f5f5f5; background:#262626; border:1px solid #3a3a3a; border-radius:10px; padding:12px 14px; margin-bottom:8px; }
+  .hub .tools a:active { border-color:#f5a623; }
+  .hub .tools a .t { font-size:14px; font-weight:700; }
+  .hub .tools a .d { font-size:12px; color:#bdbdbd; margin-top:3px; line-height:1.4; }
+  .hub .tools a.star { border-color:#f5a623; background:linear-gradient(135deg,#2a1e08,#262626); }
+  .pill { display:inline-block; font-size:10px; font-weight:800; letter-spacing:1px; color:#141414; background:#f5a623; border-radius:20px; padding:2px 8px; margin-left:8px; vertical-align:middle; }
   .card { display:block; text-decoration:none; color:#f5f5f5; background:#1f1f1f; border:1px solid #333; border-radius:14px; padding:16px 18px; margin-bottom:12px; }
   .card:active { border-color:#f5a623; }
   .card .t { font-size:16px; font-weight:700; }
   .card .d { font-size:13px; color:#bdbdbd; margin-top:4px; line-height:1.45; }
   .card.featured { background:linear-gradient(135deg,#2a1e08,#1f1f1f); border:1px solid #f5a623; }
-  .card.featured .pill { display:inline-block; font-size:11px; font-weight:800; letter-spacing:1.2px; color:#141414; background:#f5a623; border-radius:20px; padding:3px 10px; margin-bottom:8px; }
   .card.soon { opacity:.55; }
   .foot { text-align:center; color:#777; font-size:12px; margin-top:28px; line-height:1.6; }
 </style>
@@ -26,36 +42,68 @@
 <div class="wrap">
   <div class="logo">💰</div>
   <h1>The Come Up</h1>
-  <p class="tag">Free money tools for hourly &amp; shift workers.<br>Calculators, quizzes &amp; planners to kill debt and build wealth.</p>
+  <p class="tag">Free money defense tools for hourly &amp; shift workers.<br>Pick your emergency. Get your exact next move.</p>
 
   <a class="card featured" href="paycheck-health-score-quiz.html">
-    <span class="pill">START HERE</span>
-    <div class="t">Paycheck Health Score Quiz</div>
+    <div class="t">Paycheck Health Score Quiz <span class="pill">START HERE</span></div>
     <div class="d">8 questions. Get your 0–100 money health score and your exact next move.</div>
   </a>
 
-  <a class="card" href="hustle-profitability-quiz.html">
-    <div class="t">Hustle Profitability Quiz</div>
-    <div class="d">Is your side hustle actually making money? Find out in 2 minutes.</div>
-  </a>
+  <p class="hub-label">PICK YOUR EMERGENCY</p>
 
-  <a class="card" href="free-financial-calculators.html">
-    <div class="t">Free Financial Calculators</div>
-    <div class="d">10 calculators: debt payoff, credit utilization, overtime pay, BNPL trap &amp; more.</div>
-  </a>
+  <details class="hub" open>
+    <summary><span class="ico">💳</span><span><span class="ht">Debt &amp; Credit Defense</span><br><span class="hd">Behind on payments or drowning in interest?</span></span><span class="chev">▶</span></summary>
+    <div class="tools">
+      <a class="star" href="debt-strategy-selector.html"><div class="t">Debt Strategy Finder</div><div class="d">Snowball, avalanche, or consolidation? Your personalized payoff plan.</div></a>
+      <a href="payday-trap-shield.html"><div class="t">Payday Trap Shield</div><div class="d">Stuck in payday loan rollovers? See your true APR and your exit.</div></a>
+      <a href="apr-defense-engine.html"><div class="t">APR Defense Engine</div><div class="d">Escape the minimum-payment trap and slash your interest.</div></a>
+      <a href="credit-repair-engine.html"><div class="t">Credit Repair Engine</div><div class="d">Exact pay-down dollars to hit the next score bracket.</div></a>
+      <a href="predatory-debt-exit.html"><div class="t">Predatory Debt Exit</div><div class="d">Title loans and fee traps — your way out, step by step.</div></a>
+      <a href="debt-payoff-calculator.html"><div class="t">Debt Payoff Calculator</div><div class="d">Your debt-free date and total interest, to the dollar.</div></a>
+    </div>
+  </details>
 
-  <a class="card" href="debt-strategy-selector.html">
-    <div class="t">Debt Strategy Finder</div>
-    <div class="d">Snowball, avalanche, or consolidation? Get your personalized payoff plan.</div>
-  </a>
+  <details class="hub">
+    <summary><span class="ico">💵</span><span><span class="ht">Paycheck Protection</span><br><span class="hd">Protect every dollar you earn.</span></span><span class="chev">▶</span></summary>
+    <div class="tools">
+      <a class="star" href="ot-yield-maximizer.html"><div class="t">OT Yield Maximizer</div><div class="d">Working overtime? Make every extra hour actually pay.</div></a>
+      <a href="ot-tax-spike-safeguard.html"><div class="t">OT Tax Spike Safeguard</div><div class="d">Stop heavy-OT paychecks from getting crushed by withholding.</div></a>
+      <a href="tax-withholding-safeguard.html"><div class="t">Tax Withholding Safeguard</div><div class="d">Owing or overpaying? Fix your W-4 before April surprises you.</div></a>
+      <a href="garnishment-shield.html"><div class="t">Garnishment Shield</div><div class="d">Wages being garnished? Know your legal cap and fight over-takes.</div></a>
+      <a href="wage-theft-audit.html"><div class="t">Wage Theft Audit</div><div class="d">Missing hours or unpaid OT? Audit your pay stubs.</div></a>
+      <a href="variable-pay-shield.html"><div class="t">Variable Pay Shield</div><div class="d">Irregular hours? Smooth the feast-or-famine cycle.</div></a>
+      <a href="paycheck-shock-defense.html"><div class="t">Paycheck Shock Defense</div><div class="d">Short check this week? Triage it before it cascades.</div></a>
+    </div>
+  </details>
 
-  <a class="card" href="30-day-paycheck-reset.html">
-    <div class="t">30-Day Paycheck Reset</div>
-    <div class="d">One small money move a day for 30 days. Track your streak.</div>
-  </a>
+  <details class="hub">
+    <summary><span class="ico">🛡️</span><span><span class="ht">Income Shock Defense</span><br><span class="hd">Layoff, injury, emergency? Don't panic.</span></span><span class="chev">▶</span></summary>
+    <div class="tools">
+      <a class="star" href="layoff-survival-shield.html"><div class="t">Layoff Survival Shield</div><div class="d">Job cut? Your week-by-week cash survival plan.</div></a>
+      <a href="repo-shield.html"><div class="t">Repo Shield</div><div class="d">Car payment behind? Know your cure number before the tow truck.</div></a>
+      <a href="injury-cash-shield.html"><div class="t">Injury Cash Shield</div><div class="d">Hurt and can't work? Map the income gap and bridge it.</div></a>
+      <a href="family-emergency-shield.html"><div class="t">Family Emergency Shield</div><div class="d">Crisis at home? Handle the money without the meltdown.</div></a>
+      <a href="bereavement-cash-shield.html"><div class="t">Bereavement Cash Shield</div><div class="d">Funeral costs + missed shifts — plan it calmly.</div></a>
+      <a href="medical-bill-defense.html"><div class="t">Medical Bill Defense</div><div class="d">Hospital bill you can't pay? Negotiate it down.</div></a>
+      <a href="auto-debt-shield.html"><div class="t">Auto Debt Shield</div><div class="d">Underwater on the car loan? Your LTV rescue plan.</div></a>
+      <a href="utility-spike-shield.html"><div class="t">Utility Spike Shield</div><div class="d">Bill spike you can't cover? Your shutoff defense.</div></a>
+    </div>
+  </details>
+
+  <details class="hub">
+    <summary><span class="ico">📈</span><span><span class="ht">Build &amp; Grow</span><br><span class="hd">From surviving to stacking.</span></span><span class="chev">▶</span></summary>
+    <div class="tools">
+      <a class="star" href="30-day-paycheck-reset.html"><div class="t">30-Day Paycheck Reset</div><div class="d">One small money move a day for 30 days. Track your streak.</div></a>
+      <a href="career-lift-engine.html"><div class="t">Career Lift Engine</div><div class="d">Which cert actually raises YOUR pay? ROI in days, not years.</div></a>
+      <a href="emergency-fund-runway-calculator.html"><div class="t">Emergency Fund Runway</div><div class="d">How many weeks could you survive? Then extend it.</div></a>
+      <a href="yield-shield.html"><div class="t">Yield Shield</div><div class="d">Your cash is bleeding APY. Plug the leak.</div></a>
+      <a href="hustle-profitability-quiz.html"><div class="t">Hustle Profitability Quiz</div><div class="d">Is your side hustle actually making money? 2 minutes.</div></a>
+      <a href="sinking-fund-planner.html"><div class="t">Sinking Fund Planner</div><div class="d">Next big expense won't be a surprise — fund it monthly.</div></a>
+    </div>
+  </details>
 
   <a class="card" href="tools.html">
-    <div class="t">🧮 More Tools — Browse All 60+</div>
+    <div class="t">🧮 Browse All 60+ Tools</div>
     <div class="d">Every calculator, quiz, and defense engine in one directory.</div>
   </a>
 
