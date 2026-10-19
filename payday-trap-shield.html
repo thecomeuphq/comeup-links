@@ -249,6 +249,7 @@
       }
       .copy-btn:active { transform: translateY(1px); }
       .copy-btn.done { background: var(--green); }
+      .share-status { color: var(--muted); font-size: 13px; min-height: 1em; margin: 8px 0 0; text-align: center; }
 
       /* ---------- Blueprint ---------- */
       .blueprint {
@@ -495,7 +496,7 @@
       </section>
 
       <!-- BLUEPRINT -->
-      <section class="blueprint" aria-labelledby="bpTitle">
+      <section class="blueprint" id="blueprint" aria-labelledby="bpTitle">
         <div class="bp-hazard"></div>
         <div class="bp-body">
           <h2 class="bp-title" id="bpTitle">Payday Loan Cycle Exit Blueprint</h2>
@@ -515,6 +516,8 @@
             </div>
           </div>
           <p class="bp-line" id="bpLine"></p>
+          <button type="button" class="copy-btn" id="shareBlueprint">Share this blueprint</button>
+          <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
         </div>
       </section>
 
@@ -716,6 +719,54 @@
             try { document.execCommand("copy"); done(); } catch (e) { btn.textContent = "Select the script above and copy it"; }
             document.body.removeChild(ta);
           }
+        });
+
+        $("shareBlueprint").addEventListener("click", function () {
+          var button = this;
+          var status = $("shareStatus");
+          var blueprint = $("blueprint").cloneNode(true);
+          blueprint.querySelectorAll("button,[role='status']").forEach(function (element) { element.remove(); });
+          var title = $("bpTitle").textContent.trim();
+          var text = blueprint.innerText.trim();
+          var url = window.location.href;
+
+          function report(message) { status.textContent = message; }
+          function copyFallback() {
+            var shareText = text + "\n\n" + url;
+            function fallback() {
+              var textarea = document.createElement("textarea");
+              textarea.value = shareText;
+              textarea.style.position = "fixed";
+              textarea.style.opacity = "0";
+              document.body.appendChild(textarea);
+              textarea.select();
+              var copied = false;
+              try { copied = document.execCommand("copy"); } catch (error) { copied = false; } finally { document.body.removeChild(textarea); }
+              report(copied ? "Blueprint and link copied." : "Could not copy. Select the blueprint and copy it manually.");
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(shareText).then(
+                function () { report("Blueprint and link copied."); },
+                fallback
+              );
+            } else {
+              fallback();
+            }
+          }
+
+          if (!navigator.share) {
+            copyFallback();
+            return;
+          }
+
+          navigator.share({ title: title, text: text, url: url }).then(
+            function () { report("Blueprint shared."); },
+            function (error) {
+              if (error.name === "AbortError") return;
+              copyFallback();
+            }
+          );
         });
 
         render();

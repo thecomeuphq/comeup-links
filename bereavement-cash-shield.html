@@ -460,7 +460,7 @@
       </section>
 
       <!-- BLUEPRINT -->
-      <section class="blueprint" aria-labelledby="bpTitle">
+      <section class="blueprint" id="blueprint" aria-labelledby="bpTitle">
         <p class="bp-kicker">Screenshot-ready summary</p>
         <h2 id="bpTitle">Bereavement &amp; Travel Cash Blueprint</h2>
         <p class="bp-sub">Your whole plan on one card. Screenshot it, send it to family, or keep it next to the paperwork.</p>
@@ -490,6 +490,8 @@
         <div class="bp-actions">
           <button type="button" class="copy-btn" id="copyBlueprint">Copy the full blueprint as text</button>
           <p class="copied-msg" id="bpMsg"></p>
+          <button type="button" class="copy-btn ghost" id="shareBlueprint">Share this blueprint</button>
+          <p class="copied-msg" id="shareMsg" role="status" aria-live="polite"></p>
         </div>
       </section>
 
@@ -715,6 +717,53 @@
             b.memo || ""
           ];
           copyText(lines.join("\n"), document.getElementById("bpMsg"));
+        });
+
+        document.getElementById("shareBlueprint").addEventListener("click", function () {
+          var status = document.getElementById("shareMsg");
+          var blueprint = document.getElementById("blueprint").cloneNode(true);
+          blueprint.querySelectorAll("button,[role='status']").forEach(function (element) { element.remove(); });
+          var title = document.getElementById("bpTitle").textContent.trim();
+          var text = blueprint.innerText.trim();
+          var url = window.location.href;
+
+          function report(message) { status.textContent = message; }
+          function copyFallback() {
+            var shareText = text + "\n\n" + url;
+            function fallback() {
+              var textarea = document.createElement("textarea");
+              textarea.value = shareText;
+              textarea.style.position = "fixed";
+              textarea.style.opacity = "0";
+              document.body.appendChild(textarea);
+              textarea.select();
+              var copied = false;
+              try { copied = document.execCommand("copy"); } catch (error) { copied = false; } finally { document.body.removeChild(textarea); }
+              report(copied ? "Blueprint and link copied." : "Could not copy. Select the blueprint and copy it manually.");
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(shareText).then(
+                function () { report("Blueprint and link copied."); },
+                fallback
+              );
+            } else {
+              fallback();
+            }
+          }
+
+          if (!navigator.share) {
+            copyFallback();
+            return;
+          }
+
+          navigator.share({ title: title, text: text, url: url }).then(
+            function () { report("Blueprint shared."); },
+            function (error) {
+              if (error.name === "AbortError") return;
+              copyFallback();
+            }
+          );
         });
 
         compute();
