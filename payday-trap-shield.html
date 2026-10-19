@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Payday Trap Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0b0b0d;
+        --panel: #151518;
+        --panel-2: #1c1c20;
+        --panel-3: #222228;
+        --line: #2c2c33;
+        --ink: #f4f1ea;
+        --muted: #a9a59a;
+        --faint: #76736a;
+        --amber: #ffb020;
+        --orange: #ff6a1a;
+        --red: #ff4d4d;
+        --green: #43d17c;
+        --hazard: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #101012 14px 28px);
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 780px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .hazard-bar { height: 10px; background: var(--hazard); border-radius: 2px; margin-bottom: 22px; }
+      .hero h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(30px, 7.4vw, 44px);
+        line-height: 1.08;
+        margin: 0 0 12px;
+        letter-spacing: .2px;
+      }
+      .hero h1 .strike { color: var(--red); }
+      .hero h1 .exit { color: var(--amber); }
+      .hero p { color: var(--muted); margin: 0 0 6px; max-width: 56ch; }
+      .hero p strong { color: var(--ink); }
+
+      /* ---------- Steps ---------- */
+      .step { margin-top: 34px; }
+      .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+      .step-num {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 15px;
+        background: var(--amber);
+        color: #131313;
+        padding: 5px 10px;
+        border-radius: 4px;
+        flex: none;
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 26px;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+        margin: 0;
+      }
+      .step-sub { color: var(--muted); margin: -6px 0 14px; font-size: 15.5px; }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px;
+      }
+
+      /* ---------- Inputs ---------- */
+      .field { margin-bottom: 18px; }
+      .field:last-child { margin-bottom: 0; }
+      .field label, .field .flabel {
+        display: block;
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 7px;
+      }
+      .field .hint { color: var(--faint); font-size: 13.5px; font-weight: 400; display: block; margin-top: 4px; }
+      .money {
+        display: flex; align-items: center;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .money:focus-within { border-color: var(--amber); }
+      .money .cur { padding: 0 4px 0 14px; color: var(--amber); font-family: "JetBrains Mono", monospace; font-weight: 700; }
+      .money input {
+        flex: 1; min-width: 0;
+        background: transparent; border: 0; outline: 0;
+        color: var(--ink);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 20px; font-weight: 700;
+        padding: 12px 12px 12px 2px;
+      }
+      .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+      .seg button {
+        flex: 1 1 0;
+        min-width: 96px;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        border-radius: 8px;
+        padding: 11px 10px;
+        font-family: "Barlow", sans-serif;
+        font-size: 15px; font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+      }
+      .seg button small { display: block; font-weight: 400; font-size: 12.5px; color: var(--faint); margin-top: 2px; }
+      .seg button.active { border-color: var(--amber); color: var(--ink); background: #2a2113; box-shadow: inset 0 0 0 1px var(--amber); }
+      .seg button.active small { color: var(--muted); }
+      .slider-row { display: flex; align-items: center; gap: 14px; }
+      input[type="range"] {
+        flex: 1; min-width: 0;
+        -webkit-appearance: none; appearance: none;
+        height: 8px; border-radius: 4px;
+        background: linear-gradient(90deg, var(--amber), var(--orange), var(--red));
+        outline: none;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; appearance: none;
+        width: 26px; height: 26px; border-radius: 50%;
+        background: var(--ink); border: 3px solid #0b0b0d;
+        box-shadow: 0 0 0 2px var(--amber);
+        cursor: pointer;
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px; height: 20px; border-radius: 50%;
+        background: var(--ink); border: 3px solid #0b0b0d;
+        box-shadow: 0 0 0 2px var(--amber);
+        cursor: pointer;
+      }
+      .slider-val {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700; font-size: 22px;
+        background: var(--panel-2); border: 1px solid var(--line);
+        border-radius: 8px; padding: 4px 12px; min-width: 62px; text-align: center;
+        color: var(--amber);
+      }
+
+      /* ---------- Triage results ---------- */
+      .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 520px) { .stat-grid { grid-template-columns: 1fr; } }
+      .stat {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px;
+      }
+      .stat .k { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+      .stat .v { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: clamp(30px, 7vw, 40px); line-height: 1.05; }
+      .stat .d { color: var(--muted); font-size: 14.5px; margin-top: 6px; }
+      .stat.hot .v { color: var(--red); }
+      .stat.warm .v { color: var(--orange); }
+      .stat.good .v { color: var(--green); }
+      .verdict {
+        margin-top: 12px;
+        background: #241a10;
+        border: 1px solid #4a3413;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 16px;
+      }
+      .verdict strong { color: var(--amber); }
+
+      /* Severity gauge */
+      .severity { margin-top: 12px; }
+      .sev-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .sev-top .k { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
+      .sev-score { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 30px; }
+      .sev-score small { font-size: 15px; color: var(--faint); }
+      .sev-bar { height: 16px; border-radius: 8px; background: var(--panel-3); border: 1px solid var(--line); overflow: hidden; margin: 10px 0 8px; }
+      .sev-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--amber), var(--orange) 55%, var(--red)); transition: width .45s ease; }
+      .sev-label { font-weight: 600; font-size: 16px; }
+      .sev-label span { color: var(--muted); font-weight: 400; }
+
+      .epp { margin-top: 12px; border-left: 4px solid var(--amber); background: var(--panel-2); border-radius: 0 10px 10px 0; padding: 16px; }
+      .epp h3 { margin: 0 0 8px; font-family: "Barlow Condensed", sans-serif; font-size: 21px; letter-spacing: .5px; text-transform: uppercase; }
+      .epp p { margin: 0 0 8px; color: var(--muted); font-size: 15.5px; }
+      .epp p:last-child { margin-bottom: 0; }
+      .epp strong { color: var(--ink); }
+      .epp .note { font-size: 13.5px; color: var(--faint); }
+
+      .buyout-row { display: flex; gap: 8px; align-items: stretch; margin-top: 10px; flex-wrap: wrap; }
+      .buyout-row .seg { flex: 1 1 220px; }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 18px;
+        margin-bottom: 12px;
+        opacity: .82;
+      }
+      .tier.recommended { opacity: 1; border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber), 0 10px 30px rgba(0,0,0,.45); }
+      .tier-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+      .tier-tag {
+        font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 13px;
+        background: var(--panel-3); border: 1px solid var(--line);
+        padding: 4px 9px; border-radius: 4px; color: var(--amber);
+      }
+      .tier h3 { margin: 0; font-family: "Barlow Condensed", sans-serif; font-size: 22px; letter-spacing: .4px; }
+      .your-move {
+        display: none;
+        font-size: 12.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+        background: var(--amber); color: #131313; padding: 4px 9px; border-radius: 4px;
+      }
+      .tier.recommended .your-move { display: inline-block; }
+      .tier p { color: var(--muted); margin: 6px 0; font-size: 15.5px; }
+      .tier p strong, .tier li strong { color: var(--ink); }
+      .tier ol, .tier ul { margin: 8px 0 4px; padding-left: 22px; color: var(--muted); font-size: 15.5px; }
+      .tier li { margin-bottom: 6px; }
+      .script-box {
+        background: #0e0e10;
+        border: 1px dashed #4a4436;
+        border-radius: 8px;
+        padding: 14px;
+        margin-top: 12px;
+        font-size: 15px;
+        color: var(--ink);
+        white-space: pre-wrap;
+      }
+      .copy-btn {
+        margin-top: 10px;
+        background: var(--amber); color: #131313;
+        border: 0; border-radius: 8px;
+        font-family: "Barlow", sans-serif; font-weight: 700; font-size: 15px;
+        padding: 11px 18px; cursor: pointer; width: 100%;
+      }
+      .copy-btn:active { transform: translateY(1px); }
+      .copy-btn.done { background: var(--green); }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 36px;
+        background: linear-gradient(180deg, #191920, #121215);
+        border: 2px solid var(--amber);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .blueprint .bp-hazard { height: 12px; background: var(--hazard); }
+      .bp-body { padding: 20px; }
+      .bp-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; font-size: clamp(24px, 6vw, 32px);
+        letter-spacing: .6px; text-transform: uppercase;
+        margin: 0 0 2px;
+      }
+      .bp-sub { color: var(--muted); font-size: 14.5px; margin: 0 0 16px; }
+      .bp-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+      @media (max-width: 560px) { .bp-grid { grid-template-columns: 1fr; } }
+      .bp-cell { background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+      .bp-cell .k { font-size: 12px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; color: var(--muted); }
+      .bp-cell .v { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 27px; margin-top: 3px; }
+      .bp-cell .v.red { color: var(--red); }
+      .bp-cell .v.amber { color: var(--amber); }
+      .bp-cell .v.green { color: var(--green); }
+      .bp-line { margin-top: 14px; color: var(--muted); font-size: 15px; border-top: 1px solid var(--line); padding-top: 12px; }
+      .bp-line strong { color: var(--ink); }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 520px) { .next-grid { grid-template-columns: 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px;
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card .nc-k { font-size: 12.5px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--amber); }
+      a.next-card h3 { margin: 6px 0 6px; font-family: "Barlow Condensed", sans-serif; font-size: 22px; letter-spacing: .4px; }
+      a.next-card p { margin: 0; color: var(--muted); font-size: 15px; }
+      a.next-card .go { color: var(--amber); font-weight: 700; font-size: 15px; display: inline-block; margin-top: 10px; }
+
+      .cta {
+        margin-top: 26px;
+        background: linear-gradient(120deg, #2a1c08, #33190a);
+        border: 1px solid var(--orange);
+        border-radius: 12px;
+        padding: 22px 20px;
+        text-align: left;
+      }
+      .cta h3 { margin: 0 0 8px; font-family: "Barlow Condensed", sans-serif; font-size: clamp(23px, 5.6vw, 29px); letter-spacing: .4px; }
+      .cta p { margin: 0 0 14px; color: #e8d9c4; font-size: 15.5px; }
+      .cta a {
+        display: inline-block;
+        background: var(--orange); color: #14100b;
+        font-weight: 700; text-decoration: none;
+        padding: 12px 20px; border-radius: 8px; font-size: 16px;
+      }
+
+      .faq { margin-top: 30px; }
+      .faq details {
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+      }
+      .faq summary { font-weight: 600; font-size: 16.5px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; color: var(--amber); font-family: "JetBrains Mono", monospace; font-weight: 700; }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq details p { color: var(--muted); margin: 10px 0 2px; font-size: 15.5px; }
+      .faq details p strong { color: var(--ink); }
+
+      footer { margin-top: 34px; color: var(--faint); font-size: 13.5px; line-height: 1.55; }
+      footer .hazard-bar { margin: 0 0 16px; height: 8px; opacity: .6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <header class="hero">
+        <div class="hazard-bar"></div>
+        <h1>You borrowed <span class="strike">$300</span> and paid back <span class="strike">$900</span>.<br />Here&rsquo;s the <span class="exit">exit</span>.</h1>
+        <p>A payday loan isn&rsquo;t a loan &mdash; it&rsquo;s a <strong>fee machine</strong> bolted to your paycheck. Every rollover, you pay the fee again and the amount you owe doesn&rsquo;t drop one cent.</p>
+        <p>Run your numbers below. You&rsquo;ll see the real APR they never print in big type, exactly how much money is already gone, and the per-paycheck target that kills the loan for good &mdash; <strong>with zero new fees</strong>.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">01</span><h2 id="s1">Loan Baseline</h2></div>
+        <div class="card">
+          <div class="field">
+            <label for="principal">Principal borrowed</label>
+            <div class="money"><span class="cur">$</span><input id="principal" type="number" inputmode="decimal" min="1" value="300" /></div>
+            <span class="hint">The amount that actually hit your account &mdash; not the total on the contract.</span>
+          </div>
+          <div class="field">
+            <label for="fee">Fee per rollover</label>
+            <div class="money"><span class="cur">$</span><input id="fee" type="number" inputmode="decimal" min="0" value="45" /></div>
+            <span class="hint">What you pay each time just to push the due date out. Common: $15 per $100 borrowed.</span>
+          </div>
+          <div class="field">
+            <span class="flabel" id="rollLabel">Rollovers so far</span>
+            <div class="slider-row">
+              <input type="range" id="rollovers" min="0" max="10" step="1" value="3" aria-labelledby="rollLabel" />
+              <span class="slider-val" id="rollVal">3</span>
+            </div>
+            <span class="hint">Every time you paid the fee and extended the loan instead of paying it off. 10 = ten or more.</span>
+          </div>
+          <div class="field">
+            <span class="flabel">How often do you get paid?</span>
+            <div class="seg" id="freqSeg">
+              <button type="button" data-days="7">Weekly<small>7 days per period</small></button>
+              <button type="button" data-days="14" class="active">Bi-weekly<small>14 days per period</small></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">02</span><h2 id="s2">Lender Scan</h2></div>
+        <p class="step-sub">Where the loan came from decides which exit door is open to you.</p>
+        <div class="card">
+          <div class="field" style="margin-bottom:0">
+            <span class="flabel">Lender type</span>
+            <div class="seg" id="lenderSeg">
+              <button type="button" data-lender="storefront" class="active">Storefront payday<small>Check-cashing / loan shop</small></button>
+              <button type="button" data-lender="online">Online cash advance<small>Website lender</small></button>
+              <button type="button" data-lender="app">Paycheck advance app<small>EarnIn, Dave, Brigit, etc.</small></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head"><span class="step-num">03</span><h2 id="s3">Triage Engine</h2></div>
+        <p class="step-sub">The numbers the lender hopes you never do.</p>
+
+        <div class="stat-grid">
+          <div class="stat hot">
+            <div class="k">True APR</div>
+            <div class="v" id="aprOut">391%</div>
+            <div class="d" id="aprNote">A credit card is ~24%. A payday rollover is a different species.</div>
+          </div>
+          <div class="stat warm">
+            <div class="k">Total Sunk Fee Drag</div>
+            <div class="v" id="dragOut">$135</div>
+            <div class="d">Fees already paid &mdash; gone forever. Not one cent of it touched what you owe.</div>
+          </div>
+        </div>
+
+        <div class="verdict" id="verdictOut"></div>
+
+        <div class="card severity">
+          <div class="sev-top">
+            <span class="k">Payday Debt Trap Severity Index</span>
+            <span class="sev-score"><span id="sevOut">0</span><small> / 100</small></span>
+          </div>
+          <div class="sev-bar"><div class="sev-fill" id="sevFill"></div></div>
+          <div class="sev-label" id="sevLabel"></div>
+        </div>
+
+        <div class="epp">
+          <h3>Your EPP right: the fee-free off-ramp</h3>
+          <p>In many states, payday lenders are <strong>required to offer an Extended Payment Plan (EPP)</strong> &mdash; sometimes called an installment or extended payment option. Instead of rolling the loan over again, the EPP <strong>freezes the balance and splits the principal into equal payments across your next several paychecks</strong>. No new fees. No new interest. The balance actually goes down every payday until it&rsquo;s dead.</p>
+          <p>The catch: you usually have to <strong>ask for it before you default</strong> &mdash; often before your due date &mdash; and many lenders only allow one EPP in a set period. They are not required to advertise it at the counter.</p>
+          <p class="note">Availability and rules vary by state and by lender. Ask your lender directly: &ldquo;Do you offer an extended payment plan on this loan?&rdquo; Get the answer &mdash; and the plan terms &mdash; in writing.</p>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div class="field" style="margin-bottom:0">
+            <span class="flabel">Per-paycheck buyout target &mdash; kill the principal, zero new fees</span>
+            <div class="buyout-row">
+              <div class="seg" id="periodSeg">
+                <button type="button" data-periods="4">4 paychecks</button>
+                <button type="button" data-periods="5" class="active">5 paychecks</button>
+                <button type="button" data-periods="6">6 paychecks</button>
+              </div>
+            </div>
+            <div style="margin-top:14px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:34px; color:var(--green);" id="buyoutOut">$60.00</span>
+              <span style="color:var(--muted); font-size:15px;" id="buyoutNote">per paycheck &mdash; and the loan is gone.</span>
+            </div>
+            <span class="hint">That&rsquo;s the principal split evenly &mdash; what an EPP does for you, or what you pay yourself if no EPP is offered. Compare it to the fee you&rsquo;ve been paying just to stand still.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head"><span class="step-num">04</span><h2 id="s4">Action Strategy</h2></div>
+        <p class="step-sub" id="tierIntro">Three exit doors. Based on your answers, your best first move is highlighted.</p>
+
+        <div class="tier" id="tier1">
+          <div class="tier-head">
+            <span class="tier-tag">TIER 1</span>
+            <h3>In the rollover cycle? Invoke the EPP</h3>
+            <span class="your-move">Your move</span>
+          </div>
+          <p><strong>For:</strong> storefront or online payday loans in a state with extended payment plan rights, once you&rsquo;ve rolled over at least once.</p>
+          <ol>
+            <li><strong>Go before your next due date.</strong> EPP requests are usually only honored while the loan is current.</li>
+            <li><strong>Ask for the plan by name</strong> &mdash; use the script below, in person or in writing.</li>
+            <li><strong>Get the terms in writing:</strong> total owed, payment amounts, payment dates, and confirmation that no new fees will be added.</li>
+            <li><strong>Stop all new borrowing</strong> while on the plan &mdash; most EPPs void if you take another loan.</li>
+            <li>Pay the per-paycheck target above on every payday until the balance hits <strong>$0</strong>.</li>
+          </ol>
+          <div class="script-box" id="eppScript"></div>
+          <button type="button" class="copy-btn" id="copyScript">Copy the script</button>
+        </div>
+
+        <div class="tier" id="tier2">
+          <div class="tier-head">
+            <span class="tier-tag">TIER 2</span>
+            <h3>App advance or no EPP? Stop the ACH bleed</h3>
+            <span class="your-move">Your move</span>
+          </div>
+          <p><strong>For:</strong> paycheck advance apps and online lenders that debit your bank account automatically, or states with no EPP law.</p>
+          <ol>
+            <li><strong>Revoke the debit authorization.</strong> You have the right to tell your bank to stop a lender from pulling money from your account. Call or visit your bank and say: <strong>&ldquo;I am revoking authorization for [lender] to debit my account.&rdquo;</strong> Do it at least <strong>3 business days</strong> before the next scheduled debit.</li>
+            <li><strong>Tell the lender in writing too</strong> &mdash; an email or in-app message revoking ACH authorization. Screenshot it. A revocation they ignore is a debit you can dispute as unauthorized.</li>
+            <li><strong>Add a stop payment as backup.</strong> The bank may charge a small fee (often $15&ndash;$35) &mdash; still cheaper than one more rollover fee.</li>
+            <li><strong>Run the micro-buyout:</strong> pay the per-paycheck target from Step 3 directly to the lender each payday until the principal is dead. Revoking the debit stops the bleeding &mdash; it doesn&rsquo;t erase the debt, so keep paying on your schedule, not theirs.</li>
+            <li><strong>Delete the app</strong> once the balance is $0, and turn off any &ldquo;auto-advance&rdquo; or overdraft-style features.</li>
+          </ol>
+        </div>
+
+        <div class="tier" id="tier3">
+          <div class="tier-head">
+            <span class="tier-tag">TIER 3</span>
+            <h3>First loan, no rollover yet? Redirect now</h3>
+            <span class="your-move">Your move</span>
+          </div>
+          <p><strong>For:</strong> you just took the loan (or are about to) and haven&rsquo;t paid a single rollover fee. This is the cheapest exit that will ever exist.</p>
+          <ul>
+            <li><strong>Employer paycheck advance:</strong> ask HR or your manager about an advance or earned-wage access. Embarrassing for five minutes &mdash; cheaper than months of fees.</li>
+            <li><strong>Call the biller, not the lender:</strong> utilities, landlords, phone and card companies will usually set up a payment plan or move a due date if you ask before you miss. They&rsquo;d rather wait two weeks than chase you for months.</li>
+            <li><strong>Community assistance:</strong> dial <strong>2-1-1</strong> for local emergency help &mdash; community action agencies, churches, and the Salvation Army often cover a one-time bill or rent gap.</li>
+            <li><strong>Credit union PALs:</strong> many credit unions offer Payday Alternative Loans &mdash; small-dollar loans with capped rates, built exactly to replace this trap.</li>
+            <li>If you already took the loan: pay the <strong>full principal on the first due date</strong>, even if it hurts. One tight paycheck beats a year of rollovers.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bpTitle">
+        <div class="bp-hazard"></div>
+        <div class="bp-body">
+          <h2 class="bp-title" id="bpTitle">Payday Loan Cycle Exit Blueprint</h2>
+          <p class="bp-sub" id="bpSub">Screenshot this. This is the whole trap &mdash; and the whole exit &mdash; on one card.</p>
+          <div class="bp-grid">
+            <div class="bp-cell">
+              <div class="k">Sunk Fee Drag</div>
+              <div class="v red" id="bpDrag">$135</div>
+            </div>
+            <div class="bp-cell">
+              <div class="k">True APR</div>
+              <div class="v amber" id="bpApr">391%</div>
+            </div>
+            <div class="bp-cell">
+              <div class="k">Buyout / Paycheck</div>
+              <div class="v green" id="bpBuyout">$60.00</div>
+            </div>
+          </div>
+          <p class="bp-line" id="bpLine"></p>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <section class="step" aria-labelledby="ns">
+        <div class="step-head"><span class="step-num">05</span><h2 id="ns">Keep Moving</h2></div>
+        <div class="next-grid">
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/predatory-debt-exit.html" target="_blank" rel="noopener">
+            <span class="nc-k">Next tool</span>
+            <h3>Predatory Debt Exit</h3>
+            <p>Got more than one trap on your back &mdash; title loans, rent-to-own, high-interest cards? Map every predatory debt and rank them by what they&rsquo;re really costing you.</p>
+            <span class="go">Open the exit planner &rarr;</span>
+          </a>
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html" target="_blank" rel="noopener">
+            <span class="nc-k">Next tool</span>
+            <h3>Payday Cash Flow Allocator</h3>
+            <p>Once the loan is dead, make sure the next paycheck never needs one. Split every check into bills, buffer, and breathing room before it evaporates.</p>
+            <span class="go">Allocate my paycheck &rarr;</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta">
+        <h3>Break the cycle for good</h3>
+        <p>The <strong>Debt Snowball vs Avalanche Battle Plan</strong> shows you which debt to attack first and exactly how fast you get free &mdash; and the <strong>Paycheck-to-Paycheck Weekly Planner</strong> keeps every week on rails so the trap never gets a second shot at you.</p>
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get the planners on Gumroad &rarr;</a>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq" aria-labelledby="faqH">
+        <div class="step-head"><span class="step-num">?</span><h2 id="faqH">Straight Answers</h2></div>
+        <details>
+          <summary>What is a rollover?</summary>
+          <p>When payday comes and you can&rsquo;t repay the full loan, the lender lets you pay <strong>just the fee</strong> and pushes the loan to your next paycheck. That&rsquo;s a rollover. The trap: the principal never shrinks. Borrow $300, roll it six times at a $45 fee, and you&rsquo;ve paid $270 in fees &mdash; and you still owe the whole $300.</p>
+        </details>
+        <details>
+          <summary>What is an extended payment plan (EPP)?</summary>
+          <p>A fee-free off-ramp many states require payday lenders to offer. Instead of rolling over, the lender freezes your balance and splits the principal into <strong>equal payments across several paychecks</strong> &mdash; no new fees, no new interest. You typically have to ask before you default, and it&rsquo;s often limited to once in a set period. Rules vary by state, so ask your lender directly and get the terms in writing.</p>
+        </details>
+        <details>
+          <summary>Can the lender refuse to give me an EPP?</summary>
+          <p>In states with EPP laws, <strong>no</strong> &mdash; if you qualify and ask in time, they have to offer it. Some lenders follow industry best-practice rules that include EPPs even where no law forces them. If a lender refuses or claims they&rsquo;ve never heard of it, ask for the refusal in writing and file a complaint with your <strong>state financial regulator</strong> or the <strong>Consumer Financial Protection Bureau (consumerfinance.gov)</strong>. A complaint on record changes how lenders treat you.</p>
+        </details>
+        <details>
+          <summary>What happens if I close my bank account?</summary>
+          <p>Closing the account stops the debits, but it <strong>doesn&rsquo;t erase the debt</strong>. The lender can still send the balance to collections or sue in small claims court, and a closed account with a negative balance can land you in ChexSystems, making your next bank account hard to open. The cleaner move: <strong>revoke the ACH authorization and place a stop payment</strong> while the account stays open (Tier 2), or open a new account first, move your money and direct deposit, then close the old one.</p>
+        </details>
+      </section>
+
+      <footer>
+        <div class="hazard-bar"></div>
+        <p>Payday Trap Shield is an educational tool, not legal or financial advice. APR and severity figures are estimates based on the numbers you enter. EPP availability, ACH revocation rules, and lender obligations vary by state &mdash; confirm your rights with your state financial regulator or a local legal aid office (free help: lawhelp.org).</p>
+      </footer>
+
+    </div>
+
+    <script>
+      (function () {
+        var state = {
+          principal: 300,
+          fee: 45,
+          rollovers: 3,
+          days: 14,
+          lender: "storefront",
+          periods: 5
+        };
+
+        var $ = function (id) { return document.getElementById(id); };
+        var money = function (n) {
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        };
+        var money2 = function (n) {
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+
+        function segWire(id, attr, key, parse) {
+          var seg = $(id);
+          seg.addEventListener("click", function (e) {
+            var btn = e.target.closest("button");
+            if (!btn) return;
+            var btns = seg.querySelectorAll("button");
+            for (var i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+            btn.classList.add("active");
+            state[key] = parse(btn.getAttribute(attr));
+            render();
+          });
+        }
+
+        $("principal").addEventListener("input", function () {
+          state.principal = Math.max(0, parseFloat(this.value) || 0);
+          render();
+        });
+        $("fee").addEventListener("input", function () {
+          state.fee = Math.max(0, parseFloat(this.value) || 0);
+          render();
+        });
+        $("rollovers").addEventListener("input", function () {
+          state.rollovers = parseInt(this.value, 10);
+          $("rollVal").textContent = state.rollovers >= 10 ? "10+" : String(state.rollovers);
+          render();
+        });
+
+        segWire("freqSeg", "data-days", "days", function (v) { return parseInt(v, 10); });
+        segWire("lenderSeg", "data-lender", "lender", function (v) { return v; });
+        segWire("periodSeg", "data-periods", "periods", function (v) { return parseInt(v, 10); });
+
+        function severity(apr, drag, principal) {
+          var rollScore = Math.min(45, state.rollovers * 5);
+          var ratio = principal > 0 ? drag / principal : 0;
+          var dragScore = Math.min(35, ratio * 35);
+          var aprScore = Math.min(20, apr / 50);
+          return Math.max(0, Math.min(100, Math.round(rollScore + dragScore + aprScore)));
+        }
+
+        function sevText(score) {
+          if (score <= 0) return ["Not in the cycle yet.", "No rollovers, no fees burned. Keep it that way — Tier 3 is your playbook."];
+          if (score < 25) return ["Early — the cheap exit is still open.", "A rollover or two is a warning, not a life sentence. Act before the fees stack."];
+          if (score < 50) return ["In the cycle.", "The fees are now a line item in your budget. That is exactly how the trap is designed to feel — normal."];
+          if (score < 75) return ["Deep in the trap.", "You are working shifts that exist only to pay fees. The exit below is built for exactly this depth."];
+          return ["Critical — fees are eating whole paychecks.", "At this depth the loan costs more than most bills it was meant to cover. Stop the bleed first (Tier 2), then buy out the principal."];
+        }
+
+        function render() {
+          var p = state.principal, f = state.fee, r = state.rollovers;
+          var apr = p > 0 ? (f / p) * (365 / state.days) * 100 : 0;
+          var drag = f * r;
+          var buyout = state.periods > 0 ? p / state.periods : 0;
+          var weeks = state.periods * (state.days === 7 ? 1 : 2);
+          var score = severity(apr, drag, p);
+          var st = sevText(score);
+
+          $("aprOut").textContent = Math.round(apr).toLocaleString("en-US") + "%";
+          $("aprNote").textContent = apr >= 300
+            ? "A credit card runs ~24%. A storefront payday loan typically runs 300–700%. This is not borrowing — it's renting your own paycheck back."
+            : (apr > 0 ? "Annualized cost of this fee at your pay frequency. Even the \"low\" end of payday pricing dwarfs any credit card." : "Enter a fee above to see the real annualized rate.");
+          $("dragOut").textContent = money(drag);
+
+          $("verdictOut").innerHTML = r > 0
+            ? "You have paid <strong>" + money(drag) + " in fees</strong> across " + (r >= 10 ? "10 or more" : r) + " rollover" + (r === 1 ? "" : "s") + " — and you still owe the full <strong>" + money(p) + "</strong>. One more rollover costs another <strong>" + money(f) + "</strong> and changes nothing."
+            : "You have paid <strong>$0 in rollover fees</strong> so far. Every dollar of drag on this page is still avoidable — this is the cheapest moment to exit that will ever exist.";
+
+          $("sevOut").textContent = score;
+          $("sevFill").style.width = score + "%";
+          $("sevLabel").innerHTML = st[0] + " <span>" + st[1] + "</span>";
+
+          $("buyoutOut").textContent = money2(buyout);
+          $("buyoutNote").textContent = "per paycheck × " + state.periods + " paychecks (" + weeks + " weeks) — and the loan is gone.";
+
+          // Tier recommendation
+          var rec = "tier3";
+          if (r > 0 && state.lender === "storefront") rec = "tier1";
+          else if (r > 0) rec = "tier2";
+          else if (state.lender !== "storefront") rec = "tier3";
+          ["tier1", "tier2", "tier3"].forEach(function (id) {
+            $(id).classList.toggle("recommended", id === rec);
+          });
+          $("tierIntro").textContent = r === 0
+            ? "Three exit doors. You haven't rolled over yet — Tier 3 is highlighted: your exit is the cheap one."
+            : (state.lender === "storefront"
+              ? "Three exit doors. You're in the cycle with a storefront lender — Tier 1 is highlighted: invoke the EPP."
+              : "Three exit doors. Your lender debits your account automatically — Tier 2 is highlighted: stop the ACH bleed, then buy out.");
+
+          // EPP script
+          var lenderName = state.lender === "app" ? "your app" : (state.lender === "online" ? "your company" : "your store");
+          $("eppScript").textContent =
+            "\"Hi, my name is [your name]. I have a payday loan with " + lenderName + " for " + money(p) +
+            ", and I've already rolled it over " + (r >= 10 ? "10 or more times" : r + (r === 1 ? " time" : " times")) +
+            ", paying " + money(drag) + " in fees. I'm requesting to enroll in your Extended Payment Plan so I can pay the balance off over my next several paychecks with no additional fees. Please confirm in writing: the total I owe, each payment amount and date, and that no new fees will be added while I'm on the plan.\"";
+
+          // Blueprint
+          $("bpDrag").textContent = money(drag);
+          $("bpApr").textContent = Math.round(apr).toLocaleString("en-US") + "%";
+          $("bpBuyout").textContent = money2(buyout);
+          var lenderLabel = state.lender === "storefront" ? "Storefront payday loan" : (state.lender === "online" ? "Online cash advance" : "Paycheck advance app");
+          $("bpLine").innerHTML = "<strong>" + lenderLabel + "</strong> · Borrowed <strong>" + money(p) + "</strong> · " +
+            (r >= 10 ? "10+" : r) + " rollover" + (r === 1 ? "" : "s") + " · Severity <strong>" + score + "/100</strong> · Exit: <strong>" +
+            money2(buyout) + " per paycheck × " + state.periods + "</strong> — principal dead in " + weeks + " weeks, zero new fees.";
+        }
+
+        // Copy script
+        $("copyScript").addEventListener("click", function () {
+          var btn = this;
+          var text = $("eppScript").textContent;
+          function done() {
+            btn.textContent = "Copied — go get your plan";
+            btn.classList.add("done");
+            setTimeout(function () { btn.textContent = "Copy the script"; btn.classList.remove("done"); }, 2400);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); done(); } catch (e) { btn.textContent = "Select the script above and copy it"; }
+            document.body.removeChild(ta);
+          }
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

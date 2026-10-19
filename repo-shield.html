@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Repo Shield — Know Your Cure Number Before They Do</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#0b0c0d;
+        --bg2:#101112;
+        --panel:#16181a;
+        --panel2:#1d1f22;
+        --line:#2b2d31;
+        --line-soft:#222428;
+        --ink:#f3f1ea;
+        --muted:#a9a69c;
+        --faint:#6f6d66;
+        --amber:#ffb020;
+        --orange:#ff6b1a;
+        --red:#ff4d42;
+        --green:#43d17c;
+        --radius:10px;
+      }
+      *{box-sizing:border-box;}
+      html{scroll-behavior:smooth;}
+      body{
+        margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Barlow",system-ui,sans-serif; font-size:16px; line-height:1.5;
+        -webkit-font-smoothing:antialiased;
+      }
+      /* hazard-stripe texture strip */
+      .hazard{
+        height:8px;
+        background:repeating-linear-gradient(-45deg,var(--amber) 0 14px,#141414 14px 28px);
+      }
+      .wrap{max-width:1060px;margin:0 auto;padding:0 16px 64px;}
+      h1,h2,h3{font-family:"Barlow Condensed",sans-serif;letter-spacing:.02em;margin:0;}
+      .mono{font-family:"IBM Plex Mono",monospace;}
+
+      /* ---------- HERO ---------- */
+      .hero{padding:34px 0 8px;}
+      .hero-tag{
+        display:inline-flex;align-items:center;gap:8px;
+        border:1px solid var(--line);background:var(--panel);
+        padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;
+        letter-spacing:.14em;text-transform:uppercase;color:var(--amber);
+      }
+      .hero-tag .dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.6s infinite;}
+      @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+      @media (prefers-reduced-motion:reduce){.hero-tag .dot{animation:none}}
+      .hero h1{font-size:clamp(42px,9vw,76px);line-height:.95;font-weight:700;text-transform:uppercase;margin:18px 0 12px;}
+      .hero h1 .hot{color:var(--orange);}
+      .hero p.lede{font-size:clamp(17px,3.4vw,21px);color:var(--muted);max-width:640px;margin:0 0 8px;}
+      .hero p.lede strong{color:var(--ink);}
+
+      /* index gauge */
+      .gauge-card{
+        margin-top:24px;background:var(--panel);border:1px solid var(--line);
+        border-radius:var(--radius);padding:18px 20px;
+        display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;
+      }
+      .gauge-num{font-family:"IBM Plex Mono",monospace;font-size:56px;font-weight:700;line-height:1;}
+      .gauge-label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+      .gauge-status{font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+      .gauge-bar{height:12px;background:#26282c;border-radius:6px;overflow:hidden;margin-top:8px;}
+      .gauge-fill{height:100%;width:50%;border-radius:6px;background:linear-gradient(90deg,var(--red),var(--amber));transition:width .5s ease;}
+      .gauge-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);margin-top:5px;font-family:"IBM Plex Mono",monospace;}
+      @media (max-width:520px){.gauge-card{grid-template-columns:1fr;} .gauge-num{font-size:48px;}}
+
+      /* ---------- SECTIONS / STEPS ---------- */
+      .step{margin-top:38px;}
+      .step-head{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+      .step-badge{
+        font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:13px;
+        background:var(--amber);color:#141414;padding:4px 10px;border-radius:4px;letter-spacing:.06em;
+      }
+      .step-head h2{font-size:clamp(26px,5vw,34px);font-weight:600;text-transform:uppercase;}
+      .step-head p{width:100%;color:var(--muted);margin:2px 0 0;font-size:15px;}
+      .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;}
+      .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+      @media (max-width:680px){.grid-2{grid-template-columns:1fr;}}
+
+      .field{margin-bottom:16px;}
+      .field:last-child{margin-bottom:0;}
+      .field label{display:block;font-weight:600;font-size:14.5px;margin-bottom:6px;}
+      .field .hint{font-size:13px;color:var(--faint);margin-top:5px;}
+      .money{position:relative;}
+      .money span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-family:"IBM Plex Mono",monospace;font-weight:600;}
+      .money input{
+        width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--ink);
+        border-radius:8px;padding:12px 12px 12px 30px;font-size:17px;
+        font-family:"IBM Plex Mono",monospace;font-weight:600;
+      }
+      .money input:focus{outline:2px solid var(--amber);outline-offset:1px;border-color:var(--amber);}
+      .money .suffix{left:auto;right:13px;}
+
+      .seg{display:grid;gap:8px;}
+      .seg.cols-2{grid-template-columns:1fr 1fr;}
+      .seg.cols-3{grid-template-columns:repeat(3,1fr);}
+      .seg.cols-4{grid-template-columns:repeat(4,1fr);}
+      @media (max-width:560px){.seg.cols-4{grid-template-columns:1fr 1fr;} .seg.cols-3{grid-template-columns:1fr;}}
+      .seg button{
+        background:var(--bg2);border:1px solid var(--line);color:var(--muted);
+        border-radius:8px;padding:11px 8px;font-family:"Barlow",sans-serif;font-size:14.5px;font-weight:600;
+        cursor:pointer;text-align:center;line-height:1.25;transition:border-color .15s,color .15s,background .15s;
+      }
+      .seg button small{display:block;font-weight:500;font-size:12px;color:var(--faint);margin-top:2px;}
+      .seg button[aria-pressed="true"]{border-color:var(--amber);color:var(--ink);background:#2a2110;box-shadow:inset 0 0 0 1px var(--amber);}
+      .seg button[aria-pressed="true"] small{color:var(--amber);}
+      .seg button.danger[aria-pressed="true"]{border-color:var(--red);background:#2b1414;box-shadow:inset 0 0 0 1px var(--red);}
+      .seg button.danger[aria-pressed="true"] small{color:var(--red);}
+
+      /* ---------- TRIAGE RESULTS ---------- */
+      .triage-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;}
+      @media (max-width:760px){.triage-grid{grid-template-columns:1fr;}}
+      .cure-card{
+        background:linear-gradient(160deg,#241a08,#17130a 55%,var(--panel));
+        border:1px solid #4a3a16;border-radius:var(--radius);padding:22px;
+      }
+      .cure-card .k-label{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);font-weight:700;}
+      .cure-amount{font-family:"IBM Plex Mono",monospace;font-size:clamp(44px,9vw,62px);font-weight:700;line-height:1.05;margin:6px 0 4px;}
+      .cure-sub{color:var(--muted);font-size:14.5px;}
+      .breakdown{margin-top:16px;border-top:1px dashed #4a3a16;padding-top:12px;}
+      .breakdown .row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:15px;}
+      .breakdown .row span:first-child{color:var(--muted);}
+      .breakdown .row span:last-child{font-family:"IBM Plex Mono",monospace;font-weight:600;}
+      .breakdown .row.total{border-top:1px solid #4a3a16;margin-top:6px;padding-top:10px;font-weight:700;}
+      .breakdown .row.total span:first-child{color:var(--ink);}
+      .side-stack{display:grid;gap:16px;}
+      .mini-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;}
+      .mini-card .k-label{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+      .mini-num{font-family:"IBM Plex Mono",monospace;font-size:36px;font-weight:700;line-height:1.1;margin:4px 0 2px;}
+      .mini-num .unit{font-size:16px;color:var(--muted);font-weight:500;}
+      .mini-card p{margin:6px 0 0;color:var(--muted);font-size:14.5px;}
+      .drain-proj{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+      .drain-proj .chip{border:1px solid var(--line);background:var(--bg2);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--muted);}
+      .drain-proj .chip b{color:var(--ink);font-family:"IBM Plex Mono",monospace;}
+      .rights-card{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;}
+      .rights-status{
+        display:inline-block;font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:13px;
+        padding:5px 11px;border-radius:4px;letter-spacing:.05em;margin-bottom:10px;
+      }
+      .rights-status.ok{background:#123323;color:var(--green);border:1px solid #1f5c3d;}
+      .rights-status.warn{background:#2b2110;color:var(--amber);border:1px solid #6b5316;}
+      .rights-status.bad{background:#2b1414;color:var(--red);border:1px solid #6e2521;}
+      .rights-card h3{font-size:22px;text-transform:uppercase;margin-bottom:6px;}
+      .rights-card p{color:var(--muted);margin:0 0 10px;font-size:15px;}
+      .rights-card ul{margin:0;padding-left:20px;color:var(--muted);font-size:15px;}
+      .rights-card li{margin-bottom:6px;}
+      .rights-card li strong{color:var(--ink);}
+      .fineprint{font-size:12.5px;color:var(--faint);margin-top:12px;}
+
+      /* ---------- TIERS ---------- */
+      .tier{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);margin-bottom:16px;overflow:hidden;}
+      .tier-head{padding:16px 20px;display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid var(--line-soft);}
+      .tier-num{
+        font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:13px;flex:none;
+        padding:5px 10px;border-radius:4px;letter-spacing:.06em;margin-top:3px;
+      }
+      .tier.t1 .tier-num{background:#2b1414;color:var(--red);border:1px solid #6e2521;}
+      .tier.t2 .tier-num{background:#2b2110;color:var(--amber);border:1px solid #6b5316;}
+      .tier.t3 .tier-num{background:#123323;color:var(--green);border:1px solid #1f5c3d;}
+      .tier-head h3{font-size:24px;text-transform:uppercase;line-height:1.1;}
+      .tier-head .tier-when{color:var(--muted);font-size:14px;margin-top:2px;}
+      .active-flag{
+        margin-left:auto;flex:none;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+        background:var(--orange);color:#16100a;padding:5px 10px;border-radius:4px;display:none;
+      }
+      .tier.is-active{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange);}
+      .tier.is-active .active-flag{display:inline-block;}
+      .tier-body{padding:18px 20px 20px;}
+      .tier-body ol,.tier-body ul{margin:0 0 14px;padding-left:21px;color:var(--muted);font-size:15.5px;}
+      .tier-body li{margin-bottom:7px;}
+      .tier-body li strong{color:var(--ink);}
+      .tier-body p{color:var(--muted);font-size:15.5px;margin:0 0 14px;}
+      .tier-body p strong{color:var(--ink);}
+      .script-box{
+        background:var(--bg2);border:1px solid var(--line);border-left:4px solid var(--amber);
+        border-radius:6px;padding:14px 16px;font-size:15px;color:var(--ink);white-space:pre-wrap;
+      }
+      .script-label{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:8px;}
+      .copy-btn{
+        margin-top:12px;background:var(--amber);color:#171106;border:none;cursor:pointer;
+        font-family:"Barlow",sans-serif;font-weight:700;font-size:15px;padding:11px 18px;border-radius:8px;
+      }
+      .copy-btn:hover{background:#ffc14d;}
+      .copy-btn.copied{background:var(--green);color:#0a1f13;}
+      .urgency-line{
+        display:flex;gap:10px;align-items:center;background:#2b1414;border:1px solid #6e2521;
+        border-radius:8px;padding:12px 14px;color:#ffb3ae;font-size:15px;margin-bottom:14px;
+      }
+      .urgency-line b{font-family:"IBM Plex Mono",monospace;color:#fff;}
+
+      /* ---------- BLUEPRINT ---------- */
+      .blueprint{
+        margin-top:40px;border:2px solid var(--amber);border-radius:14px;overflow:hidden;
+        background:linear-gradient(165deg,#1a1608,#101112 60%);
+      }
+      .blueprint .hazard{height:10px;}
+      .bp-inner{padding:24px 22px 22px;}
+      .bp-top{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-start;}
+      .bp-title{font-family:"Barlow Condensed",sans-serif;font-size:clamp(28px,6vw,38px);font-weight:700;text-transform:uppercase;line-height:1;}
+      .bp-title span{color:var(--amber);}
+      .bp-shield{flex:none;}
+      .bp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px;}
+      @media (max-width:640px){.bp-grid{grid-template-columns:1fr 1fr;}}
+      .bp-stat{border:1px solid var(--line);background:rgba(11,12,13,.55);border-radius:8px;padding:13px 14px;}
+      .bp-stat .k{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+      .bp-stat .v{font-family:"IBM Plex Mono",monospace;font-size:24px;font-weight:700;margin-top:3px;line-height:1.15;}
+      .bp-stat .v.small{font-size:16.5px;font-family:"Barlow",sans-serif;font-weight:600;}
+      .bp-script{margin-top:16px;}
+      .bp-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+      .bp-note{font-size:12.5px;color:var(--faint);margin-top:14px;}
+
+      /* ---------- NEXT STEPS / CTA / FAQ ---------- */
+      .next-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+      @media (max-width:680px){.next-grid{grid-template-columns:1fr;}}
+      .next-card{
+        display:block;text-decoration:none;color:var(--ink);background:var(--panel);
+        border:1px solid var(--line);border-radius:var(--radius);padding:20px;transition:border-color .15s;
+      }
+      .next-card:hover{border-color:var(--amber);}
+      .next-card h3{font-size:23px;text-transform:uppercase;margin-bottom:5px;}
+      .next-card p{color:var(--muted);margin:0 0 12px;font-size:15px;}
+      .next-card .go{color:var(--amber);font-weight:700;font-size:15px;}
+      .cta{
+        margin-top:16px;display:block;text-decoration:none;color:#171106;
+        background:linear-gradient(92deg,var(--amber),var(--orange));
+        border-radius:var(--radius);padding:22px;
+      }
+      .cta h3{font-size:clamp(24px,5vw,30px);text-transform:uppercase;line-height:1.05;color:#171106;}
+      .cta p{margin:6px 0 0;font-weight:600;font-size:15.5px;color:#3a2404;}
+      .faq{margin-top:38px;}
+      .faq details{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;}
+      .faq summary{
+        cursor:pointer;padding:16px 20px;font-weight:600;font-size:16.5px;list-style:none;
+        display:flex;justify-content:space-between;gap:12px;align-items:center;
+      }
+      .faq summary::-webkit-details-marker{display:none;}
+      .faq summary .plus{font-family:"IBM Plex Mono",monospace;color:var(--amber);font-size:20px;font-weight:700;}
+      .faq details p{margin:0;padding:0 20px 18px;color:var(--muted);font-size:15.5px;}
+      footer{margin-top:44px;border-top:1px solid var(--line);padding-top:18px;color:var(--faint);font-size:13px;}
+      footer p{margin:0 0 8px;}
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <header class="hero">
+        <span class="hero-tag"><span class="dot"></span> Repo threat is live tonight</span>
+        <h1>Missed one payment?<br /><span class="hot">They can tow it tonight.</span></h1>
+        <p class="lede">Know your <strong>cure number</strong> before they do. Punch in your loan, scan the risk, and get the exact dollar figure — plus the script — to keep your car, your commute, and your job.</p>
+
+        <div class="gauge-card" aria-live="polite">
+          <div>
+            <div class="gauge-label">Vehicle Mobility Protection Index</div>
+            <div class="gauge-num" id="indexNum">88</div>
+          </div>
+          <div>
+            <div class="gauge-status" id="indexStatus">Guarded</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="indexFill"></div></div>
+            <div class="gauge-scale"><span>0 · Gone</span><span>50 · Exposed</span><span>100 · Shielded</span></div>
+          </div>
+        </div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" id="step1">
+        <div class="step-head">
+          <span class="step-badge">STEP 1</span>
+          <h2>Loan Snapshot</h2>
+          <p>What you owe and how far behind you are. Estimates are fine — the math updates as you type.</p>
+        </div>
+        <div class="panel">
+          <div class="grid-2">
+            <div>
+              <div class="field">
+                <label for="balance">Remaining loan balance</label>
+                <div class="money"><span>$</span><input id="balance" type="number" inputmode="decimal" min="0" value="12400" /></div>
+              </div>
+              <div class="field">
+                <label for="payment">Monthly payment</label>
+                <div class="money"><span>$</span><input id="payment" type="number" inputmode="decimal" min="0" value="385" /></div>
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label for="lateFees">Late fees &amp; charges owed so far</label>
+                <div class="money"><span>$</span><input id="lateFees" type="number" inputmode="decimal" min="0" value="25" /></div>
+                <div class="hint">Check your last statement or lender app. Common range: $15–$50 per missed payment.</div>
+              </div>
+            </div>
+            <div>
+              <div class="field" style="margin-bottom:0">
+                <label>How far behind are you?</label>
+                <div class="seg cols-2" id="delinqSeg" role="group" aria-label="Days delinquent">
+                  <button type="button" data-val="d1" aria-pressed="true">1–30 days<small>1 payment behind</small></button>
+                  <button type="button" data-val="d2" aria-pressed="false">31–60 days<small>2 payments behind</small></button>
+                  <button type="button" data-val="d3" aria-pressed="false">60+ days<small>3+ payments behind</small></button>
+                  <button type="button" data-val="towed" class="danger" aria-pressed="false">Already towed<small>Vehicle is impounded</small></button>
+                </div>
+                <div class="hint" id="delinqHint">One missed payment is enough to be in default in most states — but you usually still have room to cure it.</div>
+              </div>
+              <div class="field" id="storageDaysField" style="display:none;margin-top:16px;margin-bottom:0">
+                <label for="storageDays">Days the vehicle has been in the lot</label>
+                <div class="money"><span>#</span><input id="storageDays" type="number" inputmode="numeric" min="0" value="3" /></div>
+                <div class="hint">Every day on the lot adds storage charges to what you owe. Count from the tow date.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" id="step2">
+        <div class="step-head">
+          <span class="step-badge">STEP 2</span>
+          <h2>Repo Risk Scan</h2>
+          <p>What the lender has actually told you — and what a tow would cost on top of the loan.</p>
+        </div>
+        <div class="panel">
+          <div class="field">
+            <label>Lender notice status</label>
+            <div class="seg cols-3" id="noticeSeg" role="group" aria-label="Lender notice status">
+              <button type="button" data-val="received" aria-pressed="false">Right-to-cure notice received<small>Formal letter with a deadline</small></button>
+              <button type="button" data-val="none" aria-pressed="true">No notice yet<small>Nothing formal in writing</small></button>
+              <button type="button" data-val="final" class="danger" aria-pressed="false">Final warning<small>“Pay or we take the vehicle”</small></button>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field" style="margin-bottom:0">
+              <label for="repoFees">Repo / towing fees (if towed)</label>
+              <div class="money"><span>$</span><input id="repoFees" type="number" inputmode="decimal" min="0" value="350" /></div>
+              <div class="hint">Typical repossession + tow runs $300–$450. The lender adds it to your balance.</div>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label for="storageRate">Daily storage rate</label>
+              <div class="money"><span>$</span><input id="storageRate" type="number" inputmode="decimal" min="0" value="40" /><span class="suffix">/day</span></div>
+              <div class="hint">Impound lots commonly charge $25–$75 per day, every day, weekends included.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" id="step3">
+        <div class="step-head">
+          <span class="step-badge">STEP 3</span>
+          <h2>Triage Engine</h2>
+          <p>Your numbers, live. This is the figure the lender is working from — now you have it too.</p>
+        </div>
+
+        <div class="triage-grid">
+          <div class="cure-card">
+            <div class="k-label" id="cureLabel">Total Cure Amount — pay this to stop the repo</div>
+            <div class="cure-amount" id="cureAmount">$410</div>
+            <div class="cure-sub" id="cureSub">Past-due payments + late fees. Pay it before the cure deadline and the account goes back to current.</div>
+            <div class="breakdown">
+              <div class="row"><span id="bdPastLabel">Past-due balance (1 payment)</span><span id="bdPast">$385</span></div>
+              <div class="row"><span>Late fees &amp; charges</span><span id="bdLate">$25</span></div>
+              <div class="row" id="bdRepoRow" style="display:none"><span>Repo / towing fees</span><span id="bdRepo">$0</span></div>
+              <div class="row" id="bdStorageRow" style="display:none"><span>Storage accrued</span><span id="bdStorage">$0</span></div>
+              <div class="row total"><span>Total to cure / redeem</span><span id="bdTotal">$410</span></div>
+            </div>
+          </div>
+
+          <div class="side-stack">
+            <div class="mini-card">
+              <div class="k-label">Daily Vehicle Drain — while impounded</div>
+              <div class="mini-num"><span id="drainNum">$40</span><span class="unit"> /day</span></div>
+              <p id="drainText">If the car gets towed, storage starts bleeding you immediately. Here's what waiting costs:</p>
+              <div class="drain-proj">
+                <span class="chip">7 days · <b id="drain7">$280</b></span>
+                <span class="chip">14 days · <b id="drain14">$560</b></span>
+                <span class="chip">30 days · <b id="drain30">$1,200</b></span>
+              </div>
+            </div>
+            <div class="mini-card">
+              <div class="k-label">Per-Paycheck Preservation Target</div>
+              <div class="mini-num" id="perCheck">$205</div>
+              <p id="perCheckText">Per bi-weekly paycheck, across 2 pay periods. Hit it and the cure amount is covered before the deadline pressure peaks.</p>
+              <div class="field" style="margin-top:14px">
+                <label>Pay schedule</label>
+                <div class="seg cols-2" id="freqSeg" role="group" aria-label="Pay frequency">
+                  <button type="button" data-val="weekly" aria-pressed="false">Weekly</button>
+                  <button type="button" data-val="biweekly" aria-pressed="true">Bi-weekly</button>
+                </div>
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label>Pay periods to catch up</label>
+                <div class="seg cols-3" id="periodsSeg" role="group" aria-label="Pay periods">
+                  <button type="button" data-val="2" aria-pressed="true">2</button>
+                  <button type="button" data-val="3" aria-pressed="false">3</button>
+                  <button type="button" data-val="4" aria-pressed="false">4</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rights-card">
+          <span class="rights-status ok" id="rightsStatus">NO NOTICE YET — CLOCK HASN'T STARTED</span>
+          <h3>Notice Rights Check</h3>
+          <p id="rightsText">Your lender hasn't sent a formal notice. In states with right-to-cure laws, the lender generally must send that notice — and give you the cure window in it — before they can legally take the car. Use this quiet window to call first and negotiate from strength.</p>
+          <ul>
+            <li><strong>Right to cure:</strong> Many states require the lender to send a written right-to-cure notice before repossession, giving you a set number of days to pay the past-due amount and keep the car.</li>
+            <li><strong>No breach of the peace:</strong> Repo agents generally cannot break into a locked garage, open a locked gate, threaten you, or use force to take the vehicle. A tow that crosses that line can be challenged.</li>
+            <li><strong>After a tow:</strong> In most states you get a notice explaining how to redeem the vehicle and a window — often around 10 days or more — before it can be sold at auction.</li>
+          </ul>
+          <p class="fineprint">General information only, not legal advice. Repossession and cure laws vary significantly by state and by your loan contract — check your state's rules or a local consumer attorney if a tow is imminent.</p>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" id="step4">
+        <div class="step-head">
+          <span class="step-badge">STEP 4</span>
+          <h2>Action Strategy</h2>
+          <p>Three plays, matched to how hot the situation is. Your active play is flagged based on your answers above.</p>
+        </div>
+
+        <article class="tier t1" id="tier1">
+          <div class="tier-head">
+            <span class="tier-num">TIER 1</span>
+            <div>
+              <h3>Standstill Protocol</h3>
+              <div class="tier-when">Imminent — final warning, or a tow could come tonight</div>
+            </div>
+            <span class="active-flag">Your play</span>
+          </div>
+          <div class="tier-body">
+            <ol>
+              <li><strong>Secure the vehicle tonight.</strong> Keep it in a locked garage or at a location only you control. Agents can take a car from a driveway or street, but they cannot break into a locked garage or breach the peace to get it.</li>
+              <li><strong>Pull your essentials out now.</strong> Documents, tools, medication, car seat — anything you'd need tomorrow. If it does get towed, retrieval takes days.</li>
+              <li><strong>Call the lender before they call the tow truck.</strong> A borrower working a plan is cheaper for them than a repo. Ask for the exact cure amount, the deadline, and a hardship hold — then get the agent's name and a confirmation number.</li>
+              <li><strong>Get any promise in writing.</strong> A verbal "we'll hold off" means nothing at 2 a.m. Ask for the agreement by email or in the lender's app messages.</li>
+            </ol>
+            <div class="script-label">Say this — lender call script</div>
+            <div class="script-box" id="scriptTier1">Hi, my name is [YOUR NAME] and my account number is [ACCOUNT #]. I'm calling about my auto loan — I know I'm behind, and I want to fix it before this goes any further.
+
+Can you tell me the exact amount I need to pay to bring the account current today, and the deadline to pay it? I'd also like to ask about a payment plan or a deferment so I can catch up and stay current.
+
+Please note this call in my file. Before we hang up, can I get your name and a confirmation number for this conversation?</div>
+            <button class="copy-btn" type="button" data-copy="scriptTier1">Copy the script</button>
+          </div>
+        </article>
+
+        <article class="tier t2" id="tier2">
+          <div class="tier-head">
+            <span class="tier-num">TIER 2</span>
+            <div>
+              <h3>Redemption Acceleration</h3>
+              <div class="tier-when">Already towed — the car is on the lot and the meter is running</div>
+            </div>
+            <span class="active-flag">Your play</span>
+          </div>
+          <div class="tier-body">
+            <div class="urgency-line" id="t2Urgency">Every day on the lot adds <b>$40</b> — waiting a week costs you <b>$280</b> more.</div>
+            <ul>
+              <li><strong>Get your belongings first.</strong> In most states you have the right to retrieve personal property from a repossessed vehicle — items not permanently attached to the car. Call the lot, ask what's required (usually ID and the key), and go quickly: some lots charge storage on personal items or dispose of them after a set period.</li>
+              <li><strong>Demand the redemption figure in writing.</strong> The lender must tell you exactly what it costs to get the car back. Check every line: past-due, repo fee, storage days. Errors are common — dispute anything that doesn't match your tow date.</li>
+              <li><strong>Know your clock.</strong> Most states require notice before the car can be sold, commonly giving you at least ~10 days to redeem. The sale date in that notice is your real deadline — work backwards from it.</li>
+              <li><strong>Reinstatement vs. redemption:</strong> Some states and contracts let you reinstate by paying only the past-due amount plus fees (your cure number above). Others require the full remaining balance. Ask the lender which one applies to you — the difference is thousands.</li>
+            </ul>
+            <p>Your redemption math right now: <strong class="mono" id="t2Math">$0</strong> — and it grows by the storage rate every single day it sits.</p>
+          </div>
+        </article>
+
+        <article class="tier t3" id="tier3">
+          <div class="tier-head">
+            <span class="tier-num">TIER 3</span>
+            <div>
+              <h3>Hardship Modification</h3>
+              <div class="tier-when">Early delinquency — 1–30 days behind, still room to negotiate</div>
+            </div>
+            <span class="active-flag">Your play</span>
+          </div>
+          <div class="tier-body">
+            <p>At this stage the lender would rather move a payment than lose a customer. A <strong>deferment (extension)</strong> pushes one or two missed payments to the end of the loan, instantly bringing the account current. Ask in writing so there's a paper trail — here's the memo:</p>
+            <div class="script-label">Copyable — deferment request memo</div>
+            <div class="script-box" id="scriptTier3">To: [LENDER NAME] — Loan Servicing Department
+From: [YOUR NAME], Account #[ACCOUNT #]
+Re: Request for payment deferment / extension
+
+I am writing to request a deferment on my auto loan. Due to a temporary hardship, I have fallen behind on my payments. My situation is stabilizing, and I can resume my regular monthly payment on [DATE].
+
+I am requesting that my missed payment(s) be moved to the end of my loan term so my account can be brought current. I have every intention of completing this loan and keeping the vehicle.
+
+Please confirm in writing whether this deferment is approved, the new payment schedule, and that no repossession action will be taken while this request is under review.
+
+Thank you for working with me.
+[YOUR NAME] · [PHONE] · [DATE]</div>
+            <button class="copy-btn" type="button" data-copy="scriptTier3">Copy the memo</button>
+          </div>
+        </article>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" id="blueprint" aria-label="Auto Repossession and Recovery Blueprint">
+        <div class="hazard" aria-hidden="true"></div>
+        <div class="bp-inner">
+          <div class="bp-top">
+            <div>
+              <div class="bp-title">Auto Repossession<br />&amp; <span>Recovery Blueprint</span></div>
+              <div style="color:var(--muted);font-size:14.5px;margin-top:6px;">Screenshot this. Your numbers, your rights, your next move — on one card.</div>
+            </div>
+            <svg class="bp-shield" width="54" height="60" viewBox="0 0 54 60" fill="none" aria-hidden="true">
+              <path d="M27 2 L50 10 V30 C50 45 39 54 27 58 C15 54 4 45 4 30 V10 Z" fill="#1d1f22" stroke="#ffb020" stroke-width="2.5"/>
+              <path d="M17 30 L24 37 L38 21" stroke="#ffb020" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="bp-grid">
+            <div class="bp-stat"><div class="k">Cure / Redemption Amount</div><div class="v" id="bpCure">$410</div></div>
+            <div class="bp-stat"><div class="k">Per-Paycheck Target</div><div class="v" id="bpPerCheck">$205</div></div>
+            <div class="bp-stat"><div class="k">Protection Index</div><div class="v" id="bpIndex">88 / 100</div></div>
+            <div class="bp-stat"><div class="k">Status</div><div class="v small" id="bpDelinq">1–30 days behind</div></div>
+            <div class="bp-stat"><div class="k">Notice Rights</div><div class="v small" id="bpNotice">No notice yet</div></div>
+            <div class="bp-stat"><div class="k">Daily Drain If Towed</div><div class="v" id="bpDrain">$40/day</div></div>
+          </div>
+          <div class="bp-script">
+            <div class="script-label">Your lender script</div>
+            <div class="script-box" id="bpScriptText">Hi, my name is [YOUR NAME] and my account number is [ACCOUNT #]. I'm calling about my auto loan — I know I'm behind, and I want to fix it before this goes any further. Can you tell me the exact amount I need to pay to bring the account current today, and the deadline to pay it? I'd also like to ask about a payment plan or a deferment so I can catch up and stay current. Please note this call in my file — and can I get your name and a confirmation number for this conversation?</div>
+          </div>
+          <div class="bp-actions">
+            <button class="copy-btn" type="button" data-copy="bpScriptText" style="margin-top:0">Copy the script</button>
+          </div>
+          <p class="bp-note">Generated by Repo Shield. Figures are estimates from your inputs — always confirm the exact cure or redemption amount with your lender in writing. Laws vary by state; this is general information, not legal advice.</p>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <section class="step">
+        <div class="step-head">
+          <span class="step-badge">NEXT</span>
+          <h2>Keep the Shield Up</h2>
+        </div>
+        <div class="next-grid">
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/auto-debt-shield.html" target="_blank" rel="noopener">
+            <h3>Auto Debt Shield</h3>
+            <p>The full auto-loan defense board — payoff math, refinance checks, and the numbers behind the loan itself.</p>
+            <span class="go">Open Auto Debt Shield →</span>
+          </a>
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html" target="_blank" rel="noopener">
+            <h3>Payday Cash Flow Allocator</h3>
+            <p>Split every paycheck on purpose — bills, cure target, buffer — so the per-paycheck number above actually happens.</p>
+            <span class="go">Open the Allocator →</span>
+          </a>
+        </div>
+        <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+          <h3>Keep the car, keep the job.</h3>
+          <p>The Debt Snowball vs Avalanche Battle Plan and the $1,000 Emergency Fund Starter Pack — the systems that stop the next repo scare before it starts. Get them on Gumroad →</p>
+        </a>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq">
+        <div class="step-head">
+          <span class="step-badge">FAQ</span>
+          <h2>Straight Answers</h2>
+        </div>
+        <details>
+          <summary>Can they really take my car after one missed payment?<span class="plus">+</span></summary>
+          <p>In many states, yes. Most auto loan contracts say you're in default the moment a payment is missed, and default is what legally allows repossession — it doesn't take three missed payments. In practice, many lenders wait 30–90 days, and states with right-to-cure laws force them to send you a notice and a window to catch up first. But "they usually wait" is not protection. Treat one missed payment as the starting gun, call the lender early, and work your cure number.</p>
+        </details>
+        <details>
+          <summary>What is the "right to cure"?<span class="plus">+</span></summary>
+          <p>It's your legal right — in the states that have it — to fix a default before the lender can repossess or sell the car. The lender must send a written notice stating exactly how much you owe to cure the default and the deadline to pay it. Pay that amount in time and the loan goes back to current, as if the default never happened. Not every state requires it, and the number of days varies (often 10–30), which is why the exact notice from your lender matters more than any estimate — including the one on this page.</p>
+        </details>
+        <details>
+          <summary>What happens to my personal items inside a towed car?<span class="plus">+</span></summary>
+          <p>Your belongings are still yours. In most states you have the right to retrieve personal property from a repossessed vehicle — things like documents, tools, chargers, and child seats that aren't permanently installed in the car. The lender or lot may require ID and an appointment, and some charge a modest retrieval or item-storage fee. Don't wait: lots set their own timelines and unclaimed property can be discarded. Call the lender, get the lot's number, and retrieve your items within the first few days.</p>
+        </details>
+      </section>
+
+      <footer>
+        <p><strong>Repo Shield</strong> is an educational planning tool. It does not provide legal, financial, or tax advice. Repossession, right-to-cure, and redemption rules vary by state and by contract — confirm your exact figures and deadlines with your lender, and consider a local consumer-law attorney if a sale date has been set.</p>
+        <p>All calculations happen on this page from the numbers you enter. Nothing is sent anywhere.</p>
+      </footer>
+
+    </div>
+
+    <script>
+      var state = {
+        delinq: 'd1',      // d1 | d2 | d3 | towed
+        notice: 'none',    // received | none | final
+        freq: 'biweekly',  // weekly | biweekly
+        periods: 2
+      };
+
+      var $ = function(id){ return document.getElementById(id); };
+      var fmt = function(n){
+        return '$' + Math.round(n).toLocaleString('en-US');
+      };
+      function num(id){
+        var v = parseFloat($(id).value);
+        return isNaN(v) || v < 0 ? 0 : v;
+      }
+
+      function segWire(id, key, cb){
+        var box = $(id);
+        box.addEventListener('click', function(e){
+          var btn = e.target.closest('button');
+          if(!btn) return;
+          var btns = box.querySelectorAll('button');
+          for(var i=0;i<btns.length;i++) btns[i].setAttribute('aria-pressed','false');
+          btn.setAttribute('aria-pressed','true');
+          state[key] = btn.getAttribute('data-val');
+          if(cb) cb();
+          update();
+        });
+      }
+      segWire('delinqSeg','delinq', function(){
+        $('storageDaysField').style.display = state.delinq === 'towed' ? 'block' : 'none';
+      });
+      segWire('noticeSeg','notice');
+      segWire('freqSeg','freq');
+      segWire('periodsSeg','periods', function(){ state.periods = parseInt(state.periods,10); });
+
+      var inputs = ['balance','payment','lateFees','repoFees','storageRate','storageDays'];
+      inputs.forEach(function(id){
+        $(id).addEventListener('input', update);
+      });
+
+      var DELINQ = {
+        d1:    { payments: 1, label: '1–30 days behind',  short: '1 payment',  hint: 'One missed payment is enough to be in default in most states — but you usually still have room to cure it.', indexHit: 12 },
+        d2:    { payments: 2, label: '31–60 days behind', short: '2 payments', hint: 'Two payments down is where most lenders start the formal notice process. The cure window matters now.', indexHit: 30 },
+        d3:    { payments: 3, label: '60+ days behind',   short: '3+ payments', hint: 'At 60+ days most lenders are actively assigning the account for repossession. Treat every night as a tow risk.', indexHit: 50 },
+        towed: { payments: 3, label: 'Vehicle already towed', short: '3+ payments', hint: 'The car is on the lot and storage is accruing daily. Speed is the whole game now — see Tier 2.', indexHit: 75 }
+      };
+      var NOTICE = {
+        received: { label: 'Right-to-cure notice received', indexHit: 8,
+          status: 'CURE NOTICE RECEIVED — DEADLINE IS RUNNING', cls: 'warn',
+          text: 'You have the letter. The deadline and cure amount printed on it are the ones that count — compare them against the figure below and pay the cure amount before that date. Paying in the window restores the loan and stops the repo.' },
+        none: { label: 'No notice yet', indexHit: 0,
+          status: "NO NOTICE YET — CLOCK HASN'T STARTED", cls: 'ok',
+          text: "Your lender hasn't sent a formal notice. In states with right-to-cure laws, the lender generally must send that notice — and give you the cure window in it — before they can legally take the car. Use this quiet window to call first and negotiate from strength." },
+        final: { label: 'Final warning received', indexHit: 18,
+          status: 'FINAL WARNING — TOW RISK IS IMMINENT', cls: 'bad',
+          text: 'A final warning means the lender is done writing letters — the next step is assigning a repo agent. Go straight to the Tier 1 Standstill Protocol: secure the vehicle tonight and make the call today.' }
+      };
+
+      function update(){
+        var balance = num('balance');
+        var payment = num('payment');
+        var late = num('lateFees');
+        var repoFees = num('repoFees');
+        var storageRate = num('storageRate');
+        var storageDays = num('storageDays');
+        var d = DELINQ[state.delinq];
+        var n = NOTICE[state.notice];
+        var towed = state.delinq === 'towed';
+
+        var pastDue = payment * d.payments;
+        var storageAccrued = towed ? storageRate * storageDays : 0;
+        var cure = pastDue + late + (towed ? repoFees : 0) + storageAccrued;
+
+        // Cure card
+        $('cureLabel').textContent = towed
+          ? 'Total Redemption Amount — pay this to get the car back'
+          : 'Total Cure Amount — pay this to stop the repo';
+        $('cureAmount').textContent = fmt(cure);
+        $('cureSub').textContent = towed
+          ? 'Past-due + fees + storage so far. Note: some contracts require the full remaining balance (' + fmt(balance) + ' plus fees) to redeem — ask the lender which figure applies to you.'
+          : 'Past-due payments + late fees. Pay it before the cure deadline and the account goes back to current.';
+        $('bdPastLabel').textContent = 'Past-due balance (' + d.short + ')';
+        $('bdPast').textContent = fmt(pastDue);
+        $('bdLate').textContent = fmt(late);
+        $('bdRepoRow').style.display = towed ? 'flex' : 'none';
+        $('bdRepo').textContent = fmt(repoFees);
+        $('bdStorageRow').style.display = towed ? 'flex' : 'none';
+        $('bdStorage').textContent = fmt(storageAccrued) + ' (' + storageDays + ' days × ' + fmt(storageRate) + ')';
+        $('bdTotal').textContent = fmt(cure);
+        $('delinqHint').textContent = d.hint;
+
+        // Drain
+        $('drainNum').textContent = fmt(storageRate);
+        $('drainText').textContent = towed
+          ? 'The car is sitting on the lot right now and storage is accruing. Here\'s what more waiting adds:'
+          : 'If the car gets towed, storage starts bleeding you immediately. Here\'s what waiting would cost:';
+        $('drain7').textContent = fmt(storageRate * 7);
+        $('drain14').textContent = fmt(storageRate * 14);
+        $('drain30').textContent = fmt(storageRate * 30);
+
+        // Per-paycheck target
+        var periods = parseInt(state.periods, 10) || 2;
+        var perCheck = cure / periods;
+        $('perCheck').textContent = fmt(perCheck);
+        $('perCheckText').textContent = 'Per ' + (state.freq === 'weekly' ? 'weekly' : 'bi-weekly') +
+          ' paycheck, across ' + periods + ' pay periods. Hit it and the cure amount is covered before the deadline pressure peaks.';
+
+        // Rights
+        var rs = $('rightsStatus');
+        rs.textContent = n.status;
+        rs.className = 'rights-status ' + n.cls;
+        $('rightsText').textContent = n.text;
+
+        // Protection Index
+        var idx = 100 - d.indexHit - n.indexHit;
+        if (payment > 0 && cure > payment * 6) idx -= 12;
+        else if (payment > 0 && cure > payment * 3) idx -= 6;
+        if (idx < 4) idx = 4;
+        if (idx > 100) idx = 100;
+        $('indexNum').textContent = idx;
+        $('indexFill').style.width = idx + '%';
+        var statusText, color;
+        if (idx >= 80){ statusText = 'Guarded'; color = 'var(--green)'; }
+        else if (idx >= 55){ statusText = 'Exposed — act this week'; color = 'var(--amber)'; }
+        else if (idx >= 30){ statusText = 'At risk — act today'; color = 'var(--orange)'; }
+        else { statusText = 'Critical — tow imminent or done'; color = 'var(--red)'; }
+        $('indexStatus').textContent = statusText;
+        $('indexStatus').style.color = color;
+        $('indexNum').style.color = color;
+
+        // Active tier
+        var activeTier = 'tier3';
+        if (towed) activeTier = 'tier2';
+        else if (state.notice === 'final' || state.delinq === 'd3') activeTier = 'tier1';
+        else if (state.delinq === 'd2') activeTier = 'tier1';
+        ['tier1','tier2','tier3'].forEach(function(t){
+          $(t).classList.toggle('is-active', t === activeTier);
+        });
+
+        // Tier 2 dynamic lines — redemption always includes the repo/tow fee,
+        // since this tier describes the already-towed scenario.
+        var redemptionBase = pastDue + late + repoFees + storageAccrued;
+        $('t2Urgency').innerHTML = 'Every day on the lot adds <b>' + fmt(storageRate) + '</b> — waiting a week costs you <b>' + fmt(storageRate * 7) + '</b> more.';
+        $('t2Math').textContent = fmt(redemptionBase) + ' today · ' + fmt(redemptionBase + storageRate * 7) + ' in 7 days · ' + fmt(redemptionBase + storageRate * 14) + ' in 14 days';
+
+        // Blueprint
+        $('bpCure').textContent = fmt(cure);
+        $('bpPerCheck').textContent = fmt(perCheck) + ' × ' + periods + ' checks';
+        $('bpIndex').textContent = idx + ' / 100';
+        $('bpDelinq').textContent = d.label;
+        $('bpNotice').textContent = n.label;
+        $('bpDrain').textContent = fmt(storageRate) + '/day';
+      }
+
+      // Copy buttons
+      document.querySelectorAll('[data-copy]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var text = $(btn.getAttribute('data-copy')).textContent;
+          function done(){
+            var old = btn.textContent;
+            btn.textContent = 'Copied ✓';
+            btn.classList.add('copied');
+            setTimeout(function(){ btn.textContent = old; btn.classList.remove('copied'); }, 2000);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(text).then(done).catch(function(){ fallback(); });
+          } else { fallback(); }
+          function fallback(){
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); done(); } catch(e){}
+            document.body.removeChild(ta);
+          }
+        });
+      });
+
+      update();
+    </script>
+  </body>
+</html>
