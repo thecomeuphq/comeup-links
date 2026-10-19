@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>BNPL Freedom Protocol</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0e0e10;
+        --bg-2: #141417;
+        --panel: #1b1b20;
+        --panel-2: #232329;
+        --line: #34343e;
+        --line-soft: #2a2a31;
+        --ink: #f5f2ea;
+        --muted: #a79f92;
+        --faint: #6f6a60;
+        --amber: #f5a524;
+        --orange: #ff6a2b;
+        --amber-dim: rgba(245, 165, 36, 0.12);
+        --red: #ff5d5d;
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(255,255,255,0.015) 47px, rgba(255,255,255,0.015) 48px),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- Header ---------- */
+      header.hero {
+        padding: 34px 0 8px;
+        border-bottom: 3px solid var(--amber);
+        margin-bottom: 8px;
+      }
+      .hero h1 {
+        font-family: "Oswald", "Barlow", sans-serif;
+        font-size: clamp(34px, 8vw, 54px);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        line-height: 1.02;
+        margin: 0 0 10px;
+      }
+      .hero h1 .hot { color: var(--amber); }
+      .hero p {
+        color: var(--muted);
+        font-size: 18px;
+        max-width: 620px;
+        margin: 0 0 18px;
+      }
+      .hero-strip {
+        display: flex; flex-wrap: wrap; gap: 8px;
+        font-family: "Oswald", sans-serif;
+        font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+        color: var(--faint);
+        padding-bottom: 18px;
+      }
+      .hero-strip span { border: 1px solid var(--line); padding: 5px 10px; border-radius: 4px; }
+      .hero-strip b { color: var(--amber); font-weight: 600; }
+
+      /* ---------- Steps ---------- */
+      section.step { margin-top: 38px; }
+      .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 6px; }
+      .step-num {
+        flex: 0 0 auto;
+        width: 44px; height: 44px;
+        background: var(--amber);
+        color: #14100a;
+        font-family: "Oswald", sans-serif;
+        font-weight: 700; font-size: 22px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 6px;
+        box-shadow: 4px 4px 0 rgba(245,165,36,0.25);
+      }
+      .step-head h2 {
+        font-family: "Oswald", sans-serif;
+        font-size: clamp(22px, 5vw, 28px);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin: 2px 0 2px;
+        line-height: 1.15;
+      }
+      .step-head p { color: var(--muted); margin: 0; font-size: 16px; max-width: 640px; }
+
+      /* ---------- Plan cards ---------- */
+      #plans { display: grid; gap: 14px; margin-top: 16px; }
+      .plan-card {
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        border-left: 4px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+      }
+      .plan-card.active { border-left-color: var(--amber); }
+      .plan-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+      .plan-tag {
+        font-family: "Oswald", sans-serif;
+        font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--muted);
+      }
+      .plan-tag b { color: var(--ink); }
+      .remove-btn {
+        background: none; border: 1px solid var(--line); color: var(--muted);
+        font: inherit; font-size: 13px; font-weight: 600;
+        padding: 5px 11px; border-radius: 6px; cursor: pointer;
+      }
+      .remove-btn:hover { color: var(--red); border-color: var(--red); }
+      .remove-btn:disabled { opacity: 0.35; cursor: default; }
+      .remove-btn:disabled:hover { color: var(--muted); border-color: var(--line); }
+
+      .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+      .chip {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font: inherit; font-size: 14px; font-weight: 600;
+        padding: 7px 13px; border-radius: 999px; cursor: pointer;
+      }
+      .chip:hover { border-color: var(--amber); }
+      .chip.selected {
+        background: var(--amber); border-color: var(--amber); color: #171106;
+      }
+      .custom-provider { margin-bottom: 12px; }
+
+      label.field { display: block; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+      label.field:last-child { margin-bottom: 0; }
+      input[type="text"], input[type="number"], input[type="date"] {
+        display: block; width: 100%;
+        margin-top: 6px;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: var(--ink);
+        font: inherit; font-size: 17px; font-weight: 500;
+        padding: 10px 12px;
+        color-scheme: dark;
+      }
+      input:focus { outline: 2px solid var(--amber); outline-offset: 0; border-color: var(--amber); }
+      input::placeholder { color: var(--faint); font-weight: 400; }
+      .field-grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+      @media (min-width: 620px) {
+        .field-grid { grid-template-columns: 1fr 1fr 1.2fr; gap: 12px; }
+        .field-grid label.field { margin-bottom: 0; }
+      }
+      .plan-summary {
+        margin: 12px 0 0;
+        padding-top: 11px;
+        border-top: 1px dashed var(--line);
+        font-size: 15px; color: var(--muted);
+        min-height: 22px;
+      }
+      .plan-summary b { color: var(--amber); font-weight: 700; }
+
+      .add-row { margin-top: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+      .add-btn {
+        background: var(--panel-2);
+        border: 1px dashed var(--amber);
+        color: var(--amber);
+        font: inherit; font-weight: 700; font-size: 15px;
+        padding: 11px 18px; border-radius: 8px; cursor: pointer;
+      }
+      .add-btn:hover { background: var(--amber-dim); }
+      .add-btn:disabled { opacity: 0.4; cursor: default; border-color: var(--line); color: var(--muted); }
+      .add-note { color: var(--faint); font-size: 14px; }
+
+      /* ---------- Stat tiles ---------- */
+      .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+      @media (min-width: 620px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+      .stat {
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        border-top: 3px solid var(--amber);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+      }
+      .stat .k {
+        font-family: "Oswald", sans-serif;
+        font-size: 12px; letter-spacing: 0.13em; text-transform: uppercase;
+        color: var(--muted); margin-bottom: 6px;
+      }
+      .stat .v {
+        font-family: "Oswald", sans-serif;
+        font-size: clamp(26px, 6vw, 34px); font-weight: 700; line-height: 1;
+        font-variant-numeric: tabular-nums;
+      }
+      .stat .v.amber { color: var(--amber); }
+      .stat .s { font-size: 13.5px; color: var(--faint); margin-top: 6px; line-height: 1.35; }
+      .drag-note { color: var(--muted); margin-top: 14px; font-size: 16px; }
+      .drag-note b { color: var(--ink); }
+
+      /* ---------- Kill order ---------- */
+      .kill-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 10px; }
+      .kill-item {
+        display: flex; align-items: center; gap: 14px;
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius);
+        padding: 13px 16px;
+      }
+      .kill-rank {
+        flex: 0 0 auto;
+        width: 38px; height: 38px; border-radius: 50%;
+        border: 2px solid var(--amber);
+        color: var(--amber);
+        font-family: "Oswald", sans-serif; font-weight: 700; font-size: 18px;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .kill-item:first-child .kill-rank { background: var(--amber); color: #171106; }
+      .kill-main { flex: 1 1 auto; min-width: 0; }
+      .kill-name { font-weight: 700; font-size: 17px; overflow-wrap: anywhere; }
+      .kill-sub { color: var(--muted); font-size: 14.5px; }
+      .kill-cost { text-align: right; flex: 0 0 auto; }
+      .kill-cost .amt { font-family: "Oswald", sans-serif; font-size: 21px; font-weight: 700; font-variant-numeric: tabular-nums; }
+      .kill-cost .lbl { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+
+      .empty {
+        border: 1px dashed var(--line);
+        border-radius: var(--radius);
+        padding: 20px 16px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 16px;
+        font-size: 16px;
+      }
+
+      /* ---------- Roadmap ---------- */
+      .roadmap-head {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+        margin-top: 16px;
+      }
+      .roadmap-title {
+        font-family: "Oswald", sans-serif;
+        font-size: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+      }
+      .freedom-line {
+        background: linear-gradient(90deg, var(--amber-dim), transparent);
+        border-left: 4px solid var(--amber);
+        padding: 13px 16px;
+        margin-top: 14px;
+        font-size: 17px;
+        border-radius: 0 8px 8px 0;
+      }
+      .freedom-line b { color: var(--amber); }
+
+      .timeline { margin-top: 22px; position: relative; padding-left: 26px; }
+      .timeline::before {
+        content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px;
+        width: 3px; background: var(--line);
+      }
+      .tl-node { position: relative; padding-bottom: 26px; }
+      .tl-node:last-child { padding-bottom: 4px; }
+      .tl-node::before {
+        content: ""; position: absolute; left: -26px; top: 5px;
+        width: 13px; height: 13px; border-radius: 50%;
+        background: var(--bg); border: 3px solid var(--amber);
+      }
+      .tl-node.final::before { background: var(--amber); box-shadow: 0 0 0 5px var(--amber-dim); }
+      .tl-date {
+        font-family: "Oswald", sans-serif;
+        font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+        color: var(--amber);
+      }
+      .tl-name { font-weight: 700; font-size: 19px; margin: 2px 0; overflow-wrap: anywhere; }
+      .tl-name .rankchip {
+        display: inline-block; vertical-align: 2px;
+        font-family: "Oswald", sans-serif; font-size: 11.5px; letter-spacing: 0.08em;
+        border: 1px solid var(--line); color: var(--muted);
+        border-radius: 4px; padding: 2px 7px; margin-left: 8px; text-transform: uppercase;
+      }
+      .tl-detail { color: var(--muted); font-size: 15.5px; }
+      .tl-detail b { color: var(--ink); }
+      .tl-bar { height: 8px; background: var(--panel-2); border-radius: 4px; margin-top: 9px; overflow: hidden; max-width: 520px; }
+      .tl-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--amber), var(--orange)); }
+      .tl-freed {
+        font-family: "Oswald", sans-serif; font-weight: 700; font-size: 19px;
+        color: var(--amber); font-variant-numeric: tabular-nums;
+      }
+
+      /* ---------- Next steps / CTA ---------- */
+      .next-grid { display: grid; gap: 12px; margin-top: 34px; }
+      @media (min-width: 620px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius);
+        padding: 18px;
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .nc-k {
+        font-family: "Oswald", sans-serif; font-size: 12px; letter-spacing: 0.13em;
+        text-transform: uppercase; color: var(--amber); margin-bottom: 6px;
+      }
+      .next-card .nc-t { font-family: "Oswald", sans-serif; font-size: 21px; font-weight: 600; line-height: 1.2; margin-bottom: 6px; }
+      .next-card .nc-d { color: var(--muted); font-size: 15.5px; }
+      .next-card .nc-go { color: var(--amber); font-weight: 700; margin-top: 10px; display: inline-block; }
+
+      .cta {
+        margin-top: 14px;
+        background: linear-gradient(120deg, #2a1e08, #1b1b20 65%);
+        border: 1px solid var(--amber);
+        border-radius: var(--radius);
+        padding: 22px 20px;
+        text-align: center;
+      }
+      .cta p {
+        font-family: "Oswald", sans-serif;
+        font-size: clamp(19px, 4.6vw, 24px); font-weight: 600; line-height: 1.35;
+        margin: 0 auto 16px; max-width: 640px;
+      }
+      .cta p .hl { color: var(--amber); }
+      .cta a {
+        display: inline-block;
+        background: var(--amber); color: #171106;
+        font-weight: 700; font-size: 16px; text-decoration: none;
+        padding: 13px 26px; border-radius: 8px;
+      }
+      .cta a:hover { background: var(--orange); color: #fff; }
+
+      /* ---------- FAQ ---------- */
+      .faq { margin-top: 40px; }
+      .faq h2 {
+        font-family: "Oswald", sans-serif; font-size: 24px; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.03em; margin: 0 0 14px;
+      }
+      .faq details {
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius);
+        margin-bottom: 10px;
+        padding: 0 18px;
+      }
+      .faq summary {
+        cursor: pointer; font-weight: 700; font-size: 17px;
+        padding: 15px 0; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; color: var(--amber); font-family: "Oswald", sans-serif; font-size: 22px; line-height: 1; }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq details p { color: var(--muted); margin: 0 0 16px; font-size: 16px; }
+      .faq details p b { color: var(--ink); }
+
+      footer {
+        margin-top: 44px; padding-top: 18px;
+        border-top: 1px solid var(--line-soft);
+        color: var(--faint); font-size: 14px;
+      }
+      .print-only { display: none; }
+
+      /* ---------- Print ---------- */
+      @media print {
+        :root { color-scheme: light; }
+        body { background: #fff; color: #111; font-size: 13.5px; }
+        .wrap { max-width: none; padding: 0; }
+        header.hero { border-bottom: 3px solid #111; padding-top: 0; }
+        .hero h1 { font-size: 30px; }
+        .hero h1 .hot { color: #b97a06; }
+        .hero p, .step-head p, .drag-note { color: #333; }
+        .hero-strip, .no-print { display: none !important; }
+        .print-only { display: block; }
+        .step-num { background: #111; color: #fff; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .plan-card, .stat, .kill-item, .faq details {
+          background: #fff; border-color: #bbb; break-inside: avoid;
+        }
+        .plan-card.active { border-left-color: #b97a06; }
+        .chip { background: #fff; border-color: #bbb; color: #111; }
+        .chip.selected { background: #111; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        input[type="text"], input[type="number"], input[type="date"] {
+          background: #fff; border-color: #bbb; color: #111; color-scheme: light;
+        }
+        label.field { color: #444; }
+        .plan-summary { color: #333; border-top-color: #bbb; }
+        .plan-summary b, .stat .v.amber, .tl-date, .tl-freed, .kill-rank { color: #b97a06; }
+        .stat { border-top-color: #111; }
+        .stat .k, .stat .s, .kill-sub, .tl-detail, .faq details p { color: #444; }
+        .kill-cost .lbl { color: #666; }
+        .kill-rank { border-color: #b97a06; }
+        .kill-item:first-child .kill-rank { background: #111; color: #fff; }
+        .freedom-line { background: #f4f0e6; border-left-color: #b97a06; }
+        .freedom-line b { color: #8a5c04; }
+        .timeline::before { background: #bbb; }
+        .tl-node::before { background: #fff; border-color: #b97a06; }
+        .tl-node.final::before { background: #b97a06; box-shadow: none; }
+        .tl-bar { background: #e5e5e5; }
+        .tl-bar i { background: #b97a06; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .tl-name .rankchip { color: #555; border-color: #bbb; }
+        footer { color: #666; border-top-color: #bbb; }
+        section.step { margin-top: 26px; break-inside: avoid-page; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <h1>BNPL Freedom <span class="hot">Protocol</span></h1>
+        <p>Every “pay in 4” felt painless — until five of them started hitting the same paycheck. Inventory every plan, line them up in kill order, and watch your pay come back, one dead plan at a time.</p>
+        <div class="hero-strip" aria-hidden="true">
+          <span><b>01</b> Inventory</span>
+          <span><b>02</b> Measure the drag</span>
+          <span><b>03</b> Freeze &amp; sequence</span>
+          <span><b>04</b> Release the cash</span>
+        </div>
+        <p class="print-only" style="color:#333; font-size:14px;">My BNPL Paycheck Release Roadmap — generated from my active plan inventory below.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div>
+            <h2 id="s1">Active BNPL Inventory</h2>
+            <p>Add every installment plan currently pulling from your account — up to 6. Check each app (Klarna, Afterpay, Affirm, PayPal, Zip) so nothing hides.</p>
+          </div>
+        </div>
+        <div id="plans"></div>
+        <div class="add-row no-print">
+          <button class="add-btn" id="addPlan" type="button">+ Add another plan</button>
+          <span class="add-note" id="addNote"></span>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <div>
+            <h2 id="s2">Payday Drag Engine</h2>
+            <p>BNPL payments land every two weeks — the same rhythm as most paychecks. This is what they take before you ever see your money.</p>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Drag per paycheck</div>
+            <div class="v amber" id="statDrag">$0</div>
+            <div class="s">gone every pay cycle, automatically</div>
+          </div>
+          <div class="stat">
+            <div class="k">Total still owed</div>
+            <div class="v" id="statOwed">$0</div>
+            <div class="s">across every active plan</div>
+          </div>
+          <div class="stat">
+            <div class="k">Active plans</div>
+            <div class="v" id="statPlans">0</div>
+            <div class="s">separate payment schedules running</div>
+          </div>
+          <div class="stat">
+            <div class="k">Freedom date</div>
+            <div class="v" id="statFree" style="font-size:clamp(19px,4.5vw,24px); padding-top:5px;">—</div>
+            <div class="s">when the last plan dies, if you add nothing new</div>
+          </div>
+        </div>
+        <p class="drag-note" id="dragNote">Add your plans above and this section does the math — most people are shocked by the per-paycheck number once it’s all in one place.</p>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <div>
+            <h2 id="s3">Freeze &amp; Payoff Sequencing</h2>
+            <p><strong style="color:var(--ink)">The freeze comes first:</strong> no new BNPL plans from today — every new one restarts the clock. Then kill in this order: fewest payments remaining first, so plans die fast and momentum builds.</p>
+          </div>
+        </div>
+        <ol class="kill-list" id="killList"></ol>
+        <div class="empty" id="killEmpty">Your kill order appears here once you’ve added at least one plan with a payment amount and payments remaining.</div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <div>
+            <h2 id="s4">Payday Cash-Release Projection</h2>
+            <p>Every plan that dies hands money back to your paycheck — permanently. This is your release schedule.</p>
+          </div>
+        </div>
+        <div class="roadmap-head">
+          <div class="roadmap-title">BNPL Paycheck Release Roadmap</div>
+        </div>
+        <div class="freedom-line" id="freedomLine" style="display:none;"></div>
+        <div class="timeline" id="timeline"></div>
+        <div class="empty" id="roadmapEmpty">Your roadmap builds itself as you add plans — each one shows the date it dies and exactly how much comes back to your paycheck.</div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid no-print">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/bnpl-trap-calculator.html">
+          <div class="nc-k">Run the numbers first</div>
+          <div class="nc-t">BNPL Trap Calculator</div>
+          <div class="nc-d">See what a “small” pay-in-4 habit really costs over a year once late fees and stacking pile on.</div>
+          <span class="nc-go">Open the calculator →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/debt-payoff-calculator.html">
+          <div class="nc-k">Cards &amp; loans too?</div>
+          <div class="nc-t">Debt Payoff Calculator</div>
+          <div class="nc-d">Roll your credit cards and loans into the same war plan with snowball vs. avalanche payoff dates.</div>
+          <span class="nc-go">Open the calculator →</span>
+        </a>
+      </div>
+
+      <div class="cta no-print">
+        <p>Track every payoff with the <span class="hl">Debt Payoff Tracker</span> and the <span class="hl">Paycheck-to-Paycheck Weekly Planner</span> on Gumroad — and grab the free <span class="hl">Paycheck Protection Checklist</span>.</p>
+        <a href="https://bradley57.gumroad.com/">Get the tools on Gumroad →</a>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq">
+        <h2>Straight answers</h2>
+        <details>
+          <summary>Why does BNPL stack up so fast?</summary>
+          <p>Because each plan is judged alone. One $25 payment feels like nothing, so you say yes again — and again. But the apps don’t talk to each other, and <b>they all collect on the same two-week rhythm as your paycheck</b>. Four “painless” plans can quietly claim $150–$250 of every check before rent, gas, or groceries get a vote. The stacking is the product working exactly as designed: the smaller each slice feels, the more slices you take.</p>
+        </details>
+        <details>
+          <summary>What’s the late-fee trap?</summary>
+          <p>Miss one payment and the “interest-free” deal stops being free. Providers charge late fees (commonly around $7–$10 per miss, depending on the provider and plan), some plans resume interest, and a failed auto-debit can trigger a bank overdraft on top of it. Worst of all, <b>one missed payment doesn’t pause the others</b> — the whole stack keeps drafting. If a due date lands before payday, move money or contact the provider early; silence is the most expensive option.</p>
+        </details>
+        <details>
+          <summary>Should you ever use BNPL again?</summary>
+          <p>Only under strict rules — and not until every current plan is dead. If you ever use it again: <b>one plan at a time, only for a true necessity, only if the full price is already sitting in your account</b>, and never stacked against a paycheck that’s already spoken for. If a purchase can’t survive those rules, it isn’t a deal — it’s the trap resetting. Most people who finish this protocol find they don’t miss it.</p>
+        </details>
+      </div>
+
+      <footer>
+        Projections assume each plan keeps drafting every 14 days from its next due date, with no new plans added and no missed payments. Amounts are the payments you enter — check each provider’s app for your exact remaining balance, since final installments can differ slightly.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+        var MAX_PLANS = 6;
+        var PROVIDERS = ["Klarna", "Afterpay", "Affirm", "PayPal Pay in 4", "Zip"];
+        var plansEl = document.getElementById("plans");
+        var addBtn = document.getElementById("addPlan");
+        var addNote = document.getElementById("addNote");
+        var planCount = 0;
+
+        function esc(s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        }
+        function fmt(n) {
+          var v = Math.round(n * 100) / 100;
+          var opts = Number.isInteger(v)
+            ? { style: "currency", currency: "USD", maximumFractionDigits: 0 }
+            : { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 };
+          return v.toLocaleString("en-US", opts);
+        }
+        function fmtDate(d) {
+          return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+        }
+        function parseDate(str) {
+          if (!str) return null;
+          var p = str.split("-");
+          if (p.length !== 3) return null;
+          var d = new Date(+p[0], +p[1] - 1, +p[2]);
+          return isNaN(d.getTime()) ? null : d;
+        }
+        function toISODate(d) {
+          var m = String(d.getMonth() + 1).padStart(2, "0");
+          var day = String(d.getDate()).padStart(2, "0");
+          return d.getFullYear() + "-" + m + "-" + day;
+        }
+
+        function createPlan() {
+          if (planCount >= MAX_PLANS) return;
+          planCount++;
+          var idx = planCount;
+          var card = document.createElement("article");
+          card.className = "plan-card";
+          card.setAttribute("data-plan", "");
+
+          var defaultDue = new Date();
+          defaultDue.setDate(defaultDue.getDate() + 7);
+
+          var chipsHtml = PROVIDERS.map(function (p) {
+            return '<button type="button" class="chip" data-provider="' + esc(p) + '">' + esc(p) + "</button>";
+          }).join("") + '<button type="button" class="chip" data-provider="__custom">Custom</button>';
+
+          card.innerHTML =
+            '<div class="plan-top">' +
+              '<span class="plan-tag">Plan <b>#' + idx + '</b></span>' +
+              '<button type="button" class="remove-btn">Remove</button>' +
+            "</div>" +
+            '<div class="chips" role="group" aria-label="Provider">' + chipsHtml + "</div>" +
+            '<input type="text" class="custom-provider" placeholder="Provider name (e.g. Sezzle, Uplift)" style="display:none;" aria-label="Custom provider name" />' +
+            '<label class="field">What did you buy?' +
+              '<input type="text" class="f-item" placeholder="e.g. TV, sneakers, concert tickets" />' +
+            "</label>" +
+            '<div class="field-grid">' +
+              '<label class="field">Payment (every 2 wks)' +
+                '<input type="number" class="f-pay" inputmode="decimal" min="0" step="0.01" placeholder="25.00" />' +
+              "</label>" +
+              '<label class="field">Payments left' +
+                '<input type="number" class="f-left" inputmode="numeric" min="1" max="60" step="1" placeholder="3" />' +
+              "</label>" +
+              '<label class="field">Next due date' +
+                '<input type="date" class="f-due" value="' + toISODate(defaultDue) + '" />' +
+              "</label>" +
+            "</div>" +
+            '<p class="plan-summary">Pick a provider and fill in the payment to activate this plan.</p>';
+
+          card.querySelector(".remove-btn").addEventListener("click", function () {
+            card.remove();
+            planCount--;
+            renumber();
+            recalc();
+          });
+          card.querySelector(".chips").addEventListener("click", function (e) {
+            var btn = e.target.closest(".chip");
+            if (!btn) return;
+            card.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("selected"); });
+            btn.classList.add("selected");
+            var custom = card.querySelector(".custom-provider");
+            if (btn.getAttribute("data-provider") === "__custom") {
+              custom.style.display = "block";
+              custom.focus();
+            } else {
+              custom.style.display = "none";
+            }
+            recalc();
+          });
+          plansEl.appendChild(card);
+          updateAddBtn();
+        }
+
+        function renumber() {
+          plansEl.querySelectorAll(".plan-card").forEach(function (card, i) {
+            card.querySelector(".plan-tag").innerHTML = "Plan <b>#" + (i + 1) + "</b>";
+          });
+          updateAddBtn();
+        }
+        function updateAddBtn() {
+          var cards = plansEl.querySelectorAll(".plan-card").length;
+          addBtn.disabled = cards >= MAX_PLANS;
+          addNote.textContent = cards >= MAX_PLANS
+            ? "That’s the full stack — 6 plans max. If you have more than 6, combine the two smallest into one entry."
+            : cards + " of " + MAX_PLANS + " plan slots used";
+          plansEl.querySelectorAll(".remove-btn").forEach(function (b) {
+            b.disabled = cards <= 1;
+          });
+        }
+
+        function readPlans() {
+          var plans = [];
+          plansEl.querySelectorAll(".plan-card").forEach(function (card) {
+            var chip = card.querySelector(".chip.selected");
+            var provider = "BNPL plan";
+            if (chip) {
+              var p = chip.getAttribute("data-provider");
+              if (p === "__custom") {
+                var cv = card.querySelector(".custom-provider").value.trim();
+                provider = cv || "Custom plan";
+              } else provider = p;
+            }
+            var item = card.querySelector(".f-item").value.trim();
+            var pay = parseFloat(card.querySelector(".f-pay").value) || 0;
+            var left = parseInt(card.querySelector(".f-left").value, 10) || 0;
+            var due = parseDate(card.querySelector(".f-due").value);
+            var active = pay > 0 && left >= 1;
+            var death = null;
+            if (active) {
+              var base = due ? new Date(due.getTime()) : new Date();
+              death = new Date(base.getTime());
+              death.setDate(death.getDate() + (left - 1) * 14);
+            }
+            plans.push({
+              card: card, provider: provider, item: item, pay: pay, left: left,
+              due: due, active: active, death: death,
+              remaining: pay * left,
+              label: item ? item : provider + " plan"
+            });
+          });
+          return plans;
+        }
+
+        function recalc() {
+          var plans = readPlans();
+          var active = plans.filter(function (p) { return p.active; });
+
+          /* per-card summaries */
+          plans.forEach(function (p) {
+            var sum = p.card.querySelector(".plan-summary");
+            p.card.classList.toggle("active", p.active);
+            if (p.active) {
+              sum.innerHTML = "<b>" + esc(fmt(p.pay)) + "</b> × " + p.left + " left = <b>" + esc(fmt(p.remaining)) +
+                "</b> still owed · final payment <b>" + esc(fmtDate(p.death)) + "</b>";
+            } else {
+              sum.textContent = "Pick a provider and fill in the payment to activate this plan.";
+            }
+          });
+
+          /* STEP 2 — drag engine */
+          var drag = active.reduce(function (s, p) { return s + p.pay; }, 0);
+          var owed = active.reduce(function (s, p) { return s + p.remaining; }, 0);
+          var lastDeath = active.length ? new Date(Math.max.apply(null, active.map(function (p) { return p.death.getTime(); }))) : null;
+          document.getElementById("statDrag").textContent = fmt(drag);
+          document.getElementById("statOwed").textContent = fmt(owed);
+          document.getElementById("statPlans").textContent = active.length;
+          document.getElementById("statFree").textContent = lastDeath ? fmtDate(lastDeath) : "—";
+          var note = document.getElementById("dragNote");
+          if (active.length) {
+            note.innerHTML = "That’s <b>" + esc(fmt(drag)) + " out of every paycheck</b> — <b>" + esc(fmt(drag * 26)) +
+              " a year</b> at this pace — spoken for before the check even lands. Kill the plans below and that money comes home.";
+          } else {
+            note.textContent = "Add your plans above and this section does the math — most people are shocked by the per-paycheck number once it’s all in one place.";
+          }
+
+          /* STEP 3 — kill order: fewest payments left first */
+          var kill = active.slice().sort(function (a, b) {
+            if (a.left !== b.left) return a.left - b.left;
+            if (a.death - b.death !== 0) return a.death - b.death;
+            return b.pay - a.pay;
+          });
+          kill.forEach(function (p, i) { p.rank = i + 1; });
+          var killList = document.getElementById("killList");
+          document.getElementById("killEmpty").style.display = kill.length ? "none" : "block";
+          killList.innerHTML = kill.map(function (p) {
+            return '<li class="kill-item">' +
+              '<div class="kill-rank">' + p.rank + "</div>" +
+              '<div class="kill-main">' +
+                '<div class="kill-name">' + esc(p.label) + "</div>" +
+                '<div class="kill-sub">' + esc(p.provider) + " · " + p.left + (p.left === 1 ? " payment" : " payments") +
+                  " left · final payment " + esc(fmtDate(p.death)) + "</div>" +
+              "</div>" +
+              '<div class="kill-cost"><div class="amt">' + esc(fmt(p.remaining)) + '</div><div class="lbl">to kill it</div></div>' +
+            "</li>";
+          }).join("");
+
+          /* STEP 4 — roadmap: chronological by death date */
+          var chrono = active.slice().sort(function (a, b) {
+            if (a.death - b.death !== 0) return a.death - b.death;
+            return (a.rank || 99) - (b.rank || 99);
+          });
+          var timeline = document.getElementById("timeline");
+          var freedom = document.getElementById("freedomLine");
+          document.getElementById("roadmapEmpty").style.display = chrono.length ? "none" : "block";
+          var cum = 0;
+          timeline.innerHTML = chrono.map(function (p, i) {
+            cum += p.pay;
+            var pct = drag > 0 ? Math.round((cum / drag) * 100) : 0;
+            var isFinal = i === chrono.length - 1;
+            return '<div class="tl-node' + (isFinal ? " final" : "") + '">' +
+              '<div class="tl-date">' + esc(fmtDate(p.death)) + " — final payment</div>" +
+              '<div class="tl-name">' + esc(p.label) + '<span class="rankchip">Kill #' + (p.rank || i + 1) + "</span></div>" +
+              '<div class="tl-detail">' + esc(p.provider) + " dies. <b>" + esc(fmt(p.pay)) + " returns to every paycheck</b> from here on.</div>" +
+              '<div class="tl-bar"><i style="width:' + pct + '%"></i></div>' +
+              '<div class="tl-detail" style="margin-top:7px;">Total restored per paycheck after this date: <span class="tl-freed">' + esc(fmt(cum)) + "</span>" +
+                (isFinal ? " — <b>full paycheck back.</b>" : "") + "</div>" +
+            "</div>";
+          }).join("");
+          if (chrono.length) {
+            freedom.style.display = "block";
+            freedom.innerHTML = "Stick to the freeze and you’re <b>fully BNPL-free by " + esc(fmtDate(lastDeath)) +
+              "</b> — with <b>" + esc(fmt(drag)) + " back in every paycheck</b>, for good.";
+          } else {
+            freedom.style.display = "none";
+          }
+          updateAddBtn();
+        }
+
+        addBtn.addEventListener("click", function () { createPlan(); recalc(); });
+        plansEl.addEventListener("input", recalc);
+        plansEl.addEventListener("change", recalc);
+
+        createPlan();
+        createPlan();
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<link rel="icon" href="data:," />
+<title>Career Lift Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#101114;
+    --bg2:#15171b;
+    --panel:#1a1d22;
+    --panel2:#20242b;
+    --line:#2c313a;
+    --line-soft:#24282f;
+    --ink:#f2f0ea;
+    --ink-dim:#b9bdc6;
+    --ink-faint:#878d99;
+    --amber:#f5a81c;
+    --orange:#ff6b1a;
+    --amber-soft:rgba(245,168,28,.12);
+    --green:#4cc38a;
+    --red:#e5534b;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(900px 480px at 85% -80px, rgba(255,107,26,.10), transparent 60%),
+      radial-gradient(700px 500px at -10% 30%, rgba(245,168,28,.05), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"Barlow", system-ui, sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 18px 64px;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:44px 0 8px;}
+  .hazard{height:8px;border-radius:3px;margin-bottom:26px;
+    background:repeating-linear-gradient(-45deg, var(--amber) 0 14px, #17181c 14px 28px);}
+  .hero h1{
+    font-family:"Barlow Condensed", sans-serif;
+    font-weight:700; text-transform:uppercase; letter-spacing:.5px;
+    font-size:clamp(40px, 9vw, 68px); line-height:.98; margin:0 0 14px;
+  }
+  .hero h1 .lift{color:var(--amber);}
+  .hero .hook{
+    font-size:clamp(19px, 4.6vw, 26px); font-weight:600; line-height:1.3;
+    margin:0 0 12px; max-width:640px;
+  }
+  .hero .hook b{color:var(--amber);}
+  .hero p.sub{color:var(--ink-dim); max-width:620px; margin:0; font-size:16.5px;}
+  .hero-stats{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px;}
+  .hero-stat{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:10px 16px; min-width:0;
+  }
+  .hero-stat .n{font-family:"IBM Plex Mono", monospace; font-weight:600; font-size:20px; color:var(--amber);}
+  .hero-stat .l{font-size:12.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em;}
+
+  /* ---------- SECTIONS / STEPS ---------- */
+  section{margin-top:40px;}
+  .step-head{display:flex; align-items:center; gap:14px; margin-bottom:16px;}
+  .step-num{
+    font-family:"Barlow Condensed", sans-serif; font-weight:700;
+    background:var(--amber); color:#16130a; font-size:20px;
+    width:38px; height:38px; border-radius:8px; display:grid; place-items:center; flex:none;
+  }
+  .step-head h2{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; text-transform:uppercase;
+    letter-spacing:.06em; font-size:26px; margin:0; line-height:1.05;
+  }
+  .step-head p{margin:2px 0 0; color:var(--ink-faint); font-size:14px;}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:20px;
+  }
+  .grid2{display:grid; gap:16px;}
+  @media (min-width:760px){ .grid2{grid-template-columns:1fr 1fr;} }
+
+  /* ---------- FORM ---------- */
+  .field{margin-bottom:16px;}
+  .field:last-child{margin-bottom:0;}
+  label.flabel{display:block; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-dim); margin-bottom:7px;}
+  .money{position:relative;}
+  .money span{position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--ink-faint); font-weight:600;}
+  input[type="number"], select{
+    width:100%; background:var(--bg2); color:var(--ink);
+    border:1px solid var(--line); border-radius:9px;
+    padding:12px 13px; font:inherit; font-size:17px; font-weight:600;
+    appearance:none; -webkit-appearance:none;
+  }
+  .money input{padding-left:28px;}
+  input[type="number"]:focus, select:focus{outline:2px solid var(--amber); outline-offset:1px; border-color:transparent;}
+  select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f5a81c' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; padding-right:36px;
+  }
+  .hint{font-size:13px; color:var(--ink-faint); margin-top:6px;}
+  .seg{display:flex; gap:8px;}
+  .seg button{
+    flex:1; padding:11px 6px; border-radius:9px; border:1px solid var(--line);
+    background:var(--bg2); color:var(--ink-dim); font:inherit; font-weight:600; font-size:15px; cursor:pointer;
+  }
+  .seg button.on{background:var(--amber); border-color:var(--amber); color:#16130a;}
+  .seg button:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+  .warn{
+    display:none; margin-top:14px; padding:11px 14px; border-radius:9px;
+    background:rgba(229,83,75,.12); border:1px solid rgba(229,83,75,.45); color:#ffb4ae; font-size:14.5px;
+  }
+  .warn.show{display:block;}
+
+  /* ---------- ROI DASHBOARD ---------- */
+  .roi-grid{display:grid; gap:14px; grid-template-columns:1fr 1fr;}
+  @media (min-width:760px){ .roi-grid{grid-template-columns:repeat(4,1fr);} }
+  .stat{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px;
+  }
+  .stat .k{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); margin-bottom:6px;}
+  .stat .v{font-family:"IBM Plex Mono", monospace; font-size:clamp(22px,5.4vw,30px); font-weight:600; color:var(--ink); line-height:1.1;}
+  .stat .v.amber{color:var(--amber);}
+  .stat .d{font-size:13.5px; color:var(--ink-dim); margin-top:5px;}
+  .payback-banner{
+    margin-top:14px; border-radius:12px; padding:18px 20px;
+    background:linear-gradient(120deg, rgba(245,168,28,.16), rgba(255,107,26,.10));
+    border:1px solid rgba(245,168,28,.45);
+    font-size:clamp(18px,4.4vw,23px); font-weight:600; line-height:1.35;
+  }
+  .payback-banner b{color:var(--amber); font-family:"IBM Plex Mono", monospace;}
+  .wai-row{display:grid; gap:14px; margin-top:14px;}
+  @media (min-width:760px){ .wai-row{grid-template-columns:1fr 1.25fr;} }
+  .gauge-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px 20px; text-align:center;}
+  .gauge-card .k{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint);}
+  .gauge-wrap{position:relative; width:210px; max-width:80%; margin:6px auto 0;}
+  .gauge-score{
+    position:absolute; left:0; right:0; bottom:2px; text-align:center;
+    font-family:"IBM Plex Mono", monospace; font-size:44px; font-weight:600; color:var(--amber); line-height:1;
+  }
+  .gauge-label{font-weight:700; font-size:17px; margin-top:8px;}
+  .gauge-sub{color:var(--ink-dim); font-size:14px; max-width:420px; margin:4px auto 0;}
+  .sink-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px 20px;}
+  .sink-card h3{margin:0 0 4px; font-family:"Barlow Condensed",sans-serif; font-size:21px; letter-spacing:.04em; text-transform:uppercase;}
+  .sink-controls{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0;}
+  .sink-big{font-family:"IBM Plex Mono", monospace; font-size:clamp(26px,6vw,34px); font-weight:600; color:var(--amber);}
+  .sink-note{color:var(--ink-dim); font-size:14.5px;}
+
+  /* ---------- TIERS ---------- */
+  .tier{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:14px;
+    opacity:.62; transition:opacity .2s;
+  }
+  .tier.active{opacity:1; border-color:rgba(245,168,28,.55); box-shadow:0 0 0 1px rgba(245,168,28,.25);}
+  .tier-top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .tier .tag{
+    font-family:"IBM Plex Mono", monospace; font-size:12px; font-weight:600; letter-spacing:.08em;
+    color:var(--amber); text-transform:uppercase;
+  }
+  .tier h3{font-family:"Barlow Condensed",sans-serif; font-size:24px; margin:2px 0 6px; text-transform:uppercase; letter-spacing:.03em;}
+  .tier p{color:var(--ink-dim); margin:0 0 12px; font-size:15.5px;}
+  .match-badge{
+    display:none; flex:none; background:var(--amber); color:#16130a; font-weight:700; font-size:12.5px;
+    padding:5px 10px; border-radius:999px; text-transform:uppercase; letter-spacing:.05em;
+  }
+  .tier.active .match-badge{display:inline-block;}
+  .memo, .planbox{
+    background:var(--bg2); border:1px solid var(--line-soft); border-radius:10px;
+    padding:16px; font-size:14.5px; line-height:1.6; white-space:pre-wrap; word-break:break-word;
+    max-height:340px; overflow:auto;
+  }
+  .planbox{white-space:normal;}
+  .planbox table{width:100%; border-collapse:collapse; font-size:14.5px;}
+  .planbox th, .planbox td{padding:7px 8px; text-align:left; border-bottom:1px solid var(--line-soft);}
+  .planbox th{color:var(--ink-faint); font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  .planbox td.num, .planbox th.num{text-align:right; font-family:"IBM Plex Mono", monospace;}
+  .planbox tr:last-child td{border-bottom:none; font-weight:700; color:var(--amber);}
+  .copy-btn{
+    margin-top:12px; background:var(--amber); color:#16130a; border:none; border-radius:9px;
+    padding:11px 18px; font:inherit; font-weight:700; font-size:15px; cursor:pointer;
+  }
+  .copy-btn:active{transform:translateY(1px);}
+  .rank-list{list-style:none; margin:0; padding:0;}
+  .rank-list li{
+    display:flex; gap:12px; padding:11px 0; border-bottom:1px solid var(--line-soft); align-items:baseline;
+  }
+  .rank-list li:last-child{border-bottom:none;}
+  .rank-n{
+    font-family:"IBM Plex Mono", monospace; font-weight:600; color:#16130a; background:var(--amber);
+    border-radius:6px; width:26px; height:26px; display:grid; place-items:center; flex:none; font-size:14px;
+    transform:translateY(4px);
+  }
+  .rank-list .rn{font-weight:700;}
+  .rank-list .rm{color:var(--ink-dim); font-size:14px;}
+  .rank-list .rc{margin-left:auto; font-family:"IBM Plex Mono", monospace; color:var(--amber); font-weight:600; flex:none;}
+
+  /* ---------- BLUEPRINT ---------- */
+  .blueprint{
+    border:2px solid var(--amber); border-radius:16px; overflow:hidden;
+    background:linear-gradient(160deg, #1d2129, #14161a);
+  }
+  .bp-head{
+    padding:18px 22px 14px; border-bottom:1px dashed rgba(245,168,28,.4);
+    display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;
+  }
+  .bp-head .t{font-family:"Barlow Condensed",sans-serif; font-size:15px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber);}
+  .bp-head h3{font-family:"Barlow Condensed",sans-serif; font-size:clamp(26px,6vw,34px); margin:2px 0 0; text-transform:uppercase; line-height:1;}
+  .bp-wai{text-align:right;}
+  .bp-wai .n{font-family:"IBM Plex Mono",monospace; font-size:34px; font-weight:600; color:var(--amber); line-height:1;}
+  .bp-wai .l{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-faint);}
+  .bp-jump{
+    padding:16px 22px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    font-family:"IBM Plex Mono", monospace; font-weight:600;
+  }
+  .bp-jump .from{font-size:22px; color:var(--ink-dim);}
+  .bp-jump .arrow{color:var(--orange); font-size:22px;}
+  .bp-jump .to{font-size:30px; color:var(--amber);}
+  .bp-jump .per{font-size:14px; color:var(--ink-faint); font-family:"Barlow",sans-serif; font-weight:500;}
+  .bp-grid{display:grid; grid-template-columns:1fr 1fr; border-top:1px solid var(--line-soft);}
+  @media (min-width:760px){ .bp-grid{grid-template-columns:repeat(4,1fr);} }
+  .bp-cell{padding:14px 22px; border-bottom:1px solid var(--line-soft);}
+  .bp-cell .k{font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); font-weight:600;}
+  .bp-cell .v{font-family:"IBM Plex Mono", monospace; font-size:21px; font-weight:600; margin-top:2px;}
+  .bp-play{padding:18px 22px;}
+  .bp-play .k{font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--amber); font-weight:700; margin-bottom:8px;}
+  .bp-play .memo{max-height:260px;}
+  .bp-foot{
+    padding:12px 22px; border-top:1px dashed rgba(245,168,28,.4);
+    font-size:12.5px; color:var(--ink-faint); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  }
+
+  /* ---------- NEXT / CTA / FAQ ---------- */
+  .next-grid{display:grid; gap:14px;}
+  @media (min-width:760px){ .next-grid{grid-template-columns:1fr 1fr;} }
+  a.tool-card{
+    display:block; text-decoration:none; color:var(--ink);
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px;
+  }
+  a.tool-card:hover{border-color:rgba(245,168,28,.55);}
+  a.tool-card .tc-tag{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--amber); text-transform:uppercase; letter-spacing:.08em;}
+  a.tool-card h3{font-family:"Barlow Condensed",sans-serif; font-size:24px; margin:4px 0 6px; text-transform:uppercase;}
+  a.tool-card p{color:var(--ink-dim); margin:0; font-size:15px;}
+  a.tool-card .go{color:var(--amber); font-weight:700; margin-top:10px; display:inline-block;}
+  .cta{
+    margin-top:16px; border-radius:14px; padding:24px 22px; text-decoration:none; display:block;
+    background:linear-gradient(120deg, var(--amber), var(--orange)); color:#1a1206;
+  }
+  .cta .big{font-family:"Barlow Condensed",sans-serif; font-size:clamp(24px,5.6vw,32px); font-weight:700; text-transform:uppercase; line-height:1.05;}
+  .cta p{margin:8px 0 14px; font-weight:500; max-width:560px;}
+  .cta .btn{
+    display:inline-block; background:#16130a; color:var(--amber); font-weight:700;
+    padding:11px 20px; border-radius:9px; font-size:15px;
+  }
+  details.faq{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; margin-bottom:10px;
+  }
+  details.faq summary{
+    cursor:pointer; padding:16px 18px; font-weight:700; font-size:16.5px; list-style:none;
+    display:flex; justify-content:space-between; gap:12px; align-items:center;
+  }
+  details.faq summary::-webkit-details-marker{display:none;}
+  details.faq summary::after{content:"+"; color:var(--amber); font-size:22px; font-weight:600; line-height:1;}
+  details.faq[open ] summary::after{content:"–";}
+  details.faq .a{padding:0 18px 16px; color:var(--ink-dim); font-size:15.5px;}
+  details.faq .a p{margin:0 0 10px;}
+  details.faq .a p:last-child{margin-bottom:0;}
+  footer{margin-top:44px; color:var(--ink-faint); font-size:13px; line-height:1.6;}
+  .num{font-variant-numeric:tabular-nums;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hazard" aria-hidden="true"></div>
+    <h1>Career <span class="lift">Lift</span> Engine</h1>
+    <p class="hook">A <b>$400 certification</b> can lift you from <b>$18/hr to $26/hr</b>. Here's the payback math.</p>
+    <p class="sub">Plug in where you are and the credential you're eyeing. The engine shows your annual raise, the exact day the cert pays for itself, what to set aside per paycheck — and the play to run based on your numbers.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="n num">+$8/hr</div><div class="l">Example lift</div></div>
+      <div class="hero-stat"><div class="n num">$16,640/yr</div><div class="l">Annual raise at 2,080 hrs</div></div>
+      <div class="hero-stat"><div class="n num">~9 days</div><div class="l">To pay back a $400 cert</div></div>
+    </div>
+  </header>
+
+  <!-- STEP 1 -->
+  <section aria-labelledby="s1">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div>
+        <h2 id="s1">Current Profile</h2>
+        <p>Where you stand now, and the credential in your sights.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="grid2">
+        <div>
+          <div class="field">
+            <label class="flabel" for="curRate">Current hourly rate</label>
+            <div class="money"><span>$</span><input type="number" id="curRate" inputmode="decimal" min="0" step="0.25" value="18" /></div>
+          </div>
+          <div class="field">
+            <label class="flabel" for="certSelect">Target certification</label>
+            <select id="certSelect">
+              <option value="aws">AWS Welding — Certified Welder</option>
+              <option value="cdl">CDL-A License</option>
+              <option value="electrician">Journeyman Electrician</option>
+              <option value="osha30">OSHA 30-Hour</option>
+              <option value="forklift">Forklift Train-the-Trainer</option>
+              <option value="epa608">HVAC EPA 608</option>
+              <option value="other">Other / Custom</option>
+            </select>
+            <div class="hint" id="presetHint">Picking a cert pre-fills typical cost &amp; wage — adjust to your local numbers.</div>
+          </div>
+        </div>
+        <div>
+          <div class="field">
+            <label class="flabel" for="targetRate">Expected hourly wage after cert</label>
+            <div class="money"><span>$</span><input type="number" id="targetRate" inputmode="decimal" min="0" step="0.25" value="26" /></div>
+          </div>
+          <div class="field">
+            <label class="flabel" for="certCost">Total certification cost</label>
+            <div class="money"><span>$</span><input type="number" id="certCost" inputmode="decimal" min="0" step="1" value="400" /></div>
+            <div class="hint">Exam fees, course, books, license — everything in.</div>
+          </div>
+        </div>
+      </div>
+      <div class="warn" id="negWarn">Heads up: your target wage is at or below your current rate, so this cert doesn't lift pay on paper. It may still open doors — but run the math on a cert with a bigger jump first.</div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section aria-labelledby="s2">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div>
+        <h2 id="s2">Funding Scan</h2>
+        <p>Who's footing the bill, and how much runway you have.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="field">
+        <label class="flabel" id="reimbLabel">Employer reimbursement</label>
+        <div class="seg" role="group" aria-labelledby="reimbLabel">
+          <button type="button" data-reimb="full">Full</button>
+          <button type="button" data-reimb="partial" class="on">Partial</button>
+          <button type="button" data-reimb="none">None</button>
+        </div>
+      </div>
+      <div class="field" id="partialRow">
+        <label class="flabel" for="partialPct">Employer covers what % of the cost?</label>
+        <div class="money"><span>%</span><input type="number" id="partialPct" inputmode="numeric" min="1" max="99" step="1" value="50" /></div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label class="flabel" for="weekHours">Weekly hours worked</label>
+          <input type="number" id="weekHours" inputmode="numeric" min="1" max="100" step="1" value="40" />
+        </div>
+        <div class="field">
+          <label class="flabel" for="studyWeeks">Weeks of study / prep needed</label>
+          <input type="number" id="studyWeeks" inputmode="numeric" min="0" max="104" step="1" value="6" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section aria-labelledby="s3">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div>
+        <h2 id="s3">ROI Engine</h2>
+        <p>The lift, the payback clock, and your funding target — live.</p>
+      </div>
+    </div>
+
+    <div class="roi-grid">
+      <div class="stat">
+        <div class="k">Hourly increase</div>
+        <div class="v amber num" id="stIncrease">+$8.00</div>
+        <div class="d" id="stIncreaseD">per hour, every hour</div>
+      </div>
+      <div class="stat">
+        <div class="k">Annual gross lift</div>
+        <div class="v num" id="stAnnual">$16,640</div>
+        <div class="d">increase × 2,080 hrs / yr</div>
+      </div>
+      <div class="stat">
+        <div class="k">Out-of-pocket cost</div>
+        <div class="v num" id="stOop">$200</div>
+        <div class="d" id="stOopD">after employer help</div>
+      </div>
+      <div class="stat">
+        <div class="k">Payback velocity</div>
+        <div class="v amber num" id="stPayback">5 days</div>
+        <div class="d" id="stPaybackD">of higher pay to break even</div>
+      </div>
+    </div>
+
+    <div class="payback-banner" id="paybackBanner"></div>
+
+    <div class="wai-row">
+      <div class="gauge-card">
+        <div class="k">Wage Acceleration Index</div>
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 200 118" width="100%" aria-hidden="true">
+            <path d="M 14 108 A 86 86 0 0 1 186 108" fill="none" stroke="#2c313a" stroke-width="15" stroke-linecap="round"/>
+            <path id="gaugeArc" d="M 14 108 A 86 86 0 0 1 186 108" fill="none" stroke="#f5a81c" stroke-width="15" stroke-linecap="round" stroke-dasharray="270.2" stroke-dashoffset="270.2" style="transition:stroke-dashoffset .6s ease, stroke .3s;"/>
+          </svg>
+          <div class="gauge-score num" id="waiScore">0</div>
+        </div>
+        <div class="gauge-label" id="waiLabel">—</div>
+        <p class="gauge-sub" id="waiSub"></p>
+      </div>
+
+      <div class="sink-card">
+        <h3>Sinking Fund Target</h3>
+        <p class="sink-note" style="margin:0;">Set this aside each paycheck and your out-of-pocket share is fully covered — no credit card, no stress.</p>
+        <div class="sink-controls">
+          <div class="field" style="margin:0;">
+            <label class="flabel" for="periods">Pay periods to save over</label>
+            <select id="periods">
+              <option value="2">2 pay periods</option>
+              <option value="3">3 pay periods</option>
+              <option value="4" selected>4 pay periods</option>
+              <option value="5">5 pay periods</option>
+              <option value="6">6 pay periods</option>
+            </select>
+          </div>
+          <div class="field" style="margin:0;">
+            <label class="flabel" id="cadenceLabel">Pay schedule</label>
+            <div class="seg" role="group" aria-labelledby="cadenceLabel">
+              <button type="button" data-cadence="weekly">Weekly</button>
+              <button type="button" data-cadence="biweekly" class="on">Bi-weekly</button>
+            </div>
+          </div>
+        </div>
+        <div class="sink-big num" id="sinkBig">$50.00 <span style="font-size:16px; color:var(--ink-dim); font-family:Barlow,sans-serif; font-weight:600;">/ paycheck</span></div>
+        <p class="sink-note" id="sinkNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section aria-labelledby="s4">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div>
+        <h2 id="s4">Action Strategy</h2>
+        <p>Three plays. Your numbers pick the one that runs.</p>
+      </div>
+    </div>
+
+    <div class="tier" id="tier1">
+      <div class="tier-top">
+        <div>
+          <div class="tag">Tier 1 · Sponsorship Protocol</div>
+          <h3>Get your employer to pay for it</h3>
+        </div>
+        <span class="match-badge">Your play</span>
+      </div>
+      <p>Big lift (over $3/hr) <em>and</em> your employer chips in? Don't just ask — present it like a business case. This memo frames the cert as a win for them: coverage, safety, retention. Copy it, fill in the brackets, send it.</p>
+      <div class="memo" id="memoText"></div>
+      <button class="copy-btn" type="button" id="copyMemo">Copy the memo</button>
+    </div>
+
+    <div class="tier" id="tier2">
+      <div class="tier-top">
+        <div>
+          <div class="tag">Tier 2 · Micro-Sinking Protocol</div>
+          <h3>Fund your share, paycheck by paycheck</h3>
+        </div>
+        <span class="match-badge">Your play</span>
+      </div>
+      <p id="tier2Intro">Whatever lands on you after any employer help gets split into small, automatic set-asides. Here's your exact schedule:</p>
+      <div class="planbox" id="planBox"></div>
+    </div>
+
+    <div class="tier" id="tier3">
+      <div class="tier-top">
+        <div>
+          <div class="tag">Tier 3 · Cert-Rank Protocol</div>
+          <h3>Stack a faster win first</h3>
+        </div>
+        <span class="match-badge">Your play</span>
+      </div>
+      <p>When the short-term ROI is thin, don't force it. Bank a cheap, fast credential first — it raises your rate and your confidence — then come back for the big one with momentum. Ranked by time-to-earn, fastest first:</p>
+      <ul class="rank-list" id="rankList"></ul>
+    </div>
+  </section>
+
+  <!-- BLUEPRINT -->
+  <section aria-labelledby="bp">
+    <div class="step-head">
+      <div class="step-num" style="background:var(--orange);">✓</div>
+      <div>
+        <h2 id="bp">Your Blueprint</h2>
+        <p>Screenshot this. This is the whole plan on one card.</p>
+      </div>
+    </div>
+    <div class="blueprint">
+      <div class="bp-head">
+        <div>
+          <div class="t">Trade Credential Pay-Grade Lift Blueprint</div>
+          <h3 id="bpCert">AWS Welding — Certified Welder</h3>
+        </div>
+        <div class="bp-wai">
+          <div class="n num" id="bpWai">0</div>
+          <div class="l">Wage Acceleration Index</div>
+        </div>
+      </div>
+      <div class="bp-jump">
+        <span class="from num" id="bpFrom">$18.00/hr</span>
+        <span class="arrow">→</span>
+        <span class="to num" id="bpTo">$26.00/hr</span>
+        <span class="per" id="bpTier">Tier 1 · Sponsorship Protocol</span>
+      </div>
+      <div class="bp-grid">
+        <div class="bp-cell"><div class="k">Hourly increase</div><div class="v num" id="bpIncrease">+$8.00</div></div>
+        <div class="bp-cell"><div class="k">Annual gross lift</div><div class="v num" id="bpAnnual">$16,640</div></div>
+        <div class="bp-cell"><div class="k">Pays for itself in</div><div class="v num" id="bpPayback">5 days</div></div>
+        <div class="bp-cell"><div class="k">Sinking target</div><div class="v num" id="bpSink">$50.00/check</div></div>
+      </div>
+      <div class="bp-play">
+        <div class="k" id="bpPlayTitle">Your play — Sponsorship Memo</div>
+        <div class="memo" id="bpPlayBody"></div>
+        <button class="copy-btn" type="button" id="copyBp">Copy</button>
+      </div>
+      <div class="bp-foot">
+        <span>Career Lift Engine · estimates at 2,080 hrs/yr, gross before taxes</span>
+        <span id="bpDate"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT STEPS -->
+  <section aria-labelledby="nx">
+    <div class="step-head">
+      <div class="step-num" style="background:var(--panel2); color:var(--amber); border:1px solid var(--line);">→</div>
+      <div>
+        <h2 id="nx">Put the Raise to Work</h2>
+        <p>More hours at the new rate, and a plan for every payday.</p>
+      </div>
+    </div>
+    <div class="next-grid">
+      <a class="tool-card" href="https://thecomeuphq.github.io/comeup-links/ot-yield-maximizer.html">
+        <span class="tc-tag">Free tool</span>
+        <h3>OT Yield Maximizer</h3>
+        <p>At your new rate, every overtime hour is worth more. See exactly what extra shifts pay after tax — and which ones are actually worth taking.</p>
+        <span class="go">Run your OT numbers →</span>
+      </a>
+      <a class="tool-card" href="https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html">
+        <span class="tc-tag">Free tool</span>
+        <h3>Payday Cash Flow Allocator</h3>
+        <p>A bigger check needs a system on day one. Split every paycheck into bills, debt, savings, and breathing room before it evaporates.</p>
+        <span class="go">Allocate your next check →</span>
+      </a>
+    </div>
+    <a class="cta" href="https://bradley57.gumroad.com/">
+      <div class="big">Bigger paychecks need bigger systems</div>
+      <p>The Overtime &amp; Shift Worker Cash Flow Log and the Paycheck-to-Paycheck Weekly Planner — printable systems built for shift-worker money, on Gumroad.</p>
+      <span class="btn">Get the planners →</span>
+    </a>
+  </section>
+
+  <!-- FAQ -->
+  <section aria-labelledby="fq">
+    <div class="step-head">
+      <div class="step-num" style="background:var(--panel2); color:var(--amber); border:1px solid var(--line);">?</div>
+      <div>
+        <h2 id="fq">Straight Answers</h2>
+        <p>The three questions every worker asks before committing.</p>
+      </div>
+    </div>
+
+    <details class="faq">
+      <summary>Do employers really pay for certifications?</summary>
+      <div class="a">
+        <p>Yes — more often than workers assume. Many warehouses, plants, and fleets have tuition or certification reimbursement baked into their benefits and never advertise it, because certified staff cut their insurance risk, fill hard-to-staff shifts, and pass customer audits. CDL schools, welding certs, and OSHA training are the most commonly covered.</p>
+        <p>The catch: most programs require you to ask, stay employed for a set period after (often 6–12 months), and sometimes pay upfront and get reimbursed after you pass. That's exactly why the Tier 1 memo exists — a written business case gets a yes far more often than a hallway question.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>Which certification pays back fastest?</summary>
+      <div class="a">
+        <p>Whichever pairs a low cost with a real wage jump in <em>your</em> local market. Using the numbers in this engine: a $400 welding cert that moves you $8/hr pays for itself in about a week of higher pay. OSHA 30 is cheap (~$180) but usually lifts pay less on its own — it shines stacked with a trade skill or for lead/supervisor postings.</p>
+        <p>Run two or three candidates through the engine and compare the Payback Velocity and Wage Acceleration Index side by side. Fastest payback + biggest annual lift wins.</p>
+      </div>
+    </details>
+
+    <details class="faq">
+      <summary>What if I fail the exam?</summary>
+      <div class="a">
+        <p>Budget for it instead of fearing it. Most trade exams allow retakes — AWS welding retests, EPA 608 section retakes, and CDL retests typically cost a fraction of the original fee (often $50–$200), and pass rates climb sharply on the second attempt because you know the format.</p>
+        <p>Practical move: add one retake fee to your sinking fund target. If you pass first try, that money becomes your first emergency-fund deposit. And if your employer sponsors you, ask upfront whether the agreement covers a retake — many do.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    Estimates only — not financial advice. Annual lift uses 2,080 full-time hours (40 hrs × 52 weeks) and gross pay before taxes and deductions. Certification costs and post-cert wages vary by state, employer, and experience; verify your local numbers before you commit. Your weekly hours and study time shape the funding plan, but the payback clock runs on calendar days of higher pay once you're certified.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var PRESETS = {
+    aws:        { name:"AWS Welding — Certified Welder", cost:400,  target:26, weeks:6 },
+    cdl:        { name:"CDL-A License",                  cost:4800, target:28, weeks:8 },
+    electrician:{ name:"Journeyman Electrician",         cost:850,  target:32, weeks:12 },
+    osha30:     { name:"OSHA 30-Hour",                   cost:180,  target:21, weeks:1 },
+    forklift:   { name:"Forklift Train-the-Trainer",     cost:795,  target:24, weeks:2 },
+    epa608:     { name:"HVAC EPA 608",                   cost:475,  target:27, weeks:3 },
+    other:      { name:"Other / Custom Certification",   cost:null, target:null, weeks:null }
+  };
+
+  var RANK = [
+    { name:"CPR / First Aid / AED", meta:"Half a day to earn · required add-on for lead and safety-committee roles", cost:75 },
+    { name:"Forklift Operator Certification", meta:"1 day to earn · immediate warehouse premium and more shift options", cost:150 },
+    { name:"OSHA 10-Hour", meta:"1–2 days to earn, online · unlocks construction & plant postings most crews require", cost:60 },
+    { name:"OSHA 30-Hour", meta:"~4 days to earn · the supervisor-track credential hiring managers scan for", cost:180 },
+    { name:"HVAC EPA 608 Universal", meta:"1–2 weeks to earn · entry ticket to HVAC tech pay", cost:475 },
+    { name:"AWS D1.1 Welding", meta:"2–6 weeks to earn · the biggest single pay jump on this list", cost:400 }
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var els = {
+    curRate:$("curRate"), certSelect:$("certSelect"), targetRate:$("targetRate"), certCost:$("certCost"),
+    partialPct:$("partialPct"), partialRow:$("partialRow"), weekHours:$("weekHours"), studyWeeks:$("studyWeeks"),
+    periods:$("periods"), negWarn:$("negWarn"),
+    stIncrease:$("stIncrease"), stIncreaseD:$("stIncreaseD"), stAnnual:$("stAnnual"),
+    stOop:$("stOop"), stOopD:$("stOopD"), stPayback:$("stPayback"), stPaybackD:$("stPaybackD"),
+    paybackBanner:$("paybackBanner"), gaugeArc:$("gaugeArc"), waiScore:$("waiScore"),
+    waiLabel:$("waiLabel"), waiSub:$("waiSub"),
+    sinkBig:$("sinkBig"), sinkNote:$("sinkNote"),
+    tier1:$("tier1"), tier2:$("tier2"), tier3:$("tier3"),
+    memoText:$("memoText"), planBox:$("planBox"), rankList:$("rankList"), tier2Intro:$("tier2Intro"),
+    bpCert:$("bpCert"), bpWai:$("bpWai"), bpFrom:$("bpFrom"), bpTo:$("bpTo"), bpTier:$("bpTier"),
+    bpIncrease:$("bpIncrease"), bpAnnual:$("bpAnnual"), bpPayback:$("bpPayback"), bpSink:$("bpSink"),
+    bpPlayTitle:$("bpPlayTitle"), bpPlayBody:$("bpPlayBody"), bpDate:$("bpDate"),
+    copyMemo:$("copyMemo"), copyBp:$("copyBp"), presetHint:$("presetHint")
+  };
+
+  var state = { reimb:"partial", cadence:"biweekly" };
+
+  function num(el, fallback){
+    var v = parseFloat(el.value);
+    return isNaN(v) ? fallback : v;
+  }
+  function money(v){
+    return "$" + v.toLocaleString("en-US",{minimumFractionDigits:0, maximumFractionDigits:0});
+  }
+  function money2(v){
+    return "$" + v.toLocaleString("en-US",{minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+  function buildMemo(d){
+    var employerPays = d.reimbFrac > 0;
+    var lines = [
+      "MEMO — CERTIFICATION SPONSORSHIP REQUEST",
+      "",
+      "To: [Supervisor / HR Manager]",
+      "From: [Your Name], [Your Department / Shift]",
+      "Date: [Today's Date]",
+      "Subject: Sponsorship request — " + d.certName,
+      "",
+      "I'm requesting company sponsorship to earn the " + d.certName + " credential. Total cost is " + money(d.cost) +
+      (employerPays
+        ? ", and I'm asking the company to cover " + Math.round(d.reimbFrac*100) + "% (" + money(d.cost*d.reimbFrac) + "). My out-of-pocket share would be " + money(d.oop) + "."
+        : "."),
+      "",
+      "What the company gets:",
+      "• A team member certified in " + d.certName.split("—")[0].trim() + " on the floor in about " + d.studyWeeks + " weeks — covering shifts and roles that are hard to staff.",
+      "• Lower risk: certified operators reduce incidents, failed audits, and rework.",
+      "• Retention: I'm committing to stay and grow here rather than take this credential to another employer.",
+      "",
+      "What I'm asking:",
+      "• Approval to enroll, with the company's share paid or reimbursed on passing.",
+      "• I'm happy to sign a standard stay agreement (6–12 months is fine) and to train teammates once certified.",
+      "",
+      "The math: this credential moves my rate from " + money2(d.cur) + "/hr to about " + money2(d.target) + "/hr in the open market — I'd rather build that value here. The total ask is less than the cost of recruiting one outside hire.",
+      "",
+      "Thank you for considering it. I can start prep immediately.",
+      "",
+      "[Your Name] · [Employee ID] · [Phone]"
+    ];
+    return lines.join("\n");
+  }
+
+  function compute(){
+    var cur = Math.max(0, num(els.curRate, 0));
+    var target = Math.max(0, num(els.targetRate, 0));
+    var cost = Math.max(0, num(els.certCost, 0));
+    var hours = clamp(num(els.weekHours, 40), 1, 100);
+    var studyWeeks = clamp(num(els.studyWeeks, 0), 0, 104);
+    var periods = parseInt(els.periods.value, 10) || 4;
+
+    var reimbFrac = 0;
+    if (state.reimb === "full") reimbFrac = 1;
+    else if (state.reimb === "partial") reimbFrac = clamp(num(els.partialPct, 50), 0, 100) / 100;
+
+    var increase = target - cur;
+    var annualLift = increase * 2080;
+    var oop = cost * (1 - reimbFrac);
+    var dailyLift = annualLift / 365;
+    var paybackDays = null; // null = never
+    if (oop <= 0) paybackDays = 0;
+    else if (dailyLift > 0) paybackDays = Math.ceil(oop / dailyLift);
+
+    var perCheck = periods > 0 ? oop / periods : 0;
+    var weeksToFund = periods * (state.cadence === "weekly" ? 1 : 2);
+
+    // Wage Acceleration Index (0–100)
+    var wai = 0;
+    if (increase > 0){
+      var liftFactor = clamp(annualLift / Math.max(cur * 2080, 1), 0, 1); // raise as % of current annual
+      var speedFactor = paybackDays === null ? 0 : clamp(60 / Math.max(paybackDays, 1), 0, 1);
+      if (paybackDays === 0) speedFactor = 1;
+      var fundFactor = 1 - clamp(studyWeeks / 26, 0, 1);
+      wai = Math.round(100 * (0.5 * liftFactor + 0.35 * speedFactor + 0.15 * fundFactor));
+    }
+    wai = clamp(wai, 0, 100);
+
+    // Tier selection
+    var tier;
+    if (increase > 3 && reimbFrac > 0) tier = 1;
+    else if (increase > 3 || (paybackDays !== null && paybackDays <= 120 && increase > 0)) tier = 2;
+    else tier = 3;
+
+    return {
+      cur:cur, target:target, cost:cost, hours:hours, studyWeeks:studyWeeks, periods:periods,
+      reimbFrac:reimbFrac, increase:increase, annualLift:annualLift, oop:oop,
+      dailyLift:dailyLift, paybackDays:paybackDays, perCheck:perCheck, weeksToFund:weeksToFund,
+      wai:wai, tier:tier, certName:PRESETS[els.certSelect.value].name
+    };
+  }
+
+  function render(){
+    var d = compute();
+
+    // warn
+    els.negWarn.classList.toggle("show", d.increase <= 0);
+    els.partialRow.style.display = state.reimb === "partial" ? "" : "none";
+
+    // Step 3 stats
+    els.stIncrease.textContent = (d.increase >= 0 ? "+" : "-") + "$" + Math.abs(d.increase).toFixed(2);
+    els.stIncreaseD.textContent = d.increase > 0
+      ? "that's " + money(d.increase * d.hours) + " more per " + d.hours + "-hr week"
+      : "per hour, every hour";
+    els.stAnnual.textContent = (d.annualLift < 0 ? "-" : "") + money(Math.abs(d.annualLift));
+    els.stOop.textContent = money(d.oop);
+    els.stOopD.textContent = d.reimbFrac === 1 ? "employer covers 100%" :
+      d.reimbFrac > 0 ? "after " + Math.round(d.reimbFrac*100) + "% employer help" : "no employer help — all on you";
+
+    var paybackTxt, paybackSub;
+    if (d.paybackDays === 0){ paybackTxt = "Day 1"; paybackSub = "employer covers it — profit from the first shift"; }
+    else if (d.paybackDays === null){ paybackTxt = "—"; paybackSub = "no pay lift, so it never pays back"; }
+    else { paybackTxt = d.paybackDays + (d.paybackDays === 1 ? " day" : " days"); paybackSub = "of higher pay to break even"; }
+    els.stPayback.textContent = paybackTxt;
+    els.stPaybackD.textContent = paybackSub;
+
+    if (d.increase <= 0){
+      els.paybackBanner.innerHTML = "No lift on paper — this cert doesn't raise your rate as entered. Check the Tier 3 stack below for a faster first win.";
+    } else if (d.paybackDays === 0){
+      els.paybackBanner.innerHTML = "This cert pays for itself <b>on day one</b> — your employer covers the cost and the <b>" + money(d.annualLift) + "/yr</b> lift is pure gain.";
+    } else {
+      els.paybackBanner.innerHTML = "This cert pays for itself in <b>" + d.paybackDays + " days</b> — then the extra <b>" + money(d.annualLift) + " a year</b> is yours to keep.";
+    }
+
+    // Gauge
+    var ARC = 270.2;
+    els.gaugeArc.style.strokeDashoffset = String(ARC * (1 - d.wai / 100));
+    els.gaugeArc.style.stroke = d.wai >= 70 ? "#f5a81c" : d.wai >= 40 ? "#ffb84d" : "#e5534b";
+    els.waiScore.textContent = d.wai;
+    els.waiScore.style.color = d.wai >= 40 ? "var(--amber)" : "var(--red)";
+    var label, sub;
+    if (d.wai >= 85){ label = "Rocket Lift"; sub = "Elite combo: big raise, fast payback, short prep. Move on this now."; }
+    else if (d.wai >= 70){ label = "Fast Climb"; sub = "Strong raise with a payback clock measured in days or weeks, not months."; }
+    else if (d.wai >= 50){ label = "Solid Climb"; sub = "A real upgrade. The annual lift does the heavy lifting even if payback takes a season."; }
+    else if (d.wai >= 30){ label = "Slow Burn"; sub = "Positive, but thin. Negotiate employer help or stack a cheaper cert first."; }
+    else { label = "Weak Lift"; sub = "As entered, this barely moves your earning power. Re-check the target wage or pick a stronger cert."; }
+    els.waiLabel.textContent = label;
+    els.waiSub.textContent = sub;
+
+    // Sinking fund
+    if (d.oop <= 0){
+      els.sinkBig.innerHTML = "$0.00 <span style='font-size:16px; color:var(--ink-dim); font-family:Barlow,sans-serif; font-weight:600;'>/ paycheck</span>";
+      els.sinkNote.textContent = "Your employer covers the full cost — no sinking fund needed. Redirect this habit into your emergency fund instead.";
+    } else {
+      els.sinkBig.innerHTML = money2(d.perCheck) + " <span style='font-size:16px; color:var(--ink-dim); font-family:Barlow,sans-serif; font-weight:600;'>/ paycheck</span>";
+      els.sinkNote.textContent = "× " + d.periods + " " + (state.cadence === "weekly" ? "weekly" : "bi-weekly") +
+        " paychecks = fully funded in about " + d.weeksToFund + " weeks. Add ~" + money(Math.max(50, Math.round(d.cost * 0.1))) +
+        " extra if you want a retake cushion built in.";
+    }
+
+    // Tiers
+    els.tier1.classList.toggle("active", d.tier === 1);
+    els.tier2.classList.toggle("active", d.tier === 2);
+    els.tier3.classList.toggle("active", d.tier === 3);
+
+    var memo = buildMemo(d);
+    els.memoText.textContent = memo;
+
+    // Tier 2 intro reflects the actual funding split
+    if (d.reimbFrac === 0){
+      els.tier2Intro.textContent = "No employer help — no problem. The full " + money(d.cost) + " cost splits into small, automatic set-asides that fund themselves fast once the raise lands. Here's your exact schedule:";
+    } else if (d.reimbFrac === 1){
+      els.tier2Intro.textContent = "Your employer covers 100% on paper — but if reimbursement lands after you pay, bridge the " + money(d.cost) + " upfront cost with this set-aside schedule and let the reimbursement refill it:";
+    } else {
+      els.tier2Intro.textContent = "Your employer covers " + Math.round(d.reimbFrac*100) + "% — your remaining " + money(d.oop) + " out-of-pocket share splits into small, automatic set-asides. Here's your exact schedule:";
+    }
+
+    // Plan table
+    var rows = "";
+    if (d.oop <= 0){
+      rows = "<p style='margin:0; color:var(--ink-dim);'>Nothing to sink — the cost is fully covered. If your situation changes to self-funded, your paycheck-by-paycheck plan appears here automatically.</p>";
+      els.planBox.innerHTML = rows;
+    } else {
+      var total = 0, trs = "";
+      for (var i = 1; i <= d.periods; i++){
+        total += d.perCheck;
+        var wk = i * (state.cadence === "weekly" ? 1 : 2);
+        trs += "<tr><td>Paycheck " + i + "</td><td>Week " + wk + "</td><td class='num'>" + money2(d.perCheck) + "</td><td class='num'>" + money2(Math.min(total, d.oop)) + "</td></tr>";
+      }
+      trs += "<tr><td colspan='2'>Out-of-pocket share funded</td><td class='num'>" + money2(d.oop) + "</td><td class='num'>Enroll →</td></tr>";
+      els.planBox.innerHTML = "<table><thead><tr><th>Set aside</th><th>When</th><th class='num'>Amount</th><th class='num'>Running total</th></tr></thead><tbody>" + trs + "</tbody></table>" +
+        "<p style='color:var(--ink-dim); font-size:14px; margin:12px 0 0;'>Move the set-aside to a separate account the day each check lands — before spending starts. After " + d.studyWeeks +
+        " weeks of prep you're certified, and the raise covers your whole out-of-pocket cost in about " + (d.paybackDays === null ? "—" : d.paybackDays + " days") + ".</p>";
+    }
+
+    // Rank list (exclude the currently-selected cert's close match)
+    var selKey = els.certSelect.value;
+    var MATCH = { osha30:"OSHA 30-Hour", aws:"AWS D1.1 Welding", epa608:"HVAC EPA 608 Universal", forklift:"Forklift Operator Certification" };
+    var html = "";
+    RANK.forEach(function(r, idx){
+      var isSel = MATCH[selKey] === r.name;
+      html += "<li" + (isSel ? " style='opacity:.45;'" : "") + "><span class='rank-n'>" + (idx+1) + "</span>" +
+        "<span><span class='rn'>" + r.name + "</span>" + (isSel ? " <span class='rm'>(your current target)</span>" : "") +
+        "<br/><span class='rm'>" + r.meta + "</span></span>" +
+        "<span class='rc'>~" + money(r.cost) + "</span></li>";
+    });
+    els.rankList.innerHTML = html;
+
+    // Blueprint
+    els.bpCert.textContent = d.certName;
+    els.bpWai.textContent = d.wai;
+    els.bpFrom.textContent = money2(d.cur) + "/hr";
+    els.bpTo.textContent = money2(d.target) + "/hr";
+    var tierNames = {1:"Tier 1 · Sponsorship Protocol", 2:"Tier 2 · Micro-Sinking Protocol", 3:"Tier 3 · Cert-Rank Protocol"};
+    els.bpTier.textContent = tierNames[d.tier];
+    els.bpIncrease.textContent = (d.increase >= 0 ? "+" : "-") + "$" + Math.abs(d.increase).toFixed(2);
+    els.bpAnnual.textContent = (d.annualLift < 0 ? "-" : "") + money(Math.abs(d.annualLift));
+    els.bpPayback.textContent = d.paybackDays === 0 ? "Day 1" : d.paybackDays === null ? "—" : d.paybackDays + " days";
+    els.bpSink.textContent = d.oop <= 0 ? "$0 — covered" : money2(d.perCheck) + "/check";
+
+    if (d.tier === 1){
+      els.bpPlayTitle.textContent = "Your play — Sponsorship Memo";
+      els.bpPlayBody.textContent = memo;
+      els.bpPlayBody.style.whiteSpace = "pre-wrap";
+    } else if (d.tier === 2){
+      els.bpPlayTitle.textContent = "Your play — Micro-Sinking Plan";
+      els.bpPlayBody.style.whiteSpace = "normal";
+      els.bpPlayBody.textContent =
+        "Set aside " + money2(d.perCheck) + " per " + (state.cadence === "weekly" ? "weekly" : "bi-weekly") +
+        " paycheck × " + d.periods + " = " + money(d.oop) + " out-of-pocket covered in ~" + d.weeksToFund +
+        " weeks. Then " + d.studyWeeks + " weeks of prep, and the raise repays the fund in " +
+        (d.paybackDays === null ? "—" : d.paybackDays + " days") + " — worth " + money(d.annualLift) + " every year after.";
+    } else {
+      els.bpPlayTitle.textContent = "Your play — Cert-Rank Protocol";
+      els.bpPlayBody.style.whiteSpace = "normal";
+      els.bpPlayBody.textContent =
+        "Short-term ROI is thin on this one as entered. Stack a fast win first: OSHA 10 (~$60, 1–2 days) or a Forklift Operator cert (~$150, 1 day) to bump your rate now, then return to " +
+        d.certName + " with a stronger base wage and a shorter effective payback.";
+    }
+    els.bpDate.textContent = "Generated " + new Date().toLocaleDateString("en-US",{month:"short", day:"numeric", year:"numeric"});
+
+    // store for copy
+    els.copyBp.dataset.mode = d.tier === 1 ? "memo" : "summary";
+    lastData = d; lastMemo = memo;
+  }
+
+  var lastData = null, lastMemo = "";
+
+  function copyText(text, btn, doneLabel){
+    var original = btn.textContent;
+    function done(){
+      btn.textContent = doneLabel;
+      setTimeout(function(){ btn.textContent = original; }, 1800);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+    } else fallback();
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); done();
+    }
+  }
+
+  els.copyMemo.addEventListener("click", function(){ copyText(lastMemo, els.copyMemo, "Copied ✓"); });
+  els.copyBp.addEventListener("click", function(){
+    if (els.copyBp.dataset.mode === "memo"){ copyText(lastMemo, els.copyBp, "Copied ✓"); return; }
+    var d = lastData;
+    var s = "TRADE CREDENTIAL PAY-GRADE LIFT BLUEPRINT\n" +
+      "Certification: " + d.certName + "\n" +
+      "Pay jump: " + money2(d.cur) + "/hr → " + money2(d.target) + "/hr (+" + "$" + Math.abs(d.increase).toFixed(2) + ")\n" +
+      "Annual gross lift: " + money(d.annualLift) + "\n" +
+      "Pays for itself in: " + (d.paybackDays === 0 ? "Day 1 (employer covered)" : d.paybackDays === null ? "—" : d.paybackDays + " days") + "\n" +
+      "Sinking target: " + (d.oop <= 0 ? "$0 — covered" : money2(d.perCheck) + " per paycheck × " + d.periods) + "\n" +
+      "Wage Acceleration Index: " + d.wai + "/100\n" +
+      "Strategy: " + ({1:"Tier 1 · Sponsorship Protocol",2:"Tier 2 · Micro-Sinking Protocol",3:"Tier 3 · Cert-Rank Protocol"})[d.tier];
+    copyText(s, els.copyBp, "Copied ✓");
+  });
+
+  // Preset behavior
+  els.certSelect.addEventListener("change", function(){
+    var p = PRESETS[els.certSelect.value];
+    if (p.cost !== null) els.certCost.value = p.cost;
+    if (p.target !== null) els.targetRate.value = p.target;
+    if (p.weeks !== null) els.studyWeeks.value = p.weeks;
+    els.presetHint.textContent = els.certSelect.value === "other"
+      ? "Custom cert — enter your real cost and the wage it unlocks."
+      : "Pre-filled with typical numbers for this cert — adjust to your local rates.";
+    render();
+  });
+
+  // Segmented controls
+  function wireSeg(selector, key, cb){
+    var btns = document.querySelectorAll(selector);
+    btns.forEach(function(b){
+      b.addEventListener("click", function(){
+        btns.forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on");
+        state[key] = b.dataset.reimb || b.dataset.cadence;
+        if (cb) cb();
+        render();
+      });
+    });
+  }
+  wireSeg("[data-reimb]", "reimb");
+  wireSeg("[data-cadence]", "cadence");
+
+  ["curRate","targetRate","certCost","partialPct","weekHours","studyWeeks","periods"].forEach(function(id){
+    $(id).addEventListener("input", render);
+    $(id).addEventListener("change", render);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

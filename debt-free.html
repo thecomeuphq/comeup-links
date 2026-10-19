@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0b3d2a" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1512" media="(prefers-color-scheme: dark)" />
+    <!-- Installable web app: opens full-screen from the home screen -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Debt Free" />
+    <meta name="application-name" content="Debt Free" />
+    <link rel="manifest" href="data:application/octet-stream;base64,eyJiYWNrZ3JvdW5kX2NvbG9yIjoiIzBiM2QyYSIsImRlc2NyaXB0aW9uIjoiVHJhY2sgeW91ciBkZWJ0cywgcGljayBhIHNub3diYWxsIG9yIGF2YWxhbmNoZSBwYXlvZmYgcGxhbiwgYW5kIGNoZWNrIG9mZiBwYXltZW50cyBtb250aCBieSBtb250aCB1bnRpbCB5b3UgaGl0IHplcm8uIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJpY29ucyI6W3sicHVycG9zZSI6ImFueSIsInNpemVzIjoiYW55Iiwic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NCA2NCclM0UlM0NyZWN0IHdpZHRoPSc2NCcgaGVpZ2h0PSc2NCcgcng9JzE0JyBmaWxsPSclMjMwYjNkMmEnLyUzRSUzQ2NpcmNsZSBjeD0nMzInIGN5PSczOCcgcj0nMTUnIGZpbGw9JyUyM2U4YjMzYycvJTNFJTNDcGF0aCBkPSdNMzIgNDd2LTE4TTI0IDM3bDgtOCA4IDgnIHN0cm9rZT0nJTIzMGIzZDJhJyBzdHJva2Utd2lkdGg9JzQuNScgZmlsbD0nbm9uZScgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJy8lM0UlM0Mvc3ZnJTNFIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV0sIm5hbWUiOiJEZWJ0IEZyZWUiLCJvcmllbnRhdGlvbiI6InBvcnRyYWl0Iiwic2NvcGUiOiIuLi8iLCJzaG9ydF9uYW1lIjoiRGVidCBGcmVlIiwic3RhcnRfdXJsIjoiLi4vaW5kZXguaHRtbCIsInRoZW1lX2NvbG9yIjoiIzBiM2QyYSJ9" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b3d2a'/%3E%3Ccircle cx='32' cy='38' r='15' fill='%23e8b33c'/%3E%3Cpath d='M32 47v-18M24 37l8-8 8 8' stroke='%230b3d2a' stroke-width='4.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b3d2a'/%3E%3Ccircle cx='32' cy='38' r='15' fill='%23e8b33c'/%3E%3Cpath d='M32 47v-18M24 37l8-8 8 8' stroke='%230b3d2a' stroke-width='4.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <title>Debt Free</title>
+    <style>
+      :root {
+        --bg: #f4f6f3;
+        --surface: #ffffff;
+        --surface-2: #eef2ee;
+        --ink: #16211b;
+        --ink-soft: #43544b;
+        --muted: #718276;
+        --line: #dde5dd;
+        --accent: #0d7a4c;
+        --accent-strong: #0b3d2a;
+        --accent-ink: #ffffff;
+        --accent-soft: #e2f1e8;
+        --gold: #e8b33c;
+        --danger: #b3372f;
+        --danger-soft: #f9e9e7;
+        --hero-bg: #0b3d2a;
+        --hero-ink: #eaf5ee;
+        --hero-muted: #a7c8b6;
+        --hero-track: rgba(255, 255, 255, 0.22);
+        --shadow: 0 1px 2px rgba(16, 32, 24, 0.06), 0 6px 18px rgba(16, 32, 24, 0.05);
+        --tabbar-bg: rgba(255, 255, 255, 0.92);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d130f;
+          --surface: #16201a;
+          --surface-2: #1d2a21;
+          --ink: #e9f1ea;
+          --ink-soft: #b9c8bd;
+          --muted: #84977f;
+          --line: #26352b;
+          --accent: #3ecf8e;
+          --accent-strong: #123f2c;
+          --accent-ink: #06130d;
+          --accent-soft: #143527;
+          --gold: #e8b33c;
+          --danger: #e07a72;
+          --danger-soft: #3a2320;
+          --hero-bg: #123f2c;
+          --hero-ink: #ecf7ef;
+          --hero-muted: #9dc3ab;
+          --hero-track: rgba(255, 255, 255, 0.18);
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 18px rgba(0, 0, 0, 0.3);
+          --tabbar-bg: rgba(18, 26, 21, 0.92);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.45;
+        padding-bottom: calc(76px + env(safe-area-inset-bottom));
+      }
+      button, input, select { font: inherit; color: inherit; }
+      .wrap { max-width: 560px; margin: 0 auto; padding: 16px 16px 8px; }
+
+      /* ---------- hero ---------- */
+      .hero {
+        background: var(--hero-bg);
+        color: var(--hero-ink);
+        border-radius: 20px;
+        padding: 22px 20px 20px;
+        box-shadow: var(--shadow);
+      }
+      .hero .label { font-size: 13px; color: var(--hero-muted); font-weight: 600; letter-spacing: 0.02em; }
+      .hero .total { font-size: 40px; font-weight: 800; letter-spacing: -0.02em; margin: 2px 0 4px; font-variant-numeric: tabular-nums; }
+      .hero .sub { font-size: 14px; color: var(--hero-muted); }
+      .hero .sub strong { color: var(--hero-ink); font-weight: 700; }
+      .bar { height: 10px; border-radius: 999px; background: var(--hero-track); overflow: hidden; margin: 16px 0 8px; }
+      .bar > span { display: block; height: 100%; border-radius: 999px; background: var(--gold); width: 0%; transition: width 0.5s ease; }
+      .hero .bar-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--hero-muted); font-variant-numeric: tabular-nums; }
+      .hero .bar-meta strong { color: var(--hero-ink); }
+      .hero-stats { display: flex; gap: 10px; margin-top: 16px; }
+      .hero-stat { flex: 1; background: rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 10px 12px; }
+      .hero-stat .k { font-size: 11.5px; color: var(--hero-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+      .hero-stat .v { font-size: 16.5px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+      /* ---------- sections & cards ---------- */
+      .view { display: none; }
+      .view.active { display: block; }
+      h2.sec { font-size: 19px; font-weight: 750; letter-spacing: -0.01em; margin: 24px 2px 12px; }
+      .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); }
+      .empty { text-align: center; padding: 34px 22px; }
+      .empty .big { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+      .empty p { color: var(--muted); margin: 0 0 16px; }
+
+      /* ---------- debt cards ---------- */
+      .debt { padding: 16px; margin-bottom: 12px; }
+      .debt-top { display: flex; align-items: flex-start; gap: 10px; }
+      .debt-name { font-size: 16.5px; font-weight: 700; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+      .debt-bal { font-size: 16.5px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .debt-meta { color: var(--muted); font-size: 13.5px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+      .debt .bar { background: var(--surface-2); margin: 12px 0 6px; height: 8px; }
+      .debt .bar > span { background: var(--accent); }
+      .debt .bar-meta { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+      .debt-actions { display: flex; gap: 8px; margin-top: 12px; }
+      .chip-btn {
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
+        border-radius: 999px; padding: 7px 14px; font-size: 13.5px; font-weight: 600; cursor: pointer; min-height: 36px;
+      }
+      .chip-btn:active { background: var(--surface-2); }
+      .chip-btn.danger { color: var(--danger); }
+      .badge-paid {
+        display: inline-block; background: var(--accent-soft); color: var(--accent);
+        font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px; margin-left: 8px; vertical-align: 2px;
+      }
+
+      /* ---------- forms ---------- */
+      .form-card { padding: 18px 16px; }
+      .field { margin-bottom: 14px; }
+      .field label { display: block; font-size: 13px; font-weight: 650; color: var(--ink-soft); margin-bottom: 6px; }
+      .field input {
+        width: 100%; border: 1.5px solid var(--line); background: var(--surface);
+        border-radius: 12px; padding: 12px 13px; font-size: 16px; min-height: 48px;
+        font-variant-numeric: tabular-nums;
+      }
+      .field input:focus { outline: none; border-color: var(--accent); }
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        border: none; border-radius: 12px; padding: 13px 18px; min-height: 50px;
+        font-size: 15.5px; font-weight: 700; cursor: pointer; width: 100%;
+        background: var(--accent); color: var(--accent-ink);
+      }
+      .btn:active { filter: brightness(0.93); }
+      .btn.secondary { background: var(--surface-2); color: var(--ink); }
+      .btn:disabled { opacity: 0.45; cursor: default; }
+      .form-err { color: var(--danger); font-size: 13.5px; font-weight: 600; margin: 0 0 12px; display: none; }
+
+      /* ---------- plan ---------- */
+      .seg { display: flex; background: var(--surface-2); border-radius: 12px; padding: 4px; gap: 4px; }
+      .seg button {
+        flex: 1; border: none; background: transparent; border-radius: 9px; padding: 10px 6px;
+        font-weight: 700; font-size: 14.5px; cursor: pointer; color: var(--ink-soft); min-height: 44px;
+      }
+      .seg button.on { background: var(--surface); color: var(--ink); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12); }
+      .seg-note { font-size: 13.5px; color: var(--muted); margin: 10px 2px 0; }
+      .plan-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+      .plan-stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
+      .plan-stat .k { font-size: 12px; color: var(--muted); font-weight: 650; text-transform: uppercase; letter-spacing: 0.05em; }
+      .plan-stat .v { font-size: 21px; font-weight: 800; margin-top: 3px; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+      .plan-stat .v small { font-size: 13px; font-weight: 600; color: var(--muted); }
+      .order-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; }
+      .order-row + .order-row { border-top: 1px solid var(--line); }
+      .order-num {
+        width: 30px; height: 30px; border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+        font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; flex: none;
+      }
+      .order-main { flex: 1; min-width: 0; }
+      .order-name { font-weight: 700; font-size: 15px; overflow-wrap: anywhere; }
+      .order-sub { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+      .order-date { text-align: right; font-weight: 700; font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+      .order-date small { display: block; color: var(--muted); font-weight: 550; font-size: 12px; }
+
+      /* ---------- track ---------- */
+      .pay-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+      .pay-row + .pay-row { border-top: 1px solid var(--line); }
+      .pay-check {
+        width: 46px; height: 46px; border-radius: 999px; flex: none; cursor: pointer;
+        border: 2px solid var(--line); background: var(--surface); color: transparent;
+        display: flex; align-items: center; justify-content: center; padding: 0;
+      }
+      .pay-check svg { width: 22px; height: 22px; }
+      .pay-check.done { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      .pay-check:disabled { opacity: 0.4; cursor: default; }
+      .pay-main { flex: 1; min-width: 0; }
+      .pay-name { font-weight: 700; font-size: 15.5px; overflow-wrap: anywhere; }
+      .pay-name.done { color: var(--muted); text-decoration: line-through; }
+      .pay-sub { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+      .pay-amt { font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .pay-amt small { display: block; text-align: right; color: var(--muted); font-weight: 550; font-size: 12px; }
+      .history-row { display: flex; justify-content: space-between; gap: 12px; padding: 11px 16px; font-size: 14px; }
+      .history-row + .history-row { border-top: 1px solid var(--line); }
+      .history-row .h-name { font-weight: 600; overflow-wrap: anywhere; }
+      .history-row .h-when { color: var(--muted); font-size: 12.5px; }
+      .history-row .h-amt { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+      .month-nav .m-label { font-size: 17px; font-weight: 750; }
+      .month-nav button {
+        border: 1px solid var(--line); background: var(--surface); border-radius: 999px;
+        width: 40px; height: 40px; font-size: 18px; cursor: pointer; color: var(--ink-soft);
+        display: flex; align-items: center; justify-content: center;
+      }
+      .month-nav button:disabled { opacity: 0.35; cursor: default; }
+
+      /* ---------- tab bar ---------- */
+      .tabbar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+        background: var(--tabbar-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        border-top: 1px solid var(--line);
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .tabbar-inner { max-width: 560px; margin: 0 auto; display: flex; }
+      .tab {
+        flex: 1; border: none; background: transparent; cursor: pointer; padding: 9px 4px 7px;
+        color: var(--muted); font-size: 11.5px; font-weight: 650;
+        display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 58px;
+      }
+      .tab svg { width: 23px; height: 23px; }
+      .tab.on { color: var(--accent); }
+      .celebrate {
+        background: var(--accent-soft); border: 1px solid var(--line); border-radius: 16px;
+        padding: 18px; text-align: center; margin-bottom: 12px;
+      }
+      .celebrate .big { font-size: 18px; font-weight: 800; }
+      .celebrate p { margin: 4px 0 0; color: var(--ink-soft); font-size: 14px; }
+      @media (prefers-reduced-motion: reduce) {
+        .bar > span { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- ======================= DEBTS ======================= -->
+      <section class="view active" id="view-debts">
+        <div class="hero">
+          <div class="label">Total still owed</div>
+          <div class="total" id="heroTotal">$0</div>
+          <div class="sub" id="heroSub">Add a debt below to start your payoff plan.</div>
+          <div class="bar"><span id="heroBar"></span></div>
+          <div class="bar-meta"><span><strong id="heroPaid">$0</strong> paid off</span><span id="heroPct">0%</span></div>
+          <div class="hero-stats">
+            <div class="hero-stat"><div class="k">Debt-free date</div><div class="v" id="heroDate">—</div></div>
+            <div class="hero-stat"><div class="k">Monthly payment</div><div class="v" id="heroMonthly">—</div></div>
+            <div class="hero-stat"><div class="k">Debts left</div><div class="v" id="heroCount">0</div></div>
+          </div>
+        </div>
+
+        <h2 class="sec">Your debts</h2>
+        <div id="debtList"></div>
+        <div class="card empty" id="debtEmpty">
+          <div class="big">No debts yet</div>
+          <p>Add every balance you're carrying — cards, loans, all of it. Seeing the real number is step one.</p>
+        </div>
+
+        <h2 class="sec" id="formTitle">Add a debt</h2>
+        <div class="card form-card">
+          <p class="form-err" id="formErr"></p>
+          <div class="field">
+            <label for="fName">Debt name</label>
+            <input id="fName" type="text" placeholder="e.g. Destiny Mastercard" autocomplete="off" maxlength="60" />
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label for="fBalance">Balance owed ($)</label>
+              <input id="fBalance" type="number" inputmode="decimal" min="0" step="0.01" placeholder="850.00" />
+            </div>
+            <div class="field">
+              <label for="fApr">APR (%)</label>
+              <input id="fApr" type="number" inputmode="decimal" min="0" step="0.01" placeholder="29.99" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="fMin">Minimum monthly payment ($)</label>
+            <input id="fMin" type="number" inputmode="decimal" min="0" step="0.01" placeholder="25.00" />
+          </div>
+          <button class="btn" id="saveDebtBtn">Add debt</button>
+          <button class="btn secondary" id="cancelEditBtn" style="display:none; margin-top:10px;">Cancel edit</button>
+        </div>
+      </section>
+
+      <!-- ======================= PLAN ======================= -->
+      <section class="view" id="view-plan">
+        <h2 class="sec" style="margin-top:6px;">Payoff strategy</h2>
+        <div class="card form-card">
+          <div class="seg" role="group" aria-label="Payoff strategy">
+            <button id="segSnow" type="button">Snowball</button>
+            <button id="segAval" type="button">Avalanche</button>
+          </div>
+          <p class="seg-note" id="strategyNote"></p>
+          <div class="field" style="margin-top:16px; margin-bottom:0;">
+            <label for="fExtra">Extra money toward debt each month ($)</label>
+            <input id="fExtra" type="number" inputmode="decimal" min="0" step="1" placeholder="0" />
+          </div>
+        </div>
+        <div id="planBody"></div>
+      </section>
+
+      <!-- ======================= TRACK ======================= -->
+      <section class="view" id="view-track">
+        <h2 class="sec" style="margin-top:6px;">Monthly payments</h2>
+        <div class="month-nav">
+          <button id="monthPrev" type="button" aria-label="Previous month">&#8249;</button>
+          <div class="m-label" id="monthLabel">This month</div>
+          <button id="monthNext" type="button" aria-label="Next month">&#8250;</button>
+        </div>
+        <div id="trackBody"></div>
+        <h2 class="sec">Payment history</h2>
+        <div id="historyBody"></div>
+      </section>
+    </div>
+
+    <!-- ======================= TAB BAR ======================= -->
+    <nav class="tabbar" aria-label="Main">
+      <div class="tabbar-inner">
+        <button class="tab on" data-view="debts" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M2.5 10h19"/><path d="M6 15h4"/></svg>
+          Debts
+        </button>
+        <button class="tab" data-view="plan" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-8"/><path d="M22 20H2"/></svg>
+          Plan
+        </button>
+        <button class="tab" data-view="track" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+          Track
+        </button>
+      </div>
+    </nav>
+
+    <script>
+      "use strict";
+      /* ---------------- state ---------------- */
+      var STORE_KEY = "debtfree.v1";
+      var state = { debts: [], strategy: "snowball", extra: 0, payments: {}, history: [] };
+      var editingId = null;
+      var viewMonthOffset = 0; // 0 = current month
+
+      function load() {
+        try {
+          var raw = localStorage.getItem(STORE_KEY);
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.debts)) {
+              state.debts = parsed.debts;
+              state.strategy = parsed.strategy === "avalanche" ? "avalanche" : "snowball";
+              state.extra = Math.max(0, Number(parsed.extra) || 0);
+              state.payments = parsed.payments || {};
+              state.history = Array.isArray(parsed.history) ? parsed.history : [];
+            }
+          }
+        } catch (e) { /* storage unavailable: run in-memory only */ }
+      }
+      function save() {
+        try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* best-effort */ }
+      }
+      function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+      /* ---------------- helpers ---------------- */
+      function money(n) {
+        return "$" + Number(n || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      function money0(n) {
+        return "$" + Math.round(Number(n || 0)).toLocaleString("en-US");
+      }
+      function monthKey(date) {
+        return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
+      }
+      function monthLabel(key) {
+        var parts = key.split("-");
+        var d = new Date(Number(parts[0]), Number(parts[1]) - 1, 1);
+        return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+      }
+      function dateAfterMonths(months) {
+        var d = new Date();
+        d.setMonth(d.getMonth() + months);
+        return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      }
+      function esc(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+      function activeDebts() { return state.debts.filter(function (d) { return d.balance > 0.004; }); }
+      function totalBalance() { return state.debts.reduce(function (s, d) { return s + Math.max(0, d.balance); }, 0); }
+      function totalStart() {
+        return state.debts.reduce(function (s, d) { return s + Math.max(0, d.startBalance || d.balance); }, 0);
+      }
+
+      /* ---------------- payoff simulation ----------------
+         Constant monthly budget = every debt's minimum + extra.
+         Minimums are paid first; the rest goes to the target debt
+         (snowball: smallest balance; avalanche: highest APR).
+         Paid-off debts' minimums roll into the attack pool.      */
+      function sortForAttack(list, strategy) {
+        var arr = list.slice();
+        if (strategy === "avalanche") {
+          arr.sort(function (a, b) { return b.apr - a.apr || a.balance - b.balance; });
+        } else {
+          arr.sort(function (a, b) { return a.balance - b.balance || b.apr - a.apr; });
+        }
+        return arr;
+      }
+      function simulate(debts, strategy, extra) {
+        var sim = debts.filter(function (d) { return d.balance > 0.004; }).map(function (d) {
+          return { id: d.id, name: d.name, balance: d.balance, startBalance: d.balance, apr: d.apr, min: d.min };
+        });
+        var budget = sim.reduce(function (s, d) { return s + d.min; }, 0) + Math.max(0, extra || 0);
+        var totalInterest = 0, months = 0;
+        var payoffMonth = {}, interestBy = {};
+        sim.forEach(function (d) { interestBy[d.id] = 0; });
+        while (sim.some(function (d) { return d.balance > 0.004; }) && months < 1200) {
+          months++;
+          sim.forEach(function (d) {
+            if (d.balance > 0.004) {
+              var i = d.balance * (d.apr / 100 / 12);
+              d.balance += i; totalInterest += i; interestBy[d.id] += i;
+            }
+          });
+          var left = budget;
+          // minimums first
+          sim.forEach(function (d) {
+            if (d.balance > 0.004 && left > 0) {
+              var pay = Math.min(d.min, d.balance, left);
+              d.balance -= pay; left -= pay;
+            }
+          });
+          // attack pool in strategy order
+          var order = sortForAttack(sim.filter(function (d) { return d.balance > 0.004; }), strategy);
+          for (var k = 0; k < order.length && left > 0.004; k++) {
+            var t = order[k];
+            var extraPay = Math.min(t.balance, left);
+            t.balance -= extraPay; left -= extraPay;
+          }
+          sim.forEach(function (d) {
+            if (d.balance <= 0.004 && payoffMonth[d.id] === undefined) { d.balance = 0; payoffMonth[d.id] = months; }
+          });
+          // safety: if budget can't cover interest growth, bail out
+          if (months > 1 && budget <= 0) break;
+        }
+        var finished = !sim.some(function (d) { return d.balance > 0.004; });
+        return {
+          months: finished ? months : Infinity,
+          totalInterest: totalInterest,
+          budget: budget,
+          payoffMonth: payoffMonth,
+          interestBy: interestBy,
+          order: sortForAttack(sim, strategy)
+        };
+      }
+      /* Planned payment per debt for one month given current balances. */
+      function monthlyPlan(debts, strategy, extra) {
+        var act = debts.filter(function (d) { return d.balance > 0.004; });
+        var plan = {};
+        var budget = act.reduce(function (s, d) { return s + d.min; }, 0) + Math.max(0, extra || 0);
+        var left = budget;
+        act.forEach(function (d) {
+          var pay = Math.min(d.min, d.balance, left);
+          plan[d.id] = pay; left -= pay;
+        });
+        var order = sortForAttack(act, strategy);
+        for (var k = 0; k < order.length && left > 0.004; k++) {
+          var t = order[k];
+          var room = Math.max(0, t.balance - (plan[t.id] || 0));
+          var add = Math.min(room, left);
+          plan[t.id] = (plan[t.id] || 0) + add; left -= add;
+        }
+        return plan;
+      }
+
+      /* ---------------- rendering ---------------- */
+      var $ = function (id) { return document.getElementById(id); };
+
+      function render() {
+        renderHero();
+        renderDebts();
+        renderPlan();
+        renderTrack();
+      }
+
+      function renderHero() {
+        var owed = totalBalance(), start = totalStart();
+        var paid = Math.max(0, start - owed);
+        var pct = start > 0 ? Math.min(100, Math.round((paid / start) * 100)) : 0;
+        $("heroTotal").textContent = money(owed);
+        $("heroBar").style.width = pct + "%";
+        $("heroPaid").textContent = money0(paid);
+        $("heroPct").textContent = pct + "% gone";
+        var act = activeDebts();
+        $("heroCount").textContent = String(act.length);
+        if (state.debts.length === 0) {
+          $("heroSub").textContent = "Add a debt below to start your payoff plan.";
+          $("heroDate").textContent = "—";
+          $("heroMonthly").textContent = "—";
+        } else if (act.length === 0) {
+          $("heroSub").innerHTML = "<strong>You're debt free.</strong> Every balance is at zero.";
+          $("heroDate").textContent = "Done";
+          $("heroMonthly").textContent = "$0";
+        } else {
+          var plan = simulate(state.debts, state.strategy, state.extra);
+          $("heroSub").innerHTML = plan.months === Infinity
+            ? "Your minimums don't cover the interest yet — check the Plan tab."
+            : "On track to be debt free by <strong>" + dateAfterMonths(plan.months) + "</strong> using the " + state.strategy + ".";
+          $("heroDate").textContent = plan.months === Infinity ? "—" : dateAfterMonths(plan.months);
+          $("heroMonthly").textContent = money0(plan.budget);
+        }
+      }
+
+      function renderDebts() {
+        var list = $("debtList");
+        list.innerHTML = "";
+        $("debtEmpty").style.display = state.debts.length === 0 ? "block" : "none";
+        state.debts.forEach(function (d) {
+          var card = document.createElement("div");
+          card.className = "card debt";
+          var startBal = Math.max(d.startBalance || d.balance, d.balance, 0.01);
+          var pct = Math.min(100, Math.max(0, Math.round(((startBal - d.balance) / startBal) * 100)));
+          var paidOff = d.balance <= 0.004;
+          card.innerHTML =
+            '<div class="debt-top"><div class="debt-name">' + esc(d.name) +
+            (paidOff ? '<span class="badge-paid">Paid off</span>' : "") +
+            '</div><div class="debt-bal">' + money(Math.max(0, d.balance)) + "</div></div>" +
+            '<div class="debt-meta">' + Number(d.apr).toFixed(2).replace(/\.00$/, "") + "% APR · " + money(d.min) + " min/month</div>" +
+            '<div class="bar"><span style="width:' + pct + '%"></span></div>' +
+            '<div class="bar-meta"><span>' + money0(Math.max(0, startBal - d.balance)) + " paid</span><span>" + pct + "%</span></div>" +
+            '<div class="debt-actions">' +
+            '<button class="chip-btn" type="button" data-act="edit">Edit</button>' +
+            '<button class="chip-btn danger" type="button" data-act="del">Delete</button>' +
+            "</div>";
+          card.querySelector('[data-act="edit"]').addEventListener("click", function () { startEdit(d.id); });
+          card.querySelector('[data-act="del"]').addEventListener("click", function () { deleteDebt(d.id); });
+          list.appendChild(card);
+        });
+      }
+
+      function renderPlan() {
+        $("segSnow").classList.toggle("on", state.strategy === "snowball");
+        $("segAval").classList.toggle("on", state.strategy === "avalanche");
+        $("strategyNote").textContent = state.strategy === "snowball"
+          ? "Snowball: knock out the smallest balance first. Quick wins keep you motivated, and each paid-off minimum rolls into the next debt."
+          : "Avalanche: attack the highest APR first. It costs the least interest overall — the math-fastest route to zero.";
+        if (document.activeElement !== $("fExtra")) $("fExtra").value = state.extra > 0 ? state.extra : "";
+
+        var body = $("planBody");
+        var act = activeDebts();
+        if (state.debts.length === 0) {
+          body.innerHTML = '<div class="card empty" style="margin-top:14px;"><div class="big">Nothing to plan yet</div><p>Add a debt on the Debts tab and your payoff plan shows up here.</p></div>';
+          return;
+        }
+        if (act.length === 0) {
+          body.innerHTML = '<div class="celebrate" style="margin-top:14px;"><div class="big">Debt free!</div><p>All balances are paid off. There\'s nothing left to plan.</p></div>';
+          return;
+        }
+        var plan = simulate(state.debts, state.strategy, state.extra);
+        if (plan.months === Infinity) {
+          body.innerHTML = '<div class="card empty" style="margin-top:14px;"><div class="big">This plan never reaches zero</div><p>Your payments don\'t cover the monthly interest. Raise the extra amount above, or check that each minimum payment is right.</p></div>';
+          return;
+        }
+        var totalPaid = totalBalance() + plan.totalInterest;
+        var stats =
+          '<div class="plan-stats">' +
+          '<div class="plan-stat"><div class="k">Debt-free date</div><div class="v">' + dateAfterMonths(plan.months) + "</div></div>" +
+          '<div class="plan-stat"><div class="k">Time to zero</div><div class="v">' + plan.months + " <small>" + (plan.months === 1 ? "month" : "months") + "</small></div></div>" +
+          '<div class="plan-stat"><div class="k">Total interest</div><div class="v">' + money(plan.totalInterest) + "</div></div>" +
+          '<div class="plan-stat"><div class="k">Monthly payment</div><div class="v">' + money(plan.budget) + "</div></div>" +
+          "</div>";
+        var rows = plan.order.slice().sort(function (a, b) {
+          return (plan.payoffMonth[a.id] || 99999) - (plan.payoffMonth[b.id] || 99999);
+        }).map(function (d, i) {
+          var pm = plan.payoffMonth[d.id];
+          return '<div class="order-row"><div class="order-num">' + (i + 1) + '</div>' +
+            '<div class="order-main"><div class="order-name">' + esc(d.name) + '</div>' +
+            '<div class="order-sub">' + money(d.startBalance) + " · " + Number(d.apr).toFixed(2).replace(/\.00$/, "") + "% APR · " + money(plan.interestBy[d.id] || 0) + " interest</div></div>" +
+            '<div class="order-date">' + (pm ? dateAfterMonths(pm) : "—") + "<small>paid off</small></div></div>";
+        }).join("");
+        body.innerHTML = stats +
+          '<h2 class="sec">Payoff order</h2><div class="card">' + rows + "</div>" +
+          '<p class="seg-note" style="margin-top:12px;">Total paid over the plan: <strong>' + money(totalPaid) + "</strong> (" + money(totalBalance()) + " balance + " + money(plan.totalInterest) + " interest). Minimums go to every debt each month; any extra goes to your target debt first (per your strategy), and each paid-off minimum rolls into the next debt.</p>";
+      }
+
+      function renderTrack() {
+        var now = new Date();
+        var viewDate = new Date(now.getFullYear(), now.getMonth() + viewMonthOffset, 1);
+        var key = monthKey(viewDate);
+        var isCurrent = viewMonthOffset === 0;
+        $("monthLabel").textContent = monthLabel(key) + (isCurrent ? "" : "");
+        $("monthNext").disabled = viewMonthOffset >= 0;
+        $("monthPrev").disabled = false;
+
+        var body = $("trackBody");
+        var act = state.debts.slice();
+        if (state.debts.length === 0) {
+          body.innerHTML = '<div class="card empty"><div class="big">No debts to track</div><p>Add a debt on the Debts tab, then check off each payment here as you make it.</p></div>';
+        } else {
+          var plan = monthlyPlan(state.debts, state.strategy, state.extra);
+          var monthPayments = state.payments[key] || {};
+          var rowsHtml = "";
+          var anyActive = false;
+          act.forEach(function (d) {
+            var paidAmt = monthPayments[d.id];
+            var isPaid = typeof paidAmt === "number";
+            var planned = plan[d.id] || 0;
+            var paidOff = d.balance <= 0.004 && !isPaid;
+            if (!paidOff) anyActive = true;
+            var amt = isPaid ? paidAmt : planned;
+            rowsHtml += '<div class="pay-row">' +
+              '<button class="pay-check' + (isPaid ? " done" : "") + '" type="button" data-pay="' + d.id + '"' + (paidOff ? " disabled" : "") + ' aria-label="Mark payment for ' + esc(d.name) + '">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg></button>' +
+              '<div class="pay-main"><div class="pay-name' + (isPaid ? " done" : "") + '">' + esc(d.name) + "</div>" +
+              '<div class="pay-sub">' + (paidOff ? "Paid off — nothing due" : isPaid ? "Paid this month" : "Balance " + money(d.balance)) + "</div></div>" +
+              '<div class="pay-amt">' + (paidOff ? "$0" : money(amt)) + (isPaid ? "" : "<small>due</small>") + "</div></div>";
+          });
+          if (!anyActive) {
+            body.innerHTML = '<div class="celebrate"><div class="big">All paid off</div><p>Every debt is at zero. Nothing due this month.</p></div>';
+          } else {
+            body.innerHTML = '<div class="card">' + rowsHtml + "</div>" +
+              '<p class="seg-note" style="margin-top:10px;">Tap the circle when you\'ve made that payment — the amount comes off the balance right away. Tap again to undo.</p>';
+          }
+          body.querySelectorAll("[data-pay]").forEach(function (btn) {
+            btn.addEventListener("click", function () { togglePayment(key, btn.getAttribute("data-pay")); });
+          });
+        }
+        renderHistory();
+      }
+
+      function renderHistory() {
+        var body = $("historyBody");
+        if (state.history.length === 0) {
+          body.innerHTML = '<div class="card empty"><div class="big">No payments yet</div><p>Payments you check off will show up here.</p></div>';
+          return;
+        }
+        var rows = state.history.slice(-30).reverse().map(function (h) {
+          return '<div class="history-row"><div><div class="h-name">' + esc(h.name) + '</div><div class="h-when">' + monthLabel(h.month) + '</div></div><div class="h-amt">' + money(h.amount) + "</div></div>";
+        }).join("");
+        body.innerHTML = '<div class="card">' + rows + "</div>";
+      }
+
+      /* ---------------- actions ---------------- */
+      function togglePayment(key, debtId) {
+        var d = state.debts.find(function (x) { return x.id === debtId; });
+        if (!d) return;
+        if (!state.payments[key]) state.payments[key] = {};
+        var existing = state.payments[key][debtId];
+        if (typeof existing === "number") {
+          // undo: give the money back
+          d.balance = Math.round((d.balance + existing) * 100) / 100;
+          delete state.payments[key][debtId];
+          state.history = state.history.filter(function (h) { return !(h.month === key && h.debtId === debtId); });
+        } else {
+          var plan = monthlyPlan(state.debts, state.strategy, state.extra);
+          var amt = Math.min(plan[debtId] || d.min, d.balance);
+          amt = Math.round(amt * 100) / 100;
+          if (amt <= 0) return;
+          state.payments[key][debtId] = amt;
+          d.balance = Math.round((d.balance - amt) * 100) / 100;
+          if (d.balance < 0.005) d.balance = 0;
+          state.history.push({ month: key, debtId: debtId, name: d.name, amount: amt });
+        }
+        save();
+        render();
+      }
+
+      function startEdit(id) {
+        var d = state.debts.find(function (x) { return x.id === id; });
+        if (!d) return;
+        editingId = id;
+        $("fName").value = d.name;
+        $("fBalance").value = d.balance;
+        $("fApr").value = d.apr;
+        $("fMin").value = d.min;
+        $("formTitle").textContent = "Edit debt";
+        $("saveDebtBtn").textContent = "Save changes";
+        $("cancelEditBtn").style.display = "block";
+        $("formErr").style.display = "none";
+        switchView("debts");
+        $("fName").scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      function resetForm() {
+        editingId = null;
+        $("fName").value = ""; $("fBalance").value = ""; $("fApr").value = ""; $("fMin").value = "";
+        $("formTitle").textContent = "Add a debt";
+        $("saveDebtBtn").textContent = "Add debt";
+        $("cancelEditBtn").style.display = "none";
+        $("formErr").style.display = "none";
+      }
+      function deleteDebt(id) {
+        var d = state.debts.find(function (x) { return x.id === id; });
+        if (!d) return;
+        state.debts = state.debts.filter(function (x) { return x.id !== id; });
+        // keep payment records for history, but drop pending checkmarks for this debt
+        Object.keys(state.payments).forEach(function (k) { delete state.payments[k][id]; });
+        if (editingId === id) resetForm();
+        save();
+        render();
+      }
+      function saveDebt() {
+        var name = $("fName").value.trim();
+        var balance = parseFloat($("fBalance").value);
+        var apr = parseFloat($("fApr").value);
+        var min = parseFloat($("fMin").value);
+        var err = $("formErr");
+        function fail(msg) { err.textContent = msg; err.style.display = "block"; }
+        if (!name) return fail("Give the debt a name — the card or loan it is.");
+        if (isNaN(balance) || balance < 0) return fail("Enter the balance owed (0 or more).");
+        if (isNaN(apr) || apr < 0 || apr > 100) return fail("Enter the APR as a percent, like 29.99.");
+        if (isNaN(min) || min < 0) return fail("Enter the minimum monthly payment.");
+        if (balance > 0 && min <= 0) return fail("A balance with a $0 minimum never gets paid off — enter the minimum payment.");
+        err.style.display = "none";
+        if (editingId) {
+          var d = state.debts.find(function (x) { return x.id === editingId; });
+          if (d) {
+            d.name = name; d.apr = apr; d.min = min;
+            if (balance !== d.balance) { d.balance = balance; d.startBalance = Math.max(d.startBalance || 0, balance); }
+          }
+        } else {
+          state.debts.push({ id: uid(), name: name, balance: balance, startBalance: balance, apr: apr, min: min });
+        }
+        resetForm();
+        save();
+        render();
+      }
+
+      /* ---------------- navigation ---------------- */
+      function switchView(name) {
+        document.querySelectorAll(".view").forEach(function (v) { v.classList.remove("active"); });
+        $("view-" + name).classList.add("active");
+        document.querySelectorAll(".tab").forEach(function (t) {
+          t.classList.toggle("on", t.getAttribute("data-view") === name);
+        });
+        window.scrollTo({ top: 0 });
+      }
+      document.querySelectorAll(".tab").forEach(function (t) {
+        t.addEventListener("click", function () { switchView(t.getAttribute("data-view")); });
+      });
+
+      /* ---------------- events ---------------- */
+      $("saveDebtBtn").addEventListener("click", saveDebt);
+      $("cancelEditBtn").addEventListener("click", resetForm);
+      $("segSnow").addEventListener("click", function () { state.strategy = "snowball"; save(); render(); });
+      $("segAval").addEventListener("click", function () { state.strategy = "avalanche"; save(); render(); });
+      $("fExtra").addEventListener("input", function () {
+        var v = parseFloat($("fExtra").value);
+        state.extra = isNaN(v) || v < 0 ? 0 : v;
+        save();
+        renderPlan();
+        renderHero();
+      });
+      $("monthPrev").addEventListener("click", function () { viewMonthOffset--; renderTrack(); });
+      $("monthNext").addEventListener("click", function () { if (viewMonthOffset < 0) { viewMonthOffset++; renderTrack(); } });
+
+      load();
+      render();
+    </script>
+  </body>
+</html>

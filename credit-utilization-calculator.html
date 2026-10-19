@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Free credit utilization calculator. Add your credit cards to see your overall and per-card utilization, and exactly how much to pay down to reach the 30% and 10% targets." />
+    <link rel="icon" href="data:," />
+    <title>Credit Utilization Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f6f4;
+        --surface: #ffffff;
+        --surface-2: #eef2ee;
+        --ink: #17211b;
+        --ink-2: #45534a;
+        --ink-3: #6b7a6f;
+        --line: #dbe3dc;
+        --accent: #0d7a5f;
+        --accent-ink: #ffffff;
+        --green: #1a9e50;
+        --green-bg: #e3f5e9;
+        --amber: #b97909;
+        --amber-bg: #fdf0d5;
+        --red: #c92a2a;
+        --red-bg: #fde8e8;
+        --focus: #0d7a5f;
+        --shadow: 0 1px 3px rgba(23, 33, 27, 0.08), 0 8px 24px rgba(23, 33, 27, 0.05);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #101512;
+          --surface: #1a211c;
+          --surface-2: #222b24;
+          --ink: #eaf0eb;
+          --ink-2: #b7c4ba;
+          --ink-3: #8b9a8f;
+          --line: #314036;
+          --accent: #2bb98d;
+          --accent-ink: #0b1510;
+          --green: #4ade80;
+          --green-bg: #15351f;
+          --amber: #f5b83d;
+          --amber-bg: #3d2f0e;
+          --red: #ff8787;
+          --red-bg: #431d1d;
+          --focus: #2bb98d;
+          --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Public Sans", system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 28px 18px 64px; }
+
+      header { margin-bottom: 22px; }
+      h1 {
+        font-size: clamp(1.7rem, 5.5vw, 2.4rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        margin: 0 0 10px;
+      }
+      .lede { color: var(--ink-2); font-size: 1.02rem; margin: 0; max-width: 60ch; }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+      h2 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        margin: 0 0 14px;
+      }
+
+      /* ---- Summary ---- */
+      .summary-top {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .big-pct {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: clamp(2.6rem, 10vw, 3.6rem);
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+      .big-pct .unit { font-size: 0.45em; font-weight: 500; }
+      .status-pill {
+        display: inline-block;
+        font-size: 0.82rem;
+        font-weight: 700;
+        padding: 4px 11px;
+        border-radius: 999px;
+        margin-top: 8px;
+      }
+      .status-pill.green { background: var(--green-bg); color: var(--green); }
+      .status-pill.amber { background: var(--amber-bg); color: var(--amber); }
+      .status-pill.red { background: var(--red-bg); color: var(--red); }
+      .status-pill.none { background: var(--surface-2); color: var(--ink-3); }
+      .totals { text-align: right; font-size: 0.92rem; color: var(--ink-2); }
+      .totals b {
+        display: block;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 1.05rem;
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .totals .row { margin-bottom: 8px; }
+      .totals .row:last-child { margin-bottom: 0; }
+
+      .gauge {
+        position: relative;
+        height: 16px;
+        border-radius: 999px;
+        margin: 22px 0 6px;
+        background: linear-gradient(to right,
+          var(--green) 0%, var(--green) 10%,
+          #e8b93d 10%, #e8b93d 30%,
+          var(--red) 30%, var(--red) 100%);
+        opacity: 0.9;
+      }
+      .gauge-marker {
+        position: absolute;
+        top: -5px;
+        width: 4px;
+        height: 26px;
+        border-radius: 2px;
+        background: var(--ink);
+        transform: translateX(-50%);
+        transition: left 0.25s ease;
+      }
+      .gauge-marker::after {
+        content: "";
+        position: absolute;
+        top: -7px; left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: var(--ink);
+      }
+      .gauge-scale {
+        position: relative;
+        height: 1.1em;
+        font-size: 0.75rem;
+        color: var(--ink-3);
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+      }
+      .gauge-scale span { position: absolute; transform: translateX(-50%); }
+      .gauge-scale span:first-child { transform: none; }
+      .gauge-scale span:last-child { transform: translateX(-100%); }
+
+      .targets {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .target {
+        background: var(--surface-2);
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+      .target .t-label { font-size: 0.82rem; font-weight: 600; color: var(--ink-2); margin-bottom: 4px; }
+      .target .t-amt {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 1.35rem;
+        font-weight: 600;
+      }
+      .target .t-note { font-size: 0.8rem; color: var(--ink-3); margin-top: 2px; }
+      .target.done .t-amt { color: var(--green); font-size: 1rem; font-family: "Public Sans", sans-serif; font-weight: 700; }
+
+      /* ---- Card rows ---- */
+      .cc-row {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 14px;
+        background: var(--surface);
+      }
+      .cc-row:last-of-type { margin-bottom: 0; }
+      .cc-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .cc-name {
+        flex: 1;
+        min-width: 0;
+        font: inherit;
+        font-weight: 700;
+        font-size: 1rem;
+        color: var(--ink);
+        background: transparent;
+        border: none;
+        border-bottom: 1px dashed var(--line);
+        padding: 2px 0;
+        border-radius: 0;
+      }
+      .cc-name:focus { outline: none; border-bottom-color: var(--focus); }
+      .remove-btn {
+        flex: none;
+        font: inherit;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--red);
+        background: var(--red-bg);
+        border: none;
+        border-radius: 8px;
+        padding: 6px 10px;
+        cursor: pointer;
+      }
+      .remove-btn:hover { filter: brightness(0.97); }
+      .cc-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .field label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--ink-2);
+        margin-bottom: 5px;
+      }
+      .money-input {
+        display: flex;
+        align-items: center;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 0 10px;
+      }
+      .money-input:focus-within { border-color: var(--focus); outline: 2px solid var(--focus); outline-offset: 1px; }
+      .money-input span { color: var(--ink-3); font-size: 0.95rem; margin-right: 2px; }
+      .money-input input {
+        flex: 1;
+        min-width: 0;
+        font: inherit;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 1rem;
+        color: var(--ink);
+        background: transparent;
+        border: none;
+        padding: 9px 0;
+      }
+      .money-input input:focus { outline: none; }
+      .cc-meter { margin-top: 14px; }
+      .cc-meter-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+      }
+      .cc-meter-top .pct {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+      .bar {
+        height: 9px;
+        border-radius: 999px;
+        background: var(--surface-2);
+        overflow: hidden;
+      }
+      .bar-fill { height: 100%; border-radius: 999px; transition: width 0.25s ease; }
+      .bar-fill.green { background: var(--green); }
+      .bar-fill.amber { background: #e8b93d; }
+      .bar-fill.red { background: var(--red); }
+      .bar-fill.none { background: var(--ink-3); }
+      .cc-paydown { font-size: 0.85rem; color: var(--ink-2); margin-top: 9px; }
+      .cc-paydown b { color: var(--ink); font-family: "IBM Plex Mono", ui-monospace, monospace; font-weight: 600; }
+      .cc-paydown .ok { color: var(--green); font-weight: 600; }
+
+      .add-btn {
+        width: 100%;
+        font: inherit;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--accent-ink);
+        background: var(--accent);
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        cursor: pointer;
+        margin-top: 14px;
+      }
+      .add-btn:hover { filter: brightness(1.07); }
+      .empty-note { color: var(--ink-3); font-size: 0.92rem; text-align: center; padding: 8px 0 2px; }
+
+      /* ---- Explainer & FAQ ---- */
+      .prose p { color: var(--ink-2); margin: 0 0 12px; }
+      .prose p:last-child { margin-bottom: 0; }
+      .prose strong { color: var(--ink); }
+      .zone-list { list-style: none; margin: 0 0 12px; padding: 0; }
+      .zone-list li {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        margin-bottom: 8px;
+        color: var(--ink-2);
+      }
+      .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; margin-top: 5px; }
+      .dot.green { background: var(--green); }
+      .dot.amber { background: #e8b93d; }
+      .dot.red { background: var(--red); }
+
+      details {
+        border-top: 1px solid var(--line);
+        padding: 14px 2px;
+      }
+      details:first-of-type { border-top: none; padding-top: 2px; }
+      details:last-of-type { padding-bottom: 2px; }
+      summary {
+        font-weight: 700;
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "+"; font-size: 1.3rem; font-weight: 400; color: var(--ink-3); flex: none; }
+      details[open ] summary::after { content: "–"; }
+      details p { color: var(--ink-2); margin: 10px 0 0; }
+
+      footer { color: var(--ink-3); font-size: 0.82rem; text-align: center; margin-top: 8px; }
+
+      @media (max-width: 480px) {
+        .wrap { padding: 20px 13px 52px; }
+        .card { padding: 16px; }
+        .targets { grid-template-columns: 1fr; }
+        .totals { text-align: left; }
+        .summary-top { flex-direction: column; align-items: flex-start; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .bar-fill, .gauge-marker { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header>
+        <h1>Credit Utilization Calculator</h1>
+        <p class="lede">Credit utilization is how much of your available credit you're using — and it's one of the biggest factors in your credit score. Add your cards below to see where you stand and exactly how much to pay down to hit the targets that matter.</p>
+      </header>
+
+      <!-- Summary -->
+      <section class="card" aria-label="Overall utilization summary">
+        <div class="summary-top">
+          <div>
+            <div class="big-pct" id="overallPct">–<span class="unit">%</span></div>
+            <span class="status-pill none" id="overallStatus">Add a card to get started</span>
+          </div>
+          <div class="totals">
+            <div class="row">Total balance<b id="totalBalance">$0</b></div>
+            <div class="row">Total credit limit<b id="totalLimit">$0</b></div>
+          </div>
+        </div>
+
+        <div class="gauge" role="img" aria-label="Utilization gauge with green zone under 10 percent, yellow zone 10 to 30 percent, red zone above 30 percent">
+          <div class="gauge-marker" id="gaugeMarker" style="left: 0%"></div>
+        </div>
+        <div class="gauge-scale" aria-hidden="true">
+          <span style="left: 0%">0%</span><span style="left: 10%">10%</span><span style="left: 30%">30%</span><span style="left: 100%">100%</span>
+        </div>
+
+        <div class="targets">
+          <div class="target" id="target30">
+            <div class="t-label">Pay down to reach 30%</div>
+            <div class="t-amt" id="pay30">—</div>
+            <div class="t-note">The line most lenders watch</div>
+          </div>
+          <div class="target" id="target10">
+            <div class="t-label">Pay down to reach 10%</div>
+            <div class="t-amt" id="pay10">—</div>
+            <div class="t-note">Where top scores usually live</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cards -->
+      <section class="card" aria-label="Your credit cards">
+        <h2>Your cards</h2>
+        <div id="cardList"></div>
+        <p class="empty-note" id="emptyNote" hidden>No cards yet — add your first one below.</p>
+        <button class="add-btn" id="addCardBtn" type="button">+ Add a card</button>
+      </section>
+
+      <!-- Explainer -->
+      <section class="card prose" aria-label="How utilization affects your credit score">
+        <h2>How utilization affects your credit score</h2>
+        <p><strong>Utilization = balance ÷ credit limit.</strong> If a card has a $1,000 limit and a $300 balance, you're using 30% of that card. Scoring models like FICO look at this ratio two ways: on each card individually, and across all your cards combined.</p>
+        <p>It matters because it signals risk. Someone using most of their available credit looks stretched thin; someone using a small slice looks in control. Utilization is the second-biggest category in the FICO score (about 30% of it, under "amounts owed") — only paying on time counts for more.</p>
+        <ul class="zone-list">
+          <li><span class="dot green"></span><span><strong>Under 10% — excellent.</strong> This is where the highest scores tend to sit.</span></li>
+          <li><span class="dot amber"></span><span><strong>10–30% — okay, but improvable.</strong> Generally considered acceptable, though your score may still be leaving points on the table.</span></li>
+          <li><span class="dot red"></span><span><strong>Over 30% — likely hurting you.</strong> Lenders and scoring models start treating you as higher-risk, and the effect grows the higher it climbs. A maxed-out card is the worst case.</span></li>
+        </ul>
+        <p>The good news: utilization has <strong>no memory</strong> in most scoring models. It's recalculated from your current balances each time your card issuer reports (usually once a month, around your statement date). Pay a balance down, and your score can recover within a billing cycle or two — no waiting years for it to "age off."</p>
+      </section>
+
+      <!-- FAQ -->
+      <section class="card" aria-label="Frequently asked questions">
+        <h2>Frequently asked questions</h2>
+
+        <details>
+          <summary>What is credit utilization?</summary>
+          <p>It's the percentage of your available credit that you're currently using. Take your balance, divide it by your credit limit, and multiply by 100. A $450 balance on a $1,500 limit is 30% utilization. Credit scoring models check it per card and overall across all your cards, so one maxed-out card can drag your score down even if the rest are empty.</p>
+        </details>
+
+        <details>
+          <summary>Why does 30% matter?</summary>
+          <p>Thirty percent is the long-standing rule of thumb: below it, you're generally seen as a responsible borrower; above it, your score starts taking noticeable hits, and the damage grows as the percentage climbs. It's not a hard cliff — 31% isn't catastrophic and 29% isn't magic — but it's a useful target. People with the very highest scores typically keep utilization under 10%, which is why this calculator shows you both targets.</p>
+        </details>
+
+        <details>
+          <summary>Does paying down my balance actually raise my score?</summary>
+          <p>Yes — and it's one of the fastest score improvements available. Because utilization is based on your current reported balances, paying a card down lowers your ratio as soon as the issuer reports the new balance to the credit bureaus, typically once a month. Many people see a change within 30–60 days. Two things to know: the gain depends on the rest of your credit profile, and the new score only sticks if the balance stays down — charging it back up brings the ratio (and the score dip) right back.</p>
+        </details>
+
+        <details>
+          <summary>Should I pay down the card with the highest utilization or the highest interest?</summary>
+          <p>For your score, pay down whichever card has the highest utilization percentage — that's what scoring models penalize most. For your wallet, the highest interest rate costs you the most money. If you can only pick one, lowering a card that's over 30% usually gives the quickest score lift, while the highest-APR card is the better long-term money move. Doing a bit of both is fine too.</p>
+        </details>
+
+        <details>
+          <summary>Does closing an old card help my utilization?</summary>
+          <p>Usually the opposite. Closing a card removes its credit limit from your total, so the same balances suddenly take up a bigger percentage of your remaining credit. Keeping an old card open — even with a zero balance — pads your total limit and lowers your overall utilization. (If it has an annual fee you don't want to pay, that's a separate calculation.)</p>
+        </details>
+      </section>
+
+      <footer>For education only — this isn't financial advice, and credit scoring models vary.</footer>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var cardList = document.getElementById("cardList");
+        var emptyNote = document.getElementById("emptyNote");
+        var addBtn = document.getElementById("addCardBtn");
+        var cardCount = 0;
+
+        var usd = new Intl.NumberFormat("en-US", {
+          style: "currency", currency: "USD", maximumFractionDigits: 0
+        });
+        var usdCents = new Intl.NumberFormat("en-US", {
+          style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2
+        });
+
+        function zone(pct) {
+          if (pct === null || isNaN(pct)) return "none";
+          if (pct < 10) return "green";
+          if (pct <= 30) return "amber";
+          return "red";
+        }
+        function zoneLabel(z) {
+          if (z === "green") return "Excellent — under 10%";
+          if (z === "amber") return "Okay — 10–30%, room to improve";
+          if (z === "red") return "High — over 30%, likely hurting your score";
+          return "Add a card to get started";
+        }
+        function parseNum(v) {
+          var n = parseFloat(String(v).replace(/[^0-9.]/g, ""));
+          return isNaN(n) || n < 0 ? 0 : n;
+        }
+        // Dollars needed to bring balance down to pct% of limit (0 if already there)
+        function payDownTo(balance, limit, pct) {
+          if (limit <= 0) return 0;
+          var target = limit * (pct / 100);
+          return Math.max(0, balance - target);
+        }
+        function fmtPay(amount) {
+          // Whole dollars unless cents matter
+          return amount % 1 === 0 ? usd.format(amount) : usdCents.format(amount);
+        }
+
+        function buildCard(name, limit, balance) {
+          cardCount++;
+          var row = document.createElement("div");
+          row.className = "cc-row";
+          row.innerHTML =
+            '<div class="cc-head">' +
+              '<input class="cc-name" type="text" aria-label="Card name" />' +
+              '<button class="remove-btn" type="button">Remove</button>' +
+            '</div>' +
+            '<div class="cc-fields">' +
+              '<div class="field"><label>Credit limit</label>' +
+                '<div class="money-input"><span>$</span><input class="cc-limit" type="number" inputmode="decimal" min="0" step="any" aria-label="Credit limit" /></div></div>' +
+              '<div class="field"><label>Current balance</label>' +
+                '<div class="money-input"><span>$</span><input class="cc-balance" type="number" inputmode="decimal" min="0" step="any" aria-label="Current balance" /></div></div>' +
+            '</div>' +
+            '<div class="cc-meter">' +
+              '<div class="cc-meter-top"><span>Utilization</span><span class="pct">—</span></div>' +
+              '<div class="bar"><div class="bar-fill none" style="width:0%"></div></div>' +
+              '<div class="cc-paydown"></div>' +
+            '</div>';
+
+          row.querySelector(".cc-name").value = name;
+          row.querySelector(".cc-limit").value = limit;
+          row.querySelector(".cc-balance").value = balance;
+
+          row.querySelector(".remove-btn").addEventListener("click", function () {
+            row.remove();
+            recalc();
+          });
+          var inputs = row.querySelectorAll("input");
+          for (var i = 0; i < inputs.length; i++) {
+            inputs[i].addEventListener("input", recalc);
+          }
+          cardList.appendChild(row);
+          return row;
+        }
+
+        function recalc() {
+          var rows = cardList.querySelectorAll(".cc-row");
+          emptyNote.hidden = rows.length > 0;
+
+          var totalBalance = 0, totalLimit = 0;
+
+          rows.forEach(function (row) {
+            var limit = parseNum(row.querySelector(".cc-limit").value);
+            var balance = parseNum(row.querySelector(".cc-balance").value);
+            totalBalance += balance;
+            totalLimit += limit;
+
+            var pctEl = row.querySelector(".pct");
+            var fill = row.querySelector(".bar-fill");
+            var payEl = row.querySelector(".cc-paydown");
+
+            if (limit <= 0) {
+              pctEl.textContent = "—";
+              fill.className = "bar-fill none";
+              fill.style.width = "0%";
+              payEl.textContent = balance > 0
+                ? "Enter this card's credit limit to calculate its utilization."
+                : "";
+              return;
+            }
+            var pct = (balance / limit) * 100;
+            var z = zone(pct);
+            pctEl.textContent = pct.toFixed(1) + "%";
+            pctEl.style.color = z === "green" ? "var(--green)" : z === "amber" ? "var(--amber)" : "var(--red)";
+            fill.className = "bar-fill " + z;
+            fill.style.width = Math.min(100, pct) + "%";
+
+            var to30 = payDownTo(balance, limit, 30);
+            var to10 = payDownTo(balance, limit, 10);
+            if (to30 > 0) {
+              payEl.innerHTML = "Pay <b>" + fmtPay(to30) + "</b> to reach 30% · <b>" + fmtPay(to10) + "</b> to reach 10%";
+            } else if (to10 > 0) {
+              payEl.innerHTML = "Under 30% already. Pay <b>" + fmtPay(to10) + "</b> more to reach 10%";
+            } else {
+              payEl.innerHTML = '<span class="ok">Under 10% — nothing to pay down.</span>';
+            }
+          });
+
+          // Overall
+          var overallPctEl = document.getElementById("overallPct");
+          var statusEl = document.getElementById("overallStatus");
+          var marker = document.getElementById("gaugeMarker");
+          document.getElementById("totalBalance").textContent = usd.format(totalBalance);
+          document.getElementById("totalLimit").textContent = usd.format(totalLimit);
+
+          if (totalLimit <= 0) {
+            overallPctEl.innerHTML = '–<span class="unit">%</span>';
+            overallPctEl.style.color = "";
+            statusEl.className = "status-pill none";
+            statusEl.textContent = rows.length ? "Enter a credit limit to see your ratio" : "Add a card to get started";
+            marker.style.left = "0%";
+            setTarget("target30", "pay30", null);
+            setTarget("target10", "pay10", null);
+            return;
+          }
+
+          var overall = (totalBalance / totalLimit) * 100;
+          var oz = zone(overall);
+          overallPctEl.innerHTML = overall.toFixed(1) + '<span class="unit">%</span>';
+          overallPctEl.style.color = oz === "green" ? "var(--green)" : oz === "amber" ? "var(--amber)" : "var(--red)";
+          statusEl.className = "status-pill " + oz;
+          statusEl.textContent = zoneLabel(oz);
+          marker.style.left = Math.min(100, overall) + "%";
+
+          setTarget("target30", "pay30", payDownTo(totalBalance, totalLimit, 30));
+          setTarget("target10", "pay10", payDownTo(totalBalance, totalLimit, 10));
+        }
+
+        function setTarget(boxId, amtId, amount) {
+          var box = document.getElementById(boxId);
+          var amt = document.getElementById(amtId);
+          if (amount === null) {
+            box.classList.remove("done");
+            amt.textContent = "—";
+          } else if (amount <= 0) {
+            box.classList.add("done");
+            amt.textContent = "Already there ✓";
+          } else {
+            box.classList.remove("done");
+            amt.textContent = fmtPay(amount);
+          }
+        }
+
+        addBtn.addEventListener("click", function () {
+          var row = buildCard("Card " + (cardList.querySelectorAll(".cc-row").length + 1), "", "");
+          var limitInput = row.querySelector(".cc-limit");
+          if (limitInput) limitInput.focus();
+          recalc();
+        });
+
+        // Starter card with generic sample numbers so the tool shows itself working
+        buildCard("Card 1", 5000, 1800);
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

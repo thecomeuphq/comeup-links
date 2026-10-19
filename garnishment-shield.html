@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Garnishment Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#0b0c0e;
+        --bg2:#101215;
+        --panel:#16181d;
+        --panel2:#1c1f26;
+        --line:#2b2f38;
+        --line-soft:#22252d;
+        --ink:#f2ede4;
+        --ink-dim:#b9b2a4;
+        --ink-faint:#8a8578;
+        --amber:#f5a623;
+        --amber-hot:#ff7a1a;
+        --amber-soft:rgba(245,166,35,.12);
+        --danger:#ff5a3c;
+        --danger-soft:rgba(255,90,60,.12);
+        --good:#63c96f;
+        --good-soft:rgba(99,201,111,.12);
+        --mono:"Barlow Semi Condensed",ui-monospace,SFMono-Regular,Menlo,monospace;
+        --disp:"Barlow Condensed",sans-serif;
+        --body:"Barlow",system-ui,sans-serif;
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;background:var(--bg);color:var(--ink);
+        font-family:var(--body);font-size:16px;line-height:1.5;
+        -webkit-font-smoothing:antialiased;
+      }
+      body::before{
+        content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+        background:
+          radial-gradient(900px 480px at 85% -10%,rgba(245,166,35,.08),transparent 60%),
+          radial-gradient(700px 500px at -10% 30%,rgba(255,122,26,.05),transparent 60%);
+      }
+      .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 16px 64px}
+
+      /* ---------- hero ---------- */
+      .hero{padding:34px 0 8px}
+      .hazard{height:8px;border-radius:2px;margin-bottom:22px;
+        background:repeating-linear-gradient(45deg,var(--amber) 0 14px,#14161a 14px 28px);opacity:.9}
+      .hero .tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);
+        font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);
+        border:1px solid rgba(245,166,35,.4);background:var(--amber-soft);
+        padding:5px 11px;border-radius:999px}
+      .hero .tag svg{width:13px;height:13px;flex:none}
+      h1{font-family:var(--disp);font-weight:700;text-transform:uppercase;
+        font-size:clamp(40px,9.5vw,64px);line-height:.98;letter-spacing:.01em;margin:18px 0 6px}
+      h1 .strike{color:var(--amber-hot)}
+      .hero .sub{font-family:var(--disp);font-weight:600;text-transform:uppercase;
+        font-size:clamp(21px,5.4vw,30px);letter-spacing:.02em;color:var(--ink);margin:0 0 12px}
+      .hero .sub em{font-style:normal;color:var(--amber)}
+      .hero p.lede{color:var(--ink-dim);font-size:16.5px;max-width:56ch;margin:0}
+      .hero p.lede strong{color:var(--ink)}
+
+      /* ---------- progress ---------- */
+      .progress{display:flex;gap:6px;margin:26px 0 18px}
+      .pstep{flex:1;text-align:left;background:none;border:none;padding:0;cursor:default;font-family:inherit}
+      .pstep .bar{height:5px;border-radius:3px;background:var(--line);margin-bottom:7px;transition:background .3s}
+      .pstep .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+      .pstep.active .bar{background:var(--amber)}
+      .pstep.active .lbl{color:var(--amber)}
+      .pstep.done .bar{background:var(--amber-hot)}
+      .pstep.done .lbl{color:var(--ink-dim)}
+      .pstep button{all:unset;display:block;width:100%;cursor:pointer}
+      .pstep button:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:4px}
+
+      /* ---------- panels / forms ---------- */
+      .panel{background:linear-gradient(180deg,var(--panel2),var(--panel));
+        border:1px solid var(--line);border-radius:14px;padding:22px 20px 24px;
+        box-shadow:0 18px 40px rgba(0,0,0,.45)}
+      .panel[hidden]{display:none}
+      .step-kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;
+        text-transform:uppercase;color:var(--amber);margin:0 0 4px}
+      .panel h2{font-family:var(--disp);font-weight:600;text-transform:uppercase;
+        font-size:29px;letter-spacing:.02em;margin:0 0 6px;line-height:1.05}
+      .panel .intro{color:var(--ink-dim);margin:0 0 18px;font-size:15px}
+      .field{margin-bottom:16px}
+      .field label{display:block;font-weight:600;font-size:14.5px;margin-bottom:6px}
+      .field .hint{font-size:13px;color:var(--ink-faint);margin-top:5px;line-height:1.45}
+      .field .hint strong{color:var(--ink-dim)}
+      .money{position:relative}
+      .money span{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+        color:var(--ink-faint);font-family:var(--mono);font-size:16px;pointer-events:none}
+      input[type=number],input[type=text],select{
+        width:100%;background:#0e1013;border:1px solid var(--line);border-radius:9px;
+        color:var(--ink);font-family:var(--body);font-size:16.5px;padding:12px 13px;
+        appearance:none;-webkit-appearance:none}
+      .money input{padding-left:28px;font-family:var(--mono);font-size:17px}
+      input:focus,select:focus{outline:2px solid var(--amber);outline-offset:1px;border-color:var(--amber)}
+      select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f5a623' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+        background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
+      .seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+      .seg button{flex:1;background:#0e1013;color:var(--ink-dim);border:none;padding:12px 6px;
+        font-family:var(--body);font-size:15px;font-weight:600;cursor:pointer}
+      .seg button[aria-pressed="true"]{background:var(--amber);color:#17130a}
+      .seg button:focus-visible{outline:2px solid var(--amber);outline-offset:-2px}
+      .err{display:none;color:var(--danger);font-size:13.5px;margin-top:6px;font-weight:500}
+      .err.show{display:block}
+      .subfields{border:1px dashed var(--line);border-radius:10px;padding:14px 14px 2px;margin:0 0 16px;background:rgba(0,0,0,.25)}
+      .subfields[hidden]{display:none}
+      .subfields .sf-title{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;
+        text-transform:uppercase;color:var(--amber);margin:0 0 12px}
+
+      .navrow{display:flex;gap:10px;margin-top:22px}
+      .btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+        border-radius:10px;padding:14px 16px;font-family:var(--body);font-size:16px;font-weight:700;
+        cursor:pointer;border:1px solid transparent;text-decoration:none;text-align:center}
+      .btn-primary{background:linear-gradient(180deg,var(--amber),#e08f0d);color:#1a1405;
+        box-shadow:0 8px 22px rgba(245,166,35,.25)}
+      .btn-primary:active{transform:translateY(1px)}
+      .btn-ghost{background:transparent;color:var(--ink-dim);border-color:var(--line);flex:0 0 auto;padding:14px 18px}
+      .btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+      /* ---------- results ---------- */
+      .verdict{border-radius:12px;padding:16px 17px;margin-bottom:16px;border:1px solid}
+      .verdict h3{font-family:var(--disp);font-size:23px;text-transform:uppercase;
+        letter-spacing:.02em;margin:0 0 4px;line-height:1.05}
+      .verdict p{margin:0;font-size:14.5px}
+      .verdict.bad{background:var(--danger-soft);border-color:rgba(255,90,60,.5)}
+      .verdict.bad h3{color:var(--danger)}
+      .verdict.bad p{color:#f3c9bf}
+      .verdict.ok{background:var(--good-soft);border-color:rgba(99,201,111,.45)}
+      .verdict.ok h3{color:var(--good)}
+      .verdict.ok p{color:#cdeeda}
+      .verdict.idle{background:var(--amber-soft);border-color:rgba(245,166,35,.4)}
+      .verdict.idle h3{color:var(--amber)}
+      .verdict.idle p{color:var(--ink-dim)}
+
+      .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+      .stat{background:#0e1013;border:1px solid var(--line-soft);border-radius:11px;padding:13px 14px}
+      .stat.wide{grid-column:1/-1}
+      .stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+      .stat .v{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink);line-height:1.1}
+      .stat .v.amber{color:var(--amber)}
+      .stat .v.red{color:var(--danger)}
+      .stat .v.green{color:var(--good)}
+      .stat .n{font-size:12.5px;color:var(--ink-faint);margin-top:3px;line-height:1.4}
+
+      .explain{background:rgba(0,0,0,.28);border:1px solid var(--line-soft);border-radius:11px;padding:15px 16px;margin-bottom:16px}
+      .explain h4{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin:0 0 8px}
+      .explain p{margin:0 0 9px;font-size:14.5px;color:var(--ink-dim)}
+      .explain p:last-child{margin-bottom:0}
+      .explain strong{color:var(--ink)}
+      .explain .mathline{font-family:var(--mono);font-size:14px;color:var(--ink);
+        background:#0e1013;border:1px solid var(--line-soft);border-radius:8px;padding:9px 11px;margin:8px 0}
+
+      .ppi{margin:4px 0 18px}
+      .ppi .top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+      .ppi .name{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint)}
+      .ppi .score{font-family:var(--mono);font-size:38px;font-weight:600;line-height:1}
+      .ppi .track{height:12px;border-radius:6px;background:#0e1013;border:1px solid var(--line-soft);margin:9px 0 7px;overflow:hidden}
+      .ppi .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--amber-hot),var(--amber));width:0;transition:width .7s ease}
+      .ppi .fill.low{background:linear-gradient(90deg,#c22f16,var(--danger))}
+      .ppi .fill.high{background:linear-gradient(90deg,#3d9e4d,var(--good))}
+      .ppi .why{font-size:13px;color:var(--ink-faint);margin:0;line-height:1.5}
+
+      .expensebox{border:1px solid var(--line);border-radius:11px;padding:15px 16px;background:var(--panel2)}
+      .expensebox h4{margin:0 0 4px;font-size:15.5px}
+      .expensebox p{margin:0 0 12px;font-size:13.5px;color:var(--ink-faint)}
+      .shortfall{margin-top:12px;font-size:14.5px;border-radius:9px;padding:11px 13px;display:none}
+      .shortfall.show{display:block}
+      .shortfall.tight{background:var(--danger-soft);color:#f3c9bf;border:1px solid rgba(255,90,60,.4)}
+      .shortfall.fine{background:var(--good-soft);color:#cdeeda;border:1px solid rgba(99,201,111,.35)}
+
+      /* ---------- tiers ---------- */
+      .tier{border:1px solid var(--line);border-radius:12px;padding:17px 17px 15px;margin-bottom:14px;background:#101216}
+      .tier.primary{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),0 10px 26px rgba(245,166,35,.10)}
+      .tier .thead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+      .tier .tno{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:#17130a;
+        background:var(--amber);border-radius:5px;padding:3px 8px;font-weight:700}
+      .tier.dim .tno{background:var(--line);color:var(--ink-dim)}
+      .tier h3{font-family:var(--disp);font-size:22px;text-transform:uppercase;margin:0;letter-spacing:.02em;line-height:1}
+      .tier .rec{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+        color:var(--amber);border:1px solid rgba(245,166,35,.5);padding:2.5px 8px;border-radius:999px}
+      .tier .tbody{font-size:14.5px;color:var(--ink-dim);margin:0 0 12px}
+      .tier .tbody strong{color:var(--ink)}
+      .scriptbox{background:#0a0b0d;border:1px solid var(--line-soft);border-radius:9px;
+        padding:13px 14px;font-size:13px;line-height:1.6;color:#d8d2c4;white-space:pre-wrap;
+        font-family:var(--mono);max-height:300px;overflow:auto;margin-bottom:11px}
+      .copybtn{display:inline-flex;align-items:center;gap:7px;background:var(--amber-soft);
+        border:1px solid rgba(245,166,35,.5);color:var(--amber);border-radius:8px;
+        padding:9px 14px;font-family:var(--body);font-size:14px;font-weight:600;cursor:pointer}
+      .copybtn svg{width:14px;height:14px}
+      .copybtn.copied{background:var(--good-soft);border-color:rgba(99,201,111,.5);color:var(--good)}
+      .copybtn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+      .stab{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+      .stab .cell{background:#0a0b0d;border:1px solid var(--line-soft);border-radius:9px;padding:10px 12px}
+      .stab .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+      .stab .v{font-family:var(--mono);font-size:19px;font-weight:600}
+
+      /* ---------- blueprint ---------- */
+      .blueprint{margin-top:24px;border:1px solid var(--amber);border-radius:14px;overflow:hidden;
+        background:linear-gradient(180deg,#1d1710,#131110);box-shadow:0 22px 50px rgba(0,0,0,.55)}
+      .blueprint .bhead{padding:18px 20px 4px}
+      .blueprint .bhead .bk{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+        text-transform:uppercase;color:var(--amber)}
+      .blueprint .bhead h3{font-family:var(--disp);font-size:30px;text-transform:uppercase;margin:2px 0 2px;line-height:1}
+      .blueprint .bhead p{margin:0;color:var(--ink-dim);font-size:13.5px}
+      .blueprint .bgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-soft);
+        border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);margin-top:16px}
+      .blueprint .bcell{background:#151312;padding:12px 16px}
+      .blueprint .bk2{font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint)}
+      .blueprint .bv{font-family:var(--mono);font-size:22px;font-weight:600}
+      .blueprint .bv.red{color:var(--danger)} .blueprint .bv.amber{color:var(--amber)} .blueprint .bv.green{color:var(--good)}
+      .blueprint .bscript{padding:15px 20px 5px}
+      .blueprint .bscript h4{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin:0 0 8px}
+      .blueprint .bscript .scriptbox{margin-bottom:0}
+      .blueprint .bfoot{padding:14px 20px 18px;display:flex;gap:10px;flex-wrap:wrap}
+      .blueprint .fineprint{padding:0 20px 16px;font-size:12px;color:var(--ink-faint)}
+
+      /* ---------- below fold ---------- */
+      .section-title{font-family:var(--disp);font-size:26px;text-transform:uppercase;
+        letter-spacing:.02em;margin:38px 0 12px}
+      .nextgrid{display:grid;gap:12px}
+      @media(min-width:620px){.nextgrid{grid-template-columns:1fr 1fr}}
+      .nextcard{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+        padding:17px;text-decoration:none;color:var(--ink)}
+      .nextcard:hover{border-color:var(--amber)}
+      .nextcard .nk{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber)}
+      .nextcard h3{font-family:var(--disp);font-size:22px;text-transform:uppercase;margin:4px 0 5px;line-height:1.05}
+      .nextcard p{margin:0;color:var(--ink-dim);font-size:14px}
+      .nextcard .go{display:inline-block;margin-top:10px;color:var(--amber);font-weight:700;font-size:14px}
+      .cta{margin-top:14px;border-radius:12px;padding:20px;text-decoration:none;display:block;
+        background:linear-gradient(120deg,#2a1c05,#1c1507 55%,#241203);border:1px solid var(--amber)}
+      .cta h3{font-family:var(--disp);font-size:25px;text-transform:uppercase;margin:0 0 5px;line-height:1.05;color:var(--ink)}
+      .cta p{margin:0;color:var(--ink-dim);font-size:14.5px}
+      .cta .go{display:inline-block;margin-top:11px;background:var(--amber);color:#1a1405;font-weight:700;
+        padding:9px 16px;border-radius:8px;font-size:14.5px}
+      details{background:var(--panel);border:1px solid var(--line);border-radius:11px;margin-bottom:10px}
+      summary{cursor:pointer;padding:15px 17px;font-weight:600;font-size:15.5px;list-style:none;
+        display:flex;justify-content:space-between;gap:12px;align-items:center}
+      summary::-webkit-details-marker{display:none}
+      summary .chev{color:var(--amber);font-family:var(--mono);flex:none}
+      details[open ] summary .chev{transform:rotate(45deg)}
+      details .ans{padding:0 17px 16px;color:var(--ink-dim);font-size:14.5px}
+      details .ans p{margin:0 0 8px} details .ans p:last-child{margin:0}
+      details .ans strong{color:var(--ink)}
+      .disclaimer{margin-top:26px;border:1px dashed var(--line);border-radius:11px;padding:14px 16px;
+        color:var(--ink-faint);font-size:13px;line-height:1.55}
+      .disclaimer strong{color:var(--ink-dim)}
+      .optrow{display:grid;gap:12px}
+      @media(min-width:620px){.optrow{grid-template-columns:1fr 1fr}}
+      @media(max-width:480px){
+        .statgrid{grid-template-columns:1fr 1fr}
+        .blueprint .bgrid{grid-template-columns:1fr 1fr}
+        .panel{padding:19px 15px 21px}
+        .navrow{flex-direction:column-reverse}
+        .btn-ghost{flex:1}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero">
+        <div class="hazard" aria-hidden="true"></div>
+        <span class="tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6l7-3z"/></svg>
+          Wage Garnishment Triage
+        </span>
+        <h1>They're taking <span class="strike">25%</span> of your check.</h1>
+        <p class="sub">The law says they might only get <em>15%</em>. Check the math.</p>
+        <p class="lede">Federal law — Title III of the Consumer Credit Protection Act — puts a hard ceiling on what can be taken from your paycheck, and payroll departments blow past it more often than you'd think. Enter your numbers, run the cap engine, and get a <strong>defense plan built for your exact situation</strong>: court filing, payroll correction, or stabilization.</p>
+      </header>
+
+      <!-- ================= PROGRESS ================= -->
+      <nav class="progress" id="progress" aria-label="Progress">
+        <div class="pstep active" data-pstep="1"><button type="button" data-goto="1"><span class="bar"></span><span class="lbl">1 · Pay Baseline</span></button></div>
+        <div class="pstep" data-pstep="2"><button type="button" data-goto="2"><span class="bar"></span><span class="lbl">2 · Seizure Notice</span></button></div>
+        <div class="pstep" data-pstep="3"><button type="button" data-goto="3"><span class="bar"></span><span class="lbl">3 · Cap Engine</span></button></div>
+        <div class="pstep" data-pstep="4"><button type="button" data-goto="4"><span class="bar"></span><span class="lbl">4 · Defense Plan</span></button></div>
+      </nav>
+
+      <!-- ================= STEP 1 ================= -->
+      <section class="panel" id="step1">
+        <p class="step-kicker">Step 1 of 4</p>
+        <h2>Pay Baseline</h2>
+        <p class="intro">Your last pay stub has everything on this screen. The cap is calculated from <strong>disposable earnings</strong> — what's left after legally required taxes — never from your gross.</p>
+
+        <div class="field">
+          <label for="gross">Gross pay per paycheck</label>
+          <div class="money"><span>$</span><input type="number" id="gross" inputmode="decimal" min="0" step="0.01" placeholder="1,150.00" /></div>
+          <p class="hint">The full amount before anything comes out — top line of your stub.</p>
+          <p class="err" id="err-gross">Enter your gross pay per paycheck.</p>
+        </div>
+
+        <div class="field">
+          <label for="freq">Pay frequency</label>
+          <select id="freq">
+            <option value="weekly">Weekly — paid every week (52 checks/yr)</option>
+            <option value="biweekly" selected>Bi-weekly — every two weeks (26 checks/yr)</option>
+            <option value="semimonthly">Semi-monthly — twice a month (24 checks/yr)</option>
+            <option value="monthly">Monthly — once a month (12 checks/yr)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="taxes">Mandatory tax deductions per paycheck</label>
+          <div class="money"><span>$</span><input type="number" id="taxes" inputmode="decimal" min="0" step="0.01" placeholder="210.00" /></div>
+          <p class="hint">Add up <strong>only</strong> what's legally required: federal + state + local income tax and Social Security / Medicare (FICA). Do <strong>not</strong> include 401(k), health insurance, union dues, or anything voluntary — the law doesn't count those here.</p>
+          <p class="err" id="err-taxes">Enter your mandatory tax deductions (enter 0 if none).</p>
+        </div>
+
+        <div class="field">
+          <label for="state">State of employment</label>
+          <select id="state">
+            <option value="FED" selected>Federal rules (Title III) — default</option>
+          </select>
+          <p class="hint">Some states protect more of your check than federal law does. Pick your work state and the engine applies its rule where it's stronger. Child support and tax levies follow their own rules regardless of state.</p>
+        </div>
+
+        <div class="navrow">
+          <button class="btn btn-primary" id="toStep2" type="button">Continue to the seizure notice →</button>
+        </div>
+      </section>
+
+      <!-- ================= STEP 2 ================= -->
+      <section class="panel" id="step2" hidden>
+        <p class="step-kicker">Step 2 of 4</p>
+        <h2>Seizure Notice</h2>
+        <p class="intro">What kind of order is hitting your check, and how much are they taking right now? Different order types play by completely different rules.</p>
+
+        <div class="field">
+          <label for="orderType">Type of order</label>
+          <select id="orderType">
+            <option value="consumer" selected>Consumer / medical debt (court judgment)</option>
+            <option value="tax">IRS or state tax levy</option>
+            <option value="student">Student loans (federal)</option>
+            <option value="support">Child support</option>
+          </select>
+        </div>
+
+        <!-- tax levy subfields -->
+        <div class="subfields" id="taxFields" hidden>
+          <p class="sf-title">Tax levy details — the IRS exemption math needs these</p>
+          <div class="field">
+            <label for="filing">Tax filing status</label>
+            <select id="filing">
+              <option value="single" selected>Single</option>
+              <option value="mfj">Married filing jointly</option>
+              <option value="hoh">Head of household</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:10px">
+            <label for="deps">Dependents claimed on your return</label>
+            <input type="number" id="deps" inputmode="numeric" min="0" max="20" step="1" value="0" />
+          </div>
+        </div>
+
+        <!-- child support subfields -->
+        <div class="subfields" id="supportFields" hidden>
+          <p class="sf-title">Child support details — these set your cap percentage</p>
+          <div class="field">
+            <label for="csOther">Are you supporting another spouse or child (not on this order)?</label>
+            <select id="csOther">
+              <option value="yes" selected>Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:10px">
+            <label for="csArrears">Are you 12+ weeks behind (in arrears) on support?</label>
+            <select id="csArrears">
+              <option value="no" selected>No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Current deduction — how is it taken?</label>
+          <div class="seg" role="group" aria-label="Deduction format">
+            <button type="button" id="segAmt" aria-pressed="true">$ per paycheck</button>
+            <button type="button" id="segPct" aria-pressed="false">% of gross pay</button>
+          </div>
+        </div>
+
+        <div class="field" id="dedAmtWrap">
+          <label for="dedAmt">Amount taken per paycheck</label>
+          <div class="money"><span>$</span><input type="number" id="dedAmt" inputmode="decimal" min="0" step="0.01" placeholder="287.50" /></div>
+          <p class="err" id="err-ded">Enter the amount currently being taken (0 if nothing yet).</p>
+        </div>
+
+        <div class="field" id="dedPctWrap" hidden>
+          <label for="dedPct">Percent of gross pay taken</label>
+          <div class="money"><span>%</span><input type="number" id="dedPct" inputmode="decimal" min="0" max="100" step="0.1" placeholder="25" /></div>
+          <p class="err" id="err-dedpct">Enter the percentage currently being taken.</p>
+        </div>
+
+        <div class="field">
+          <label for="payrollOff">Does the math on your pay stub look wrong?</label>
+          <select id="payrollOff">
+            <option value="unknown" selected>Not sure</option>
+            <option value="yes">Yes — looks like they used my gross pay, or the numbers don't add up</option>
+            <option value="no">No — the stub math looks right</option>
+          </select>
+          <p class="hint">A classic error: payroll calculates the percentage from your <strong>gross</strong> pay instead of your disposable earnings. That one mistake can cost you hundreds a month.</p>
+        </div>
+
+        <div class="navrow">
+          <button class="btn btn-ghost" id="back1" type="button">← Back</button>
+          <button class="btn btn-primary" id="runEngine" type="button">Run the Cap Engine →</button>
+        </div>
+      </section>
+
+      <!-- ================= STEP 3 ================= -->
+      <section class="panel" id="step3" hidden>
+        <p class="step-kicker">Step 3 of 4</p>
+        <h2>The Cap Engine</h2>
+        <p class="intro">Here's the most the law allows them to take from each check — and what they're actually taking.</p>
+
+        <div class="verdict" id="verdict">
+          <h3 id="verdictTitle"></h3>
+          <p id="verdictBody"></p>
+        </div>
+
+        <div class="statgrid">
+          <div class="stat">
+            <div class="k">Disposable earnings / check</div>
+            <div class="v" id="stDisposable">—</div>
+            <div class="n">Gross minus mandatory taxes only</div>
+          </div>
+          <div class="stat">
+            <div class="k">Legal maximum / check</div>
+            <div class="v amber" id="stCap">—</div>
+            <div class="n" id="stCapNote">The ceiling the law sets</div>
+          </div>
+          <div class="stat">
+            <div class="k">Currently taken / check</div>
+            <div class="v" id="stCurrent">—</div>
+            <div class="n" id="stCurrentNote"></div>
+          </div>
+          <div class="stat">
+            <div class="k">Over-deduction / check</div>
+            <div class="v" id="stOver">—</div>
+            <div class="n" id="stOverNote"></div>
+          </div>
+          <div class="stat wide">
+            <div class="k">Guaranteed net pay (if the cap is enforced)</div>
+            <div class="v green" id="stNet">—</div>
+            <div class="n" id="stNetNote"></div>
+          </div>
+        </div>
+
+        <div class="ppi">
+          <div class="top">
+            <span class="name">Paycheck Protection Index</span>
+            <span class="score" id="ppiScore">—</span>
+          </div>
+          <div class="track"><div class="fill" id="ppiFill"></div></div>
+          <p class="why" id="ppiWhy"></p>
+        </div>
+
+        <div class="explain" id="explainBox">
+          <h4>How the cap works — in plain words</h4>
+          <div id="explainBody"></div>
+        </div>
+
+        <div class="expensebox">
+          <h4>Can you live on the guaranteed number?</h4>
+          <p>Enter your core monthly essentials — rent, utilities, food, transport, phone, minimums on other bills. We'll measure the guaranteed take-home against them.</p>
+          <div class="field" style="margin-bottom:0">
+            <label for="expenses">Core living expenses per month</label>
+            <div class="money"><span>$</span><input type="number" id="expenses" inputmode="decimal" min="0" step="0.01" placeholder="1,850.00" /></div>
+          </div>
+          <div class="shortfall" id="shortfall"></div>
+        </div>
+
+        <div class="navrow">
+          <button class="btn btn-ghost" id="back2" type="button">← Back</button>
+          <button class="btn btn-primary" id="toStep4" type="button">Build my defense strategy →</button>
+        </div>
+      </section>
+
+      <!-- ================= STEP 4 ================= -->
+      <section class="panel" id="step4" hidden>
+        <p class="step-kicker">Step 4 of 4</p>
+        <h2>Defense Strategy</h2>
+        <p class="intro">Three plays, ranked for your situation. The one marked <strong>Start here</strong> matches what the Cap Engine found. Add your name and employer below and both documents fill themselves in.</p>
+
+        <div class="optrow">
+          <div class="field">
+            <label for="yourName">Your full name (optional)</label>
+            <input type="text" id="yourName" placeholder="e.g., Jordan Ellis" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="employer">Employer name (optional)</label>
+            <input type="text" id="employer" placeholder="e.g., Acme Logistics, Inc." />
+          </div>
+        </div>
+
+        <div id="tiers"></div>
+
+        <!-- ============ BLUEPRINT ============ -->
+        <div class="blueprint" id="blueprint">
+          <div class="hazard" aria-hidden="true" style="margin:0;border-radius:0"></div>
+          <div class="bhead">
+            <span class="bk">Wage Garnishment Defense Blueprint</span>
+            <h3 id="bpTitle">Your numbers, on one card</h3>
+            <p id="bpMeta"></p>
+          </div>
+          <div class="bgrid">
+            <div class="bcell"><div class="bk2">Legal cap / check</div><div class="bv amber" id="bpCap">—</div></div>
+            <div class="bcell"><div class="bk2">Over-deduction / check</div><div class="bv" id="bpOver">—</div></div>
+            <div class="bcell"><div class="bk2">Guaranteed net / check</div><div class="bv green" id="bpNet">—</div></div>
+            <div class="bcell"><div class="bk2">Protection Index</div><div class="bv" id="bpPpi">—</div></div>
+          </div>
+          <div class="bscript">
+            <h4 id="bpScriptTitle">Your first move</h4>
+            <div class="scriptbox" id="bpScript"></div>
+          </div>
+          <div class="bfoot">
+            <button class="copybtn" id="copyBlueprint" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+              <span>Copy the full blueprint</span>
+            </button>
+            <button class="btn btn-ghost" id="restart" type="button" style="flex:0 0 auto">↺ Start over</button>
+          </div>
+          <p class="fineprint">Screenshot this card before you talk to payroll or the court — it has every number you need in the conversation.</p>
+        </div>
+
+        <div class="navrow">
+          <button class="btn btn-ghost" id="back3" type="button">← Back to results</button>
+        </div>
+      </section>
+
+      <!-- ================= NEXT STEPS ================= -->
+      <h2 class="section-title">Keep the shield up</h2>
+      <div class="nextgrid">
+        <a class="nextcard" href="https://thecomeuphq.github.io/comeup-links/predatory-debt-exit.html" target="_blank" rel="noopener">
+          <span class="nk">Next tool</span>
+          <h3>Predatory Debt Exit</h3>
+          <p>A garnishment usually starts with a debt that got out of hand. Map the exit from high-interest balances before the next order lands.</p>
+          <span class="go">Open the tool →</span>
+        </a>
+        <a class="nextcard" href="https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html" target="_blank" rel="noopener">
+          <span class="nk">Next tool</span>
+          <h3>Payday Cash Flow Allocator</h3>
+          <p>Rebuild each payday around your guaranteed take-home — bills sequenced so the smaller check still covers everything that matters.</p>
+          <span class="go">Open the tool →</span>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+        <h3>Protect every dollar that's yours</h3>
+        <p>The <strong>Debt Snowball vs Avalanche Battle Plan</strong> and the <strong>Paycheck-to-Paycheck Weekly Planner</strong> on Gumroad — printable systems to kill the debts behind the garnishment and run every week on purpose.</p>
+        <span class="go">Get the planners on Gumroad →</span>
+      </a>
+
+      <!-- ================= FAQ ================= -->
+      <h2 class="section-title">Straight answers</h2>
+
+      <details>
+        <summary>What exactly are "disposable earnings"? <span class="chev">+</span></summary>
+        <div class="ans">
+          <p>Disposable earnings are what's left of your pay after <strong>only the deductions the law requires</strong> — federal, state, and local income taxes, plus Social Security and Medicare (FICA).</p>
+          <p>Everything voluntary stays in the number: 401(k) contributions, health insurance premiums, union dues, parking, charitable giving. That's why disposable earnings are almost always <strong>higher than your actual take-home pay</strong> — and why a garnishment calculated "from the check you actually get" can still be wrong in the other direction. The cap math in this tool uses the legal definition.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Can they garnish my wages without suing me first? <span class="chev">+</span></summary>
+        <div class="ans">
+          <p>For ordinary consumer debt — credit cards, medical bills, personal loans — <strong>generally no</strong>. A creditor normally has to sue you, win a judgment, and then get a garnishment order. If a consumer garnishment shows up and you were never served with a lawsuit, that's a red flag worth raising with the court immediately — improper service is a common defense.</p>
+          <p>The big exceptions that <strong>don't</strong> need a court judgment first: IRS and state tax levies, federal student loans (administrative wage garnishment, after notice and a chance to request a hearing), and child support orders. Those come from the government process, not a lawsuit.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>What should I do the day I get the notice? <span class="chev">+</span></summary>
+        <div class="ans">
+          <p><strong>1. Don't ignore it.</strong> Most garnishment notices include a Claim of Exemption form and a deadline — often 10–30 days depending on your state and the order type. Missing it can waive rights you'd otherwise have.</p>
+          <p><strong>2. Check the math.</strong> Run your numbers here. If the deduction beats the legal cap, you have a concrete, numbers-based objection — the strongest kind.</p>
+          <p><strong>3. Talk to payroll in writing.</strong> Payroll must follow the order, but they also must follow the law. A written correction memo (Tier 2 above) creates a paper trail a verbal chat doesn't.</p>
+          <p><strong>4. Protect the essentials.</strong> Freeze non-essential spending until you know your guaranteed net, and call any lender whose payment will bounce — a call before a missed payment is worth ten after.</p>
+        </div>
+      </details>
+
+      <div class="disclaimer">
+        <strong>Educational information, not legal advice.</strong> This tool applies the federal rules under Title III of the Consumer Credit Protection Act, IRS levy exemption formulas (Publication 1494), federal student-loan administrative garnishment limits, and common child-support caps, plus stronger state protections where they're well established. State rules change, individual orders vary, and figures here are estimates for planning — not a substitute for a consumer-law attorney or your court's clerk. Many legal-aid offices review garnishment exemptions for free.
+      </div>
+
+    </div>
+
+    <script>
+      (function(){
+        "use strict";
+        var $ = function(id){ return document.getElementById(id); };
+        var money = function(n){
+          return "$" + Math.max(0,n).toLocaleString("en-US",{minimumFractionDigits:2, maximumFractionDigits:2});
+        };
+        var moneyRound = function(n){
+          return "$" + Math.round(Math.max(0,n)).toLocaleString("en-US");
+        };
+
+        /* ---------- state data ---------- */
+        var STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
+        var stateSel = $("state");
+        STATES.forEach(function(s){
+          var o = document.createElement("option");
+          o.value = s; o.textContent = s;
+          stateSel.appendChild(o);
+        });
+
+        /* State rules that beat federal law for ordinary consumer garnishment.
+           type "ban": consumer wage garnishment prohibited (cap 0).
+           type "ca": lesser of 20% of disposable, or 50% of disposable above 40x CA min wage.
+           type "il": lesser of 15% of gross, or disposable above 45x IL min wage.
+           type "floor40": federal 25%, but floor at 40x federal min wage (Minnesota).
+           type "wa": lesser of 25% of disposable, or disposable above 35x WA min wage. */
+        var STATE_RULES = {
+          "Texas":        {type:"ban", note:"Texas prohibits wage garnishment for ordinary consumer debts — wages can generally only be garnished for taxes, child support, and student loans."},
+          "Pennsylvania": {type:"ban", note:"Pennsylvania prohibits wage garnishment for ordinary consumer debts — wages can generally only be garnished for taxes, child support, and a few specific obligations."},
+          "South Carolina":{type:"ban", note:"South Carolina prohibits wage garnishment for ordinary consumer debts — wages can generally only be garnished for taxes, child support, and student loans."},
+          "North Carolina":{type:"ban", note:"North Carolina prohibits wage garnishment for most consumer debts — wages can generally only be garnished for taxes, child support, student loans, and certain public debts."},
+          "California":   {type:"ca", note:"California protects more than federal law: the cap is the lesser of 20% of disposable earnings, or 50% of the amount above 40× the state minimum wage ($16.50/hr)."},
+          "Illinois":     {type:"il", note:"Illinois protects more than federal law: the cap is the lesser of 15% of your gross pay, or the amount of disposable earnings above 45× the state minimum wage ($14.00/hr)."},
+          "Minnesota":    {type:"floor40", note:"Minnesota raises the protected floor to 40× the federal minimum wage per week, which shields more of a smaller paycheck."},
+          "Washington":   {type:"wa", note:"Washington protects more than federal law: earnings below 35× the state minimum wage ($16.66/hr) per week are shielded."}
+        };
+
+        /* ---------- step navigation ---------- */
+        var currentStep = 1, maxVisited = 1;
+        var panels = {1:$("step1"),2:$("step2"),3:$("step3"),4:$("step4")};
+        function goTo(step){
+          currentStep = step;
+          if(step > maxVisited) maxVisited = step;
+          for(var k in panels){ panels[k].hidden = (parseInt(k,10) !== step); }
+          var steps = document.querySelectorAll(".pstep");
+          steps.forEach(function(el){
+            var n = parseInt(el.getAttribute("data-pstep"),10);
+            el.classList.toggle("active", n === step);
+            el.classList.toggle("done", n < step);
+          });
+          window.scrollTo({top:0, behavior:"smooth"});
+        }
+        document.querySelectorAll("[data-goto]").forEach(function(btn){
+          btn.addEventListener("click", function(){
+            var n = parseInt(btn.getAttribute("data-goto"),10);
+            if(n <= maxVisited){ goTo(n); }
+          });
+        });
+        $("back1").addEventListener("click", function(){ goTo(1); });
+        $("back2").addEventListener("click", function(){ goTo(2); });
+        $("back3").addEventListener("click", function(){ goTo(3); });
+        $("restart").addEventListener("click", function(){ goTo(1); });
+
+        /* ---------- step 1 validation ---------- */
+        function num(id){ var v = parseFloat($(id).value); return isNaN(v) ? NaN : v; }
+        $("toStep2").addEventListener("click", function(){
+          var ok = true;
+          var g = num("gross"), t = num("taxes");
+          $("err-gross").classList.toggle("show", !(g > 0)); if(!(g > 0)) ok = false;
+          var taxesBad = isNaN(t) || t < 0 || (g > 0 && t >= g);
+          $("err-taxes").classList.toggle("show", taxesBad); if(taxesBad) ok = false;
+          if(ok) goTo(2);
+        });
+
+        /* ---------- step 2 conditional fields ---------- */
+        var dedMode = "amt";
+        $("segAmt").addEventListener("click", function(){ setDedMode("amt"); });
+        $("segPct").addEventListener("click", function(){ setDedMode("pct"); });
+        function setDedMode(m){
+          dedMode = m;
+          $("segAmt").setAttribute("aria-pressed", m === "amt" ? "true" : "false");
+          $("segPct").setAttribute("aria-pressed", m === "pct" ? "true" : "false");
+          $("dedAmtWrap").hidden = (m !== "amt");
+          $("dedPctWrap").hidden = (m !== "pct");
+        }
+        $("orderType").addEventListener("change", function(){
+          var t = $("orderType").value;
+          $("taxFields").hidden = (t !== "tax");
+          $("supportFields").hidden = (t !== "support");
+        });
+
+        /* ---------- frequency constants ---------- */
+        var FREQ = {
+          weekly:      {periods:52, weeks:1},
+          biweekly:    {periods:26, weeks:2},
+          semimonthly: {periods:24, weeks:52/24},
+          monthly:     {periods:12, weeks:52/12}
+        };
+        var FED_MIN_WAGE = 7.25;
+
+        var R = null; /* results object */
+
+        function compute(){
+          var gross = num("gross"), taxes = num("taxes");
+          var freq = FREQ[$("freq").value];
+          var stateName = $("state").value; /* "FED" or state name */
+          var orderType = $("orderType").value;
+          var disposable = gross - taxes;
+          var weeks = freq.weeks, periods = freq.periods;
+
+          var current = 0;
+          if(dedMode === "amt"){ current = num("dedAmt"); if(isNaN(current)) current = 0; }
+          else { var p = num("dedPct"); current = isNaN(p) ? 0 : gross * p / 100; }
+
+          var cap = 0, capLabel = "", explain = "", floorAmt = 30 * FED_MIN_WAGE * weeks;
+          var ruleState = (stateName !== "FED") ? STATE_RULES[stateName] : null;
+
+          if(orderType === "consumer"){
+            var q25 = 0.25 * disposable;
+            var overFloor = Math.max(0, disposable - floorAmt);
+            cap = Math.min(q25, overFloor);
+            capLabel = "Title III · Consumer Credit Protection Act";
+            explain = "<p>Federal law gives you <strong>two shields</strong> and the creditor only gets the <strong>smaller</strong> of the two numbers:</p>"
+              + "<div class='mathline'>Shield A — 25% of disposable earnings = " + money(q25) + "</div>"
+              + "<div class='mathline'>Shield B — everything above the protected floor of " + money(floorAmt) + " = " + money(overFloor) + "</div>"
+              + "<p>The protected floor is <strong>30 × the federal minimum wage ($7.25)</strong> for each week in the pay period. It exists so a garnishment can never push a low-wage check to zero. The legal maximum is the lesser shield: <strong>" + money(cap) + " per paycheck</strong>.</p>";
+            if(disposable <= floorAmt){
+              explain += "<p><strong>Your disposable earnings are at or under the protected floor</strong> — for a consumer debt, the lawful garnishment is $0. Anything being taken is over the line.</p>";
+            }
+            if(ruleState){
+              if(ruleState.type === "ban"){ cap = 0; capLabel = stateName + " law · stronger than federal"; }
+              else if(ruleState.type === "ca"){ cap = Math.min(0.20 * disposable, 0.5 * Math.max(0, disposable - 40 * 16.50 * weeks)); capLabel = "California law · stronger than federal"; }
+              else if(ruleState.type === "il"){ cap = Math.min(0.15 * gross, Math.max(0, disposable - 45 * 14.00 * weeks)); capLabel = "Illinois law · stronger than federal"; }
+              else if(ruleState.type === "floor40"){ cap = Math.min(q25, Math.max(0, disposable - 40 * FED_MIN_WAGE * weeks)); capLabel = "Minnesota law · stronger than federal"; }
+              else if(ruleState.type === "wa"){ cap = Math.min(q25, Math.max(0, disposable - 35 * 16.66 * weeks)); capLabel = "Washington law · stronger than federal"; }
+              explain += "<p><strong>" + stateName + ":</strong> " + ruleState.note + " Applied here, your cap is <strong>" + money(cap) + " per paycheck</strong>.</p>";
+            } else if(stateName !== "FED"){
+              explain += "<p>" + stateName + " follows the federal Title III formula above for consumer garnishments. (Some states add exemptions on top — your court clerk can confirm the current state sheet.)</p>";
+            }
+          }
+          else if(orderType === "student"){
+            var q15 = 0.15 * disposable;
+            var overFloorS = Math.max(0, disposable - floorAmt);
+            cap = Math.min(q15, overFloorS);
+            capLabel = "Federal student loans · 15% rule";
+            explain = "<p>Federal student loans are collected through <strong>Administrative Wage Garnishment</strong> — no lawsuit needed — but the take is smaller than consumer debt:</p>"
+              + "<div class='mathline'>15% of disposable earnings = " + money(q15) + "</div>"
+              + "<div class='mathline'>Everything above the protected floor of " + money(floorAmt) + " = " + money(overFloorS) + "</div>"
+              + "<p>The legal maximum is the lesser of the two: <strong>" + money(cap) + " per paycheck</strong>. You also had the right to notice and a hearing before this started — if you never got either, that's grounds to challenge it. (Private student loans follow the consumer-debt rules instead.)</p>";
+          }
+          else if(orderType === "tax"){
+            var filing = $("filing").value;
+            var deps = num("deps"); if(isNaN(deps) || deps < 0) deps = 0;
+            var stdDed = filing === "mfj" ? 31500 : (filing === "hoh" ? 23625 : 15750);
+            var annualExempt = stdDed + deps * 5200;
+            var exemptPerCheck = annualExempt / periods;
+            cap = Math.max(0, disposable - exemptPerCheck);
+            capLabel = "IRS levy · Publication 1494 exemption";
+            explain = "<p>A tax levy <strong>does not use the 25% rule at all</strong>. The IRS (and states, with their own tables) must leave you an <strong>exempt amount</strong> figured from the standard deduction for your filing status, plus an amount per dependent — IRS Publication 1494.</p>"
+              + "<div class='mathline'>Your exempt amount: (" + money(stdDed) + " standard deduction + " + deps + " × $5,200 dependents) ÷ " + periods + " checks = " + money(exemptPerCheck) + " per check stays with you</div>"
+              + "<p>So the most a levy can reach is your disposable earnings minus that exempt amount: <strong>" + money(cap) + " per paycheck</strong>. If payroll is levying into the exempt amount, that's correctable. A levy is also negotiable in a way a judgment isn't — an installment agreement or hardship status (Currently Not Collectible) can release it.</p>";
+          }
+          else if(orderType === "support"){
+            var otherFam = $("csOther").value === "yes";
+            var arrears = $("csArrears").value === "yes";
+            var pct = (otherFam ? 50 : 60) + (arrears ? 5 : 0);
+            cap = disposable * pct / 100;
+            capLabel = "Child support · " + pct + "% of disposable earnings";
+            explain = "<p>Child support plays by <strong>different, higher rules</strong> — the 25% consumer cap and the minimum-wage floor do <strong>not</strong> apply.</p>"
+              + "<div class='mathline'>Your cap: " + pct + "% of disposable earnings = " + money(cap) + " per paycheck</div>"
+              + "<p>The percentage comes from your situation: <strong>" + (otherFam ? "50%" : "60%") + "</strong> base because you are " + (otherFam ? "supporting another spouse or child" : "not supporting another spouse or child") + (arrears ? ", plus <strong>5%</strong> because you're 12+ weeks in arrears" : "") + ". The range across all cases is 50–65%. Support amounts themselves are set by the support order — the fix for an unaffordable order is a <strong>modification through the family court</strong>, not payroll, and arrears keep accruing until a court changes it.</p>";
+          }
+
+          var over = Math.max(0, current - cap);
+          var lawfulTake = Math.min(current, cap);
+          /* guaranteed net: what you keep if only the lawful amount is taken */
+          var guaranteedNet = gross - taxes - cap;
+          var actualNet = gross - taxes - current;
+          var monthlyGuaranteed = guaranteedNet * periods / 12;
+          var overMonthly = over * periods / 12;
+          var overYearly = over * periods;
+
+          R = {
+            gross:gross, taxes:taxes, disposable:disposable, periods:periods, weeks:weeks,
+            orderType:orderType, stateName:(stateName === "FED" ? "Federal rules" : stateName),
+            current:current, cap:cap, capLabel:capLabel, explain:explain,
+            over:over, lawfulTake:lawfulTake, guaranteedNet:guaranteedNet, actualNet:actualNet,
+            monthlyGuaranteed:monthlyGuaranteed, overMonthly:overMonthly, overYearly:overYearly,
+            payrollOff:$("payrollOff").value
+          };
+          return R;
+        }
+
+        function ppi(){
+          var lawfulRatio = R.disposable > 0 ? Math.max(0, (R.disposable - R.cap)) / R.disposable : 0;
+          var exp = num("expenses");
+          var coverage = (!isNaN(exp) && exp > 0) ? Math.min(1, R.monthlyGuaranteed / exp) : lawfulRatio;
+          var base = 100 * (0.55 * lawfulRatio + 0.45 * coverage);
+          var penalty = R.disposable > 0 ? Math.min(30, (R.over / R.disposable) * 100) : 0;
+          var score = Math.max(0, Math.min(100, Math.round(base - penalty)));
+          return {score:score, lawfulRatio:lawfulRatio, coverage:coverage, penalty:penalty, hasExp:(!isNaN(exp) && exp > 0)};
+        }
+
+        function renderResults(){
+          var v = $("verdict"), vt = $("verdictTitle"), vb = $("verdictBody");
+          v.classList.remove("bad","ok","idle");
+          if(R.current <= 0){
+            v.classList.add("idle");
+            vt.textContent = "Nothing being taken yet";
+            vb.textContent = "No deduction entered. The cap below is the most they could lawfully take from each check if an order is enforced — know it before the first deduction lands.";
+          } else if(R.over > 0.005){
+            v.classList.add("bad");
+            vt.textContent = "Over-garnishment detected";
+            vb.innerHTML = "They're taking <strong>" + money(R.current) + "</strong> per check, but the legal maximum is <strong>" + money(R.cap) + "</strong>. That's <strong>" + money(R.over) + " per check</strong> — <strong>" + money(R.overMonthly) + " a month, " + money(R.overYearly) + " a year</strong> — coming out of your pocket unlawfully. Payroll errors like this are common, and they're fixable.";
+          } else {
+            v.classList.add("ok");
+            vt.textContent = "Deduction is within the legal cap";
+            vb.innerHTML = "The current deduction of <strong>" + money(R.current) + "</strong> per check sits at or under the legal maximum of <strong>" + money(R.cap) + "</strong>. The fight here isn't the cap — it's stabilizing your budget around the guaranteed number below, and attacking the debt behind the order.";
+          }
+
+          $("stDisposable").textContent = money(R.disposable);
+          $("stCap").textContent = money(R.cap);
+          $("stCapNote").textContent = R.capLabel;
+          $("stCurrent").textContent = money(R.current);
+          $("stCurrentNote").textContent = R.disposable > 0 ? (Math.round(R.current / R.disposable * 1000) / 10) + "% of your disposable earnings" : "";
+          var overEl = $("stOver");
+          overEl.textContent = money(R.over);
+          overEl.className = "v " + (R.over > 0.005 ? "red" : "green");
+          $("stOverNote").textContent = R.over > 0.005 ? money(R.overMonthly) + " / month · " + money(R.overYearly) + " / year" : "Deduction does not exceed the cap";
+          $("stNet").textContent = money(R.guaranteedNet);
+          $("stNetNote").textContent = money(R.monthlyGuaranteed) + " per month · you're currently netting " + money(R.actualNet) + " per check";
+
+          $("explainBody").innerHTML = R.explain;
+          renderPPI();
+          renderShortfall();
+        }
+
+        function renderPPI(){
+          if(!R) return;
+          var p = ppi();
+          $("ppiScore").textContent = p.score + " / 100";
+          var fill = $("ppiFill");
+          fill.style.width = p.score + "%";
+          fill.className = "fill" + (p.score < 40 ? " low" : (p.score >= 70 ? " high" : ""));
+          $("ppiScore").style.color = p.score < 40 ? "var(--danger)" : (p.score >= 70 ? "var(--good)" : "var(--amber)");
+          var why = "You keep " + Math.round(p.lawfulRatio * 100) + "% of your disposable earnings even under a lawful garnishment";
+          why += p.hasExp ? ", and the guaranteed check covers " + Math.round(p.coverage * 100) + "% of your core monthly expenses" : " (add your core expenses below to factor in your cost of living)";
+          why += p.penalty > 0 ? ". The unlawful over-deduction is dragging the score down by " + Math.round(p.penalty) + " points — recovering it is the fastest way to raise this number." : ". No unlawful deduction is dragging the score down.";
+          $("ppiWhy").textContent = why;
+        }
+
+        function renderShortfall(){
+          var box = $("shortfall");
+          var exp = num("expenses");
+          if(isNaN(exp) || exp <= 0 || !R){ box.className = "shortfall"; box.textContent = ""; return; }
+          var diff = R.monthlyGuaranteed - exp;
+          box.classList.add("show");
+          if(diff < 0){
+            box.className = "shortfall show tight";
+            box.innerHTML = "<strong>Shortfall: " + money(-diff) + " / month.</strong> Even with the garnishment capped lawfully, guaranteed take-home (" + money(R.monthlyGuaranteed) + ") doesn't cover core expenses (" + money(exp) + "). That gap is exactly what a hardship exemption claim or a levy hardship release is built on — bring these numbers to the court or the IRS. Tier 3 below shows how to triage the gap.";
+          } else {
+            box.className = "shortfall show fine";
+            box.innerHTML = "<strong>Covered, with " + money(diff) + " / month of headroom.</strong> Guaranteed take-home (" + money(R.monthlyGuaranteed) + ") covers core expenses (" + money(exp) + "). The stabilization plan in Tier 3 turns that headroom into a buffer so one bad week can't restart the spiral.";
+          }
+          renderPPI();
+        }
+        $("expenses").addEventListener("input", renderShortfall);
+
+        $("runEngine").addEventListener("click", function(){
+          var ok = true;
+          if(dedMode === "amt"){
+            var a = num("dedAmt");
+            $("err-ded").classList.toggle("show", isNaN(a) || a < 0); if(isNaN(a) || a < 0) ok = false;
+          } else {
+            var p = num("dedPct");
+            $("err-dedpct").classList.toggle("show", isNaN(p) || p < 0 || p > 100); if(isNaN(p) || p < 0 || p > 100) ok = false;
+          }
+          if(!ok) return;
+          compute();
+          renderResults();
+          buildStep4();
+          goTo(3);
+        });
+
+        /* ---------- step 4: scripts & tiers ---------- */
+        function todayStr(){
+          var d = new Date();
+          return d.toLocaleDateString("en-US",{year:"numeric", month:"long", day:"numeric"});
+        }
+        function exemptionScript(){
+          var name = $("yourName").value.trim() || "[Your Full Name]";
+          var emp = $("employer").value.trim() || "[Employer Name]";
+          return "CLAIM OF EXEMPTION AND REQUEST FOR HEARING\n"
+            + "Date: " + todayStr() + "\n\n"
+            + "From: " + name + ", Judgment Debtor\n"
+            + "Employer: " + emp + "\n\n"
+            + "I claim an exemption from the wage garnishment currently applied to my earnings and request a hearing. Under Title III of the Consumer Credit Protection Act (15 U.S.C. § 1673), garnishment for this type of debt may not exceed the lesser of (a) 25% of my disposable earnings, or (b) the amount by which my disposable earnings exceed 30 times the federal minimum wage ($7.25) for the pay period.\n\n"
+            + "My figures, per paycheck:\n"
+            + "• Gross pay: " + money(R.gross) + "\n"
+            + "• Mandatory tax deductions: " + money(R.taxes) + "\n"
+            + "• Disposable earnings: " + money(R.disposable) + "\n"
+            + "• Legal maximum garnishment: " + money(R.cap) + "\n"
+            + "• Amount currently deducted: " + money(R.current) + "\n"
+            + "• Excess deducted each paycheck: " + money(R.over) + "\n\n"
+            + "The current deduction exceeds the statutory maximum by " + money(R.over) + " per paycheck (" + money(R.overYearly) + " per year). I ask the court to (1) reduce the garnishment to the lawful maximum of " + money(R.cap) + " per paycheck, (2) order return of amounts withheld in excess of the cap, and (3) consider my hardship claim: my core monthly living expenses are " + (function(){ var e = num("expenses"); return (!isNaN(e) && e > 0) ? money(e) : "[state amount]"; })() + " against a lawful take-home of " + money(R.monthlyGuaranteed) + " per month.\n\n"
+            + "I am prepared to provide pay stubs, the garnishment notice, and an itemized expense statement at the hearing.\n\n"
+            + "Signed: " + name;
+        }
+        function payrollMemo(){
+          var name = $("yourName").value.trim() || "[Your Full Name]";
+          var emp = $("employer").value.trim() || "[Employer Name]";
+          return "MEMORANDUM — REQUEST FOR GARNISHMENT CALCULATION REVIEW\n"
+            + "To: Payroll Department, " + emp + "\n"
+            + "From: " + name + "\n"
+            + "Date: " + todayStr() + "\n"
+            + "Re: Garnishment deduction exceeding the Title III maximum\n\n"
+            + "I am writing to request a review of the garnishment calculation on my pay. Federal law (Consumer Credit Protection Act, Title III, 15 U.S.C. § 1673) caps this garnishment at the lesser of 25% of my disposable earnings or the amount by which my disposable earnings exceed 30 × the federal minimum wage ($7.25) per week in the pay period. \"Disposable earnings\" means gross pay minus only legally required deductions (income taxes and FICA) — voluntary deductions are not subtracted.\n\n"
+            + "My per-paycheck figures:\n"
+            + "• Gross pay: " + money(R.gross) + "\n"
+            + "• Legally required deductions: " + money(R.taxes) + "\n"
+            + "• Disposable earnings: " + money(R.disposable) + "\n"
+            + "• Legal maximum deduction: " + money(R.cap) + "\n"
+            + "• Deduction on my recent stub: " + money(R.current) + "\n"
+            + "• Apparent excess: " + money(R.over) + " per paycheck\n\n"
+            + "Please (1) confirm the formula and the earnings figure being used, (2) correct the deduction to no more than " + money(R.cap) + " per paycheck going forward, and (3) advise in writing how the excess already withheld will be handled. I understand payroll must follow the court's order; this request concerns only the calculation, which the U.S. Department of Labor's Fact Sheet #30 describes in the same terms. Thank you for your help.\n\n"
+            + "— " + name;
+        }
+
+        function tierHTML(no, title, primary, bodyHTML, scriptText, btnLabel){
+          var h = "<div class='tier" + (primary ? " primary" : " dim") + "'>"
+            + "<div class='thead'><span class='tno'>TIER " + no + "</span><h3>" + title + "</h3>"
+            + (primary ? "<span class='rec'>Start here</span>" : "") + "</div>"
+            + "<div class='tbody'>" + bodyHTML + "</div>";
+          if(scriptText){
+            h += "<div class='scriptbox'>" + scriptText.replace(/</g,"&lt;") + "</div>"
+              + "<button class='copybtn' type='button' data-copy='" + no + "'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><rect x='9' y='9' width='12' height='12' rx='2'/><path d='M5 15V5a2 2 0 0 1 2-2h10'/></svg><span>" + btnLabel + "</span></button>";
+          }
+          h += "</div>";
+          return h;
+        }
+
+        var scripts = {};
+        function buildStep4(){
+          var overCap = R.over > 0.005;
+          var payrollPrimary = !overCap && R.payrollOff === "yes";
+          var primaryTier = overCap ? 1 : (payrollPrimary ? 2 : 3);
+
+          scripts[1] = exemptionScript();
+          scripts[2] = payrollMemo();
+
+          var exp = num("expenses");
+          var hasExp = !isNaN(exp) && exp > 0;
+          var leftover = hasExp ? R.monthlyGuaranteed - exp : NaN;
+
+          var t1body = overCap
+            ? "The deduction is <strong>" + money(R.over) + " per check over the legal cap</strong> — that's not a budgeting problem, it's a legal one. File a Claim of Exemption with the court that issued the order (many courts include the form with the garnishment notice; ask the clerk if yours didn't). File before the deadline on your notice, keep a stamped copy, and give payroll a copy the same day."
+            : "This play is for deductions that exceed the legal cap. Your current deduction is within the cap, so this isn't your first move — but keep the template. If a future check crosses the line, this is the filing that stops it.";
+          var t2body = R.payrollOff === "yes"
+            ? "You flagged that the stub math looks wrong — the most common cause is payroll running the percentage off <strong>gross pay instead of disposable earnings</strong>. Payroll has to follow the court order, but they also have to follow the law's formula. Send this memo (email counts — you want it in writing) and keep the reply."
+            : "Even when the amount is lawful, the math behind it is often wrong — percentage run off gross pay, voluntary deductions subtracted, or the protected floor ignored. If any stub looks off, this memo asks payroll to show their formula and correct it in writing.";
+          var stabCells = "<div class='stab'>"
+            + "<div class='cell'><div class='k'>Guaranteed net / month</div><div class='v'>" + money(R.monthlyGuaranteed) + "</div></div>"
+            + "<div class='cell'><div class='k'>Core expenses / month</div><div class='v'>" + (hasExp ? money(exp) : "—") + "</div></div>"
+            + "<div class='cell'><div class='k'>" + (hasExp && leftover < 0 ? "Monthly gap to triage" : "Monthly headroom") + "</div><div class='v' style='color:" + (hasExp && leftover < 0 ? "var(--danger)" : "var(--good)") + "'>" + (hasExp ? money(Math.abs(leftover)) : "—") + "</div></div>"
+            + "<div class='cell'><div class='k'>Starter buffer target</div><div class='v'>" + money(Math.min(1000, Math.max(0, hasExp ? leftover : R.monthlyGuaranteed * 0.1))) + "</div></div>"
+            + "</div>";
+          var t3body = "Rebuild the budget on the <strong>guaranteed</strong> number, not the hoped-for one: <strong>" + money(R.guaranteedNet) + " per check (" + money(R.monthlyGuaranteed) + "/month)</strong>. Sequence it: (1) cover the four walls — housing, utilities, food, transport — first; (2) call every other creditor <em>before</em> a payment bounces and ask for hardship terms in writing; (3) route any headroom to a starter buffer before extra debt payments, so one bad week can't trigger new debt; (4) re-run this check every time pay or the order changes."
+            + stabCells
+            + (hasExp && leftover < 0
+              ? "<strong>You're " + money(-leftover) + "/month short even at the lawful cap.</strong> That shortfall is evidence: document it and attach it to a hardship exemption claim (Tier 1 template) or, for a tax levy, an IRS hardship release request. Courts and the IRS both act on documented numbers, not general claims of hardship."
+              : "Once the buffer exists, aim the freed-up cash at the debt behind the order — the Battle Plan in the Gumroad banner below sequences exactly that.");
+
+          var html = "";
+          html += tierHTML(1, "Court Exemption Protocol", primaryTier === 1, t1body, scripts[1], "Copy the Claim of Exemption");
+          html += tierHTML(2, "Payroll Correction Memo", primaryTier === 2, t2body, scripts[2], "Copy the memo to payroll");
+          html += tierHTML(3, "Post-Seizure Stabilization", primaryTier === 3, t3body, null, null);
+          $("tiers").innerHTML = html;
+
+          /* blueprint */
+          var orderNames = {consumer:"Consumer / medical debt", tax:"Tax levy", student:"Federal student loans", support:"Child support"};
+          $("bpMeta").textContent = orderNames[R.orderType] + " · " + R.stateName + " · " + todayStr();
+          $("bpCap").textContent = money(R.cap);
+          var bpOver = $("bpOver");
+          bpOver.textContent = money(R.over) + (R.over > 0.005 ? " / check" : "");
+          bpOver.className = "bv " + (R.over > 0.005 ? "red" : "green");
+          $("bpNet").textContent = money(R.guaranteedNet);
+          var p = ppi();
+          $("bpPpi").textContent = p.score + " / 100";
+          $("bpPpi").style.color = p.score < 40 ? "var(--danger)" : (p.score >= 70 ? "var(--good)" : "var(--amber)");
+          var primaryScript = primaryTier === 1 ? scripts[1] : (primaryTier === 2 ? scripts[2] :
+            "First move: rebuild the month around the guaranteed net of " + money(R.guaranteedNet) + " per check (" + money(R.monthlyGuaranteed) + "/month). Cover housing, utilities, food, and transport first; call other creditors before payments bounce; route headroom to a starter buffer. The deduction is within the legal cap of " + money(R.cap) + ", so the win here is stability — then attack the debt behind the order so the next order never comes.");
+          $("bpScriptTitle").textContent = primaryTier === 1 ? "Your first move — Claim of Exemption" : (primaryTier === 2 ? "Your first move — Payroll Correction Memo" : "Your first move — Stabilization");
+          $("bpScript").textContent = primaryScript;
+          scripts.bp = primaryScript;
+
+          document.querySelectorAll("[data-copy]").forEach(function(btn){
+            btn.addEventListener("click", function(){
+              copyText(scripts[btn.getAttribute("data-copy")], btn);
+            });
+          });
+        }
+
+        function copyText(text, btn){
+          function done(){
+            if(!btn) return;
+            var span = btn.querySelector("span");
+            var old = span ? span.textContent : "";
+            btn.classList.add("copied");
+            if(span) span.textContent = "Copied ✓";
+            setTimeout(function(){ btn.classList.remove("copied"); if(span) span.textContent = old; }, 2200);
+          }
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+          } else { fallback(); }
+          function fallback(){
+            var ta = document.createElement("textarea");
+            ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand("copy"); } catch(e){}
+            document.body.removeChild(ta); done();
+          }
+        }
+
+        $("copyBlueprint").addEventListener("click", function(){
+          if(!R) return;
+          var p = ppi();
+          var orderNames = {consumer:"Consumer / medical debt", tax:"Tax levy", student:"Federal student loans", support:"Child support"};
+          var text = "WAGE GARNISHMENT DEFENSE BLUEPRINT — " + todayStr() + "\n"
+            + "Order type: " + orderNames[R.orderType] + " · Rules: " + R.stateName + "\n\n"
+            + "Gross pay / check: " + money(R.gross) + "\n"
+            + "Mandatory taxes / check: " + money(R.taxes) + "\n"
+            + "Disposable earnings / check: " + money(R.disposable) + "\n"
+            + "Legal maximum garnishment / check: " + money(R.cap) + " (" + R.capLabel + ")\n"
+            + "Currently taken / check: " + money(R.current) + "\n"
+            + "Over-deduction / check: " + money(R.over) + " (" + money(R.overYearly) + " / year)\n"
+            + "Guaranteed net pay / check: " + money(R.guaranteedNet) + " (" + money(R.monthlyGuaranteed) + " / month)\n"
+            + "Paycheck Protection Index: " + p.score + " / 100\n\n"
+            + "FIRST MOVE:\n" + (scripts.bp || "");
+          copyText(text, $("copyBlueprint"));
+        });
+
+        /* regenerate scripts when name/employer change */
+        ["yourName","employer"].forEach(function(id){
+          $(id).addEventListener("input", function(){ if(R) buildStep4(); });
+        });
+        $("toStep4").addEventListener("click", function(){ buildStep4(); goTo(4); });
+      })();
+    </script>
+  </body>
+</html>

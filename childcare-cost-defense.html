@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Childcare Cost Defense</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#0b0c0e;
+        --panel:#141518;
+        --panel-2:#1a1b1f;
+        --panel-3:#202126;
+        --line:#2b2c31;
+        --line-soft:#232428;
+        --ink:#f2f0ea;
+        --ink-2:#c9c6bd;
+        --ink-3:#8f8c83;
+        --amber:#f5a524;
+        --orange:#ff6b1a;
+        --amber-dim:rgba(245,165,36,.12);
+        --red:#ff5347;
+        --green:#4cc38a;
+        --radius:10px;
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;background:var(--bg);color:var(--ink);
+        font-family:"Barlow",system-ui,sans-serif;
+        font-size:16px;line-height:1.5;
+        -webkit-font-smoothing:antialiased;
+      }
+      .wrap{max-width:1060px;margin:0 auto;padding:0 16px 72px}
+      .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+      .hazard{
+        height:8px;
+        background:repeating-linear-gradient(-45deg,var(--amber) 0 14px,#0b0c0e 14px 28px);
+      }
+
+      /* ---------- Header ---------- */
+      header{padding:34px 0 8px}
+      .kicker{
+        display:inline-flex;align-items:center;gap:8px;
+        font-family:"Barlow Condensed",sans-serif;font-weight:600;
+        letter-spacing:.14em;text-transform:uppercase;font-size:13px;
+        color:var(--amber);border:1px solid rgba(245,165,36,.4);
+        padding:5px 12px;border-radius:999px;background:var(--amber-dim);
+      }
+      .kicker svg{width:14px;height:14px}
+      h1{
+        font-family:"Barlow Condensed",sans-serif;font-weight:700;
+        font-size:clamp(40px,8.5vw,68px);line-height:.98;
+        text-transform:uppercase;margin:18px 0 12px;letter-spacing:.01em;
+      }
+      h1 .hl{color:var(--amber)}
+      .lede{color:var(--ink-2);font-size:clamp(16px,2.6vw,19px);max-width:640px;margin:0}
+      .lede strong{color:var(--ink)}
+
+      /* ---------- Step scaffolding ---------- */
+      .step{margin-top:38px}
+      .step-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+      .step-num{
+        font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:15px;
+        background:var(--amber);color:#141005;width:30px;height:30px;flex:0 0 30px;
+        display:flex;align-items:center;justify-content:center;border-radius:6px;
+      }
+      .step-head h2{
+        font-family:"Barlow Condensed",sans-serif;font-weight:600;
+        font-size:clamp(22px,4.5vw,28px);text-transform:uppercase;letter-spacing:.03em;margin:0;
+      }
+      .step-head p{margin:0;color:var(--ink-3);font-size:14px}
+      .panel{
+        background:var(--panel);border:1px solid var(--line);
+        border-radius:var(--radius);padding:20px;
+      }
+      .grid2{display:grid;grid-template-columns:1fr;gap:16px}
+      @media(min-width:720px){.grid2{grid-template-columns:1fr 1fr}}
+
+      /* ---------- Fields ---------- */
+      label.f{display:block}
+      label.f .lab{
+        display:flex;justify-content:space-between;align-items:baseline;
+        font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);
+        margin-bottom:8px;
+      }
+      label.f .lab .hint{font-weight:500;letter-spacing:0;text-transform:none;color:var(--ink-3);font-size:12px}
+      .money{
+        display:flex;align-items:center;background:var(--panel-2);
+        border:1px solid var(--line);border-radius:8px;overflow:hidden;
+        transition:border-color .15s;
+      }
+      .money:focus-within{border-color:var(--amber)}
+      .money .cur{padding:0 4px 0 14px;color:var(--amber);font-family:"IBM Plex Mono",monospace;font-weight:600}
+      .money input{
+        flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--ink);
+        font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;
+        padding:13px 12px 13px 2px;
+      }
+      .money .per{padding:0 14px 0 0;color:var(--ink-3);font-size:13px;white-space:nowrap}
+      input[type=number]::-webkit-outer-spin-button,
+      input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+      input[type=number]{-moz-appearance:textfield;appearance:textfield}
+
+      .stepper{display:flex;align-items:stretch;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+      .stepper button{
+        width:52px;background:var(--panel-3);border:0;color:var(--amber);
+        font-size:24px;font-weight:700;cursor:pointer;line-height:1;
+      }
+      .stepper button:active{background:#2a2b31}
+      .stepper .val{
+        flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+        font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;padding:11px 0;
+      }
+      .stepper .val small{font-family:"Barlow",sans-serif;font-size:13px;color:var(--ink-3);font-weight:500}
+
+      .seg{display:flex;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:4px;gap:4px}
+      .seg button{
+        flex:1;border:0;border-radius:6px;background:transparent;color:var(--ink-3);
+        font-family:"Barlow",sans-serif;font-weight:600;font-size:15px;padding:11px 6px;cursor:pointer;
+      }
+      .seg button.on{background:var(--amber);color:#141005}
+      .seg button .sub{display:block;font-size:11px;font-weight:500;opacity:.75}
+
+      /* ---------- Engine ---------- */
+      .engine{
+        background:linear-gradient(180deg,#17181c,#101114);
+        border:1px solid var(--line);border-radius:var(--radius);
+        overflow:hidden;
+      }
+      .engine-top{padding:22px 20px 6px;text-align:center}
+      .engine-top .cap{
+        font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+      }
+      .big-num{
+        font-family:"IBM Plex Mono",monospace;font-weight:700;
+        font-size:clamp(52px,13vw,84px);line-height:1.05;color:var(--amber);
+        margin:4px 0 0;letter-spacing:-.01em;
+      }
+      .big-num small{font-size:.38em;color:var(--ink-2);font-weight:600}
+      .engine-top .sub{color:var(--ink-2);margin:6px 0 0;font-size:15px}
+      .engine-top .sub strong{color:var(--ink)}
+      .stat-row{
+        display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-soft);
+        border-top:1px solid var(--line-soft);margin-top:20px;
+      }
+      .stat{background:var(--panel);padding:14px 10px;text-align:center}
+      .stat .v{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:clamp(17px,4.4vw,24px)}
+      .stat .k{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-top:2px}
+      .stat .v.warn{color:var(--red)}
+      .stat .v.good{color:var(--green)}
+
+      .breakdown{padding:18px 20px 20px}
+      .breakdown h3,.tl-wrap h3{
+        font-family:"Barlow Condensed",sans-serif;font-size:18px;font-weight:600;
+        text-transform:uppercase;letter-spacing:.05em;margin:0 0 12px;color:var(--ink);
+      }
+      .brow{
+        display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:baseline;
+        padding:9px 0;border-bottom:1px dashed var(--line);
+      }
+      .brow:last-of-type{border-bottom:0}
+      .brow .name{color:var(--ink-2);font-weight:500}
+      .brow .name small{display:block;color:var(--ink-3);font-size:12.5px}
+      .brow .amt{font-family:"IBM Plex Mono",monospace;font-weight:600;text-align:right}
+      .brow .pp{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--amber);text-align:right;min-width:86px}
+      .brow .pp small{display:block;color:var(--ink-3);font-family:"Barlow",sans-serif;font-size:11px}
+      .brow.total .name{color:var(--ink);font-weight:700}
+      .brow.total .amt{color:var(--amber);font-size:18px}
+
+      /* gauge */
+      .gauge-wrap{padding:4px 20px 22px;display:grid;gap:16px;grid-template-columns:1fr}
+      @media(min-width:720px){.gauge-wrap{grid-template-columns:230px 1fr;align-items:center}}
+      .gauge-box{text-align:center}
+      .gauge-box svg{width:200px;max-width:100%;height:auto}
+      .gauge-score{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:40px;line-height:1}
+      .gauge-verdict{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+      .gauge-note{color:var(--ink-2);font-size:14.5px;margin:0}
+      .gauge-note strong{color:var(--ink)}
+      .factor{margin-top:10px}
+      .factor .frow{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);margin-bottom:4px}
+      .factor .frow .fv{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ink)}
+      .bar{height:7px;background:var(--panel-3);border-radius:99px;overflow:hidden}
+      .bar i{display:block;height:100%;border-radius:99px;background:var(--amber);transition:width .35s ease}
+      .bar i.bad{background:var(--red)}
+      .bar i.ok{background:var(--green)}
+
+      /* timeline */
+      .tl-wrap{padding:0 20px 22px}
+      .months{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+      @media(min-width:720px){.months{grid-template-columns:repeat(12,1fr)}}
+      .mo{
+        border:1px solid var(--line);border-radius:6px;background:var(--panel-2);
+        text-align:center;padding:7px 2px 6px;font-size:11px;font-weight:600;
+        letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);
+      }
+      .mo.hot{border-color:rgba(245,165,36,.65);background:var(--amber-dim);color:var(--amber)}
+      .mo .dot{display:block;width:6px;height:6px;border-radius:50%;background:var(--amber);margin:4px auto 0;opacity:0}
+      .mo.hot .dot{opacity:1}
+      .tl-lines{margin-top:14px;display:grid;gap:8px}
+      .tl-line{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;font-size:14.5px;color:var(--ink-2)}
+      .tl-line .tag{
+        font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:13px;letter-spacing:.08em;
+        text-transform:uppercase;color:#141005;background:var(--amber);
+        padding:2px 8px;border-radius:4px;white-space:nowrap;
+      }
+      .tl-line .tag.alt{background:var(--orange)}
+      .tl-line .tag.alt2{background:#e8e3d8}
+      .tl-line b{color:var(--ink);font-family:"IBM Plex Mono",monospace;font-weight:600}
+      .tl-line .fund{color:var(--amber);font-family:"IBM Plex Mono",monospace;font-size:13.5px}
+
+      /* ---------- Tier strategy ---------- */
+      .tier-scale{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+      .tier-chip{
+        border:1px solid var(--line);border-radius:8px;background:var(--panel);
+        padding:10px;text-align:center;color:var(--ink-3);
+      }
+      .tier-chip .t{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+      .tier-chip .r{font-size:12px}
+      .tier-chip.on{border-color:var(--amber);background:var(--amber-dim);color:var(--ink)}
+      .tier-chip.on .t{color:var(--amber)}
+      .tier-card{border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:var(--radius);background:var(--panel);padding:20px}
+      .tier-card.t1{border-left-color:var(--red)}
+      .tier-card.t3{border-left-color:var(--green)}
+      .tier-card .tier-tag{
+        font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;
+      }
+      .tier-card.t1 .tier-tag{color:var(--red)}
+      .tier-card.t2 .tier-tag{color:var(--amber)}
+      .tier-card.t3 .tier-tag{color:var(--green)}
+      .tier-card h3{font-family:"Barlow Condensed",sans-serif;font-size:clamp(24px,5vw,30px);font-weight:600;text-transform:uppercase;margin:6px 0 8px;line-height:1.05}
+      .tier-card p{color:var(--ink-2);margin:0 0 12px;max-width:640px}
+      .tier-card p strong{color:var(--ink)}
+      .mandate{
+        display:flex;gap:14px;align-items:center;background:var(--panel-2);
+        border:1px dashed rgba(245,165,36,.5);border-radius:8px;padding:14px 16px;flex-wrap:wrap;
+      }
+      .mandate .mv{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:clamp(24px,6vw,34px);color:var(--amber)}
+      .mandate .mk{font-size:13.5px;color:var(--ink-2);max-width:420px}
+      .mandate .mk b{color:var(--ink)}
+      ul.moves{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:9px}
+      ul.moves li{display:flex;gap:10px;color:var(--ink-2);font-size:15px}
+      ul.moves li svg{flex:0 0 18px;width:18px;height:18px;margin-top:2px;color:var(--amber)}
+      ul.moves li strong{color:var(--ink)}
+
+      /* ---------- Blueprint ---------- */
+      .blueprint{
+        border:2px solid var(--amber);border-radius:14px;overflow:hidden;background:#101114;
+      }
+      .bp-head{
+        background:linear-gradient(120deg,#1c1503,#241a05 55%,#1c1503);
+        padding:20px 22px 16px;border-bottom:1px solid rgba(245,165,36,.35);
+      }
+      .bp-head .bp-kick{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--amber)}
+      .bp-head h2{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:clamp(28px,6vw,38px);text-transform:uppercase;margin:4px 0 0;line-height:1}
+      .bp-body{padding:20px 22px 22px}
+      .bp-hero{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:space-between}
+      .bp-hero .amt{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:clamp(44px,10vw,64px);color:var(--amber);line-height:1}
+      .bp-hero .cap{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+      .bp-hero .idx{text-align:right}
+      .bp-hero .idx .iv{font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:34px}
+      .bp-grid{display:grid;grid-template-columns:1fr;gap:0 28px;margin-top:16px}
+      @media(min-width:720px){.bp-grid{grid-template-columns:1fr 1fr}}
+      .bp-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+      .bp-row .k{color:var(--ink-2)}
+      .bp-row .v{font-family:"IBM Plex Mono",monospace;font-weight:600;text-align:right;white-space:nowrap}
+      .bp-sec{margin-top:18px}
+      .bp-sec h4{font-family:"Barlow Condensed",sans-serif;font-size:16px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--amber);margin:0 0 8px}
+      .bp-sec p,.bp-sec li{color:var(--ink-2);font-size:14.5px}
+      .bp-sec p{margin:0 0 6px}
+      .bp-sec ul{margin:0;padding-left:18px;display:grid;gap:5px}
+      .bp-sec .hl-num{color:var(--ink);font-family:"IBM Plex Mono",monospace;font-weight:600}
+      .bp-foot{
+        margin-top:20px;padding-top:14px;border-top:1px solid var(--line);
+        display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+      }
+      .bp-foot .note{font-size:12.5px;color:var(--ink-3);max-width:520px}
+      .btn{
+        display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;
+        background:var(--amber);color:#141005;font-family:"Barlow",sans-serif;
+        font-weight:700;font-size:15px;padding:12px 20px;border-radius:8px;text-decoration:none;
+      }
+      .btn:active{transform:translateY(1px)}
+      .btn.ghost{background:transparent;color:var(--amber);border:1px solid rgba(245,165,36,.55)}
+      .btn svg{width:16px;height:16px}
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .next-grid{display:grid;grid-template-columns:1fr;gap:14px}
+      @media(min-width:720px){.next-grid{grid-template-columns:1fr 1fr}}
+      .next-card{
+        display:block;text-decoration:none;background:var(--panel);border:1px solid var(--line);
+        border-radius:var(--radius);padding:20px;color:var(--ink);
+      }
+      .next-card:hover{border-color:rgba(245,165,36,.6)}
+      .next-card .nc-k{font-size:11.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--amber)}
+      .next-card h3{font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:600;text-transform:uppercase;margin:6px 0 6px}
+      .next-card p{color:var(--ink-2);margin:0 0 12px;font-size:14.5px}
+      .next-card .go{color:var(--amber);font-weight:700;font-size:14px;display:inline-flex;gap:6px;align-items:center}
+      .next-card .go svg{width:15px;height:15px}
+      .cta{
+        margin-top:14px;border-radius:var(--radius);padding:24px 22px;
+        background:linear-gradient(120deg,var(--amber),var(--orange));color:#1c1200;
+        display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+      }
+      .cta h3{font-family:"Barlow Condensed",sans-serif;font-size:clamp(24px,5.5vw,32px);font-weight:700;text-transform:uppercase;line-height:1.05;margin:0;max-width:620px}
+      .cta p{margin:6px 0 0;font-size:15px;font-weight:500;max-width:620px}
+      .cta .btn{background:#141005;color:var(--amber);white-space:nowrap}
+      details.faq{
+        background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+        padding:16px 20px;margin-bottom:10px;
+      }
+      details.faq summary{
+        cursor:pointer;font-family:"Barlow Condensed",sans-serif;font-weight:600;
+        font-size:19px;letter-spacing:.02em;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center;
+      }
+      details.faq summary::-webkit-details-marker{display:none}
+      details.faq summary .plus{color:var(--amber);font-size:24px;line-height:1;font-family:"Barlow",sans-serif}
+      details.faq p{color:var(--ink-2);margin:10px 0 2px;font-size:15px}
+      details.faq p strong{color:var(--ink)}
+      footer{margin-top:44px;color:var(--ink-3);font-size:12.5px;text-align:center;line-height:1.6}
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto}
+        .bar i{transition:none}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <header>
+        <span class="kicker">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-3.6 8-10V5l-8-3-8 3v7c0 6.4 8 10 8 10z"/></svg>
+          Family Cash Shield
+        </span>
+        <h1>Childcare eats <span class="hl">30% of your pay.</span><br />Here's how to tame it.</h1>
+        <p class="lede">Daycare bills, summer camp, back-to-school, late-pickup fees — dependent care hits in waves, not evenly. This engine flattens all of it into <strong>one exact per-paycheck number</strong> so no surge ever ambushes your budget again.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head">
+          <span class="step-num">1</span>
+          <div>
+            <h2 id="s1">Care Baseline</h2>
+            <p>Your routine care costs and what you actually bring home.</p>
+          </div>
+        </div>
+        <div class="panel grid2">
+          <label class="f">
+            <span class="lab">Dependents in care</span>
+            <span class="stepper">
+              <button type="button" id="depMinus" aria-label="Fewer dependents">−</button>
+              <span class="val"><span id="depVal">2</span><small>kids in paid care</small></span>
+              <button type="button" id="depPlus" aria-label="More dependents">+</button>
+            </span>
+          </label>
+          <label class="f">
+            <span class="lab">Routine childcare cost <span class="hint">daycare / after-school</span></span>
+            <span class="money"><span class="cur">$</span><input type="number" id="weeklyCost" inputmode="decimal" min="0" value="275" /><span class="per">/ week</span></span>
+          </label>
+          <label class="f">
+            <span class="lab">Pay frequency</span>
+            <span class="seg" role="group" aria-label="Pay frequency">
+              <button type="button" id="freqWeekly">Weekly<span class="sub">52 paychecks / yr</span></button>
+              <button type="button" id="freqBi" class="on">Bi-Weekly<span class="sub">26 paychecks / yr</span></button>
+            </span>
+          </label>
+          <label class="f">
+            <span class="lab">Monthly take-home pay <span class="hint">after tax, all earners</span></span>
+            <span class="money"><span class="cur">$</span><input type="number" id="takeHome" inputmode="decimal" min="0" value="3400" /><span class="per">/ month</span></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head">
+          <span class="step-num">2</span>
+          <div>
+            <h2 id="s2">Spikes &amp; Penalties</h2>
+            <p>The seasonal surges and the fees that quietly drain you.</p>
+          </div>
+        </div>
+        <div class="panel grid2">
+          <label class="f">
+            <span class="lab">Back-to-School <span class="hint">supplies, fees, clothes</span></span>
+            <span class="money"><span class="cur">$</span><input type="number" id="bts" inputmode="decimal" min="0" value="600" /><span class="per">/ year</span></span>
+          </label>
+          <label class="f">
+            <span class="lab">Summer Camp <span class="hint">camp / summer care</span></span>
+            <span class="money"><span class="cur">$</span><input type="number" id="camp" inputmode="decimal" min="0" value="1800" /><span class="per">/ year</span></span>
+          </label>
+          <label class="f">
+            <span class="lab">Holiday Breaks <span class="hint">break-week care coverage</span></span>
+            <span class="money"><span class="cur">$</span><input type="number" id="holiday" inputmode="decimal" min="0" value="900" /><span class="per">/ year</span></span>
+          </label>
+          <label class="f">
+            <span class="lab">Late-pickup / shift-change fees <span class="hint">penalties &amp; rush care</span></span>
+            <span class="money"><span class="cur">$</span><input type="number" id="penalties" inputmode="decimal" min="0" value="45" /><span class="per">/ month avg</span></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head">
+          <span class="step-num">3</span>
+          <div>
+            <h2 id="s3">Family Cash Shield Engine</h2>
+            <p>Every cost, smoothed into one per-paycheck reserve target.</p>
+          </div>
+        </div>
+
+        <div class="engine">
+          <div class="engine-top">
+            <div class="cap">Childcare Reserve Target — set aside every paycheck</div>
+            <div class="big-num" id="perPaycheck">$0<small> / check</small></div>
+            <p class="sub">Move this into a separate care account on payday. <strong id="engineLine">Routine, spikes, and penalties — all covered.</strong></p>
+            <div class="stat-row">
+              <div class="stat"><div class="v" id="annualTotal">$0</div><div class="k">Total care / year</div></div>
+              <div class="stat"><div class="v" id="pctIncome">0%</div><div class="k">Of take-home pay</div></div>
+              <div class="stat"><div class="v" id="monthlyAvg">$0</div><div class="k">True monthly cost</div></div>
+            </div>
+          </div>
+
+          <div class="breakdown">
+            <h3>The breakdown</h3>
+            <div class="brow">
+              <span class="name">Routine care<small id="routineDetail">weekly rate × 52 weeks</small></span>
+              <span class="amt" id="routineAnnual">$0</span>
+              <span class="pp" id="routinePP">$0<small>per check</small></span>
+            </div>
+            <div class="brow">
+              <span class="name">Seasonal spikes<small>back-to-school + camp + holiday breaks</small></span>
+              <span class="amt" id="spikesAnnual">$0</span>
+              <span class="pp" id="spikesPP">$0<small>per check</small></span>
+            </div>
+            <div class="brow">
+              <span class="name">Penalties &amp; fees<small>late pickup / shift-change, monthly avg × 12</small></span>
+              <span class="amt" id="penAnnual">$0</span>
+              <span class="pp" id="penPP">$0<small>per check</small></span>
+            </div>
+            <div class="brow total">
+              <span class="name">Total annual care load</span>
+              <span class="amt" id="totalAnnual2">$0</span>
+              <span class="pp" id="totalPP">$0<small>per check</small></span>
+            </div>
+          </div>
+
+          <div class="tl-wrap">
+            <h3>Annual surge timeline</h3>
+            <div class="months" id="months" aria-hidden="true"></div>
+            <div class="tl-lines">
+              <div class="tl-line"><span class="tag">Jun – Aug</span> Summer camp <b id="tlCamp">$0</b> <span class="fund" id="tlCampFund">fund it: $0 / check</span></div>
+              <div class="tl-line"><span class="tag alt">August</span> Back-to-school <b id="tlBts">$0</b> <span class="fund" id="tlBtsFund">fund it: $0 / check</span></div>
+              <div class="tl-line"><span class="tag alt2">Nov – Dec</span> Holiday break care <b id="tlHol">$0</b> <span class="fund" id="tlHolFund">fund it: $0 / check</span></div>
+            </div>
+          </div>
+
+          <div class="gauge-wrap">
+            <div class="gauge-box">
+              <svg viewBox="0 0 200 118" role="img" aria-label="Dependent Care Cushion Index gauge">
+                <path d="M 16 104 A 84 84 0 0 1 184 104" fill="none" stroke="#26272c" stroke-width="15" stroke-linecap="round"/>
+                <path id="gaugeArc" d="M 16 104 A 84 84 0 0 1 184 104" fill="none" stroke="#f5a524" stroke-width="15" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"/>
+              </svg>
+              <div class="gauge-score" id="cushionScore">0</div>
+              <div class="gauge-verdict" id="cushionVerdict">—</div>
+              <div style="font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-top:2px">Dependent Care Cushion Index</div>
+            </div>
+            <div>
+              <p class="gauge-note" id="cushionNote">How well your cash flow absorbs a surprise — a shift penalty, a sick-day sitter, or a daycare price hike — without touching rent money.</p>
+              <div class="factor">
+                <div class="frow"><span>Income strain (care as % of take-home)</span><span class="fv" id="fStrain">—</span></div>
+                <div class="bar"><i id="fStrainBar" style="width:0%"></i></div>
+              </div>
+              <div class="factor">
+                <div class="frow"><span>Penalty leak (fees as % of total care)</span><span class="fv" id="fLeak">—</span></div>
+                <div class="bar"><i id="fLeakBar" style="width:0%"></i></div>
+              </div>
+              <div class="factor">
+                <div class="frow"><span>Spike load (seasonal surges as % of total)</span><span class="fv" id="fSpike">—</span></div>
+                <div class="bar"><i id="fSpikeBar" style="width:0%"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head">
+          <span class="step-num">4</span>
+          <div>
+            <h2 id="s4">Defense Strategy</h2>
+            <p>Your tier is set by care costs as a share of take-home pay.</p>
+          </div>
+        </div>
+        <div class="tier-scale" role="presentation">
+          <div class="tier-chip" id="chip1"><div class="t">Tier 1 · High Strain</div><div class="r">Care &gt; 30% of pay</div></div>
+          <div class="tier-chip" id="chip2"><div class="t">Tier 2 · Moderate</div><div class="r">Care 15–30% of pay</div></div>
+          <div class="tier-chip" id="chip3"><div class="t">Tier 3 · Fortified</div><div class="r">Care &lt; 15% of pay</div></div>
+        </div>
+        <div class="tier-card" id="tierCard">
+          <div class="tier-tag" id="tierTag">Tier 2 · Moderate</div>
+          <h3 id="tierTitle">Automate the spikes away</h3>
+          <p id="tierBody"></p>
+          <div class="mandate">
+            <div class="mv" id="mandateVal">$0</div>
+            <div class="mk" id="mandateText"></div>
+          </div>
+          <ul class="moves" id="tierMoves"></ul>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="step" aria-labelledby="bp">
+        <div class="step-head">
+          <span class="step-num">✓</span>
+          <div>
+            <h2 id="bp">Your Defense Blueprint</h2>
+            <p>Screenshot this card — it's your whole childcare defense on one screen.</p>
+          </div>
+        </div>
+        <div class="blueprint" id="blueprintCard">
+          <div class="bp-head">
+            <div class="bp-kick">Childcare Expense Defense Blueprint</div>
+            <h2 id="bpHeadline">One number. Every spike covered.</h2>
+          </div>
+          <div class="bp-body">
+            <div class="bp-hero">
+              <div>
+                <div class="cap">Set aside every paycheck</div>
+                <div class="amt" id="bpPerCheck">$0</div>
+              </div>
+              <div class="idx">
+                <div class="cap">Cushion Index</div>
+                <div class="iv" id="bpIndex">0 / 100</div>
+                <div class="cap" id="bpTier">Tier 2 · Moderate</div>
+              </div>
+            </div>
+            <div class="bp-grid">
+              <div>
+                <div class="bp-row"><span class="k">Routine care / year</span><span class="v" id="bpRoutine">$0</span></div>
+                <div class="bp-row"><span class="k">Seasonal spikes / year</span><span class="v" id="bpSpikes">$0</span></div>
+                <div class="bp-row"><span class="k">Penalties &amp; fees / year</span><span class="v" id="bpPen">$0</span></div>
+              </div>
+              <div>
+                <div class="bp-row"><span class="k">Total care load / year</span><span class="v" id="bpTotal">$0</span></div>
+                <div class="bp-row"><span class="k">Share of take-home pay</span><span class="v" id="bpPct">0%</span></div>
+                <div class="bp-row"><span class="k">Dependents in care</span><span class="v" id="bpDeps">2</span></div>
+              </div>
+            </div>
+            <div class="bp-sec">
+              <h4>Surge timeline</h4>
+              <ul id="bpTimeline"></ul>
+            </div>
+            <div class="bp-sec">
+              <h4>FSA &amp; tax credit notes</h4>
+              <p id="bpTax1"></p>
+              <p id="bpTax2"></p>
+            </div>
+            <div class="bp-foot">
+              <span class="note">Estimates based on the numbers you entered. FSA and credit figures are planning estimates, not tax advice — confirm limits with your benefits office or a tax pro.</span>
+              <button type="button" class="btn ghost" id="copyBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span id="copyLabel">Copy blueprint as text</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <section class="step" aria-labelledby="ns">
+        <div class="step-head">
+          <span class="step-num">→</span>
+          <div>
+            <h2 id="ns">Next moves</h2>
+            <p>Put the reserve target to work with the rest of the kit.</p>
+          </div>
+        </div>
+        <div class="next-grid">
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/sinking-fund-planner.html">
+            <div class="nc-k">Fund the spikes</div>
+            <h3>Sinking Fund Planner</h3>
+            <p>Turn each surge — camp, back-to-school, holiday care — into its own sinking fund with a deadline and a per-paycheck contribution.</p>
+            <span class="go">Open the planner <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html">
+            <div class="nc-k">Split the check</div>
+            <h3>Paycheck Budget Splitter</h3>
+            <p>Carve the Childcare Reserve Target straight off the top of every paycheck, before bills and spending get a vote.</p>
+            <span class="go">Open the splitter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+          </a>
+        </div>
+        <div class="cta">
+          <div>
+            <h3>Smooth every spike before it hits</h3>
+            <p>The Sinking Funds Tracker and Paycheck-to-Paycheck Weekly Planner on Gumroad — the printable system behind this engine.</p>
+          </div>
+          <a class="btn" href="https://bradley57.gumroad.com/">Get the printables
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="step" aria-labelledby="faq">
+        <div class="step-head">
+          <span class="step-num">?</span>
+          <div>
+            <h2 id="faq">Straight answers</h2>
+            <p>The three questions every parent paying for care asks.</p>
+          </div>
+        </div>
+        <details class="faq">
+          <summary>What does the Dependent Care FSA actually save me?<span class="plus">+</span></summary>
+          <p>A Dependent Care FSA lets you pay for daycare, preschool, and after-school care with <strong>pre-tax dollars</strong> — up to <strong>$5,000 per household per year</strong>. Every dollar you route through it skips federal income tax and payroll tax, so at a typical combined rate around 22%, a maxed-out FSA saves roughly <strong>$1,100 a year</strong> on care you were already paying for. Two catches: it's use-it-or-lose-it (only elect what you'll truly spend), and the same dollars can't also claim the Child &amp; Dependent Care Credit — pick the better deal per dollar, which your Blueprint above estimates for you.</p>
+        </details>
+        <details class="faq">
+          <summary>How do I stop late-pickup fees from bleeding me?<span class="plus">+</span></summary>
+          <p>Late fees are usually charged <strong>per minute or per 15-minute block</strong>, and they spike when shifts run long. Three moves: (1) ask your center about an <strong>extended-hours or shift-worker plan</strong> — many charge less for a flat late window than per-incident fees; (2) build a <strong>backup pickup person</strong> into your emergency contacts so a coworker, partner, or grandparent can beat the clock; (3) budget the fees honestly — this engine already folds your average monthly penalties into the reserve target, so a bad week is pre-funded instead of a surprise. If penalties top 5% of your total care spend, treat it as a scheduling problem, not a money problem.</p>
+        </details>
+        <details class="faq">
+          <summary>When should I renegotiate my daycare rate?<span class="plus">+</span></summary>
+          <p>Renegotiate when your leverage is real: <strong>at enrollment renewal, when a sibling starts, when your schedule drops a day, or when a competing center quotes less</strong>. Ask about sibling discounts (commonly 10%), prepay discounts for paying a term up front, employer or shift-worker rates, and part-time schedules priced by the day instead of the week. Centers would rather discount 10% than lose a reliable payer — especially if you can show on-time payment history. Even a $25/week reduction is <strong>$1,300 a year</strong> off your reserve target.</p>
+        </details>
+      </section>
+
+      <footer>
+        Childcare Cost Defense — part of the Come Up Money toolkit.<br />
+        Planning estimates only, based on the numbers you enter. Not financial or tax advice.
+      </footer>
+    </div>
+
+    <script>
+      (function(){
+        "use strict";
+        var $ = function(id){ return document.getElementById(id); };
+        var fmt = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+        var fmt2 = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",minimumFractionDigits:2,maximumFractionDigits:2});
+        function money(v){ return fmt.format(Math.round(v)); }
+        function moneyExact(v){ return fmt2.format(v); }
+        function num(id){ var v = parseFloat($(id).value); return isFinite(v) && v > 0 ? v : 0; }
+
+        var dependents = 2;
+        var periods = 26; // bi-weekly default
+
+        var monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        var hotMonths = {5:1,6:1,7:1,10:1,11:1}; // Jun,Jul,Aug,Nov,Dec
+        var monthsEl = $("months");
+        monthNames.forEach(function(m,i){
+          var d = document.createElement("div");
+          d.className = "mo" + (hotMonths[i] ? " hot" : "");
+          d.innerHTML = m + '<span class="dot"></span>';
+          monthsEl.appendChild(d);
+        });
+
+        var checkSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+        function compute(){
+          var weekly = num("weeklyCost");
+          var takeHome = num("takeHome");
+          var bts = num("bts"), camp = num("camp"), holiday = num("holiday");
+          var penMonthly = num("penalties");
+
+          var routineAnnual = weekly * 52;
+          var spikesAnnual = bts + camp + holiday;
+          var penAnnual = penMonthly * 12;
+          var total = routineAnnual + spikesAnnual + penAnnual;
+          var perCheck = periods ? total / periods : 0;
+          var annualIncome = takeHome * 12;
+          var pct = annualIncome > 0 ? (total / annualIncome) * 100 : 0;
+          var monthlyAvg = total / 12;
+
+          // ---- Step 3 outputs ----
+          $("perPaycheck").innerHTML = moneyExact(perCheck) + "<small> / check</small>";
+          $("annualTotal").textContent = money(total);
+          $("monthlyAvg").textContent = money(monthlyAvg);
+          var pctEl = $("pctIncome");
+          pctEl.textContent = pct.toFixed(1) + "%";
+          pctEl.className = "v " + (pct > 30 ? "warn" : (pct < 15 && total > 0 ? "good" : ""));
+          $("engineLine").textContent = total > 0
+            ? "That's " + money(total) + " a year, flattened across " + periods + " paychecks."
+            : "Enter your care costs above and watch the target build itself.";
+
+          $("routineDetail").textContent = money(weekly) + "/week × 52 weeks";
+          $("routineAnnual").textContent = money(routineAnnual);
+          $("routinePP").innerHTML = moneyExact(periods ? routineAnnual/periods : 0) + "<small>per check</small>";
+          $("spikesAnnual").textContent = money(spikesAnnual);
+          $("spikesPP").innerHTML = moneyExact(periods ? spikesAnnual/periods : 0) + "<small>per check</small>";
+          $("penAnnual").textContent = money(penAnnual);
+          $("penPP").innerHTML = moneyExact(periods ? penAnnual/periods : 0) + "<small>per check</small>";
+          $("totalAnnual2").textContent = money(total);
+          $("totalPP").innerHTML = moneyExact(perCheck) + "<small>per check</small>";
+
+          // ---- Timeline ----
+          $("tlCamp").textContent = money(camp);
+          $("tlBts").textContent = money(bts);
+          $("tlHol").textContent = money(holiday);
+          $("tlCampFund").textContent = "fund it: " + moneyExact(periods ? camp/periods : 0) + " / check";
+          $("tlBtsFund").textContent = "fund it: " + moneyExact(periods ? bts/periods : 0) + " / check";
+          $("tlHolFund").textContent = "fund it: " + moneyExact(periods ? holiday/periods : 0) + " / check";
+
+          // ---- Cushion Index ----
+          var leakShare = total > 0 ? (penAnnual/total)*100 : 0;
+          var spikeShare = total > 0 ? (spikesAnnual/total)*100 : 0;
+          var score = 100 - pct*1.5 - leakShare*0.6 - spikeShare*0.2;
+          if (total <= 0) score = 0;
+          score = Math.max(0, Math.min(100, Math.round(score)));
+          var verdict, vColor;
+          if (total <= 0){ verdict = "No data yet"; vColor = "#8f8c83"; }
+          else if (score >= 80){ verdict = "Fortified"; vColor = "#4cc38a"; }
+          else if (score >= 60){ verdict = "Solid"; vColor = "#f5a524"; }
+          else if (score >= 40){ verdict = "Exposed"; vColor = "#ff6b1a"; }
+          else { verdict = "Critical"; vColor = "#ff5347"; }
+          $("cushionScore").textContent = score;
+          $("cushionScore").style.color = vColor;
+          var verd = $("cushionVerdict");
+          verd.textContent = verdict; verd.style.color = vColor;
+          var arc = $("gaugeArc");
+          arc.style.stroke = vColor;
+          arc.style.strokeDashoffset = String(264 - (264 * score / 100));
+          $("cushionNote").innerHTML = total > 0
+            ? "At <strong>" + pct.toFixed(1) + "% of take-home pay</strong>, a surprise " + money(Math.max(50, penMonthly*2)) + " penalty week or a sudden rate hike " +
+              (score >= 60 ? "lands on a funded reserve — annoying, not dangerous." :
+               score >= 40 ? "would sting. The reserve target above is what closes the gap." :
+               "would hit money earmarked for other bills. Building the buffer below is the priority.")
+            : "How well your cash flow absorbs a surprise — a shift penalty, a sick-day sitter, or a daycare price hike — without touching rent money.";
+          $("fStrain").textContent = pct.toFixed(1) + "%";
+          $("fLeak").textContent = leakShare.toFixed(1) + "%";
+          $("fSpike").textContent = spikeShare.toFixed(1) + "%";
+          var sb = $("fStrainBar"), lb = $("fLeakBar"), kb = $("fSpikeBar");
+          sb.style.width = Math.min(100, pct*2) + "%"; sb.className = pct > 30 ? "bad" : (pct < 15 ? "ok" : "");
+          lb.style.width = Math.min(100, leakShare*4) + "%"; lb.className = leakShare > 8 ? "bad" : "";
+          kb.style.width = Math.min(100, spikeShare*2) + "%"; kb.className = spikeShare > 30 ? "bad" : "";
+
+          // ---- Tax estimates (used in Tier 3 + Blueprint) ----
+          var fsaEligible = Math.min(total, 5000);
+          var fsaSavings = fsaEligible * 0.22;
+          var creditCap = dependents >= 2 ? 6000 : 3000;
+          var creditBase = Math.max(0, Math.min(total, creditCap) - 0); // expenses not run through FSA counted separately in note
+          var creditEst = Math.min(total, creditCap) * 0.20;
+          var taxSavings = fsaSavings + creditEst;
+
+          // ---- Tier strategy ----
+          var tier = pct > 30 ? 1 : (pct >= 15 ? 2 : 3);
+          if (total <= 0) tier = 2;
+          ["chip1","chip2","chip3"].forEach(function(id,i){ $(id).className = "tier-chip" + (tier === i+1 ? " on" : ""); });
+          var card = $("tierCard");
+          card.className = "tier-card t" + tier;
+          var tag = $("tierTag"), title = $("tierTitle"), body = $("tierBody"),
+              mv = $("mandateVal"), mk = $("mandateText"), moves = $("tierMoves");
+          var li = function(html){ return "<li>" + checkSvg + "<span>" + html + "</span></li>"; };
+
+          if (tier === 1){
+            tag.textContent = "Tier 1 · High Strain — care over 30% of pay";
+            title.textContent = "Build the one-month buffer first";
+            body.innerHTML = "Care is consuming <strong>" + pct.toFixed(1) + "% of your take-home pay</strong>. At this level, one rate hike or one lost week of care coverage can cascade into missed bills. Before optimizing anything, you need a hard floor: <strong>one full month of care costs, parked and untouchable</strong>.";
+            mv.textContent = money(monthlyAvg);
+            mk.innerHTML = "<b>Mandatory buffer reserve.</b> Hold one month of total care costs (" + money(monthlyAvg) + ") in a separate account. Your per-paycheck target builds it in about " + Math.max(1, Math.ceil(periods/12)) + " pay cycles of spike allocations — keep funding until it's full, then maintain it.";
+            moves.innerHTML =
+              li("<strong>Split the reserve target on payday</strong> — auto-transfer " + moneyExact(perCheck) + " the morning each check lands, before any spending.") +
+              li("<strong>Attack the penalty leak:</strong> you're losing " + money(penAnnual) + "/yr to late fees. A backup pickup plan or an extended-hours rate usually costs less than half that.") +
+              li("<strong>Renegotiate or re-shop care</strong> — at this strain level, a 10% rate cut is worth " + money(total*0.10) + " a year. Ask about sibling and prepay discounts.") +
+              li("<strong>Route every eligible dollar through a Dependent Care FSA</strong> if your employer offers one — worth an estimated " + money(fsaSavings) + "/yr back.");
+          } else if (tier === 2){
+            tag.textContent = "Tier 2 · Moderate — care at 15–30% of pay";
+            title.textContent = "Automate the spikes away";
+            body.innerHTML = "Care takes <strong>" + pct.toFixed(1) + "% of your take-home pay</strong> — manageable, but the seasonal surges are what knock families off balance. The fix is mechanical: <strong>every spike gets its own automatic sinking allocation</strong>, funded a little each paycheck so the surge month feels like any other month.";
+            mv.textContent = moneyExact(periods ? spikesAnnual/periods : 0);
+            mk.innerHTML = "<b>Spike sinking allocation per paycheck.</b> Of your " + moneyExact(perCheck) + " reserve target, this slice pre-funds all " + money(spikesAnnual) + " of annual surges. Set it as a separate auto-transfer so it never mixes with routine care money.";
+            moves.innerHTML =
+              li("<strong>One sub-account per spike:</strong> camp " + moneyExact(periods ? camp/periods : 0) + "/check, back-to-school " + moneyExact(periods ? bts/periods : 0) + "/check, holiday care " + moneyExact(periods ? holiday/periods : 0) + "/check.") +
+              li("<strong>Start camp funding in January</strong> — the June bill is " + money(camp) + "; starting early keeps the per-check slice small.") +
+              li("<strong>Cap the penalty leak:</strong> fees are running " + money(penAnnual) + "/yr. Every dollar cut there drops straight off your per-paycheck target.") +
+              li("<strong>Check your FSA math at open enrollment</strong> — pre-tax care dollars could return an estimated " + money(fsaSavings) + "/yr.");
+          } else {
+            tag.textContent = "Tier 3 · Fortified — care under 15% of pay";
+            title.textContent = "Harvest every tax dollar";
+            body.innerHTML = "Care is only <strong>" + pct.toFixed(1) + "% of your take-home pay</strong> — your cash flow has room to breathe. Now the game flips from defense to optimization: <strong>run care spending through every tax break the code offers</strong> and let the savings compound into your other goals.";
+            mv.textContent = money(taxSavings);
+            mk.innerHTML = "<b>Estimated annual tax savings on the table.</b> Dependent Care FSA (~" + money(fsaSavings) + ") plus the Child &amp; Dependent Care Credit (~" + money(creditEst) + "). Same care, less tax — redirect the savings to debt or your emergency fund.";
+            moves.innerHTML =
+              li("<strong>Max the Dependent Care FSA:</strong> elect up to " + money(fsaEligible) + " of expected care costs pre-tax (household cap $5,000) — estimated savings " + money(fsaSavings) + "/yr at a ~22% combined rate.") +
+              li("<strong>Claim the Child &amp; Dependent Care Credit</strong> on expenses beyond the FSA: 20% of up to " + money(creditCap) + " in care costs for " + dependents + (dependents === 1 ? " dependent" : " dependents") + " — about " + money(creditEst) + ". (The same dollar can't claim both benefits.)") +
+              li("<strong>Keep the reserve target running anyway</strong> — " + moneyExact(perCheck) + "/check keeps the Cushion Index fortified against rate hikes.") +
+              li("<strong>Sweep the surplus:</strong> once the care account holds a month of buffer, redirect extra sinking money to your highest-interest debt.");
+          }
+
+          // ---- Blueprint ----
+          $("bpPerCheck").textContent = moneyExact(perCheck);
+          $("bpIndex").textContent = score + " / 100";
+          $("bpIndex").style.color = vColor;
+          $("bpTier").textContent = tier === 1 ? "Tier 1 · High Strain" : tier === 2 ? "Tier 2 · Moderate" : "Tier 3 · Fortified";
+          $("bpHeadline").textContent = tier === 1 ? "Buffer first. Everything else second."
+            : tier === 2 ? "One number. Every spike covered."
+            : "Care is handled. Now harvest the tax breaks.";
+          $("bpRoutine").textContent = money(routineAnnual);
+          $("bpSpikes").textContent = money(spikesAnnual);
+          $("bpPen").textContent = money(penAnnual);
+          $("bpTotal").textContent = money(total);
+          $("bpPct").textContent = pct.toFixed(1) + "%";
+          $("bpDeps").textContent = dependents;
+          $("bpTimeline").innerHTML =
+            "<li><span class='hl-num'>Jun–Aug</span> — Summer camp: <span class='hl-num'>" + money(camp) + "</span> (fund " + moneyExact(periods ? camp/periods : 0) + "/check)</li>" +
+            "<li><span class='hl-num'>August</span> — Back-to-school: <span class='hl-num'>" + money(bts) + "</span> (fund " + moneyExact(periods ? bts/periods : 0) + "/check)</li>" +
+            "<li><span class='hl-num'>Nov–Dec</span> — Holiday break care: <span class='hl-num'>" + money(holiday) + "</span> (fund " + moneyExact(periods ? holiday/periods : 0) + "/check)</li>" +
+            "<li><span class='hl-num'>All year</span> — Penalty shield: <span class='hl-num'>" + money(penAnnual) + "</span> pre-funded inside the reserve target</li>";
+          $("bpTax1").innerHTML = "<strong style='color:var(--ink)'>Dependent Care FSA:</strong> up to <span class='hl-num'>" + money(fsaEligible) + "</span> of your care costs can run pre-tax (household cap $5,000/yr) — estimated savings <span class='hl-num'>" + money(fsaSavings) + "/yr</span> at a ~22% combined tax + payroll rate. Use-it-or-lose-it: elect only what you'll spend.";
+          $("bpTax2").innerHTML = "<strong style='color:var(--ink)'>Child &amp; Dependent Care Credit:</strong> 20% of up to <span class='hl-num'>" + money(creditCap) + "</span> in care expenses (" + (dependents >= 2 ? "2+ dependents" : "1 dependent") + ") = about <span class='hl-num'>" + money(creditEst) + "</span>. Dollars claimed through the FSA can't double-dip into the credit.";
+
+          // stash for copy
+          state.perCheck = perCheck; state.total = total; state.pct = pct; state.score = score;
+          state.tier = tier; state.routine = routineAnnual; state.spikes = spikesAnnual; state.pen = penAnnual;
+          state.camp = camp; state.bts = bts; state.holiday = holiday; state.fsaSavings = fsaSavings;
+          state.creditEst = creditEst; state.periods = periods; state.monthlyAvg = monthlyAvg;
+        }
+
+        var state = {};
+
+        // ---- Controls ----
+        ["weeklyCost","takeHome","bts","camp","holiday","penalties"].forEach(function(id){
+          $(id).addEventListener("input", compute);
+        });
+        $("depMinus").addEventListener("click", function(){ if (dependents > 1){ dependents--; $("depVal").textContent = dependents; compute(); } });
+        $("depPlus").addEventListener("click", function(){ if (dependents < 8){ dependents++; $("depVal").textContent = dependents; compute(); } });
+        $("freqWeekly").addEventListener("click", function(){ periods = 52; $("freqWeekly").className = "on"; $("freqBi").className = ""; compute(); });
+        $("freqBi").addEventListener("click", function(){ periods = 26; $("freqBi").className = "on"; $("freqWeekly").className = ""; compute(); });
+
+        $("copyBtn").addEventListener("click", function(){
+          var lines = [
+            "CHILDCARE EXPENSE DEFENSE BLUEPRINT",
+            "-----------------------------------",
+            "Set aside every paycheck: " + moneyExact(state.perCheck) + " (" + state.periods + " paychecks/yr)",
+            "Total care load: " + money(state.total) + "/yr (" + state.pct.toFixed(1) + "% of take-home pay)",
+            "  Routine care: " + money(state.routine) + "/yr",
+            "  Seasonal spikes: " + money(state.spikes) + "/yr",
+            "  Penalties & fees: " + money(state.pen) + "/yr",
+            "Cushion Index: " + state.score + "/100 — Tier " + state.tier,
+            "",
+            "SURGE TIMELINE",
+            "  Jun-Aug  Summer camp: " + money(state.camp) + " (fund " + moneyExact(state.periods ? state.camp/state.periods : 0) + "/check)",
+            "  August   Back-to-school: " + money(state.bts) + " (fund " + moneyExact(state.periods ? state.bts/state.periods : 0) + "/check)",
+            "  Nov-Dec  Holiday break care: " + money(state.holiday) + " (fund " + moneyExact(state.periods ? state.holiday/state.periods : 0) + "/check)",
+            "",
+            "TAX NOTES",
+            "  Dependent Care FSA est. savings: " + money(state.fsaSavings) + "/yr",
+            "  Child & Dependent Care Credit est.: " + money(state.creditEst) + "/yr",
+            "  (Same dollar can't claim both. Estimates only — not tax advice.)"
+          ].join("\n");
+          function done(){
+            $("copyLabel").textContent = "Copied ✓";
+            setTimeout(function(){ $("copyLabel").textContent = "Copy blueprint as text"; }, 2000);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(lines).then(done, function(){ fallback(); });
+          } else { fallback(); }
+          function fallback(){
+            var ta = document.createElement("textarea");
+            ta.value = lines; ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand("copy"); } catch(e){}
+            document.body.removeChild(ta); done();
+          }
+        });
+
+        compute();
+      })();
+    </script>
+  </body>
+</html>

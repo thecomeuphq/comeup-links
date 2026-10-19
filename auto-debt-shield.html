@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Auto Debt Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0b0d;
+        --bg2: #121215;
+        --panel: #17171b;
+        --panel2: #1e1e24;
+        --line: #2b2b33;
+        --line-soft: #232329;
+        --text: #f4f1ea;
+        --muted: #a9a69d;
+        --faint: #76736b;
+        --amber: #ffb020;
+        --amber-deep: #f59e0b;
+        --orange: #ff6b1a;
+        --red: #ff5252;
+        --red-dim: #3a1d1d;
+        --green: #3ecf6f;
+        --green-dim: #173325;
+        --input-bg: #0f0f12;
+        --hazard-a: #ffb020;
+        --hazard-b: #101013;
+        --shadow: 0 10px 30px rgba(0,0,0,.45);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Barlow", system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
+      h1, h2, h3 { font-family: "Barlow Condensed", "Barlow", sans-serif; text-transform: uppercase; letter-spacing: .02em; margin: 0; }
+      .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+      a { color: var(--amber); }
+
+      /* ---------- HERO ---------- */
+      .hero {
+        margin: 0 -16px;
+        padding: 34px 20px 26px;
+        background:
+          radial-gradient(120% 90% at 85% -10%, rgba(255,107,26,.20), transparent 55%),
+          radial-gradient(90% 70% at 0% 0%, rgba(255,176,32,.14), transparent 50%),
+          var(--bg2);
+        border-bottom: 3px solid var(--amber);
+      }
+      .hero-inner { max-width: 760px; margin: 0 auto; }
+      .kicker {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: "JetBrains Mono", monospace; font-size: 11px; font-weight: 700;
+        letter-spacing: .18em; text-transform: uppercase; color: var(--amber);
+        border: 1px solid var(--amber-deep); padding: 5px 10px; border-radius: 3px;
+        background: rgba(255,176,32,.08);
+      }
+      .kicker::before { content: ""; width: 7px; height: 7px; background: var(--orange); border-radius: 50%; box-shadow: 0 0 8px var(--orange); }
+      .hero h1 { font-size: clamp(40px, 9.5vw, 64px); line-height: .98; font-weight: 700; margin: 16px 0 10px; }
+      .hero h1 .hl { color: var(--amber); }
+      .hero p.lede { font-size: 18px; color: var(--muted); max-width: 52ch; margin: 0 0 18px; }
+      .hero p.lede strong { color: var(--text); }
+      .hero-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+      .hero-stats span {
+        font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: var(--muted);
+        border: 1px solid var(--line); border-radius: 3px; padding: 6px 10px; background: var(--panel);
+      }
+      .hero-stats b { color: var(--amber); font-weight: 700; }
+
+      /* ---------- SECTIONS ---------- */
+      section.step { margin-top: 34px; }
+      .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+      .step-num {
+        flex: 0 0 auto; width: 40px; height: 40px; display: grid; place-items: center;
+        background: var(--amber); color: #14100a; font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; font-size: 22px; border-radius: 4px;
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%);
+      }
+      .step-head h2 { font-size: 27px; font-weight: 700; line-height: 1.05; }
+      .step-head p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+      .panel {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+        padding: 18px; box-shadow: var(--shadow);
+      }
+
+      /* ---------- FORM ---------- */
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+      .field label { display: block; font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+      .field .hint { font-size: 12px; color: var(--faint); margin-top: 5px; text-transform: none; letter-spacing: 0; font-weight: 400; }
+      .input-wrap { position: relative; }
+      .input-wrap .prefix, .input-wrap .suffix {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        font-family: "JetBrains Mono", monospace; font-size: 15px; color: var(--faint); pointer-events: none;
+      }
+      .input-wrap .prefix { left: 12px; }
+      .input-wrap .suffix { right: 12px; }
+      input[type="number"] {
+        width: 100%; appearance: none; -moz-appearance: textfield;
+        background: var(--input-bg); color: var(--text);
+        border: 1px solid var(--line); border-radius: 6px;
+        font-family: "JetBrains Mono", monospace; font-size: 19px; font-weight: 700;
+        padding: 12px 12px 12px 28px; outline: none;
+      }
+      input[type="number"].has-suffix { padding-right: 44px; }
+      input[type="number"]:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(255,176,32,.18); }
+      input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      .segmented { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .segmented button {
+        appearance: none; cursor: pointer; padding: 12px 6px; border-radius: 6px;
+        background: var(--input-bg); border: 1px solid var(--line); color: var(--muted);
+        font-family: "Barlow", sans-serif; font-size: 15px; font-weight: 600;
+      }
+      .segmented button small { display: block; font-size: 11px; font-weight: 500; color: var(--faint); margin-top: 2px; }
+      .segmented button[aria-pressed="true"] { border-color: var(--amber); color: var(--text); background: rgba(255,176,32,.10); box-shadow: inset 0 0 0 1px var(--amber); }
+      .segmented button[aria-pressed="true"] small { color: var(--amber); }
+      .segmented button.danger[aria-pressed="true"] { border-color: var(--red); background: var(--red-dim); box-shadow: inset 0 0 0 1px var(--red); }
+      .segmented button.danger[aria-pressed="true"] small { color: var(--red); }
+
+      /* ---------- EQUITY CHECK ---------- */
+      .big-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+      @media (max-width: 520px) { .big-metrics { grid-template-columns: 1fr; } }
+      .metric { background: var(--panel2); border: 1px solid var(--line-soft); border-radius: 6px; padding: 14px 16px; }
+      .metric .m-label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+      .metric .m-value { font-family: "JetBrains Mono", monospace; font-size: 34px; font-weight: 700; line-height: 1.15; margin-top: 2px; }
+      .metric .m-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+      .bad { color: var(--red); } .warn { color: var(--amber); } .good { color: var(--green); }
+      .ltv-track { position: relative; height: 16px; background: var(--input-bg); border: 1px solid var(--line); border-radius: 4px; overflow: visible; margin: 26px 0 8px; }
+      .ltv-fill { position: absolute; inset: 0 auto 0 0; border-radius: 3px 0 0 3px; background: linear-gradient(90deg, var(--green), var(--amber) 55%, var(--red)); transition: width .35s ease; }
+      .ltv-marker { position: absolute; top: -6px; bottom: -6px; width: 2px; background: var(--text); opacity: .65; }
+      .ltv-marker span { position: absolute; top: -19px; left: 50%; transform: translateX(-50%); font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--muted); white-space: nowrap; }
+      .ltv-scale { display: flex; justify-content: space-between; font-family: "JetBrains Mono", monospace; font-size: 10.5px; color: var(--faint); }
+      .split-bar { display: flex; height: 30px; border-radius: 5px; overflow: hidden; border: 1px solid var(--line); margin-top: 6px; }
+      .split-bar .interest { background: repeating-linear-gradient(45deg, var(--red) 0 10px, #d63a3a 10px 20px); transition: width .35s ease; }
+      .split-bar .principal { background: var(--amber); transition: width .35s ease; }
+      .split-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+      @media (max-width: 520px) { .split-legend { grid-template-columns: 1fr; } }
+      .split-legend .sl { display: flex; gap: 10px; align-items: flex-start; }
+      .dot { flex: 0 0 auto; width: 12px; height: 12px; border-radius: 3px; margin-top: 4px; }
+      .dot.red { background: var(--red); } .dot.amber { background: var(--amber); }
+      .sl b { font-family: "JetBrains Mono", monospace; font-size: 18px; }
+      .sl span { display: block; font-size: 13px; color: var(--muted); }
+      .alert-line { margin-top: 14px; border: 1px solid var(--red); background: var(--red-dim); border-radius: 6px; padding: 12px 14px; font-size: 14.5px; display: none; }
+      .alert-line.show { display: block; }
+
+      /* ---------- SAFETY RATING ---------- */
+      .rating-card { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+      .rating-score { text-align: center; min-width: 118px; }
+      .rating-score .num { font-family: "JetBrains Mono", monospace; font-size: 62px; font-weight: 700; line-height: 1; }
+      .rating-score .of { font-size: 12px; color: var(--faint); letter-spacing: .1em; text-transform: uppercase; }
+      .rating-body { flex: 1 1 260px; }
+      .rating-verdict { font-family: "Barlow Condensed", sans-serif; font-size: 24px; font-weight: 700; text-transform: uppercase; }
+      .rating-track { height: 12px; background: var(--input-bg); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin: 8px 0 10px; }
+      .rating-fill { height: 100%; transition: width .35s ease, background .35s ease; }
+      .rating-parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 12.5px; color: var(--muted); }
+      @media (max-width: 520px) { .rating-parts { grid-template-columns: 1fr; } }
+      .rating-parts b { display: block; font-family: "JetBrains Mono", monospace; font-size: 15px; color: var(--text); }
+
+      /* ---------- RECOVERY PATHS ---------- */
+      .paths { display: grid; gap: 14px; }
+      .path { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; box-shadow: var(--shadow); }
+      .path-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .path-tag { font-family: "JetBrains Mono", monospace; font-size: 11px; font-weight: 700; letter-spacing: .14em; color: #14100a; background: var(--amber); padding: 3px 8px; border-radius: 3px; }
+      .path h3 { font-size: 22px; font-weight: 700; }
+      .path .path-num { margin-left: auto; text-align: right; }
+      .path .path-num b { font-family: "JetBrains Mono", monospace; font-size: 26px; display: block; line-height: 1.1; }
+      .path .path-num span { font-size: 12px; color: var(--muted); }
+      .path p { color: var(--muted); font-size: 14.5px; margin: 10px 0 0; }
+      .path p strong { color: var(--text); }
+      .checks { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 7px; font-size: 14.5px; }
+      .checks li { display: flex; gap: 9px; align-items: flex-start; }
+      .checks .ic { flex: 0 0 auto; width: 19px; height: 19px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; margin-top: 2px; font-family: "JetBrains Mono", monospace; }
+      .ic.ok { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+      .ic.no { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+      .verdict-chip { display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 700; letter-spacing: .08em; padding: 4px 10px; border-radius: 3px; margin-top: 12px; text-transform: uppercase; }
+      .verdict-chip.go { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+      .verdict-chip.mid { background: rgba(255,176,32,.12); color: var(--amber); border: 1px solid var(--amber-deep); }
+      .verdict-chip.stop { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+
+      /* ---------- TIERS ---------- */
+      .tier-banner { border-radius: 8px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); }
+      .tier-banner .hazard { height: 12px; background: repeating-linear-gradient(45deg, var(--hazard-a) 0 14px, var(--hazard-b) 14px 28px); }
+      .tier-banner.t1 .hazard { background: repeating-linear-gradient(45deg, var(--red) 0 14px, var(--hazard-b) 14px 28px); }
+      .tier-inner { background: var(--panel); padding: 20px 18px; }
+      .tier-kicker { font-family: "JetBrains Mono", monospace; font-size: 11.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+      .tier-inner h3 { font-size: 30px; font-weight: 700; line-height: 1.05; margin: 6px 0 8px; }
+      .tier-inner > p { color: var(--muted); margin: 0; font-size: 15px; }
+      .protocol { list-style: none; counter-reset: proto; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
+      .protocol li { counter-increment: proto; display: flex; gap: 12px; align-items: flex-start; font-size: 15px; }
+      .protocol li::before {
+        content: counter(proto); flex: 0 0 auto; width: 26px; height: 26px; border-radius: 4px;
+        background: var(--panel2); border: 1px solid var(--amber-deep); color: var(--amber);
+        display: grid; place-items: center; font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 700;
+      }
+      .protocol li b { color: var(--text); }
+      .protocol li span { color: var(--muted); }
+      .tier-ladder { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+      @media (max-width: 560px) { .tier-ladder { grid-template-columns: 1fr; } }
+      .ladder-card { border: 1px solid var(--line-soft); background: var(--panel); border-radius: 6px; padding: 12px 14px; opacity: .62; }
+      .ladder-card.active { opacity: 1; border-color: var(--amber-deep); }
+      .ladder-card .lk { font-family: "JetBrains Mono", monospace; font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+      .ladder-card h4 { font-family: "Barlow Condensed", sans-serif; font-size: 18px; text-transform: uppercase; margin: 3px 0 4px; }
+      .ladder-card p { margin: 0; font-size: 12.5px; color: var(--muted); }
+
+      /* ---------- SCRIPT ---------- */
+      .script-box { margin-top: 16px; background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+      .script-box header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line-soft); background: var(--panel2); }
+      .script-box header span { font-family: "JetBrains Mono", monospace; font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+      .copy-btn {
+        appearance: none; cursor: pointer; border: 1px solid var(--amber-deep); background: rgba(255,176,32,.10);
+        color: var(--amber); font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 700;
+        padding: 7px 12px; border-radius: 4px; letter-spacing: .06em;
+      }
+      .copy-btn:active { transform: translateY(1px); }
+      .script-text { white-space: pre-wrap; font-family: "Barlow", sans-serif; font-size: 14.5px; line-height: 1.6; padding: 16px; margin: 0; color: var(--text); max-height: 340px; overflow-y: auto; }
+
+      /* ---------- BLUEPRINT ---------- */
+      .blueprint { margin-top: 38px; border: 2px solid var(--amber); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); background: var(--panel); }
+      .blueprint .hazard { height: 14px; background: repeating-linear-gradient(45deg, var(--hazard-a) 0 14px, var(--hazard-b) 14px 28px); }
+      .bp-inner { padding: 22px 20px 20px; }
+      .bp-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+      .bp-head h2 { font-size: 32px; font-weight: 700; line-height: 1; }
+      .bp-head p { margin: 5px 0 0; color: var(--muted); font-size: 13.5px; }
+      .bp-tier { font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 700; letter-spacing: .1em; padding: 7px 12px; border-radius: 4px; text-transform: uppercase; white-space: nowrap; }
+      .bp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
+      @media (max-width: 520px) { .bp-grid { grid-template-columns: 1fr 1fr; } }
+      .bp-cell { background: var(--panel2); border: 1px solid var(--line-soft); border-radius: 6px; padding: 12px 14px; }
+      .bp-cell .bl { font-size: 11px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+      .bp-cell .bv { font-family: "JetBrains Mono", monospace; font-size: 23px; font-weight: 700; margin-top: 3px; line-height: 1.15; }
+      .bp-cell .bs { font-size: 12px; color: var(--faint); margin-top: 2px; }
+      .bp-action { margin-top: 14px; border: 1px dashed var(--amber-deep); border-radius: 6px; padding: 13px 15px; font-size: 15px; background: rgba(255,176,32,.06); }
+      .bp-action b { color: var(--amber); text-transform: uppercase; font-family: "Barlow Condensed", sans-serif; letter-spacing: .05em; font-size: 17px; display: block; margin-bottom: 2px; }
+
+      /* ---------- NEXT STEPS / CTA / FAQ ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; }
+      @media (max-width: 560px) { .next-grid { grid-template-columns: 1fr; } }
+      .next-card { display: block; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; color: var(--text); box-shadow: var(--shadow); }
+      .next-card:hover { border-color: var(--amber-deep); }
+      .next-card .nk { font-family: "JetBrains Mono", monospace; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); }
+      .next-card h3 { font-size: 22px; margin: 6px 0 6px; }
+      .next-card p { margin: 0; color: var(--muted); font-size: 14px; }
+      .next-card .arrow { color: var(--amber); font-family: "JetBrains Mono", monospace; font-weight: 700; }
+      .cta {
+        margin-top: 16px; display: block; text-decoration: none; border-radius: 8px; overflow: hidden;
+        border: 1px solid var(--amber-deep); background: linear-gradient(120deg, rgba(255,176,32,.16), rgba(255,107,26,.12)), var(--panel);
+        padding: 20px; color: var(--text); box-shadow: var(--shadow);
+      }
+      .cta h3 { font-size: 25px; line-height: 1.1; }
+      .cta p { margin: 6px 0 12px; color: var(--muted); font-size: 14.5px; max-width: 56ch; }
+      .cta .cta-btn { display: inline-block; background: var(--amber); color: #171106; font-weight: 700; font-family: "Barlow Condensed", sans-serif; letter-spacing: .05em; text-transform: uppercase; font-size: 17px; padding: 10px 18px; border-radius: 4px; }
+      .faq { margin-top: 36px; }
+      .faq h2 { font-size: 27px; margin-bottom: 12px; }
+      details { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; }
+      summary { cursor: pointer; padding: 15px 18px; font-weight: 600; font-size: 16px; list-style: none; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "+"; font-family: "JetBrains Mono", monospace; color: var(--amber); font-size: 20px; font-weight: 700; }
+      details[open ] summary::after { content: "–"; }
+      details .faq-body { padding: 0 18px 16px; color: var(--muted); font-size: 14.5px; }
+      details .faq-body strong { color: var(--text); }
+      footer.note { margin-top: 34px; color: var(--faint); font-size: 12.5px; text-align: center; }
+      @media (prefers-reduced-motion: reduce) {
+        .ltv-fill, .split-bar .interest, .split-bar .principal, .rating-fill { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-inner">
+          <span class="kicker">Auto Debt Shield · Car-Loan Triage</span>
+          <h1>Underwater on your <span class="hl">car loan?</span><br />Here's your escape plan.</h1>
+          <p class="lede">You need the car to get to the shift — and the loan knows it. Punch in your numbers and get a <strong>step-by-step defense plan</strong>: your equity gap, your interest bleed, and the exact move that fits your situation.</p>
+          <div class="hero-stats">
+            <span><b>STEP 1</b> LOAN SNAPSHOT</span>
+            <span><b>STEP 2</b> EQUITY CHECK</span>
+            <span><b>STEP 3</b> RECOVERY ENGINE</span>
+            <span><b>STEP 4</b> TRIAGE STRATEGY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1h">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div>
+            <h2 id="s1h">Loan Snapshot</h2>
+            <p>Grab your latest statement or lender app — 60 seconds, six numbers.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="grid">
+            <div class="field">
+              <label for="inValue">Vehicle value (what it's worth today)</label>
+              <div class="input-wrap"><span class="prefix">$</span><input type="number" id="inValue" inputmode="decimal" min="0" value="14500" /></div>
+              <div class="hint">Check KBB or Edmunds for the private-party value.</div>
+            </div>
+            <div class="field">
+              <label for="inBalance">Current loan balance</label>
+              <div class="input-wrap"><span class="prefix">$</span><input type="number" id="inBalance" inputmode="decimal" min="0" value="19800" /></div>
+              <div class="hint">The payoff amount on your statement, not the original loan.</div>
+            </div>
+            <div class="field">
+              <label for="inPayment">Monthly payment</label>
+              <div class="input-wrap"><span class="prefix">$</span><input type="number" id="inPayment" inputmode="decimal" min="0" value="487" /></div>
+            </div>
+            <div class="field">
+              <label for="inApr">APR</label>
+              <div class="input-wrap"><input type="number" id="inApr" class="has-suffix" inputmode="decimal" min="0" step="0.1" value="17.9" style="padding-left:12px" /><span class="suffix">%</span></div>
+            </div>
+            <div class="field">
+              <label for="inTerm">Months left on the loan</label>
+              <div class="input-wrap"><input type="number" id="inTerm" inputmode="numeric" min="1" value="58" style="padding-left:12px" /><span class="suffix">mo</span></div>
+            </div>
+            <div class="field">
+              <label>Missed / late payments</label>
+              <div class="segmented" role="group" aria-label="Missed payments">
+                <button type="button" data-missed="0">0<small>On track</small></button>
+                <button type="button" data-missed="1" aria-pressed="true">1<small>Late once</small></button>
+                <button type="button" data-missed="2" class="danger">2+<small>Repo zone</small></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2h">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <div>
+            <h2 id="s2h">Equity Check</h2>
+            <p>The two numbers the lender hopes you never calculate.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="big-metrics">
+            <div class="metric">
+              <div class="m-label">Loan-to-Value (LTV)</div>
+              <div class="m-value" id="outLtv">—</div>
+              <div class="m-sub" id="outLtvSub">—</div>
+            </div>
+            <div class="metric">
+              <div class="m-label">Negative equity gap</div>
+              <div class="m-value" id="outGap">—</div>
+              <div class="m-sub" id="outGapSub">—</div>
+            </div>
+          </div>
+          <div class="ltv-track" aria-hidden="true">
+            <div class="ltv-fill" id="ltvFill" style="width:0%"></div>
+            <div class="ltv-marker" style="left:50%"><span>100% · break-even</span></div>
+            <div class="ltv-marker" style="left:65%"><span>130% · danger</span></div>
+          </div>
+          <div class="ltv-scale"><span>0%</span><span>Scale to 200%</span></div>
+
+          <h3 style="font-size:20px; margin-top:22px;">Where each payment actually goes</h3>
+          <div class="split-bar" aria-hidden="true">
+            <div class="interest" id="barInterest" style="width:50%"></div>
+            <div class="principal" id="barPrincipal" style="width:50%"></div>
+          </div>
+          <div class="split-legend">
+            <div class="sl"><span class="dot red"></span><div><b id="outInterest">—</b><span>burned on interest every month — gone forever, builds nothing</span></div></div>
+            <div class="sl"><span class="dot amber"></span><div><b id="outPrincipal">—</b><span>actually pays down your balance — the only part that frees you</span></div></div>
+          </div>
+          <div class="alert-line" id="negAmortAlert"><strong>Warning:</strong> your payment doesn't even cover the monthly interest. Your balance is <strong>growing</strong> every month you pay — call the lender now and jump straight to the Tier 1 protocol below.</div>
+        </div>
+
+        <!-- SAFETY RATING -->
+        <div class="panel" style="margin-top:14px;">
+          <div class="rating-card">
+            <div class="rating-score">
+              <div class="num" id="outScore">—</div>
+              <div class="of">/ 100</div>
+            </div>
+            <div class="rating-body">
+              <div class="m-label" style="font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);">Vehicle Equity Safety Rating</div>
+              <div class="rating-verdict" id="outVerdict">—</div>
+              <div class="rating-track"><div class="rating-fill" id="ratingFill" style="width:0%"></div></div>
+              <div class="rating-parts">
+                <div>Equity position<b id="partLtv">—</b></div>
+                <div>Rate burden<b id="partApr">—</b></div>
+                <div>Payment history<b id="partHist">—</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3h">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <div>
+            <h2 id="s3h">Recovery Engine</h2>
+            <p>Three ways out — here's what each one actually does to your numbers.</p>
+          </div>
+        </div>
+        <div class="paths">
+          <article class="path">
+            <div class="path-head">
+              <span class="path-tag">PATH A</span>
+              <h3>Principal Strike</h3>
+              <div class="path-num"><b id="strikePerCheck">—</b><span>per paycheck (biweekly)</span></div>
+            </div>
+            <p id="strikeDesc">—</p>
+            <span class="verdict-chip mid" id="strikeChip">—</span>
+          </article>
+
+          <article class="path">
+            <div class="path-head">
+              <span class="path-tag">PATH B</span>
+              <h3>Refinance Check</h3>
+              <div class="path-num"><b id="refiPayment">—</b><span>example payment at 8% APR</span></div>
+            </div>
+            <ul class="checks" id="refiChecks"></ul>
+            <p id="refiDesc">—</p>
+            <span class="verdict-chip stop" id="refiChip">—</span>
+          </article>
+
+          <article class="path">
+            <div class="path-head">
+              <span class="path-tag">PATH C</span>
+              <h3>Lender Hardship — 60-Day Deferral</h3>
+              <div class="path-num"><b id="deferFreed">—</b><span>cash freed up over 60 days</span></div>
+            </div>
+            <p id="deferDesc">—</p>
+            <span class="verdict-chip mid" id="deferChip">—</span>
+          </article>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4h">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <div>
+            <h2 id="s4h">Triage Strategy</h2>
+            <p>Your tier is set by your numbers — not by how stressed you feel. Run your protocol.</p>
+          </div>
+        </div>
+
+        <div class="tier-banner" id="tierBanner">
+          <div class="hazard"></div>
+          <div class="tier-inner">
+            <div class="tier-kicker" id="tierKicker">—</div>
+            <h3 id="tierTitle">—</h3>
+            <p id="tierDesc">—</p>
+            <ol class="protocol" id="tierProtocol"></ol>
+            <div class="script-box" id="scriptBox" style="display:none;">
+              <header>
+                <span>Hardship letter — word for word</span>
+                <button class="copy-btn" type="button" data-copy="scriptText">COPY SCRIPT</button>
+              </header>
+              <p class="script-text" id="scriptText"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier-ladder">
+          <div class="ladder-card" id="ladder1">
+            <div class="lk">Tier 1 · LTV &gt; 130% + late</div>
+            <h4>Repossession Risk</h4>
+            <p>Deferral first, pride last. Get the lender on your side before they send a truck.</p>
+          </div>
+          <div class="ladder-card" id="ladder2">
+            <div class="lk">Tier 2 · Underwater, high APR</div>
+            <h4>Underwater Trap</h4>
+            <p>Strike the principal every paycheck until your LTV is refinanceable.</p>
+          </div>
+          <div class="ladder-card" id="ladder3">
+            <div class="lk">Tier 3 · Equity positive</div>
+            <h4>Refinance Ready</h4>
+            <p>Your car works for you now. Attack the rate and keep the difference.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <div class="blueprint" id="blueprint">
+        <div class="hazard"></div>
+        <div class="bp-inner">
+          <div class="bp-head">
+            <div>
+              <h2>Auto Debt Defense Blueprint</h2>
+              <p>Screenshot this. These are your marching orders until the numbers change.</p>
+            </div>
+            <span class="bp-tier" id="bpTier">—</span>
+          </div>
+          <div class="bp-grid">
+            <div class="bp-cell"><div class="bl">Loan-to-Value</div><div class="bv" id="bpLtv">—</div><div class="bs" id="bpLtvSub">—</div></div>
+            <div class="bp-cell"><div class="bl">Safety Rating</div><div class="bv" id="bpScore">—</div><div class="bs" id="bpScoreSub">—</div></div>
+            <div class="bp-cell"><div class="bl">Monthly interest bleed</div><div class="bv" id="bpBleed">—</div><div class="bs" id="bpBleedSub">—</div></div>
+            <div class="bp-cell"><div class="bl">Principal strike</div><div class="bv" id="bpStrike">—</div><div class="bs">per biweekly paycheck, principal-only</div></div>
+            <div class="bp-cell"><div class="bl">Payoff date — current pace</div><div class="bv" id="bpPayoffNow" style="font-size:19px;">—</div><div class="bs" id="bpPayoffNowSub">—</div></div>
+            <div class="bp-cell"><div class="bl">Target payoff date — with strike</div><div class="bv" id="bpPayoffTarget" style="font-size:19px;">—</div><div class="bs" id="bpPayoffTargetSub">—</div></div>
+          </div>
+          <div class="bp-action">
+            <b>Your #1 move</b>
+            <span id="bpAction">—</span>
+          </div>
+          <div class="script-box" id="bpScriptBox" style="display:none;">
+            <header>
+              <span>Lender hardship script</span>
+              <button class="copy-btn" type="button" data-copy="bpScriptText">COPY SCRIPT</button>
+            </header>
+            <p class="script-text" id="bpScriptText"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/debt-payoff-calculator.html" target="_blank" rel="noopener">
+          <div class="nk">Next tool · Free</div>
+          <h3>Debt Payoff Calculator</h3>
+          <p>Your car isn't your only debt. Line up every balance and watch the snowball vs. avalanche payoff dates side by side.</p>
+          <p style="margin-top:10px;"><span class="arrow">OPEN CALCULATOR →</span></p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payoff-vs-refinance-decision-tree.html" target="_blank" rel="noopener">
+          <div class="nk">Next tool · Free</div>
+          <h3>Payoff vs. Refinance Decision Tree</h3>
+          <p>When your LTV gets close, the refinance question gets real. Walk the decision tree before you sign anything.</p>
+          <p style="margin-top:10px;"><span class="arrow">RUN THE TREE →</span></p>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+        <h3>Track every principal strike payment</h3>
+        <p>The <strong>Auto Loan Payoff Tracker</strong> and <strong>Debt Refinance Planner</strong> on Gumroad turn this blueprint into a week-by-week log — every extra dollar logged, every LTV drop visible.</p>
+        <span class="cta-btn">Get the trackers on Gumroad →</span>
+      </a>
+
+      <!-- FAQ -->
+      <div class="faq">
+        <h2>Straight answers</h2>
+        <details>
+          <summary>What LTV do lenders actually want to see?</summary>
+          <div class="faq-body">Most banks and credit unions cap auto refinances around <strong>120–125% LTV</strong> — they'll lend a bit more than the car is worth, but not much more. The <strong>best rates usually require LTV at or under 100%</strong>, meaning you owe no more than the car is worth. That's why the principal strike targets 100%: cross that line and you stop negotiating from weakness. Some subprime lenders advertise up to 150%, but the rate they charge for it usually makes the trap worse, not better.</div>
+        </details>
+        <details>
+          <summary>Why should I never ignore the lender's calls?</summary>
+          <div class="faq-body">Because silence is the one thing that turns a fixable problem into a repossession. Lenders have hardship departments with real tools — deferrals, payment plans, due-date changes — but they only offer them to borrowers who <strong>call before the account goes seriously delinquent</strong>. Every unanswered call gets logged as a borrower who's checked out, and in most states a lender can repossess after a default <strong>without going to court first</strong>. One uncomfortable 15-minute call is cheaper than a repo fee, a deficiency balance, and seven years of credit damage.</div>
+        </details>
+        <details>
+          <summary>Voluntary surrender vs. repossession — is one better?</summary>
+          <div class="faq-body">Slightly, and only slightly. With a <strong>voluntary surrender</strong> you hand the car back on your terms: no tow-truck fees added to your balance, no middle-of-the-night scene at work, and the account is sometimes reported as "voluntary surrender" rather than "repossession" — lenders reading your file later may view it a touch more favorably. But be clear-eyed: <strong>both are defaults</strong>. Both crater your credit for up to seven years, and in both cases you can still owe the <strong>deficiency balance</strong> — the gap between what you owed and what the car sells for at auction, plus fees. Surrender is the last resort after deferral, refinancing, and a private sale (with a gap loan or cash to cover the difference) have all been ruled out.</div>
+        </details>
+      </div>
+
+      <footer class="note">Auto Debt Shield runs the math on the numbers you enter — estimates only, not financial or legal advice. Vehicle values move; re-check yours monthly. If you're facing repossession, call your lender and a local consumer attorney before you miss another payment.</footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+        var $ = function (id) { return document.getElementById(id); };
+        var inputs = ["inValue", "inBalance", "inPayment", "inApr", "inTerm"];
+        var missed = 1;
+
+        var fmt0 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+        var fmt2 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        function money(n) { return fmt0.format(Math.max(0, n)); }
+        function moneyC(n) { return fmt2.format(n); }
+        function monthYear(d) { return d.toLocaleDateString("en-US", { month: "long", year: "numeric" }); }
+        function addMonths(base, m) { var d = new Date(base.getFullYear(), base.getMonth() + m, 1); return d; }
+        function clamp(n, lo, hi) { return Math.min(hi, Math.max(lo, n)); }
+
+        // Amortization simulation: balance after `months` of paying P + extra each month.
+        function balAfter(B, r, P, extra, months) {
+          var b = B;
+          for (var i = 0; i < months; i++) {
+            b = b * (1 + r) - (P + extra);
+            if (b <= 0) return 0;
+          }
+          return b;
+        }
+        // Months until balance hits 0 (cap 1200).
+        function payoffMonths(B, r, P, extra) {
+          var b = B, m = 0;
+          if (P + extra <= B * r) return Infinity;
+          while (b > 0 && m < 1200) { b = b * (1 + r) - (P + extra); m++; }
+          return m;
+        }
+        // Extra monthly principal needed so balance <= target within `months` (binary search).
+        function extraNeeded(B, r, P, target, months) {
+          if (balAfter(B, r, P, 0, months) <= target) return 0;
+          var lo = 0, hi = Math.max(50, B);
+          for (var i = 0; i < 60; i++) {
+            var mid = (lo + hi) / 2;
+            if (balAfter(B, r, P, mid, months) <= target) hi = mid; else lo = mid;
+          }
+          return hi;
+        }
+        function amortPayment(B, aprPct, n) {
+          var rr = aprPct / 100 / 12;
+          if (n <= 0) return 0;
+          if (rr === 0) return B / n;
+          return B * rr / (1 - Math.pow(1 + rr, -n));
+        }
+
+        function buildScript(V, B, P, ltv) {
+          var today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+          return (
+            today + "\n\n" +
+            "Dear [Lender Name] Loan Servicing Department,\n\n" +
+            "My name is [Your Full Name] and my auto loan account number is [Account Number]. I am writing to formally request a 60-day payment deferral on my account due to a temporary financial hardship caused by reduced work hours.\n\n" +
+            "I currently owe " + money(B) + " on a vehicle worth approximately " + money(V) + " (loan-to-value of " + Math.round(ltv) + "%), with a monthly payment of " + money(P) + ". I am not asking to avoid this debt — I am asking for 60 days of breathing room so I can protect this account, keep the vehicle insured and running, and resume full payments on schedule.\n\n" +
+            "During the deferral I will continue making my insurance payments and will resume my regular monthly payment of " + money(P) + " on the first due date after the deferral period ends. I understand interest continues to accrue during the deferral and that the deferred payments will be moved to the end of my loan term.\n\n" +
+            "Please send written confirmation of the deferral terms, including the date my payments resume, to the address or email on file. If a signed hardship form is required, please send it and I will return it the same day.\n\n" +
+            "Thank you for working with me. I value this account and I am committed to bringing it back to good standing.\n\n" +
+            "Sincerely,\n[Your Full Name]\n[Phone Number]\n[Email Address]"
+          );
+        }
+
+        function scoreColor(score) {
+          if (score >= 65) return "var(--green)";
+          if (score >= 40) return "var(--amber)";
+          return "var(--red)";
+        }
+
+        function compute() {
+          var V = parseFloat($("inValue").value) || 0;
+          var B = parseFloat($("inBalance").value) || 0;
+          var P = parseFloat($("inPayment").value) || 0;
+          var apr = parseFloat($("inApr").value) || 0;
+          var term = Math.max(1, parseInt($("inTerm").value, 10) || 1);
+          var r = apr / 100 / 12;
+          var now = new Date();
+
+          var ltv = V > 0 ? (B / V) * 100 : 0;
+          var gap = B - V;
+          var interest = B * r;
+          var principal = P - interest;
+          var negAmort = P > 0 && principal <= 0;
+
+          /* ---- STEP 2: Equity check ---- */
+          var ltvEl = $("outLtv");
+          ltvEl.textContent = V > 0 ? Math.round(ltv) + "%" : "—";
+          ltvEl.className = "m-value " + (ltv > 130 ? "bad" : ltv > 100 ? "warn" : "good");
+          $("outLtvSub").textContent = V <= 0 ? "Enter your vehicle's value to run the triage."
+            : ltv > 130 ? "Deep danger zone — lenders see a loan the car can't back."
+            : ltv > 100 ? "Underwater — you owe more than the car is worth."
+            : "Above water — the car backs the loan. You're in control.";
+          var gapEl = $("outGap");
+          if (gap > 0) {
+            gapEl.textContent = money(gap);
+            gapEl.className = "m-value bad";
+            $("outGapSub").textContent = "You'd have to write a check for this much just to sell the car and break even.";
+          } else {
+            gapEl.textContent = money(Math.abs(gap));
+            gapEl.className = "m-value good";
+            $("outGapSub").textContent = gap === 0 ? "Dead even — you owe exactly what it's worth." : "Positive equity — sell today and you'd walk away with cash.";
+          }
+          $("ltvFill").style.width = clamp(ltv / 2, 0, 100) + "%";
+          var pctInterest = P > 0 ? clamp((interest / P) * 100, 0, 100) : 0;
+          $("barInterest").style.width = pctInterest + "%";
+          $("barPrincipal").style.width = (100 - pctInterest) + "%";
+          $("outInterest").textContent = moneyC(interest) + " / mo";
+          $("outPrincipal").textContent = negAmort ? "$0.00 / mo" : moneyC(Math.max(0, principal)) + " / mo";
+          $("negAmortAlert").className = "alert-line" + (negAmort ? " show" : "");
+
+          /* ---- Safety rating ---- */
+          var pLtv = clamp(50 - Math.max(0, ltv - 80) * 0.9, 0, 50);
+          var pApr = clamp(25 - Math.max(0, apr - 5) * 1.2, 0, 25);
+          var pHist = missed === 0 ? 25 : missed === 1 ? 10 : 0;
+          var score = Math.round(clamp(pLtv + pApr + pHist, 0, 100));
+          $("outScore").textContent = score;
+          $("outScore").style.color = scoreColor(score);
+          $("ratingFill").style.width = score + "%";
+          $("ratingFill").style.background = scoreColor(score);
+          $("outVerdict").textContent =
+            score >= 80 ? "In control of the car" :
+            score >= 60 ? "Stable — keep pushing" :
+            score >= 40 ? "Exposed — the lender has leverage" :
+            score >= 20 ? "Trapped — act this week" : "Critical — repo risk is real";
+          $("partLtv").textContent = Math.round(pLtv) + " / 50 pts";
+          $("partApr").textContent = Math.round(pApr) + " / 25 pts";
+          $("partHist").textContent = pHist + " / 25 pts";
+
+          /* ---- STEP 3A: Principal strike ---- */
+          var HORIZON = 12;
+          var extra100 = V > 0 ? extraNeeded(B, r, P, V, HORIZON) : 0;
+          var perCheck = (extra100 * 12) / 26;
+          var monthsToEven = payoffMonths(B, r, P + extra100, 0) ; // months until balance <= V with strike
+          // months until balance <= value with strike:
+          (function () {
+            var b = B, m = 0;
+            if (V > 0 && B > V) {
+              while (b > V && m < 1200) { b = b * (1 + r) - (P + extra100); m++; }
+              monthsToEven = m;
+            } else monthsToEven = 0;
+          })();
+          if (gap <= 0) {
+            $("strikePerCheck").textContent = "$0";
+            $("strikeDesc").innerHTML = "You're already at or above water — <strong>no strike needed</strong>. Any extra principal now just shortens the loan and cuts total interest.";
+            $("strikeChip").textContent = "Not needed — equity positive";
+            $("strikeChip").className = "verdict-chip go";
+          } else if (negAmort) {
+            $("strikePerCheck").textContent = "—";
+            $("strikeDesc").innerHTML = "Your regular payment doesn't cover interest, so a strike plan can't be priced until the payment itself is fixed. <strong>Go straight to Path C</strong> and the Tier 1 protocol.";
+            $("strikeChip").textContent = "Blocked — fix the payment first";
+            $("strikeChip").className = "verdict-chip stop";
+          } else {
+            $("strikePerCheck").textContent = money(perCheck);
+            $("strikeDesc").innerHTML =
+              "Pay <strong>" + money(perCheck) + " extra per biweekly paycheck</strong>, marked <strong>\"principal only\"</strong> — that's " + money(extra100) + "/month on top of your regular payment. In about <strong>" + monthsToEven + " month" + (monthsToEven === 1 ? "" : "s") + "</strong> your balance drops to your car's value (LTV 100%), and every lender door that is currently shut swings open.";
+            $("strikeChip").textContent = "Target: LTV 100% within " + HORIZON + " months";
+            $("strikeChip").className = "verdict-chip mid";
+          }
+
+          /* ---- STEP 3B: Refinance check ---- */
+          var checks = [];
+          checks.push({ ok: ltv <= 125, text: "LTV " + Math.round(ltv) + "% — most lenders cap refinances at 120–125%" + (ltv <= 125 ? "." : ". You're over the cap.") });
+          checks.push({ ok: missed === 0, text: missed === 0 ? "No missed payments — your recent history passes a lender review." : missed === 1 ? "1 missed payment on record — some lenders will still talk, many won't." : "2+ missed payments — lenders will decline until you rebuild a clean streak." });
+          checks.push({ ok: apr >= 8, text: apr >= 8 ? "Your " + apr + "% APR is high enough that a refinance could actually save real money." : "Your " + apr + "% APR is already low — refinancing saves little after fees." });
+          checks.push({ ok: term >= 12, text: term >= 12 ? term + " months left — enough term remaining for a refinance to be worth the paperwork." : "Only " + term + " months left — fees would likely eat any savings. Ride it out." });
+          var passCount = checks.filter(function (c) { return c.ok; }).length;
+          $("refiChecks").innerHTML = checks.map(function (c) {
+            return '<li><span class="ic ' + (c.ok ? "ok" : "no") + '">' + (c.ok ? "✓" : "✕") + '</span><span>' + c.text + "</span></li>";
+          }).join("");
+          var exPmt = amortPayment(B, 8, term);
+          var exSave = P - exPmt;
+          $("refiPayment").textContent = money(exPmt) + "/mo";
+          if (ltv <= 120 && missed === 0 && apr >= 8) {
+            $("refiChip").textContent = "Verdict: Likely eligible now";
+            $("refiChip").className = "verdict-chip go";
+            $("refiDesc").innerHTML = "At an example 8% APR over your remaining " + term + " months, your payment could drop to about <strong>" + money(exPmt) + "</strong> — roughly <strong>" + money(exSave) + "/month back in your pocket</strong>. Your actual rate depends on your credit; shop credit unions first.";
+          } else if (ltv <= 135 && missed <= 1) {
+            $("refiChip").textContent = "Verdict: Borderline — close the gap first";
+            $("refiChip").className = "verdict-chip mid";
+            $("refiDesc").innerHTML = "You're within striking distance. Run the <strong>principal strike</strong> until LTV is under 120% and you have a clean payment streak, then apply. An example 8% loan would run about <strong>" + money(exPmt) + "/month</strong>.";
+          } else {
+            $("refiChip").textContent = "Verdict: Not yet — strike first";
+            $("refiChip").className = "verdict-chip stop";
+            $("refiDesc").innerHTML = "A lender will decline this today — the LTV and/or payment history isn't there. That's not a dead end: the principal strike is how you <strong>manufacture eligibility</strong>. Re-run this check every 90 days.";
+          }
+
+          /* ---- Shared payoff model (amortization simulation) ---- */
+          var pmNow = negAmort ? Infinity : payoffMonths(B, r, P, 0);
+
+          /* ---- STEP 3C: Deferral math ---- */
+          var deferInterest = B * (apr / 100) * (60 / 365);
+          var freed = P * 2;
+          var deferBaseMonths = isFinite(pmNow) ? pmNow : term;
+          $("deferFreed").textContent = money(freed);
+          $("deferDesc").innerHTML =
+            "A 60-day deferral pauses <strong>2 payments (" + money(freed) + ")</strong> and moves them to the end of the loan. It is <strong>not free</strong>: interest keeps accruing, adding about <strong>" + money(deferInterest) + "</strong> to your balance, and your payoff date slides about two months — to <strong>" + monthYear(addMonths(now, deferBaseMonths + 2)) + "</strong>. Worth it when the alternative is a missed payment or a repo — expensive when it's just for comfort.";
+          $("deferChip").textContent = missed >= 1 ? "Recommended for your situation" : "Keep in your back pocket";
+          $("deferChip").className = "verdict-chip " + (missed >= 1 ? "go" : "mid");
+
+          /* ---- STEP 4: Tier ---- */
+          var tier;
+          if ((ltv > 130 && missed >= 1) || missed >= 2) tier = 1;
+          else if (ltv > 100) tier = 2;
+          else tier = 3;
+
+          var banner = $("tierBanner");
+          banner.className = "tier-banner" + (tier === 1 ? " t1" : "");
+          var script = buildScript(V, B, P, ltv);
+
+          if (tier === 1) {
+            $("tierKicker").textContent = "Tier 1 · Repossession Risk";
+            $("tierKicker").style.color = "var(--red)";
+            $("tierTitle").textContent = "Repossession Defense Protocol";
+            $("tierDesc").textContent = "LTV over 130% with late payments is the exact profile lenders send to recovery. The next 72 hours matter more than the next 72 days — work this list in order.";
+            $("tierProtocol").innerHTML =
+              "<li><span><b>Freeze everything non-essential today.</b> <span>Subscriptions, eating out, upgrades — all paused until the account is safe. The car payment outranks everything except rent, food, and the gas that gets you to work.</span></span></li>" +
+              "<li><span><b>Call the lender before they call the tow truck.</b> <span>Ask for the hardship / loss-mitigation department by name. Borrowers who call first get options; borrowers who hide get repossessed.</span></span></li>" +
+              "<li><span><b>Request the 60-day deferral in writing.</b> <span>Use the hardship letter below word for word — fill in the brackets, send it through the lender's portal or email so there's a paper trail, and keep the confirmation.</span></span></li>" +
+              "<li><span><b>Bank the freed-up payments.</b> <span>The " + money(freed) + " you don't pay during the deferral goes into a separate cushion — it is your restart fund, not spending money.</span></span></li>" +
+              "<li><span><b>Restart clean and strike.</b> <span>When payments resume, never miss again, and layer in principal-only payments as your hours recover. Six clean months rebuilds your file.</span></span></li>";
+            $("scriptBox").style.display = "block";
+            $("scriptText").textContent = script;
+            $("bpScriptBox").style.display = "block";
+            $("bpScriptText").textContent = script;
+          } else if (tier === 2) {
+            $("tierKicker").textContent = "Tier 2 · Underwater Trap";
+            $("tierKicker").style.color = "var(--amber)";
+            $("tierTitle").textContent = "Principal Strike Strategy";
+            $("tierDesc").textContent = "You're not in repo danger yet — but every month at " + apr + "% APR with negative equity, the trap tightens. The way out is boring, mechanical, and it works.";
+            $("tierProtocol").innerHTML =
+              "<li><span><b>Strike " + money(perCheck) + " per paycheck, principal-only.</b> <span>Pay it as a separate payment and mark it \"principal only\" — in the app memo, on the phone, whatever it takes. Unmarked extra money often gets eaten by next month's interest instead.</span></span></li>" +
+              "<li><span><b>Automate it on payday.</b> <span>Set the strike to leave your account the same day your check lands. Willpower fades by Friday; automation doesn't.</span></span></li>" +
+              "<li><span><b>Hit every windfall against the balance.</b> <span>Tax refund, OT surge, sold something — the gap is the target. Windfalls are how a 12-month plan becomes a 7-month plan.</span></span></li>" +
+              "<li><span><b>Re-check LTV every 90 days.</b> <span>Once you cross under 120% with a clean streak, refinance immediately — that's the moment the strike plan hands off to a cheaper loan.</span></span></li>";
+            $("scriptBox").style.display = "none";
+            $("bpScriptBox").style.display = "none";
+          } else {
+            $("tierKicker").textContent = "Tier 3 · Refinance Ready";
+            $("tierKicker").style.color = "var(--green)";
+            $("tierTitle").textContent = "Rate Reduction Protocol";
+            $("tierDesc").textContent = "You owe less than the car is worth — you're negotiating from strength. Now squeeze the rate down and keep the difference instead of donating it to the lender.";
+            $("tierProtocol").innerHTML =
+              "<li><span><b>Pull your credit reports first.</b> <span>Dispute errors, pay down your highest-utilization card, and let one clean statement cycle post before you apply. Small score bumps move real rates.</span></span></li>" +
+              "<li><span><b>Get 3 quotes inside 14 days.</b> <span>Your credit union, your bank, and one online lender. Rate-shopping inquiries within a short window count as a single inquiry on your score — use that window hard.</span></span></li>" +
+              "<li><span><b>Refinance shorter, not just cheaper.</b> <span>Keep the same payment on a shorter term if you can. A lower rate stretched over a fresh 72 months is a trap dressed as a deal.</span></span></li>" +
+              "<li><span><b>Redirect the savings into principal.</b> <span>Whatever the new payment saves you versus " + money(P) + ", keep paying it — now as principal. The loan dies years early.</span></span></li>";
+            $("scriptBox").style.display = "none";
+            $("bpScriptBox").style.display = "none";
+          }
+          [1, 2, 3].forEach(function (n) {
+            $("ladder" + n).className = "ladder-card" + (n === tier ? " active" : "");
+          });
+
+          /* ---- BLUEPRINT ---- */
+          var bpTier = $("bpTier");
+          bpTier.textContent = tier === 1 ? "Tier 1 · Repo Risk" : tier === 2 ? "Tier 2 · Underwater" : "Tier 3 · Refi Ready";
+          bpTier.style.background = tier === 1 ? "var(--red-dim)" : tier === 2 ? "rgba(255,176,32,.12)" : "var(--green-dim)";
+          bpTier.style.color = tier === 1 ? "var(--red)" : tier === 2 ? "var(--amber)" : "var(--green)";
+          bpTier.style.border = "1px solid " + (tier === 1 ? "var(--red)" : tier === 2 ? "var(--amber-deep)" : "var(--green)");
+          $("bpLtv").textContent = V > 0 ? Math.round(ltv) + "%" : "—";
+          $("bpLtv").style.color = ltv > 130 ? "var(--red)" : ltv > 100 ? "var(--amber)" : "var(--green)";
+          $("bpLtvSub").textContent = gap > 0 ? money(gap) + " underwater" : money(Math.abs(gap)) + " equity cushion";
+          $("bpScore").textContent = score + " / 100";
+          $("bpScore").style.color = scoreColor(score);
+          $("bpScoreSub").textContent = $("outVerdict").textContent;
+          $("bpBleed").textContent = moneyC(interest);
+          $("bpBleed").style.color = "var(--red)";
+          $("bpBleedSub").textContent = money(interest * 12) + " per year burned on interest";
+          $("bpStrike").textContent = gap > 0 && !negAmort ? money(perCheck) : "$0";
+          var pmStrike = negAmort ? Infinity : payoffMonths(B, r, P + (gap > 0 ? extra100 : 0), 0);
+          $("bpPayoffNow").textContent = isFinite(pmNow) ? monthYear(addMonths(now, pmNow)) : "Never at this pace";
+          $("bpPayoffNowSub").textContent = isFinite(pmNow) ? "paying " + money(P) + "/month, no extra" : "payment doesn't cover interest";
+          $("bpPayoffTarget").textContent = isFinite(pmStrike) ? monthYear(addMonths(now, pmStrike)) : "Fix payment first";
+          $("bpPayoffTarget").style.color = "var(--green)";
+          if (isFinite(pmNow) && isFinite(pmStrike) && pmStrike < pmNow) {
+            $("bpPayoffTargetSub").textContent = "debt-free " + (pmNow - pmStrike) + " months sooner with the strike";
+          } else {
+            $("bpPayoffTargetSub").textContent = gap > 0 ? "with the full principal strike applied" : "you're already on the fastest clean path";
+          }
+          $("bpAction").textContent =
+            tier === 1 ? "Call your lender's hardship department TODAY and send the 60-day deferral letter below. Every day of silence raises the repo risk." :
+            tier === 2 ? "Set up a " + money(perCheck) + " principal-only payment to hit every payday, starting this week. Re-check your LTV in 90 days." :
+            "Get three refinance quotes within the next 14 days — credit union first — and redirect every dollar of savings back into principal.";
+        }
+
+        inputs.forEach(function (id) {
+          $(id).addEventListener("input", compute);
+        });
+        document.querySelectorAll("[data-missed]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            missed = parseInt(btn.getAttribute("data-missed"), 10);
+            document.querySelectorAll("[data-missed]").forEach(function (b) {
+              b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+            });
+            compute();
+          });
+        });
+        document.querySelectorAll("[data-copy]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var el = $(btn.getAttribute("data-copy"));
+            var text = el.textContent;
+            function done() {
+              var old = btn.textContent;
+              btn.textContent = "COPIED ✓";
+              setTimeout(function () { btn.textContent = old; }, 1800);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+            } else fallback();
+            function fallback() {
+              var ta = document.createElement("textarea");
+              ta.value = text;
+              ta.style.position = "fixed"; ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand("copy"); done(); } catch (e) { btn.textContent = "SELECT + COPY MANUALLY"; }
+              document.body.removeChild(ta);
+            }
+          });
+        });
+
+        compute();
+      })();
+    </script>
+  </body>
+</html>

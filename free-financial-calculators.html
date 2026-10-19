@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="Free financial calculators — no signup, no fees. Debt payoff, credit utilization, and overtime paycheck calculators that run instantly in your browser."
+    />
+    <link rel="icon" href="data:," />
+    <title>Free Financial Calculators — Debt, Credit &amp; Paycheck Tools</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f7f6f2;
+        --surface: #ffffff;
+        --ink: #1c2420;
+        --ink-soft: #4a554f;
+        --line: #e0ddd2;
+        --accent: #14683f;
+        --accent-ink: #ffffff;
+        --accent-soft: #e6f0e9;
+        --shadow: 0 1px 2px rgba(28, 36, 32, 0.06), 0 8px 24px rgba(28, 36, 32, 0.06);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #121614;
+          --surface: #1c211e;
+          --ink: #ecefeb;
+          --ink-soft: #a8b3ac;
+          --line: #2c332e;
+          --accent: #3fae72;
+          --accent-ink: #0d1712;
+          --accent-soft: #1e2b23;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: clamp(28px, 6vw, 64px) clamp(18px, 4vw, 32px) 56px;
+      }
+
+      header { max-width: 640px; }
+      h1 {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(32px, 5.5vw, 46px);
+        line-height: 1.12;
+        margin: 0 0 16px;
+        letter-spacing: -0.01em;
+      }
+      .intro {
+        font-size: clamp(16px, 2.4vw, 18px);
+        color: var(--ink-soft);
+        margin: 0;
+      }
+      .intro strong { color: var(--ink); font-weight: 600; }
+
+      .facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 22px;
+        margin: 26px 0 0;
+        padding: 0;
+        list-style: none;
+        font-size: 14px;
+        color: var(--ink-soft);
+      }
+      .facts li { display: inline-flex; align-items: center; gap: 7px; }
+      .facts svg { flex: none; color: var(--accent); }
+
+      .tools {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+        margin-top: 42px;
+      }
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 26px 24px 22px;
+        box-shadow: var(--shadow);
+        text-decoration: none;
+        color: inherit;
+      }
+      .card:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+      }
+      .icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        display: grid;
+        place-items: center;
+        margin-bottom: 18px;
+      }
+      .card h2 {
+        font-size: 19px;
+        line-height: 1.3;
+        margin: 0 0 8px;
+        font-weight: 650;
+      }
+      .card p {
+        margin: 0 0 22px;
+        color: var(--ink-soft);
+        font-size: 15px;
+      }
+      .go {
+        margin-top: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--accent);
+      }
+      .go svg { transition: transform 0.15s ease; }
+      .card:hover .go svg { transform: translateX(3px); }
+      @media (prefers-reduced-motion: reduce) {
+        .go svg { transition: none; }
+        .card:hover .go svg { transform: none; }
+      }
+
+      .more {
+        margin-top: 40px;
+        padding: 22px 24px;
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+        color: var(--ink-soft);
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .more svg { flex: none; color: var(--accent); }
+      .more strong { color: var(--ink); }
+
+      footer {
+        margin-top: 48px;
+        font-size: 13.5px;
+        color: var(--ink-soft);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header>
+        <h1>Free Financial Calculators</h1>
+        <p class="intro">
+          Simple tools for real money questions — how fast you can get out of debt,
+          what your credit cards are doing to your score, and what your paycheck
+          should actually be. <strong>Every calculator is 100% free, with no signup and
+          no email required.</strong> Just open one and start typing.
+        </p>
+        <ul class="facts">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Free forever
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            No signup or account
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Runs in your browser — nothing is stored
+          </li>
+        </ul>
+      </header>
+
+      <section class="tools" aria-label="Calculators">
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/debt-payoff-calculator.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 19V9m5.5 10V5M15 19v-8m5 8V7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </span>
+          <h2>Debt Payoff Calculator</h2>
+          <p>See your debt-free date and total interest with the snowball or avalanche method — and how extra payments move the date up.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/credit-utilization-calculator.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5.5" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          <h2>Credit Utilization Calculator</h2>
+          <p>Find your credit utilization ratio and exactly how many dollars to pay down on each card to reach 30% or 10%.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/overtime-paycheck-calculator.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h2>Overtime Paycheck Calculator</h2>
+          <p>Enter your hourly rate and hours to see your regular pay, time-and-a-half overtime pay, and total gross paycheck.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/debt-snowball-vs-avalanche-calculator.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3.5v17M5 6.5h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M5 6.5L2.8 12a3.4 3.4 0 0 0 4.4 0L5 6.5zM19 6.5L16.8 12a3.4 3.4 0 0 0 4.4 0L19 6.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 20.5h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <h2>Debt Snowball vs. Avalanche Calculator</h2>
+          <p>Enter up to 5 debts and see which payoff method wins — side-by-side interest, months to debt-free, and payoff order.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3.5l7 2.5v5.5c0 4.4-2.9 7.4-7 9-4.1-1.6-7-4.6-7-9V6l7-2.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.8 12l2.2 2.2 4.2-4.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h2>Emergency Fund Runway Calculator</h2>
+          <p>How many months could you survive on your savings? Enter your essentials, see your runway meter, savings gap, and target date.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 3.5h12v17l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4-2 1.4v-17z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8h6M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <h2>Side-Hustle Tax Estimator</h2>
+          <p>Gig worker? Enter your 1099 income and see your true take-home after self-employment tax — plus exactly what to set aside per payout.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 20c4-1.5 5-4.5 7-7s4-5 9-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 6.5L20 7l-.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h2>Compound Interest Velocity Calculator</h2>
+          <p>Drag the sliders and watch your money grow — see exactly how much of your future balance is free money from interest.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/subscription-drain-audit.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20.5 3.5v4.5H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>
+          </span>
+          <h2>Subscription Drain Audit</h2>
+          <p>Find every subscription silently draining your bank account — see the annual damage and what it would've grown to.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/bnpl-trap-calculator.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7.5 14h3M13.5 14h3M7.5 17.5h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <h2>BNPL Trap Calculator</h2>
+          <p>Stack up your Klarna and Afterpay plans — see what percent of your next paycheck vanishes and your exact freedom date.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a class="card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="2"/><path d="M12 3.5V12l6 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12L5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <h2>Paycheck Budget Splitter</h2>
+          <p>Split every paycheck into needs, wants, and savings — built for variable shift income, with a payday transfer checklist.</p>
+          <span class="go">Open calculator
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9.5 3.5L14 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+      </section>
+
+      <div class="more">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span><strong>More on the way.</strong> New calculators are added regularly — check back for fresh tools on pay, debt, credit, and everyday money math.</span>
+      </div>
+
+      <footer>
+        <p>These calculators provide estimates for planning purposes. For decisions with tax or legal consequences, check with a qualified professional.</p>
+      </footer>
+    </main>
+  </body>
+</html>

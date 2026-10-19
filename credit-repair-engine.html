@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Credit Repair Engine — Shift-Worker Credit Score Repair &amp; Fast-Recovery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#0e0e11;
+        --bg-raise:#15161a;
+        --panel:#17181d;
+        --panel-2:#1d1f26;
+        --inset:#101116;
+        --line:#2b2d36;
+        --line-soft:#22242c;
+        --text:#f4f1e9;
+        --muted:#a9a498;
+        --faint:#7c786e;
+        --amber:#f5a524;
+        --orange:#ff6b1a;
+        --amber-dim:rgba(245,165,36,.14);
+        --red:#e5484d;
+        --red-dim:rgba(229,72,77,.13);
+        --green:#43b581;
+        --green-dim:rgba(67,181,129,.13);
+        --blue:#5aa9e6;
+        --shadow:0 10px 30px rgba(0,0,0,.45);
+        --radius:10px;
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--text);
+        font-family:"Barlow",system-ui,-apple-system,sans-serif;
+        font-size:16px;
+        line-height:1.5;
+        -webkit-font-smoothing:antialiased;
+      }
+      .wrap{max-width:920px;margin:0 auto;padding:0 16px 64px}
+      .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+
+      /* ---------- header ---------- */
+      header{padding:34px 0 8px}
+      .kicker{
+        display:inline-flex;align-items:center;gap:8px;
+        font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
+        text-transform:uppercase;color:var(--amber);
+        border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+        background:var(--panel);
+      }
+      .kicker::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 8px var(--orange)}
+      h1{
+        font-family:"Barlow Condensed",sans-serif;font-weight:700;
+        font-size:clamp(40px,9vw,64px);line-height:.98;letter-spacing:.01em;
+        text-transform:uppercase;margin:16px 0 10px;
+      }
+      h1 .accent{color:var(--amber)}
+      .lede{color:var(--muted);font-size:17px;max-width:620px;margin:0}
+      .lede strong{color:var(--text)}
+
+      /* ---------- step panels ---------- */
+      .step{
+        background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+        margin-top:26px;overflow:hidden;box-shadow:var(--shadow);
+      }
+      .step-head{
+        display:flex;align-items:center;gap:14px;padding:16px 18px 14px;
+        border-bottom:1px solid var(--line-soft);
+        background:linear-gradient(180deg,var(--panel-2),var(--panel));
+      }
+      .step-num{
+        font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:26px;
+        color:#141310;background:var(--amber);border-radius:6px;
+        min-width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+        padding:0 6px;flex:none;
+      }
+      .step-head h2{
+        font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:24px;
+        text-transform:uppercase;letter-spacing:.03em;margin:0;line-height:1.05;
+      }
+      .step-head p{margin:2px 0 0;color:var(--muted);font-size:13.5px}
+      .step-body{padding:18px}
+      .hazard{height:6px;background:repeating-linear-gradient(-45deg,var(--amber) 0 14px,#131315 14px 28px)}
+
+      label.flabel{display:block;font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+      .money{position:relative}
+      .money span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--faint);font-family:"IBM Plex Mono",monospace;font-size:15px;pointer-events:none}
+      input[type="number"],input[type="text"]{
+        width:100%;background:var(--inset);border:1px solid var(--line);border-radius:8px;
+        color:var(--text);font-family:"IBM Plex Mono",monospace;font-size:17px;
+        padding:11px 12px 11px 26px;outline:none;appearance:textfield;-moz-appearance:textfield;
+      }
+      input[type="text"]{font-family:"Barlow",sans-serif;padding-left:12px;font-size:15px}
+      input:focus{border-color:var(--amber);box-shadow:0 0 0 3px var(--amber-dim)}
+      input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+      .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+      @media (max-width:560px){.grid2{grid-template-columns:1fr}}
+
+      /* factor chips (real, visible checkboxes) */
+      .factors{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+      .factor{
+        display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none;
+        border:1px solid var(--line);border-radius:999px;padding:9px 15px;
+        font-size:14px;font-weight:500;color:var(--muted);background:var(--inset);
+        transition:border-color .15s,color .15s,background .15s;
+      }
+      .factor input{
+        appearance:none;-webkit-appearance:none;width:17px;height:17px;flex:none;margin:0;padding:0;
+        border:1.5px solid var(--faint);border-radius:4px;background:transparent;cursor:pointer;position:relative;
+      }
+      .factor input:checked{background:var(--amber);border-color:var(--amber)}
+      .factor input:checked::after{
+        content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+        font-size:12px;font-weight:700;color:#141310;line-height:1;
+      }
+      .factor input:focus-visible{box-shadow:0 0 0 3px var(--amber-dim);outline:none;border-color:var(--amber)}
+      .factor:has(input:checked){border-color:var(--amber);color:var(--text);background:var(--amber-dim)}
+
+      /* ---------- gauge ---------- */
+      .gauge-row{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center}
+      @media (max-width:640px){.gauge-row{grid-template-columns:1fr;justify-items:center;text-align:center}}
+      .gauge-box{width:220px;max-width:100%}
+      .gauge-pct{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:52px;line-height:1}
+      .gauge-zone{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-top:4px}
+      .zone-red{color:var(--red)} .zone-amber{color:var(--amber)} .zone-green{color:var(--green)}
+      .gauge-sub{color:var(--muted);font-size:14px;margin-top:8px}
+
+      .targets{display:grid;gap:10px}
+      .target{
+        display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+        background:var(--inset);border:1px solid var(--line-soft);border-radius:8px;padding:12px 14px;
+      }
+      .target .t-badge{
+        font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:20px;
+        border-radius:6px;padding:2px 10px;flex:none;min-width:74px;text-align:center;
+      }
+      .t50{background:var(--red-dim);color:var(--red)}
+      .t30{background:var(--amber-dim);color:var(--amber)}
+      .t10{background:var(--green-dim);color:var(--green)}
+      .target .t-main{font-size:15px}
+      .target .t-main b{font-family:"IBM Plex Mono",monospace;font-size:17px}
+      .target .t-note{color:var(--muted);font-size:13px;width:100%}
+      .target.done{opacity:.75}
+      .target .t-done-tag{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}
+
+      /* per-card */
+      .cards-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:24px 0 10px;flex-wrap:wrap}
+      .cards-head h3{font-family:"Barlow Condensed",sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:.03em;margin:0}
+      .cards-head .hint{color:var(--faint);font-size:13px}
+      .card-row{
+        border:1px solid var(--line-soft);border-radius:8px;padding:14px;margin-bottom:10px;background:var(--panel-2);
+      }
+      .card-row .grid3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px}
+      @media (max-width:560px){.card-row .grid3{grid-template-columns:1fr 1fr}.card-row .grid3 .cname{grid-column:1/-1}}
+      .bar-track{height:10px;border-radius:99px;background:var(--inset);border:1px solid var(--line-soft);overflow:hidden;margin-top:12px}
+      .bar-fill{height:100%;width:0%;border-radius:99px;transition:width .35s ease,background .35s ease}
+      .card-meta{display:flex;justify-content:space-between;gap:8px;margin-top:7px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+      .card-meta .cu{font-family:"IBM Plex Mono",monospace;font-weight:600}
+      .use-cards-note{font-size:13px;color:var(--muted);margin-top:2px}
+      .use-cards-note button{
+        background:none;border:none;color:var(--amber);font:inherit;font-weight:600;cursor:pointer;
+        text-decoration:underline;text-underline-offset:3px;padding:0;
+      }
+
+      /* ---------- step 3 diagnostics ---------- */
+      .diag{border:1px solid var(--line-soft);border-radius:8px;padding:14px;margin-bottom:12px;background:var(--panel-2)}
+      .diag q,.diag .q{font-size:16px;font-weight:600;display:block;margin-bottom:10px}
+      .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+      .seg button{
+        appearance:none;border:none;background:var(--inset);color:var(--muted);cursor:pointer;
+        font:inherit;font-weight:600;font-size:14px;padding:9px 22px;min-height:40px;
+      }
+      .seg button + button{border-left:1px solid var(--line)}
+      .seg button.on{background:var(--amber);color:#141310}
+      .seg button:focus-visible{box-shadow:inset 0 0 0 2px var(--text);outline:none}
+      .strategy{
+        border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:8px;
+        padding:14px 16px;margin-top:12px;background:var(--inset);display:none;
+      }
+      .strategy.on{display:block}
+      .strategy h4{margin:0 0 4px;font-family:"Barlow Condensed",sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:.02em}
+      .strategy .tag{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+      .strategy p{margin:6px 0 0;color:var(--muted);font-size:14.5px}
+      .strategy ol{margin:8px 0 2px;padding-left:20px;color:var(--muted);font-size:14.5px}
+      .strategy ol li{margin:3px 0}
+      .strategy p strong,.strategy li strong{color:var(--text)}
+      .none-msg{color:var(--muted);font-size:14.5px;border:1px dashed var(--line);border-radius:8px;padding:12px 14px;margin-top:12px;display:none}
+      .none-msg.on{display:block}
+
+      /* ---------- blueprint ---------- */
+      #blueprint{border-color:var(--amber)}
+      .bp-top{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:center}
+      @media (max-width:640px){.bp-top{grid-template-columns:1fr;justify-items:center;text-align:center}}
+      .bp-sec-title{
+        font-family:"Barlow Condensed",sans-serif;font-size:21px;text-transform:uppercase;letter-spacing:.03em;
+        margin:22px 0 10px;padding-top:18px;border-top:1px solid var(--line-soft);
+      }
+      .plan-item{
+        display:flex;gap:13px;padding:13px 14px;border:1px solid var(--line-soft);border-radius:8px;
+        margin-bottom:10px;background:var(--inset);cursor:pointer;align-items:flex-start;
+      }
+      .plan-item .box{
+        width:22px;height:22px;border:2px solid var(--faint);border-radius:5px;flex:none;margin-top:2px;
+        display:flex;align-items:center;justify-content:center;color:transparent;font-size:14px;font-weight:700;
+      }
+      .plan-item.done .box{background:var(--green);border-color:var(--green);color:#0d0f0c}
+      .plan-item.done .pi-title{text-decoration:line-through;color:var(--muted)}
+      .pi-tier{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;padding:2px 8px;border-radius:99px;flex:none}
+      .tier1{background:var(--red-dim);color:var(--red)}
+      .tier2{background:var(--amber-dim);color:var(--amber)}
+      .tier3{background:var(--green-dim);color:var(--green)}
+      .pi-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+      .pi-title{font-weight:700;font-size:16px}
+      .pi-when{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--faint)}
+      .pi-detail{color:var(--muted);font-size:14px;margin-top:3px}
+      .pi-detail b{color:var(--text);font-family:"IBM Plex Mono",monospace;font-weight:600}
+      .bp-strats{display:grid;gap:9px}
+      .bp-strat{display:flex;gap:10px;align-items:flex-start;background:var(--inset);border:1px solid var(--line-soft);border-radius:8px;padding:11px 13px;font-size:14.5px}
+      .bp-strat .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none;margin-top:7px}
+      .bp-strat span{color:var(--muted)} .bp-strat b{color:var(--text)}
+      .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+      .btn{
+        font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:19px;letter-spacing:.04em;text-transform:uppercase;
+        border-radius:8px;padding:12px 22px;cursor:pointer;border:1px solid transparent;text-decoration:none;display:inline-block;
+      }
+      .btn-amber{background:var(--amber);color:#16130a}
+      .btn-amber:hover{background:var(--orange);color:#16130a}
+      .btn-ghost{background:transparent;color:var(--text);border-color:var(--line)}
+      .btn-ghost:hover{border-color:var(--amber);color:var(--amber)}
+
+      /* ---------- next steps / CTA / FAQ ---------- */
+      .next-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+      @media (max-width:640px){.next-grid{grid-template-columns:1fr}}
+      .next-card{
+        background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;
+        text-decoration:none;color:var(--text);display:block;transition:border-color .15s,transform .15s;
+      }
+      .next-card:hover{border-color:var(--amber);transform:translateY(-2px)}
+      .next-card .nc-tag{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+      .next-card h3{font-family:"Barlow Condensed",sans-serif;font-size:24px;text-transform:uppercase;margin:6px 0 6px}
+      .next-card p{color:var(--muted);margin:0;font-size:14.5px}
+      .next-card .go{color:var(--amber);font-weight:700;margin-top:12px;display:inline-block}
+      .cta{
+        margin-top:14px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--amber);
+        background:linear-gradient(120deg,var(--amber-dim),transparent 55%),var(--panel);
+      }
+      .cta-inner{padding:22px 20px}
+      .cta h3{font-family:"Barlow Condensed",sans-serif;font-size:27px;text-transform:uppercase;margin:0 0 6px;line-height:1.05}
+      .cta p{color:var(--muted);margin:0 0 14px;max-width:560px}
+      .faq{margin-top:30px}
+      .faq h2,.sec-h{font-family:"Barlow Condensed",sans-serif;font-size:28px;text-transform:uppercase;letter-spacing:.02em;margin:0 0 12px}
+      details{border:1px solid var(--line);border-radius:8px;background:var(--panel);margin-bottom:9px}
+      summary{cursor:pointer;padding:14px 16px;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:10px;align-items:center}
+      summary::-webkit-details-marker{display:none}
+      summary::after{content:"+";font-family:"IBM Plex Mono",monospace;color:var(--amber);font-size:20px;flex:none}
+      details[open ] summary::after{content:"–"}
+      details .a{padding:0 16px 15px;color:var(--muted);font-size:15px}
+      details .a strong{color:var(--text)}
+      .disclaimer{
+        margin-top:26px;border:1px dashed var(--line);border-radius:8px;padding:14px 16px;
+        color:var(--faint);font-size:13.5px;background:var(--bg-raise);
+      }
+      .disclaimer strong{color:var(--muted)}
+
+      /* ---------- print: blueprint only ---------- */
+      @media print{
+        body{background:#fff;color:#111}
+        header,.step,#nextSteps,.faq,.disclaimer,.btn-row,.no-print{display:none !important}
+        #blueprint{display:block !important;border:1px solid #999;box-shadow:none;background:#fff;color:#111}
+        #blueprint .step-head{background:#fff;border-bottom:1px solid #999}
+        #blueprint .step-num{background:#111;color:#fff}
+        .wrap{max-width:100%;padding:0}
+        .target,.plan-item,.bp-strat,.card-row{background:#fff;border-color:#bbb}
+        .pi-detail,.target .t-note,.gauge-sub,.bp-strat span{color:#333}
+        .plan-item .box{border-color:#666}
+        .hazard{display:none}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <span class="kicker">Shift-Worker Money Tools</span>
+        <h1>Credit Score Repair<br /><span class="accent">&amp; Fast-Recovery</span> Engine</h1>
+        <p class="lede">Enter your real numbers, get the <strong>exact dollars</strong> needed to break each utilization threshold, find out which dispute moves apply to you, and walk away with a <strong>30–60 day recovery plan</strong> built around payday timing — not generic advice.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" id="step1">
+        <div class="hazard"></div>
+        <div class="step-head">
+          <div class="step-num">01</div>
+          <div>
+            <h2>Credit Snapshot</h2>
+            <p>Your totals across every revolving card. Estimates are fine — the math updates live.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="grid2">
+            <div>
+              <label class="flabel" for="totalLimits">Total credit limits — all cards</label>
+              <div class="money"><span>$</span><input type="number" id="totalLimits" inputmode="decimal" min="0" placeholder="8,000" /></div>
+            </div>
+            <div>
+              <label class="flabel" for="totalBalances">Total current balances — all cards</label>
+              <div class="money"><span>$</span><input type="number" id="totalBalances" inputmode="decimal" min="0" placeholder="5,600" /></div>
+            </div>
+          </div>
+          <label class="flabel" style="margin-top:20px">What's dragging your score down? (check all that apply)</label>
+          <div class="factors">
+            <label class="factor"><input type="checkbox" id="fUtil" />High utilization</label>
+            <label class="factor"><input type="checkbox" id="fLate" />Late payments</label>
+            <label class="factor"><input type="checkbox" id="fColl" />Collections</label>
+            <label class="factor"><input type="checkbox" id="fAge" />Low account age</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" id="step2">
+        <div class="hazard"></div>
+        <div class="step-head">
+          <div class="step-num">02</div>
+          <div>
+            <h2>Utilization Rebalancing Engine</h2>
+            <p>Utilization is roughly 30% of a FICO score — and the fastest lever you control.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="gauge-row">
+            <div class="gauge-box">
+              <svg viewBox="0 0 200 118" width="100%" role="img" aria-label="Overall utilization gauge">
+                <path d="M 14 104 A 86 86 0 0 1 186 104" fill="none" stroke="var(--line)" stroke-width="15" stroke-linecap="round"/>
+                <path id="gaugeArc" d="M 14 104 A 86 86 0 0 1 186 104" fill="none" stroke="var(--red)" stroke-width="15" stroke-linecap="round" stroke-dasharray="270.2" stroke-dashoffset="270.2"/>
+                <text id="gaugeText" x="100" y="88" text-anchor="middle" fill="var(--text)" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="46">—%</text>
+                <text x="100" y="110" text-anchor="middle" fill="var(--faint)" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="2">UTILIZATION</text>
+              </svg>
+              <div style="text-align:center">
+                <div class="gauge-zone" id="gaugeZone">Enter your totals above</div>
+                <div class="gauge-sub" id="gaugeSub">Your pay-down targets appear here.</div>
+              </div>
+            </div>
+            <div class="targets" id="targets">
+              <div class="target" id="tgt50">
+                <span class="t-badge t50">&lt; 50%</span>
+                <span class="t-main" data-main>—</span>
+                <span class="t-note">Crossing under 50% is the first real score-relief line. Issuers also see you as lower-risk.</span>
+              </div>
+              <div class="target" id="tgt30">
+                <span class="t-badge t30">&lt; 30%</span>
+                <span class="t-main" data-main>—</span>
+                <span class="t-note">The classic “good” zone. Most score models start rewarding you noticeably here.</span>
+              </div>
+              <div class="target" id="tgt10">
+                <span class="t-badge t10">&lt; 10%</span>
+                <span class="t-main" data-main>—</span>
+                <span class="t-note">Top-tier territory. This is where utilization stops costing you points almost entirely.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cards-head">
+            <h3>Card-by-card breakdown</h3>
+            <span class="hint">Optional — see which single card is doing the damage.</span>
+          </div>
+          <div id="cardRows"></div>
+          <p class="use-cards-note" id="cardSumNote" style="display:none"></p>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" id="step3">
+        <div class="hazard"></div>
+        <div class="step-head">
+          <div class="step-num">03</div>
+          <div>
+            <h2>Dispute &amp; Goodwill Check</h2>
+            <p>Three questions. The strategies that actually apply to your file show up below.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="diag">
+            <span class="q">Any late payments less than 2 years old — on an account that's otherwise in good standing?</span>
+            <div class="seg" role="group" aria-label="Recent late payments" data-q="qLate">
+              <button type="button" data-v="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-v="no" aria-pressed="false">No</button>
+            </div>
+          </div>
+          <div class="diag">
+            <span class="q">Do you have any accounts in collections right now?</span>
+            <div class="seg" role="group" aria-label="Collections" data-q="qColl">
+              <button type="button" data-v="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-v="no" aria-pressed="false">No</button>
+            </div>
+          </div>
+          <div class="diag">
+            <span class="q">Have you spotted errors on your credit reports — wrong balances, accounts that aren't yours, late marks that never happened?</span>
+            <div class="seg" role="group" aria-label="Report errors" data-q="qErr">
+              <button type="button" data-v="yes" aria-pressed="false">Yes</button>
+              <button type="button" data-v="no" aria-pressed="false">No / Haven't checked</button>
+            </div>
+          </div>
+
+          <div class="strategy" id="stratGoodwill">
+            <span class="tag">Strategy A — Applies to you</span>
+            <h4>Goodwill Letter</h4>
+            <p>A recent late mark on an otherwise clean account is the best goodwill candidate there is. You're asking the issuer to remove it as a one-time courtesy — it works most often when the account is current now and the slip was a one-off.</p>
+            <ol>
+              <li>Bring the account <strong>fully current</strong> first — never send the letter while still behind.</li>
+              <li>Write a short letter: own the mistake, name the specific month, state what changed (auto-pay is now on), ask for the late mark to be removed as a goodwill adjustment.</li>
+              <li>Send it to the issuer's executive / customer-service address — <strong>certified mail</strong> if the first email or call gets a no.</li>
+              <li>No answer in 30 days? Call and ask again. Persistence is normal here; one removal can be worth real points.</li>
+            </ol>
+          </div>
+
+          <div class="strategy" id="stratColl">
+            <span class="tag">Strategy B — Applies to you</span>
+            <h4>Pay-for-Delete + Verification Dispute</h4>
+            <p>Two paths, in this order. First make the collector prove the debt is valid and really yours — then, if it is, negotiate deletion as part of paying it.</p>
+            <ol>
+              <li><strong>Debt validation first:</strong> within 30 days of first contact, send a written validation request. They must verify the debt before collecting further.</li>
+              <li><strong>Pay-for-delete:</strong> if the debt checks out, offer payment in exchange for deleting the tradeline from all three bureaus — and get that promise <strong>in writing before you pay a cent</strong>.</li>
+              <li>Never pay an old collection on a phone promise alone, and never give a collector electronic access to your bank account.</li>
+              <li>Note: paying a collection without deletion still helps newer score models (FICO 9 / VantageScore ignore paid collections) — deletion is just the strongest outcome.</li>
+            </ol>
+          </div>
+
+          <div class="strategy" id="stratFcra">
+            <span class="tag">Strategy C — Applies to you</span>
+            <h4>FCRA Error Dispute</h4>
+            <p>Errors are the creditor's problem to prove, not yours. Under the Fair Credit Reporting Act, bureaus must investigate disputes — usually within 30 days — and delete anything they can't verify.</p>
+            <ol>
+              <li>Pull all three reports free at <strong>AnnualCreditReport.com</strong> and highlight every error, bureau by bureau.</li>
+              <li>Dispute each error with the bureau reporting it — online is fastest; certified mail creates a paper trail.</li>
+              <li>Attach proof where you have it (statements, payoff letters). Keep copies of everything.</li>
+              <li>Calendar day 30–45 to re-pull the report and confirm the correction actually landed.</li>
+            </ol>
+          </div>
+
+          <div class="none-msg" id="stratNone">No dispute paths flagged yet — answer the questions above (or check Late Payments / Collections in Step 1) and the matching playbook appears here and in your Blueprint.</div>
+        </div>
+      </section>
+
+      <!-- STEP 4 / BLUEPRINT -->
+      <section class="step" id="blueprint">
+        <div class="hazard"></div>
+        <div class="step-head">
+          <div class="step-num">04</div>
+          <div>
+            <h2>Your Credit Recovery Blueprint</h2>
+            <p>The 30–60 day plan, ranked by score impact per dollar. Tap any item to check it off as you go.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="bp-top">
+            <div class="gauge-box">
+              <svg viewBox="0 0 200 118" width="100%" role="img" aria-label="Blueprint utilization gauge">
+                <path d="M 14 104 A 86 86 0 0 1 186 104" fill="none" stroke="var(--line)" stroke-width="15" stroke-linecap="round"/>
+                <path id="bpArc" d="M 14 104 A 86 86 0 0 1 186 104" fill="none" stroke="var(--red)" stroke-width="15" stroke-linecap="round" stroke-dasharray="270.2" stroke-dashoffset="270.2"/>
+                <text id="bpText" x="100" y="88" text-anchor="middle" fill="var(--text)" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="46">—%</text>
+                <text x="100" y="110" text-anchor="middle" fill="var(--faint)" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="2">UTILIZATION</text>
+              </svg>
+              <div style="text-align:center">
+                <div class="gauge-zone" id="bpZone">Awaiting your numbers</div>
+                <div class="gauge-sub" id="bpSub">Fill in Step 1 and this blueprint builds itself.</div>
+              </div>
+            </div>
+            <div class="targets" id="bpTargets">
+              <div class="target" data-bp="50"><span class="t-badge t50">&lt; 50%</span><span class="t-main" data-main>—</span></div>
+              <div class="target" data-bp="30"><span class="t-badge t30">&lt; 30%</span><span class="t-main" data-main>—</span></div>
+              <div class="target" data-bp="10"><span class="t-badge t10">&lt; 10%</span><span class="t-main" data-main>—</span></div>
+              <div class="target" data-bp="1"><span class="t-badge" style="background:var(--amber-dim);color:var(--amber)">1% trick</span><span class="t-main" data-main>—</span></div>
+            </div>
+          </div>
+
+          <h3 class="bp-sec-title">Dispute strategies on your file</h3>
+          <div class="bp-strats" id="bpStrats">
+            <div class="bp-strat"><span class="dot"></span><span>Answer Step 3 and your applicable strategies land here.</span></div>
+          </div>
+
+          <h3 class="bp-sec-title">30–60 day action plan — ranked</h3>
+          <div id="planList"></div>
+
+          <div class="btn-row no-print">
+            <button class="btn btn-amber" id="downloadBtn" type="button">Download my blueprint</button>
+            <a class="btn btn-ghost" href="#step1">Adjust my numbers</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div id="nextSteps">
+        <div class="next-grid">
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/credit-utilization-calculator.html" target="_blank" rel="noopener">
+            <span class="nc-tag">Companion tool</span>
+            <h3>Credit Utilization Calculator</h3>
+            <p>Go deeper per card — gauge, pay-down targets, and exactly what each payment does to your reported utilization.</p>
+            <span class="go">Open the calculator →</span>
+          </a>
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payoff-vs-refinance-decision-tree.html" target="_blank" rel="noopener">
+            <span class="nc-tag">Decision tool</span>
+            <h3>Payoff vs. Refinance Decision Tree</h3>
+            <p>Once utilization drops and your score climbs, run the numbers: keep paying cards down, or refinance into one cheaper payment?</p>
+            <span class="go">Run the decision tree →</span>
+          </a>
+        </div>
+
+        <div class="cta">
+          <div class="hazard"></div>
+          <div class="cta-inner">
+            <h3>Track the rebuild with the Debt Payoff Tracker on Gumroad</h3>
+            <p>Grab the free Paycheck Protection Checklist too — the tracker keeps every balance, due date, and payoff win in one place while this plan runs.</p>
+            <a class="btn btn-amber" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get it on Gumroad</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <section class="faq">
+        <h2>Straight answers</h2>
+        <details>
+          <summary>How fast does a utilization drop actually hit my score?</summary>
+          <div class="a">Fast — utilization has <strong>no memory</strong> in most score models. Issuers report your balance once a month, usually right after your statement closes. Pay before the statement date and the lower balance is what the bureaus see; most people see the score change within <strong>one reporting cycle (about 30 days)</strong>, sometimes sooner. That's exactly why the Statement Date Payday Strike in Tier 1 works.</div>
+        </details>
+        <details>
+          <summary>Do goodwill letters actually work?</summary>
+          <div class="a">Sometimes — and the odds are best in exactly the situation flagged in Step 3: <strong>one or two late marks, under 2 years old, on an account that's current now</strong> with a good history otherwise. Issuers aren't required to say yes, so keep it short, polite, and specific, set up auto-pay first so you can honestly say it won't happen again, and don't quit after the first no — a second attempt by mail often lands with a different reviewer.</div>
+        </details>
+        <details>
+          <summary>What's the 1% utilization trick?</summary>
+          <div class="a">Score models like to see that you <em>use</em> credit without leaning on it. The sweet spot many optimizers aim for: let <strong>one card report a tiny balance — around 1% of its limit — and let every other card report $0</strong>. All-zero reporting can actually score slightly worse than 1%, because it can look like you're not using credit at all. It's a finishing move for when you're already under 30%, not a substitute for paying balances down.</div>
+        </details>
+        <details>
+          <summary>Should I close old cards once they're paid off?</summary>
+          <div class="a">Usually <strong>no</strong>. Closing a card deletes its limit from your totals, which can push your utilization <em>up</em> overnight, and it can eventually shorten your account-age history too. If a paid-off card has no annual fee, keep it open, put one small recurring charge on it, and set auto-pay. Low account age is one drag you mostly fix with time — don't make it worse.</div>
+        </details>
+      </section>
+
+      <div class="disclaimer">
+        <strong>Educational information only.</strong> This tool is a planning aid built on general credit-scoring principles — it is not credit counseling, financial advice, or a promise of any specific score increase. Score models vary (FICO, VantageScore, and lender-specific versions), and results differ by file. For debt you can't manage, a nonprofit credit counselor (NFCC member agencies) can review your full situation for free or low cost.
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        "use strict";
+        var $ = function(id){ return document.getElementById(id); };
+        var fmt = new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+        var ARC = 270.2; // semicircle path length (r=86)
+
+        var els = {
+          limits: $("totalLimits"), balances: $("totalBalances"),
+          fUtil: $("fUtil"), fLate: $("fLate"), fColl: $("fColl"), fAge: $("fAge"),
+          gaugeArc: $("gaugeArc"), gaugeText: $("gaugeText"), gaugeZone: $("gaugeZone"), gaugeSub: $("gaugeSub"),
+          bpArc: $("bpArc"), bpText: $("bpText"), bpZone: $("bpZone"), bpSub: $("bpSub"),
+          stratGoodwill: $("stratGoodwill"), stratColl: $("stratColl"), stratFcra: $("stratFcra"), stratNone: $("stratNone"),
+          bpStrats: $("bpStrats"), planList: $("planList"), cardRows: $("cardRows"), cardSumNote: $("cardSumNote")
+        };
+
+        function num(v){ var n = parseFloat(v); return isNaN(n) || n < 0 ? 0 : n; }
+
+        /* ---------- build card rows ---------- */
+        var cards = [];
+        for (var i = 0; i < 4; i++){
+          var row = document.createElement("div");
+          row.className = "card-row";
+          row.innerHTML =
+            '<div class="grid3">' +
+              '<div class="cname"><label class="flabel">Card name (optional)</label><input type="text" data-f="name" placeholder="Card ' + (i+1) + '" /></div>' +
+              '<div><label class="flabel">Limit</label><div class="money"><span>$</span><input type="number" data-f="limit" inputmode="decimal" min="0" placeholder="0" /></div></div>' +
+              '<div><label class="flabel">Balance</label><div class="money"><span>$</span><input type="number" data-f="bal" inputmode="decimal" min="0" placeholder="0" /></div></div>' +
+            '</div>' +
+            '<div class="bar-track"><div class="bar-fill"></div></div>' +
+            '<div class="card-meta"><span class="cu">—</span><span class="cnote"></span></div>';
+          els.cardRows.appendChild(row);
+          cards.push({
+            name: row.querySelector('[data-f="name"]'),
+            limit: row.querySelector('[data-f="limit"]'),
+            bal: row.querySelector('[data-f="bal"]'),
+            fill: row.querySelector(".bar-fill"),
+            cu: row.querySelector(".cu"),
+            note: row.querySelector(".cnote")
+          });
+        }
+
+        var diagState = {};
+        document.querySelectorAll(".seg").forEach(function(seg){
+          var q = seg.getAttribute("data-q");
+          seg.querySelectorAll("button").forEach(function(b){
+            b.addEventListener("click", function(){
+              diagState[q] = b.getAttribute("data-v");
+              seg.querySelectorAll("button").forEach(function(x){
+                var on = x === b;
+                x.classList.toggle("on", on);
+                x.setAttribute("aria-pressed", on ? "true" : "false");
+              });
+              render();
+            });
+          });
+        });
+
+        function radioVal(name){ return diagState[name] || null; }
+
+        function zoneOf(u){
+          if (u === null) return {label:"Awaiting your numbers", cls:"", color:"var(--line)"};
+          if (u > 70) return {label:"Emergency zone", cls:"zone-red", color:"var(--red)"};
+          if (u > 50) return {label:"High-risk zone", cls:"zone-red", color:"var(--red)"};
+          if (u > 30) return {label:"Drag zone", cls:"zone-amber", color:"var(--amber)"};
+          if (u > 10) return {label:"Recovery zone", cls:"zone-amber", color:"var(--amber)"};
+          if (u > 0)  return {label:"Optimized zone", cls:"zone-green", color:"var(--green)"};
+          return {label:"Zero reported", cls:"zone-green", color:"var(--green)"};
+        }
+
+        function setGauge(arcEl, textEl, zoneEl, subEl, u, limits, balances){
+          if (u === null){
+            arcEl.style.strokeDashoffset = ARC;
+            arcEl.style.stroke = "var(--line)";
+            textEl.textContent = "—%";
+            zoneEl.textContent = "Enter your totals above";
+            zoneEl.className = "gauge-zone";
+            subEl.textContent = "Your pay-down targets appear here.";
+            return;
+          }
+          var frac = Math.min(u, 100) / 100;
+          var z = zoneOf(u);
+          arcEl.style.strokeDashoffset = ARC * (1 - frac);
+          arcEl.style.stroke = z.color;
+          textEl.textContent = (Math.round(u * 10) / 10) + "%";
+          zoneEl.textContent = z.label;
+          zoneEl.className = "gauge-zone " + z.cls;
+          subEl.textContent = fmt.format(balances) + " owed on " + fmt.format(limits) + " of total limits.";
+        }
+
+        function payTo(limits, balances, pct){
+          var targetBal = limits * pct / 100;
+          return Math.max(0, balances - targetBal);
+        }
+
+        function fillTargets(containerSel, limits, balances, u){
+          document.querySelectorAll(containerSel + " .target").forEach(function(t){
+            var key = t.getAttribute("data-bp");
+            var pct = key ? parseInt(key, 10) : (t.id === "tgt50" ? 50 : t.id === "tgt30" ? 30 : 10);
+            var main = t.querySelector("[data-main]");
+            if (u === null){ main.innerHTML = "—"; t.classList.remove("done"); return; }
+            var pay = payTo(limits, balances, pct);
+            if (pay <= 0){
+              t.classList.add("done");
+              main.innerHTML = key === "1"
+                ? '<span class="t-done-tag">At or under 1% already</span>'
+                : '<span class="t-done-tag">Already under ' + pct + '%</span>';
+            } else {
+              t.classList.remove("done");
+              if (key === "1"){
+                main.innerHTML = "Pay <b>" + fmt.format(pay) + "</b> total, leaving <b>" + fmt.format(limits * 0.01) + "</b> reporting on one card, $0 on the rest.";
+              } else {
+                main.innerHTML = "Pay <b>" + fmt.format(pay) + "</b> → balance drops to <b>" + fmt.format(limits * pct / 100) + "</b>.";
+              }
+            }
+          });
+        }
+
+        function strategies(){
+          var late = radioVal("qLate") === "yes" || els.fLate.checked;
+          var coll = radioVal("qColl") === "yes" || els.fColl.checked;
+          var err  = radioVal("qErr") === "yes";
+          return { late: late, coll: coll, err: err, any: late || coll || err };
+        }
+
+        function planItem(tier, tierCls, title, when, detail){
+          return '<div class="plan-item" tabindex="0" role="button" aria-pressed="false">' +
+            '<div class="box">✓</div>' +
+            '<div style="flex:1;min-width:0">' +
+              '<div class="pi-head"><span class="pi-tier ' + tierCls + '">' + tier + '</span>' +
+              '<span class="pi-title">' + title + '</span>' +
+              '<span class="pi-when">' + when + '</span></div>' +
+              '<div class="pi-detail">' + detail + '</div>' +
+            '</div></div>';
+        }
+
+        function buildPlan(u, limits, balances, s){
+          var items = [];
+          var pay30 = u !== null ? payTo(limits, balances, 30) : 0;
+          var pay50 = u !== null ? payTo(limits, balances, 50) : 0;
+          var pay10 = u !== null ? payTo(limits, balances, 10) : 0;
+          var onePctBal = limits * 0.01;
+
+          if (u === null){
+            items.push(planItem("Start here","tier2","Enter your snapshot in Step 1","Day 1",
+              "The plan ranks itself the moment your limits and balances are in — no guessing, just your numbers."));
+          } else if (u > 70){
+            items.push(planItem("Tier 1 — Emergency","tier1","Statement Date Payday Strike","Days 1–30 · every payday",
+              "Your utilization is over 70%, so this outranks everything. Find each card's <b>statement closing date</b> (not the due date) and pay <b>3 days before it</b>, straight from payday. Issuers report the balance on the statement date — paying before it means the bureaus see the lower number. First strike: <b>" + fmt.format(pay50) + "</b> gets you under 50%."));
+            items.push(planItem("Tier 1 — Emergency","tier1","Freeze the leak","Days 1–7",
+              "Move daily spending to a debit card while balances fall. Every new swipe raises the balance that reports on statement day and undoes the strike."));
+          } else if (u > 30){
+            items.push(planItem("Tier 1 — Threshold drop","tier1","Payday strike to under 30%","Days 1–45 · every payday",
+              "Pay <b>" + fmt.format(pay30) + "</b> total across your cards, timed <b>3 days before each statement closing date</b> so the lower balance is what reports. Under 30% is where score models start rewarding you instead of punishing you."));
+          } else {
+            items.push(planItem("Tier 1 — Protect the win","tier1","Hold the under-30% line","Ongoing",
+              "You're already in the recovery zone. Keep every payment on time and don't let any single card creep back over 30% on its own — per-card utilization counts too, not just the total."));
+          }
+
+          if (s.late){
+            items.push(planItem("Tier 2 — Negative marks","tier2","Send the goodwill letter","Days 3–14",
+              "Account current? Good. Write the letter from Step 3: own the slip, name the month, mention auto-pay is on, ask for the mark's removal as a goodwill adjustment. One deleted late mark can out-score months of small payments."));
+          }
+          if (s.coll){
+            items.push(planItem("Tier 2 — Negative marks","tier2","Collections: validate, then pay-for-delete","Days 7–30",
+              "Send the written validation request first. If the debt is valid, negotiate pay-for-delete and get the deletion promise <b>in writing</b> before paying. Never pay on a verbal promise."));
+          }
+          if (s.err){
+            items.push(planItem("Tier 2 — Negative marks","tier2","File the FCRA disputes","Days 1–10 · check back day 30–45",
+              "Pull all three reports at AnnualCreditReport.com, dispute every error with the bureau showing it, attach proof, and calendar a re-pull in 30–45 days to confirm the fix landed. Unverifiable errors must be deleted."));
+          }
+          if (els.fAge.checked){
+            items.push(planItem("Tier 2 — Negative marks","tier2","Don't close paid-off cards","Ongoing",
+              "Low account age fixes itself with time — closing old cards works against you twice: the limit disappears (utilization jumps) and the history eventually goes with it. Keep no-fee cards open with one small auto-paid charge."));
+          }
+
+          if (u !== null && u <= 30){
+            items.push(planItem("Tier 3 — Optimization","tier3","The 1% trick","Days 30–60 · once under 30%",
+              "Let exactly one card report <b>" + fmt.format(onePctBal) + "</b> (1% of your total limits) and pay every other card to <b>$0 before its statement date</b>. All-zero reporting can score slightly worse than 1% — models want proof the credit is alive, just barely used."));
+          } else if (u !== null){
+            items.push(planItem("Tier 3 — Optimization","tier3","Then finish at under 10%","Days 45–60",
+              "Once you're under 30%, the last <b>" + fmt.format(pay10) + "</b> takes you under 10%, and from there the 1% trick (leave <b>" + fmt.format(onePctBal) + "</b> reporting on one card, $0 on the rest) squeezes out the final points."));
+          }
+
+          items.push(planItem("Every tier","tier3","Guardrails for the full 60 days","Days 1–60",
+            "Auto-pay at least the minimum on every card — one new 30-day late can erase the whole plan. Check your score after each statement cycle, not daily; utilization moves monthly, not hourly."));
+          return items.join("");
+        }
+
+        function render(){
+          var limits = num(els.limits.value), balances = num(els.balances.value);
+
+          /* per-card render + sums */
+          var sumL = 0, sumB = 0, anyCard = false;
+          cards.forEach(function(c, idx){
+            var L = num(c.limit.value), B = num(c.bal.value);
+            if (L > 0 || B > 0){ anyCard = true; sumL += L; sumB += B; }
+            if (L <= 0 && B <= 0){
+              c.fill.style.width = "0%"; c.cu.textContent = "—"; c.note.textContent = "";
+              return;
+            }
+            var cu = L > 0 ? (B / L * 100) : 100;
+            c.fill.style.width = Math.min(cu, 100) + "%";
+            c.fill.style.background = cu > 70 ? "var(--red)" : cu > 30 ? "var(--amber)" : "var(--green)";
+            c.cu.textContent = (Math.round(cu * 10) / 10) + "% used";
+            c.cu.style.color = cu > 70 ? "var(--red)" : cu > 30 ? "var(--amber)" : "var(--green)";
+            var nm = c.name.value.trim() || ("Card " + (idx + 1));
+            c.note.textContent = cu > 70 ? nm + " is in the emergency zone — strike this one first."
+              : cu > 30 ? nm + " is dragging — aim under 30% (" + fmt.format(L * 0.3) + ")."
+              : cu > 0 ? nm + " is in decent shape."
+              : nm + " reports $0 — good for the 1% trick setup.";
+          });
+
+          if (anyCard && sumL > 0){
+            els.cardSumNote.style.display = "block";
+            els.cardSumNote.innerHTML = "Cards total " + fmt.format(sumB) + " owed on " + fmt.format(sumL) + " of limits. " +
+              '<button type="button" id="useCardSums">Use these as my Step 1 totals</button>';
+            var btn = $("useCardSums");
+            btn.addEventListener("click", function(){
+              els.limits.value = sumL; els.balances.value = sumB; render();
+              document.getElementById("step1").scrollIntoView({behavior:"smooth"});
+            });
+          } else {
+            els.cardSumNote.style.display = "none";
+          }
+
+          var u = limits > 0 ? (balances / limits * 100) : (balances > 0 ? 100 : null);
+          if (limits <= 0 && balances <= 0) u = null;
+
+          var z = zoneOf(u);
+          setGauge(els.gaugeArc, els.gaugeText, els.gaugeZone, els.gaugeSub, u, limits, balances);
+          setGauge(els.bpArc, els.bpText, els.bpZone, els.bpSub, u, limits, balances);
+          if (u !== null){
+            els.bpZone.textContent = z.label + " — " + (Math.round(u * 10) / 10) + "% utilized";
+          }
+          fillTargets("#step2", limits, balances, u);
+          fillTargets("#bpTargets", limits, balances, u);
+
+          /* strategies */
+          var s = strategies();
+          els.stratGoodwill.classList.toggle("on", s.late);
+          els.stratColl.classList.toggle("on", s.coll);
+          els.stratFcra.classList.toggle("on", s.err);
+          var answered = radioVal("qLate") || radioVal("qColl") || radioVal("qErr") || els.fLate.checked || els.fColl.checked;
+          els.stratNone.classList.toggle("on", !s.any && !!answered);
+
+          var bp = [];
+          if (s.late) bp.push('<div class="bp-strat"><span class="dot"></span><span><b>Goodwill letter</b> — recent late mark on an otherwise good account. Bring it current, write the letter, send certified if the first ask fails.</span></div>');
+          if (s.coll) bp.push('<div class="bp-strat"><span class="dot"></span><span><b>Pay-for-delete + validation</b> — demand written validation first, then negotiate deletion in writing before paying any collection.</span></div>');
+          if (s.err)  bp.push('<div class="bp-strat"><span class="dot"></span><span><b>FCRA error disputes</b> — pull all three reports at AnnualCreditReport.com, dispute each error with proof, re-check in 30–45 days.</span></div>');
+          if (els.fAge.checked) bp.push('<div class="bp-strat"><span class="dot"></span><span><b>Account age</b> — no quick fix and no shortcut needed: keep old no-fee cards open; age builds on its own.</span></div>');
+          if (!bp.length) bp.push('<div class="bp-strat"><span class="dot"></span><span>No dispute strategies flagged — utilization is your whole game. Answer Step 3 if that changes.</span></div>');
+          els.bpStrats.innerHTML = bp.join("");
+
+          els.planList.innerHTML = buildPlan(u, limits, balances, s);
+          bindPlanItems();
+        }
+
+        function bindPlanItems(){
+          els.planList.querySelectorAll(".plan-item").forEach(function(item){
+            function toggle(){
+              item.classList.toggle("done");
+              item.setAttribute("aria-pressed", item.classList.contains("done") ? "true" : "false");
+            }
+            item.addEventListener("click", toggle);
+            item.addEventListener("keydown", function(e){
+              if (e.key === " " || e.key === "Enter"){ e.preventDefault(); toggle(); }
+            });
+          });
+        }
+
+        document.querySelectorAll("input").forEach(function(inp){
+          inp.addEventListener("input", render);
+          inp.addEventListener("change", render);
+        });
+        function esc(s){
+          return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        }
+        function downloadBlueprint(){
+          var limits = num(els.limits.value), balances = num(els.balances.value);
+          var u = limits > 0 ? (balances / limits * 100) : null;
+          var z = zoneOf(u);
+          var rows = [[50],[30],[10]].map(function(p){
+            var pay = u === null ? null : payTo(limits, balances, p[0]);
+            return "<tr><td>Under " + p[0] + "%</td><td>" +
+              (pay === null ? "—" : pay <= 0 ? "Already there" : "Pay " + fmt.format(pay) + " → balance " + fmt.format(limits * p[0] / 100)) +
+              "</td></tr>";
+          }).join("");
+          var onePct = u === null ? "—" : (payTo(limits, balances, 1) <= 0 ? "At or under 1% already"
+            : "Pay " + fmt.format(payTo(limits, balances, 1)) + " total, leaving " + fmt.format(limits * 0.01) + " reporting on one card, $0 on the rest.");
+          var strats = els.bpStrats.querySelectorAll(".bp-strat");
+          var stratHtml = "";
+          strats.forEach(function(sEl){ stratHtml += "<li>" + esc(sEl.textContent.trim()) + "</li>"; });
+          var planHtml = "";
+          els.planList.querySelectorAll(".plan-item").forEach(function(it, idx){
+            var tier = it.querySelector(".pi-tier").textContent.trim();
+            var title = it.querySelector(".pi-title").textContent.trim();
+            var when = it.querySelector(".pi-when").textContent.trim();
+            var detail = it.querySelector(".pi-detail").textContent.trim();
+            planHtml += "<li><strong>" + (idx + 1) + ". [" + esc(tier) + "] " + esc(title) + "</strong> <em>(" + esc(when) + ")</em><br>" + esc(detail) + "</li>";
+          });
+          var doc = "<!doctype html><html lang='en'><head><meta charset='utf-8'>" +
+            "<title>My Credit Recovery Blueprint</title>" +
+            "<style>body{font-family:Georgia,serif;color:#111;max-width:720px;margin:32px auto;padding:0 20px;line-height:1.55}" +
+            "h1{font-size:26px;margin-bottom:2px}h2{font-size:18px;margin-top:26px;border-bottom:2px solid #f5a524;padding-bottom:4px}" +
+            "table{border-collapse:collapse;width:100%}td{border:1px solid #bbb;padding:7px 10px}" +
+            "li{margin:9px 0}.big{font-size:34px;font-weight:bold}.muted{color:#555}</style></head><body>" +
+            "<h1>My Credit Recovery Blueprint</h1>" +
+            "<p class='muted'>Generated by the Shift-Worker Credit Repair Engine · Print this page (Ctrl/Cmd + P) to keep a paper copy.</p>" +
+            "<p class='big'>" + (u === null ? "—%" : (Math.round(u * 10) / 10) + "%") + " utilization — " + esc(z.label) + "</p>" +
+            "<p>" + (u === null ? "No totals entered yet." : fmt.format(balances) + " owed on " + fmt.format(limits) + " of total credit limits.") + "</p>" +
+            "<h2>Pay-down targets</h2><table>" + rows +
+            "<tr><td>1% trick</td><td>" + esc(onePct) + "</td></tr></table>" +
+            "<h2>Dispute strategies on my file</h2><ul>" + stratHtml + "</ul>" +
+            "<h2>30–60 day action plan — ranked</h2><ol style='list-style:none;padding-left:0'>" + planHtml + "</ol>" +
+            "<p class='muted' style='margin-top:30px;font-size:13px'>Educational information only — not credit counseling or financial advice. Score models vary and results differ by file.</p>" +
+            "</body></html>";
+          var blob = new Blob([doc], {type:"text/html"});
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "credit-recovery-blueprint.html";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+        }
+        $("downloadBtn").addEventListener("click", downloadBlueprint);
+        render();
+      })();
+    </script>
+  </body>
+</html>

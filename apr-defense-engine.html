@@ -1,0 +1,1256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>APR Defense Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0c0c0e;
+        --panel: #16161a;
+        --panel-2: #1d1d22;
+        --panel-3: #232329;
+        --line: #2e2e36;
+        --line-strong: #3d3d47;
+        --ink: #f2f0ea;
+        --ink-dim: #b9b6ac;
+        --ink-faint: #8a877e;
+        --amber: #f5a623;
+        --orange: #ff6b1a;
+        --amber-soft: rgba(245, 166, 35, 0.12);
+        --red: #ff4d3d;
+        --red-soft: rgba(255, 77, 61, 0.12);
+        --green: #4ade80;
+        --green-soft: rgba(74, 222, 128, 0.12);
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .hazard {
+        height: 10px;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--amber) 0 14px,
+          #101012 14px 28px
+        );
+      }
+      .wrap {
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 0 18px 64px;
+      }
+      h1, h2, h3, .display {
+        font-family: "Oswald", "Barlow", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0;
+      }
+      .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line-strong);
+        background: var(--panel);
+        color: var(--amber);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+      .hero-tag::before {
+        content: "";
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: var(--orange);
+        box-shadow: 0 0 10px var(--orange);
+      }
+      .hero h1 {
+        font-size: clamp(40px, 11vw, 64px);
+        line-height: 0.98;
+        font-weight: 700;
+        margin: 18px 0 6px;
+      }
+      .hero h1 .accent { color: var(--amber); }
+      .hook {
+        font-size: clamp(19px, 5vw, 24px);
+        font-weight: 600;
+        line-height: 1.35;
+        margin: 14px 0 4px;
+      }
+      .hook .burn { color: var(--red); }
+      .hook-sub {
+        color: var(--ink-dim);
+        font-size: 16px;
+        margin: 6px 0 0;
+        max-width: 56ch;
+      }
+      .hook-sub strong { color: var(--ink); }
+
+      /* ---------- Step sections ---------- */
+      .step {
+        margin-top: 34px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .step-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 18px;
+        background: var(--panel-2);
+        border-bottom: 1px solid var(--line);
+      }
+      .step-num {
+        flex: none;
+        width: 40px; height: 40px;
+        display: grid;
+        place-items: center;
+        background: var(--amber);
+        color: #14100a;
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: 19px;
+        border-radius: 6px;
+      }
+      .step-head h2 { font-size: 21px; font-weight: 600; line-height: 1.15; }
+      .step-head p { margin: 2px 0 0; color: var(--ink-faint); font-size: 14px; }
+      .step-body { padding: 20px 18px 22px; }
+
+      label.field-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--ink-dim);
+        margin: 0 0 8px;
+      }
+      .field { margin-bottom: 20px; }
+      .field:last-child { margin-bottom: 0; }
+      .input-shell {
+        display: flex;
+        align-items: center;
+        background: var(--bg);
+        border: 1.5px solid var(--line-strong);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .input-shell:focus-within { border-color: var(--amber); }
+      .input-shell .affix {
+        padding: 0 4px 0 14px;
+        color: var(--amber);
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 19px;
+      }
+      .input-shell .affix.right { padding: 0 14px 0 4px; }
+      .input-shell input {
+        flex: 1;
+        min-width: 0;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        color: var(--ink);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 21px;
+        font-weight: 600;
+        padding: 13px 8px;
+      }
+      .field-note { color: var(--ink-faint); font-size: 13.5px; margin: 7px 0 0; }
+
+      /* segmented / toggle controls */
+      .seg {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .seg button {
+        flex: 1 1 auto;
+        min-width: 64px;
+        appearance: none;
+        border: 1.5px solid var(--line-strong);
+        background: var(--bg);
+        color: var(--ink-dim);
+        font-family: "Barlow", sans-serif;
+        font-size: 15.5px;
+        font-weight: 600;
+        padding: 11px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: border-color 0.15s, color 0.15s, background 0.15s;
+      }
+      .seg button small {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-faint);
+        margin-top: 1px;
+      }
+      .seg button[aria-pressed="true"] {
+        border-color: var(--amber);
+        background: var(--amber-soft);
+        color: var(--ink);
+      }
+      .seg button[aria-pressed="true"] small { color: var(--amber); }
+      .seg button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+      .seg.two button { flex-basis: calc(50% - 4px); }
+
+      /* ---------- Crush engine results ---------- */
+      .engine-grid { display: grid; gap: 14px; }
+      @media (min-width: 620px) {
+        .engine-grid { grid-template-columns: 1fr 1fr; }
+        .engine-card.wide { grid-column: 1 / -1; }
+      }
+      .engine-card {
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        border-radius: 8px;
+        padding: 18px;
+      }
+      .engine-card.danger { border-color: rgba(255, 77, 61, 0.45); background: linear-gradient(180deg, var(--red-soft), var(--panel-2) 55%); }
+      .engine-card.win { border-color: rgba(74, 222, 128, 0.4); background: linear-gradient(180deg, var(--green-soft), var(--panel-2) 55%); }
+      .engine-card h3 {
+        font-size: 14px;
+        letter-spacing: 0.1em;
+        color: var(--ink-dim);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .engine-card.danger h3 { color: #ff9a8f; }
+      .engine-card.win h3 { color: #8df0ae; }
+      .big-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: clamp(30px, 8vw, 40px);
+        line-height: 1.1;
+        margin: 8px 0 4px;
+      }
+      .engine-card.danger .big-num { color: var(--red); }
+      .engine-card.win .big-num { color: var(--green); }
+      .engine-card p { margin: 4px 0 0; color: var(--ink-dim); font-size: 15px; }
+      .engine-card p strong { color: var(--ink); }
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 9px 0;
+        border-top: 1px dashed var(--line-strong);
+        font-size: 15px;
+      }
+      .stat-row:first-of-type { margin-top: 10px; }
+      .stat-row span { color: var(--ink-dim); }
+      .stat-row b { font-family: "IBM Plex Mono", monospace; font-weight: 600; text-align: right; }
+
+      /* score gauge */
+      .score-block { text-align: left; }
+      .score-top {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .score-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 52px;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .score-verdict {
+        font-family: "Oswald", sans-serif;
+        text-transform: uppercase;
+        font-size: 19px;
+        letter-spacing: 0.05em;
+      }
+      .score-bar {
+        height: 14px;
+        border-radius: 7px;
+        background: var(--panel-3);
+        border: 1px solid var(--line-strong);
+        margin: 14px 0 8px;
+        overflow: hidden;
+      }
+      .score-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 7px;
+        background: var(--amber);
+        transition: width 0.5s ease, background 0.5s ease;
+      }
+      .score-scale {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--ink-faint);
+        font-family: "IBM Plex Mono", monospace;
+      }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        border-radius: 8px;
+        padding: 18px;
+        margin-bottom: 14px;
+        opacity: 0.72;
+      }
+      .tier:last-child { margin-bottom: 0; }
+      .tier.active {
+        opacity: 1;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 1px var(--amber), 0 10px 30px rgba(0, 0, 0, 0.45);
+      }
+      .tier-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .tier-kicker {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: var(--amber);
+        text-transform: uppercase;
+      }
+      .tier h3 { font-size: 21px; font-weight: 600; margin-top: 3px; }
+      .tier-when { color: var(--ink-faint); font-size: 14px; margin: 3px 0 0; }
+      .your-play {
+        flex: none;
+        background: var(--amber);
+        color: #14100a;
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 5px 11px;
+        border-radius: 5px;
+      }
+      .tier ol, .tier ul {
+        margin: 14px 0 0;
+        padding-left: 22px;
+        color: var(--ink-dim);
+        font-size: 15.5px;
+      }
+      .tier li { margin-bottom: 7px; }
+      .tier li strong { color: var(--ink); }
+      .tier .callout {
+        margin-top: 14px;
+        background: var(--bg);
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        padding: 13px 15px;
+        font-size: 15px;
+        color: var(--ink-dim);
+      }
+      .tier .callout strong { color: var(--amber); }
+      .script-box {
+        width: 100%;
+        margin-top: 12px;
+        background: var(--bg);
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        color: var(--ink);
+        font-family: "Barlow", sans-serif;
+        font-size: 15px;
+        line-height: 1.55;
+        padding: 14px;
+        min-height: 190px;
+        resize: vertical;
+      }
+      .copy-btn {
+        appearance: none;
+        margin-top: 10px;
+        border: 0;
+        background: var(--amber);
+        color: #14100a;
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 12px 20px;
+        border-radius: 7px;
+        cursor: pointer;
+        width: 100%;
+      }
+      .copy-btn:active { transform: translateY(1px); }
+      .copy-status { font-size: 13.5px; color: var(--green); margin: 8px 0 0; min-height: 18px; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 38px;
+        border: 2px solid var(--amber);
+        border-radius: var(--radius);
+        background: var(--panel);
+        overflow: hidden;
+      }
+      .blueprint-head {
+        padding: 20px 20px 4px;
+        text-align: center;
+      }
+      .blueprint-head .tier-kicker { font-size: 12.5px; }
+      .blueprint-head h2 { font-size: clamp(24px, 6.5vw, 31px); font-weight: 700; margin-top: 4px; }
+      .blueprint-head p { color: var(--ink-faint); font-size: 14px; margin: 4px 0 0; }
+      .bp-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: var(--line);
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        margin-top: 18px;
+      }
+      .bp-cell { background: var(--panel-2); padding: 16px; }
+      .bp-cell .bp-label {
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+      }
+      .bp-cell .bp-value {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: clamp(21px, 5.5vw, 27px);
+        margin-top: 3px;
+      }
+      .bp-cell .bp-value.red { color: var(--red); }
+      .bp-cell .bp-value.green { color: var(--green); }
+      .bp-cell .bp-value.amber { color: var(--amber); }
+      .bp-cell .bp-sub { font-size: 13px; color: var(--ink-dim); margin-top: 2px; }
+      .bp-plan {
+        padding: 18px 20px 20px;
+      }
+      .bp-plan h3 { font-size: 15px; letter-spacing: 0.09em; color: var(--amber); margin-bottom: 8px; }
+      .bp-plan p { margin: 0 0 10px; color: var(--ink-dim); font-size: 15.5px; }
+      .bp-plan p strong { color: var(--ink); }
+      .bp-script {
+        background: var(--bg);
+        border: 1px dashed var(--line-strong);
+        border-radius: 8px;
+        padding: 13px 15px;
+        font-size: 14.5px;
+        color: var(--ink-dim);
+        font-style: italic;
+      }
+      .bp-foot {
+        padding: 0 20px 20px;
+        color: var(--ink-faint);
+        font-size: 12.5px;
+        text-align: center;
+      }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-size: 23px;
+        font-weight: 600;
+        margin: 40px 0 14px;
+      }
+      .next-grid { display: grid; gap: 12px; }
+      @media (min-width: 620px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block;
+        text-decoration: none;
+        border: 1px solid var(--line-strong);
+        background: var(--panel);
+        border-radius: var(--radius);
+        padding: 18px;
+        color: var(--ink);
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .nc-kicker {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--amber);
+      }
+      .next-card h3 { font-size: 19px; font-weight: 600; margin: 5px 0 5px; text-transform: none; letter-spacing: 0; font-family: "Barlow", sans-serif; }
+      .next-card p { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
+      .next-card .nc-arrow { color: var(--amber); font-weight: 700; }
+
+      .cta {
+        margin-top: 26px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid var(--line-strong);
+        background: var(--panel-2);
+      }
+      .cta-inner { padding: 22px 20px; text-align: center; }
+      .cta h3 { font-size: clamp(21px, 6vw, 27px); font-weight: 700; }
+      .cta p { color: var(--ink-dim); margin: 8px auto 16px; max-width: 52ch; font-size: 15.5px; }
+      .cta a {
+        display: inline-block;
+        background: var(--orange);
+        color: #fff;
+        text-decoration: none;
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 14px 26px;
+        border-radius: 7px;
+      }
+
+      details.faq {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        overflow: hidden;
+      }
+      details.faq summary {
+        cursor: pointer;
+        padding: 16px 18px;
+        font-weight: 700;
+        font-size: 16.5px;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+      details.faq summary::-webkit-details-marker { display: none; }
+      details.faq summary::after {
+        content: "+";
+        color: var(--amber);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 22px;
+        font-weight: 700;
+        flex: none;
+      }
+      details.faq[open ] summary::after { content: "–"; }
+      details.faq .faq-body { padding: 0 18px 17px; color: var(--ink-dim); font-size: 15.5px; }
+      details.faq .faq-body p { margin: 0 0 9px; }
+      details.faq .faq-body p:last-child { margin-bottom: 0; }
+      details.faq .faq-body strong { color: var(--ink); }
+
+      .fineprint {
+        margin-top: 34px;
+        color: var(--ink-faint);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <header class="hero">
+        <span class="hero-tag">Credit Card Triage Unit</span>
+        <h1>APR Defense<br /><span class="accent">Engine</span></h1>
+        <p class="hook">
+          Paying minimums on $5,000 at 29% APR costs you
+          <span class="burn">about $7,000 in interest</span> — more than the debt itself.
+        </p>
+        <p class="hook-sub">
+          The bank built that trap on purpose. Run your real numbers below and get the exit plan:
+          <strong>the transfer play, the hardship play, or the avalanche</strong> — whichever one your
+          situation qualifies for.
+        </p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1-title">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div>
+            <h2 id="s1-title">Balance Snapshot</h2>
+            <p>What you owe and what it's costing you right now.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="field">
+            <label class="field-label" for="balance">Total credit card balance</label>
+            <div class="input-shell">
+              <span class="affix">$</span>
+              <input id="balance" type="number" inputmode="decimal" min="0" step="50" value="5000" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="apr">Current APR</label>
+            <div class="input-shell">
+              <input id="apr" type="number" inputmode="decimal" min="0" max="60" step="0.1" value="29" />
+              <span class="affix right">%</span>
+            </div>
+            <p class="field-note">Check your statement — store cards and subprime cards often sit at 28–33%.</p>
+          </div>
+          <div class="field">
+            <label class="field-label">Minimum payment — how is yours set?</label>
+            <div class="seg two" role="group" aria-label="Minimum payment type">
+              <button type="button" id="minModePct" aria-pressed="true">% of balance</button>
+              <button type="button" id="minModeFixed" aria-pressed="false">Fixed $ amount</button>
+            </div>
+          </div>
+          <div class="field" id="minPctField">
+            <label class="field-label" for="minPct">Minimum payment (% of balance)</label>
+            <div class="input-shell">
+              <input id="minPct" type="number" inputmode="decimal" min="0.5" max="25" step="0.25" value="4" />
+              <span class="affix right">%</span>
+            </div>
+            <p class="field-note">Most issuers charge 2–4% of the balance, with a $25 floor. This engine uses a $25 floor.</p>
+          </div>
+          <div class="field" id="minFixedField" hidden>
+            <label class="field-label" for="minFixed">Minimum payment ($ per month)</label>
+            <div class="input-shell">
+              <span class="affix">$</span>
+              <input id="minFixed" type="number" inputmode="decimal" min="0" step="5" value="150" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="takehome">Monthly take-home pay (optional)</label>
+            <div class="input-shell">
+              <span class="affix">$</span>
+              <input id="takehome" type="number" inputmode="decimal" min="0" step="50" placeholder="2,600" />
+            </div>
+            <p class="field-note">Sharpens your Vulnerability Score — how hard interest is hitting your actual paycheck.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2-title">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <div>
+            <h2 id="s2-title">Transfer Assessment</h2>
+            <p>Could a 0% balance transfer work for you?</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="field">
+            <label class="field-label">Estimated credit score range</label>
+            <div class="seg" role="group" aria-label="Credit score range" id="scoreSeg">
+              <button type="button" data-score="good" aria-pressed="false">Good<small>670+</small></button>
+              <button type="button" data-score="fair" aria-pressed="true">Fair<small>580–669</small></button>
+              <button type="button" data-score="poor" aria-pressed="false">Poor<small>Below 580</small></button>
+            </div>
+            <p class="field-note">Most 0% transfer offers need Fair credit or better. Poor credit routes you to the hardship play instead — no dead ends here.</p>
+          </div>
+          <div class="field">
+            <label class="field-label">0% APR promo length you could get</label>
+            <div class="seg" role="group" aria-label="Promo length in months" id="promoSeg">
+              <button type="button" data-promo="12" aria-pressed="false">12 mo</button>
+              <button type="button" data-promo="15" aria-pressed="false">15 mo</button>
+              <button type="button" data-promo="18" aria-pressed="true">18 mo</button>
+              <button type="button" data-promo="21" aria-pressed="false">21 mo</button>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Balance transfer fee</label>
+            <div class="seg two" role="group" aria-label="Balance transfer fee" id="feeSeg">
+              <button type="button" data-fee="3" aria-pressed="true">3% fee</button>
+              <button type="button" data-fee="5" aria-pressed="false">5% fee</button>
+            </div>
+            <p class="field-note">The fee is added to your transferred balance. The engine checks whether the interest you dodge beats it — that's the whole game.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3-title">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <div>
+            <h2 id="s3-title">The Crush Engine</h2>
+            <p>Your numbers, run three ways. Updates live as you type.</p>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="engine-grid">
+            <div class="engine-card danger">
+              <h3>⚠ Minimum Payment Trap</h3>
+              <div class="big-num" id="trapInterest">$0</div>
+              <p id="trapLine">Interest burned if you only pay minimums.</p>
+              <div class="stat-row"><span>Time in debt</span><b id="trapTime">—</b></div>
+              <div class="stat-row"><span>Total you'll hand the bank</span><b id="trapTotal">—</b></div>
+              <div class="stat-row"><span>Interest eating each month</span><b id="trapMonthly">—</b></div>
+            </div>
+
+            <div class="engine-card win">
+              <h3>✓ 0% Transfer Net Savings</h3>
+              <div class="big-num" id="netSavings">$0</div>
+              <p id="savingsLine">What the transfer keeps in your pocket.</p>
+              <div class="stat-row"><span>Interest avoided</span><b id="interestAvoided">—</b></div>
+              <div class="stat-row"><span>Transfer fee (one-time)</span><b id="feeCost">—</b></div>
+              <div class="stat-row"><span>Fee pays for itself by</span><b id="feeBreakeven">—</b></div>
+            </div>
+
+            <div class="engine-card wide">
+              <h3>Fixed Payoff Plan — kill it before the promo ends</h3>
+              <div class="score-top" style="margin-top:10px;">
+                <div>
+                  <div class="big-num" style="color:var(--amber); margin:0;" id="perCheck">$0</div>
+                  <p style="margin:2px 0 0;">per paycheck, every paycheck, until it's gone</p>
+                </div>
+              </div>
+              <div class="field" style="margin-top:16px; margin-bottom:0;">
+                <label class="field-label">How often do you get paid?</label>
+                <div class="seg two" role="group" aria-label="Pay frequency" id="freqSeg">
+                  <button type="button" data-freq="biweekly" aria-pressed="true">Bi-weekly<small>26 checks / year</small></button>
+                  <button type="button" data-freq="weekly" aria-pressed="false">Weekly<small>52 checks / year</small></button>
+                </div>
+              </div>
+              <div class="stat-row"><span>Monthly payoff target</span><b id="monthlyTarget">—</b></div>
+              <div class="stat-row"><span>Balance + fee to clear</span><b id="transferTotal">—</b></div>
+              <div class="stat-row"><span>Debt-free deadline</span><b id="deadline">—</b></div>
+            </div>
+
+            <div class="engine-card wide score-block">
+              <h3>APR Trap Vulnerability Score</h3>
+              <div class="score-top">
+                <div class="score-num" id="scoreNum">0</div>
+                <div>
+                  <div class="score-verdict" id="scoreVerdict">—</div>
+                  <div style="color:var(--ink-faint); font-size:13.5px;">out of 100 — how aggressively interest is eating your pay</div>
+                </div>
+              </div>
+              <div class="score-bar"><div class="score-fill" id="scoreFill"></div></div>
+              <div class="score-scale"><span>0 · Stable</span><span>50 · Exposed</span><span>100 · Critical</span></div>
+              <p id="scoreWhy" style="margin-top:12px;">—</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4-title">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <div>
+            <h2 id="s4-title">Action Strategy</h2>
+            <p>Three plays. Yours is armed and highlighted.</p>
+          </div>
+        </div>
+        <div class="step-body">
+
+          <article class="tier" id="tier1">
+            <div class="tier-head">
+              <div>
+                <div class="tier-kicker">Tier 1 · The Transfer Play</div>
+                <h3>0% Transfer Protocol</h3>
+                <p class="tier-when">High APR (over 25%) + Fair or Good credit</p>
+              </div>
+              <span class="your-play" hidden>Your play</span>
+            </div>
+            <ol>
+              <li><strong>Apply for the 0% card first</strong> — before you move anything. Wait for approval and confirm your transfer limit covers the balance (a partial transfer still helps: move what fits, starting with this card).</li>
+              <li><strong>Request the transfer within the window</strong> — most issuers give you 30–60 days from account opening to transfer at the promo rate. Missing the window is the #1 way this play dies.</li>
+              <li><strong>Pay the fee once, then never pay interest again</strong> — the fee lands on the new balance. Your target is <span class="mono" id="tier1Target">—</span> per paycheck so the balance hits zero before the promo expires.</li>
+              <li><strong>Freeze the old card</strong> — literally, in a drawer or a block of ice. New spending on either card restarts the trap. Keep paying at least the minimum on the old card until the transfer posts (usually 7–14 days).</li>
+              <li><strong>Set a kill-date alarm</strong> — 30 days before the promo ends. If anything remains, the leftover balance snaps back to a full APR, often 25%+.</li>
+            </ol>
+            <div class="callout" id="tier1Callout">—</div>
+          </article>
+
+          <article class="tier" id="tier2">
+            <div class="tier-head">
+              <div>
+                <div class="tier-kicker">Tier 2 · The Hardship Play</div>
+                <h3>Issuer Hardship Protocol</h3>
+                <p class="tier-when">High APR + Poor credit — when transfers won't approve you</p>
+              </div>
+              <span class="your-play" hidden>Your play</span>
+            </div>
+            <p style="color:var(--ink-dim); font-size:15.5px; margin:12px 0 0;">
+              Most big issuers run hardship programs they don't advertise: temporary APR cuts,
+              waived fees, or fixed payment plans — because a customer paying something beats a
+              charge-off. You have to call and ask. Read this script word for word if you want:
+            </p>
+            <textarea class="script-box" id="hardshipScript" readonly aria-label="Hardship call script"></textarea>
+            <button class="copy-btn" type="button" id="copyScriptBtn">Copy the script</button>
+            <p class="copy-status" id="copyStatus" role="status"></p>
+            <ul>
+              <li><strong>Call the number on the back of the card.</strong> Ask for the "hardship department" or "financial relief team" — front-line reps may not have authority.</li>
+              <li><strong>If the first rep says no, call back.</strong> Different reps, different answers. Two or three calls is normal.</li>
+              <li><strong>Get any agreement in writing</strong> (email or letter) before you rely on it, and keep paying the old minimum until it starts.</li>
+              <li><strong>Know the trade:</strong> some plans close the card or note the account. A lower APR on a closed card still beats 29% on an open one.</li>
+            </ul>
+          </article>
+
+          <article class="tier" id="tier3">
+            <div class="tier-head">
+              <div>
+                <div class="tier-kicker">Tier 3 · The Grind Play</div>
+                <h3>Payday Avalanche</h3>
+                <p class="tier-when">Lower APR or manageable balance — no transfer needed</p>
+              </div>
+              <span class="your-play" hidden>Your play</span>
+            </div>
+            <ol>
+              <li><strong>Pay every minimum on time</strong> — this protects your score and stops late fees from stacking on top of interest.</li>
+              <li><strong>Pick a fixed extra — $25 to $50 per paycheck</strong> — and aim all of it at the single highest-APR balance. Not spread out. One target.</li>
+              <li><strong>Automate it for payday.</strong> Money moved on payday never gets spent. When the top card dies, roll its whole payment into the next-highest APR — that's the avalanche picking up speed.</li>
+              <li><strong>Re-run this engine every raise or rate change.</strong> A 2% APR hike can quietly add hundreds in interest; catch it early.</li>
+            </ol>
+            <div class="callout" id="tier3Callout">—</div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bp-title">
+        <div class="hazard" aria-hidden="true"></div>
+        <div class="blueprint-head">
+          <div class="tier-kicker">Screenshot this · Your orders</div>
+          <h2 id="bp-title">Credit Card APR Defense Blueprint</h2>
+          <p id="bpScenario">—</p>
+        </div>
+        <div class="bp-grid">
+          <div class="bp-cell">
+            <div class="bp-label">Interest wasted on minimums</div>
+            <div class="bp-value red" id="bpInterest">—</div>
+            <div class="bp-sub" id="bpInterestSub">—</div>
+          </div>
+          <div class="bp-cell">
+            <div class="bp-label">Transfer net savings</div>
+            <div class="bp-value green" id="bpSavings">—</div>
+            <div class="bp-sub" id="bpSavingsSub">—</div>
+          </div>
+          <div class="bp-cell">
+            <div class="bp-label">Payoff target</div>
+            <div class="bp-value amber" id="bpTarget">—</div>
+            <div class="bp-sub" id="bpTargetSub">—</div>
+          </div>
+          <div class="bp-cell">
+            <div class="bp-label">Vulnerability score</div>
+            <div class="bp-value" id="bpScore">—</div>
+            <div class="bp-sub" id="bpScoreSub">—</div>
+          </div>
+        </div>
+        <div class="bp-plan">
+          <h3>The play</h3>
+          <p id="bpPlay">—</p>
+          <h3>If they won't approve you — say this</h3>
+          <div class="bp-script" id="bpScript">—</div>
+        </div>
+        <p class="bp-foot">Built with the APR Defense Engine · Numbers are estimates from your inputs — confirm rates and fees on your actual statements and offers.</p>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <h2 class="section-title">Keep the pressure on</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/debt-strategy-selector.html" target="_blank" rel="noopener">
+          <div class="nc-kicker">Next tool</div>
+          <h3>Debt Strategy Selector</h3>
+          <p>Got more than one debt? Answer a few questions and get matched to the payoff strategy that fits your cash flow. <span class="nc-arrow">Run it →</span></p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payoff-vs-refinance-decision-tree.html" target="_blank" rel="noopener">
+          <div class="nc-kicker">Next tool</div>
+          <h3>Payoff vs Refinance Decision Tree</h3>
+          <p>Thinking about a consolidation loan instead? Walk the decision tree and see whether refinancing actually beats grinding it out. <span class="nc-arrow">Walk it →</span></p>
+        </a>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta">
+        <div class="hazard" aria-hidden="true"></div>
+        <div class="cta-inner">
+          <h3>Kill the interest, keep the money</h3>
+          <p>The <strong>Debt Snowball vs Avalanche Battle Plan</strong> and the <strong>Debt Payoff Tracker</strong> turn this blueprint into a week-by-week worksheet you can print, pin up, and cross off — built for hourly and shift-worker paychecks.</p>
+          <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get the battle plan on Gumroad</a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <h2 class="section-title">Straight answers</h2>
+
+      <details class="faq">
+        <summary>How do 0% balance transfers really work?</summary>
+        <div class="faq-body">
+          <p>You open a new card offering 0% APR on balance transfers, then move your old balance onto it. You pay a one-time fee — usually <strong>3–5% of what you move</strong> — and then owe <strong>0% interest for the promo window</strong> (12–21 months).</p>
+          <p>The catch list is short but real: the fee is added to your balance, the transfer has to be requested inside the issuer's window (often 30–60 days), and whatever is left when the promo ends goes back to a full APR. The math only works if your payment kills the balance before the clock runs out — which is exactly what Step 3 calculates.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Will a balance transfer hurt my credit score?</summary>
+        <div class="faq-body">
+          <p>Short-term, a little: applying triggers a hard inquiry and the new card lowers your average account age, so expect a small dip. That's normal and temporary.</p>
+          <p>Medium-term, it usually helps: moving a balance spreads your debt across two cards, which <strong>lowers your credit utilization</strong> — one of the biggest score factors. The real score-killer isn't the transfer; it's running the old card back up after you clear it. Freeze it instead.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>What should I actually say to my card issuer?</summary>
+        <div class="faq-body">
+          <p>Use the Tier 2 script above — it's written for exactly this call. The short version: <strong>state the hardship plainly, ask specifically for a hardship program or temporary APR reduction, and propose a timeframe (6–12 months)</strong>.</p>
+          <p>Issuers would rather collect at 0–10% than sell your charged-off balance to a collector for pennies. You're not begging — you're offering them the better business deal. If one rep says no, hang up and call again; answers genuinely vary by rep.</p>
+        </div>
+      </details>
+
+      <p class="fineprint">
+        Estimates only — not financial advice. The minimum-payment simulation assumes no new charges, no late
+        fees, and a $25 minimum-payment floor; your issuer's exact formula may differ. Balance transfer offers,
+        fees, and hardship programs vary by issuer and change over time — confirm the terms of any offer in
+        writing before you act on it.
+      </p>
+
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var $ = function (id) { return document.getElementById(id); };
+
+        var state = {
+          minMode: "pct",       // "pct" | "fixed"
+          score: "fair",        // good | fair | poor
+          promo: 18,            // months
+          feePct: 3,            // %
+          freq: "biweekly"      // weekly | biweekly
+        };
+
+        // ---------- helpers ----------
+        function num(id, fallback) {
+          var v = parseFloat($(id).value);
+          return isNaN(v) || v < 0 ? fallback : v;
+        }
+        function money(v) {
+          if (!isFinite(v)) return "∞";
+          return "$" + Math.round(v).toLocaleString("en-US");
+        }
+        function moneyExact(v) {
+          return "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // ---------- amortization on minimums ----------
+        // Returns { months, totalInterest, neverPays, firstMonthInterest, cumInterest[] }
+        function simulateMinimums(balance, aprPct, mode, pctVal, fixedVal) {
+          var monthlyRate = aprPct / 100 / 12;
+          var bal = balance;
+          var totalInterest = 0;
+          var months = 0;
+          var firstMonthInterest = balance * monthlyRate;
+          var cum = [0];
+          var MAX = 1200; // 100 years cap
+          while (bal > 0.005 && months < MAX) {
+            var interest = bal * monthlyRate;
+            var payment;
+            if (mode === "pct") {
+              payment = Math.max(bal * (pctVal / 100), 25);
+            } else {
+              payment = fixedVal;
+            }
+            if (payment <= interest && bal > payment) {
+              return { months: Infinity, totalInterest: Infinity, neverPays: true, firstMonthInterest: firstMonthInterest, cum: cum };
+            }
+            payment = Math.min(payment, bal + interest);
+            bal = bal + interest - payment;
+            totalInterest += interest;
+            months++;
+            cum.push(totalInterest);
+          }
+          return {
+            months: months >= MAX ? Infinity : months,
+            totalInterest: months >= MAX ? Infinity : totalInterest,
+            neverPays: months >= MAX,
+            firstMonthInterest: firstMonthInterest,
+            cum: cum
+          };
+        }
+
+        function fmtDuration(months) {
+          if (!isFinite(months)) return "Never";
+          var y = Math.floor(months / 12);
+          var m = months % 12;
+          var parts = [];
+          if (y > 0) parts.push(y + (y === 1 ? " yr" : " yrs"));
+          if (m > 0 || y === 0) parts.push(m + (m === 1 ? " mo" : " mos"));
+          return parts.join(" ");
+        }
+
+        function hardshipScript(balance, apr) {
+          return "Hi, my name is [your name], and I've been a cardholder in good standing, but I'm going through a financial hardship right now — my income has dropped and I'm struggling to keep up at my current rate.\n\n" +
+            "My balance is about " + money(balance) + " at " + apr + "% APR, and most of my minimum payment is going straight to interest, so the balance barely moves.\n\n" +
+            "I want to keep paying and avoid falling behind or defaulting. Does your bank have a hardship program, or can you put me on a temporary APR reduction for the next 6 to 12 months while I get back on track? Even a lower fixed rate would let my payments actually hit the balance.\n\n" +
+            "I'm committed to paying this off in full — I just need the interest to stop outrunning me. What can you do for me today?";
+        }
+
+        // ---------- segmented control wiring ----------
+        function wireSeg(containerId, attr, apply) {
+          var box = $(containerId);
+          var buttons = box.querySelectorAll("button");
+          buttons.forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              buttons.forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+              btn.setAttribute("aria-pressed", "true");
+              apply(btn.getAttribute(attr));
+              render();
+            });
+          });
+        }
+
+        wireSeg("scoreSeg", "data-score", function (v) { state.score = v; });
+        wireSeg("promoSeg", "data-promo", function (v) { state.promo = parseInt(v, 10); });
+        wireSeg("feeSeg", "data-fee", function (v) { state.feePct = parseFloat(v); });
+        wireSeg("freqSeg", "data-freq", function (v) { state.freq = v; });
+
+        $("minModePct").addEventListener("click", function () {
+          state.minMode = "pct";
+          $("minModePct").setAttribute("aria-pressed", "true");
+          $("minModeFixed").setAttribute("aria-pressed", "false");
+          $("minPctField").hidden = false;
+          $("minFixedField").hidden = true;
+          render();
+        });
+        $("minModeFixed").addEventListener("click", function () {
+          state.minMode = "fixed";
+          $("minModeFixed").setAttribute("aria-pressed", "true");
+          $("minModePct").setAttribute("aria-pressed", "false");
+          $("minPctField").hidden = true;
+          $("minFixedField").hidden = false;
+          render();
+        });
+
+        ["balance", "apr", "minPct", "minFixed", "takehome"].forEach(function (id) {
+          $(id).addEventListener("input", render);
+        });
+
+        // ---------- copy script ----------
+        $("copyScriptBtn").addEventListener("click", function () {
+          var box = $("hardshipScript");
+          var status = $("copyStatus");
+          function done() { status.textContent = "Copied — paste it into your notes before you call."; }
+          function manual() {
+            box.focus();
+            box.select();
+            status.textContent = "Script selected — press copy (Ctrl/Cmd + C) to grab it.";
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(box.value).then(done, manual);
+          } else {
+            manual();
+          }
+        });
+
+        // ---------- main render ----------
+        function render() {
+          var balance = num("balance", 0);
+          var apr = num("apr", 0);
+          var minPct = num("minPct", 4);
+          var minFixed = num("minFixed", 0);
+          var takehomeRaw = $("takehome").value.trim();
+          var takehome = takehomeRaw === "" ? null : num("takehome", 0);
+
+          var sim = simulateMinimums(balance, apr, state.minMode, minPct, minFixed);
+
+          // --- transfer math ---
+          var feeCost = balance * (state.feePct / 100);
+          var transferTotal = balance + feeCost;
+          var netSavings = isFinite(sim.totalInterest) ? sim.totalInterest - feeCost : Infinity;
+          var monthlyTarget = state.promo > 0 ? transferTotal / state.promo : 0;
+          var checksPerYear = state.freq === "weekly" ? 52 : 26;
+          var totalChecks = Math.max(1, Math.round((state.promo / 12) * checksPerYear));
+          var perCheck = transferTotal / totalChecks;
+
+          // fee breakeven: first month cumulative minimum-payment interest >= fee
+          var breakeven = "—";
+          if (feeCost <= 0) breakeven = "No fee";
+          else if (balance <= 0) breakeven = "—";
+          else {
+            for (var i = 1; i < sim.cum.length; i++) {
+              if (sim.cum[i] >= feeCost) { breakeven = "Month " + i; break; }
+            }
+            if (breakeven === "—" && isFinite(sim.totalInterest) && sim.totalInterest >= feeCost) breakeven = "During payoff";
+            if (breakeven === "—") breakeven = isFinite(sim.totalInterest) ? "Never — fee beats the interest" : "Month 1";
+          }
+
+          // --- trap card ---
+          if (balance <= 0) {
+            $("trapInterest").textContent = "$0";
+            $("trapLine").textContent = "Enter a balance above to see what the trap costs you.";
+            $("trapTime").textContent = "—";
+            $("trapTotal").textContent = "—";
+            $("trapMonthly").textContent = "—";
+          } else if (sim.neverPays) {
+            $("trapInterest").textContent = "Never ends";
+            $("trapLine").innerHTML = "Your minimum payment doesn't even cover the interest — <strong>the balance grows while you pay.</strong> This is the deepest part of the trap.";
+            $("trapTime").textContent = "∞ — balance grows";
+            $("trapTotal").textContent = "Unbounded";
+            $("trapMonthly").textContent = money(sim.firstMonthInterest) + " and climbing";
+          } else {
+            $("trapInterest").textContent = money(sim.totalInterest);
+            $("trapLine").innerHTML = "Interest burned if you only pay minimums — that's <strong>" +
+              (balance > 0 ? Math.round((sim.totalInterest / balance) * 100) : 0) +
+              "% of the original balance</strong>, torched.";
+            $("trapTime").textContent = fmtDuration(sim.months) + " (" + sim.months + " payments)";
+            $("trapTotal").textContent = money(balance + sim.totalInterest);
+            $("trapMonthly").textContent = money(sim.firstMonthInterest) + " in month one";
+          }
+
+          // --- savings card ---
+          if (balance <= 0) {
+            $("netSavings").textContent = "$0";
+            $("savingsLine").textContent = "Enter a balance above to run the transfer math.";
+          } else if (!isFinite(netSavings)) {
+            $("netSavings").textContent = money(feeCost) + " fee vs ∞ interest";
+            $("savingsLine").innerHTML = "Your minimums never kill this debt, so <strong>any</strong> working exit beats the trap. The transfer fee is a rounding error next to endless interest.";
+          } else if (netSavings > 0) {
+            $("netSavings").textContent = money(netSavings);
+            $("savingsLine").innerHTML = "Dodge <strong>" + money(sim.totalInterest) + "</strong> in interest, pay <strong>" +
+              money(feeCost) + "</strong> once — you keep the difference, if you finish inside the promo window.";
+          } else {
+            $("netSavings").textContent = money(netSavings);
+            $("savingsLine").innerHTML = "At these numbers the fee eats the savings — the interest you'd dodge is smaller than the transfer fee. The avalanche (Tier 3) is your better play.";
+          }
+          $("interestAvoided").textContent = isFinite(sim.totalInterest) ? money(sim.totalInterest) : "Unbounded";
+          $("feeCost").textContent = money(feeCost) + " (" + state.feePct + "% of balance)";
+          $("feeBreakeven").textContent = breakeven;
+
+          // --- payoff plan ---
+          $("perCheck").textContent = balance > 0 ? moneyExact(perCheck) : "$0";
+          $("monthlyTarget").textContent = money(monthlyTarget) + " / month";
+          $("transferTotal").textContent = money(transferTotal);
+          var deadlineDate = new Date();
+          deadlineDate.setMonth(deadlineDate.getMonth() + state.promo);
+          $("deadline").textContent = state.promo + " months — clear by " +
+            deadlineDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+          // --- vulnerability score ---
+          var score = 0;
+          var why = [];
+          if (balance > 0) {
+            var aprPart = Math.min(apr, 35) / 35 * 30;
+            var ratioPart = isFinite(sim.totalInterest)
+              ? Math.min(sim.totalInterest / balance, 2) / 2 * 30
+              : 30;
+            var durationPart = isFinite(sim.months)
+              ? Math.min(sim.months, 300) / 300 * 20
+              : 20;
+            var burdenPart;
+            if (takehome && takehome > 0) {
+              burdenPart = Math.min(sim.firstMonthInterest / takehome, 0.25) / 0.25 * 20;
+              why.push("interest alone takes " + Math.max(1, Math.round((sim.firstMonthInterest / takehome) * 100)) +
+                "% of your monthly take-home before you touch the actual debt");
+            } else {
+              var minPaymentNow = state.minMode === "pct"
+                ? Math.max(balance * (minPct / 100), 25)
+                : minFixed;
+              burdenPart = minPaymentNow > 0
+                ? Math.min(sim.firstMonthInterest / minPaymentNow, 1) * 20
+                : 20;
+              if (minPaymentNow > 0 && sim.firstMonthInterest / minPaymentNow > 0.5) {
+                why.push("over half of every minimum payment is pure interest — the balance barely moves");
+              }
+            }
+            score = Math.round(Math.min(100, aprPart + ratioPart + durationPart + burdenPart));
+            if (apr >= 25) why.push("your " + apr + "% APR is in the penalty-zone range where balances double fast");
+            if (isFinite(sim.months) && sim.months >= 120) why.push("minimums keep you in debt for " + fmtDuration(sim.months));
+            if (sim.neverPays) { score = 100; why = ["your minimum payment doesn't cover the interest — the balance grows while you pay"]; }
+          }
+          var verdict, color;
+          if (score >= 75) { verdict = "Critical — act this week"; color = "var(--red)"; }
+          else if (score >= 50) { verdict = "Exposed — the trap is winning"; color = "var(--orange)"; }
+          else if (score >= 25) { verdict = "Guarded — manageable, watch it"; color = "var(--amber)"; }
+          else { verdict = "Stable — you're ahead of it"; color = "var(--green)"; }
+          $("scoreNum").textContent = score;
+          $("scoreNum").style.color = color;
+          $("scoreVerdict").textContent = verdict;
+          $("scoreVerdict").style.color = color;
+          $("scoreFill").style.width = score + "%";
+          $("scoreFill").style.background = color;
+          $("scoreWhy").innerHTML = balance > 0
+            ? "Why: " + why.slice(0, 2).join("; ") + "."
+            : "Enter a balance to score your exposure.";
+
+          // --- tier selection ---
+          var activeTier;
+          if (apr > 25 && state.score !== "poor") activeTier = 1;
+          else if (apr > 25 && state.score === "poor") activeTier = 2;
+          else activeTier = 3;
+          [1, 2, 3].forEach(function (t) {
+            var el = $("tier" + t);
+            var badge = el.querySelector(".your-play");
+            if (t === activeTier) {
+              el.classList.add("active");
+              badge.hidden = false;
+            } else {
+              el.classList.remove("active");
+              badge.hidden = true;
+            }
+          });
+
+          $("tier1Target").textContent = moneyExact(perCheck) + "/" + (state.freq === "weekly" ? "week" : "paycheck");
+          $("tier1Callout").innerHTML = "<strong>Your timeline:</strong> transfer " + money(balance) +
+            " (+ " + money(feeCost) + " fee) → pay " + moneyExact(perCheck) + " per " +
+            (state.freq === "weekly" ? "week" : "paycheck") + " → debt-free in " + state.promo +
+            " months with <strong>" + money(Math.max(netSavings, 0)) + " kept</strong> instead of burned. The fee is covered by avoided interest in " +
+            breakeven.toLowerCase().replace("month ", "month ") + ".";
+          $("tier3Callout").innerHTML = "<strong>Your math:</strong> adding just $50/paycheck (" +
+            money(50 * checksPerYear / 12) + "/month) on top of minimums attacks the principal directly — at " +
+            apr + "% APR, every extra dollar kills about $" +
+            (apr / 100).toFixed(2) + " of interest per year it stays unpaid.";
+
+          // --- script ---
+          $("hardshipScript").value = hardshipScript(balance, apr);
+
+          // --- blueprint ---
+          $("bpScenario").textContent = money(balance) + " balance · " + apr + "% APR · " +
+            state.promo + "-month 0% window · " + state.feePct + "% transfer fee";
+          $("bpInterest").textContent = isFinite(sim.totalInterest) ? money(sim.totalInterest) : "Never ends";
+          $("bpInterestSub").textContent = isFinite(sim.months)
+            ? fmtDuration(sim.months) + " of minimum payments"
+            : "Minimums don't cover the interest";
+          $("bpSavings").textContent = isFinite(netSavings) ? money(netSavings) : "Fee ≪ endless interest";
+          $("bpSavingsSub").textContent = "After the " + money(feeCost) + " transfer fee";
+          $("bpTarget").textContent = moneyExact(perCheck);
+          $("bpTargetSub").textContent = "per " + (state.freq === "weekly" ? "week" : "paycheck") + " · " +
+            money(monthlyTarget) + "/month for " + state.promo + " months";
+          $("bpScore").textContent = score + " / 100";
+          $("bpScore").style.color = color;
+          $("bpScoreSub").textContent = verdict;
+          var playText = {
+            1: "<strong>Tier 1 — 0% Transfer Protocol.</strong> Move the balance to a 0% promo card inside the transfer window, freeze the old card, and pay <strong>" +
+               moneyExact(perCheck) + " per " + (state.freq === "weekly" ? "week" : "paycheck") +
+               "</strong> until it hits zero — before the promo expires.",
+            2: "<strong>Tier 2 — Issuer Hardship Protocol.</strong> Transfers won't approve yet, so call the issuer and run the hardship script below. A temporary APR cut makes your payments hit principal again — then re-run this engine.",
+            3: "<strong>Tier 3 — Payday Avalanche.</strong> Minimums on everything, plus a fixed <strong>$25–$50 extra per paycheck</strong> aimed at the highest APR. Roll each dead card's payment into the next target."
+          };
+          $("bpPlay").innerHTML = playText[activeTier];
+          $("bpScript").textContent = hardshipScript(balance, apr).split("\n\n")[2];
+        }
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

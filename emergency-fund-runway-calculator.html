@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Emergency Fund Runway Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #121110;
+        --panel: #1c1a18;
+        --panel-2: #262320;
+        --ink: #f2efe9;
+        --ink-dim: #a8a29b;
+        --line: #3a3631;
+        --accent: #ffa51f;
+        --accent-strong: #ffb84d;
+        --accent-soft: #3a2c12;
+        --danger: #ff6b5e;
+        --danger-soft: #3d1f1c;
+        --warn: #ffb84d;
+        --warn-soft: #3a2c12;
+        --good: #5fd68a;
+        --good-soft: #173325;
+        --input-bg: #141312;
+        --shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 20px 16px 48px; }
+
+      /* ---------- Header ---------- */
+      header.top { padding: 14px 0 6px; border-bottom: 3px solid var(--accent); margin-bottom: 22px; }
+      .kicker {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--accent-strong); margin: 0 0 6px;
+      }
+      h1 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-weight: 700; font-size: clamp(34px, 6vw, 52px);
+        line-height: 1.02; letter-spacing: 0.01em; margin: 0 0 8px;
+        text-transform: uppercase;
+      }
+      .lede { margin: 0 0 14px; color: var(--ink-dim); font-size: 17px; max-width: 62ch; }
+
+      /* ---------- Layout ---------- */
+      .layout { display: grid; grid-template-columns: 1fr; gap: 20px; }
+      @media (min-width: 880px) {
+        .layout { grid-template-columns: 5fr 6fr; align-items: start; }
+        .results-col { position: sticky; top: 16px; }
+      }
+
+      .panel {
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 10px; box-shadow: var(--shadow); padding: 20px;
+      }
+      .panel + .panel { margin-top: 20px; }
+      .panel h2 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 22px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+        margin: 0 0 4px;
+      }
+      .panel .sub { color: var(--ink-dim); font-size: 14px; margin: 0 0 16px; }
+
+      /* ---------- Inputs ---------- */
+      .field-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        padding: 9px 0; border-bottom: 1px dashed var(--line);
+      }
+      .field-row:last-of-type { border-bottom: none; }
+      .field-row label { font-weight: 500; flex: 1 1 auto; min-width: 0; }
+      .field-row label .hint { display: block; font-size: 12.5px; color: var(--ink-dim); font-weight: 400; }
+      .money {
+        display: flex; align-items: center; gap: 2px;
+        background: var(--input-bg); border: 1.5px solid var(--line); border-radius: 7px;
+        padding: 0 8px; flex: 0 0 auto;
+      }
+      .money:focus-within { border-color: var(--accent); }
+      .money .cur { color: var(--ink-dim); font-family: "IBM Plex Mono", monospace; font-size: 14px; }
+      .money input {
+        width: 96px; border: none; outline: none; background: transparent; color: var(--ink);
+        font-family: "IBM Plex Mono", monospace; font-size: 16px; font-weight: 600;
+        padding: 9px 2px; text-align: right; appearance: textfield; -moz-appearance: textfield;
+      }
+      .money input::-webkit-outer-spin-button, .money input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      .money.wide input { width: 120px; }
+      .total-row {
+        display: flex; justify-content: space-between; align-items: baseline;
+        margin-top: 12px; padding-top: 12px; border-top: 2px solid var(--ink);
+      }
+      .total-row .t-label { font-weight: 700; text-transform: uppercase; font-size: 13px; letter-spacing: 0.06em; }
+      .total-row .t-value { font-family: "IBM Plex Mono", monospace; font-size: 22px; font-weight: 700; color: var(--accent-strong); }
+
+      .seg-label { font-weight: 600; margin: 18px 0 8px; font-size: 15px; }
+      .seg {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+      }
+      .seg button {
+        font-family: "Barlow", sans-serif; font-size: 15px; font-weight: 600;
+        padding: 10px 4px; border-radius: 7px; cursor: pointer;
+        border: 1.5px solid var(--line); background: var(--panel-2); color: var(--ink);
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--accent); border-color: var(--accent); color: #16130c;
+      }
+      .seg button small { display: block; font-weight: 500; font-size: 11.5px; opacity: 0.8; }
+      .custom-row { display: none; margin-top: 10px; align-items: center; gap: 10px; }
+      .custom-row.show { display: flex; }
+      .custom-row label { font-size: 14px; color: var(--ink-dim); }
+      .custom-row .money input { width: 64px; text-align: center; }
+
+      /* ---------- Results ---------- */
+      .status-banner {
+        border-radius: 10px; padding: 16px 18px; margin-bottom: 18px;
+        border: 1.5px solid var(--line); background: var(--panel-2);
+      }
+      .status-banner .tier {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 30px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+        line-height: 1.05; margin: 0;
+      }
+      .status-banner .tier-note { margin: 4px 0 0; font-size: 14.5px; }
+      .status-banner.danger { background: var(--danger-soft); border-color: var(--danger); }
+      .status-banner.danger .tier { color: var(--danger); }
+      .status-banner.thin { background: var(--warn-soft); border-color: var(--warn); }
+      .status-banner.thin .tier { color: var(--warn); }
+      .status-banner.secure { background: var(--good-soft); border-color: var(--good); }
+      .status-banner.secure .tier { color: var(--good); }
+
+      .runway-big { display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: baseline; margin-bottom: 6px; }
+      .runway-big .num {
+        font-family: "IBM Plex Mono", monospace; font-weight: 700;
+        font-size: clamp(44px, 9vw, 64px); line-height: 1; color: var(--ink);
+      }
+      .runway-big .unit { font-size: 17px; color: var(--ink-dim); font-weight: 500; }
+      .runway-big .weeks { font-family: "IBM Plex Mono", monospace; font-size: 19px; font-weight: 600; color: var(--accent-strong); }
+
+      /* Meter */
+      .meter-wrap { margin: 18px 0 6px; }
+      .meter {
+        position: relative; height: 26px; border-radius: 6px; overflow: visible;
+        background: linear-gradient(to right,
+          var(--danger) 0%, var(--danger) 16.667%,
+          var(--warn) 16.667%, var(--warn) 50%,
+          var(--good) 50%, var(--good) 100%);
+        opacity: 0.92;
+      }
+      .meter .fill-mask {
+        position: absolute; top: 0; right: 0; bottom: 0; background: var(--panel-2);
+        border-radius: 0 6px 6px 0; transition: width 0.35s ease;
+      }
+      .meter .marker {
+        position: absolute; top: -6px; bottom: -6px; width: 4px; margin-left: -2px;
+        background: var(--ink); border-radius: 2px; transition: left 0.35s ease;
+        box-shadow: 0 0 0 2px var(--panel);
+      }
+      .meter .goal-tick {
+        position: absolute; top: -9px; bottom: -9px; width: 3px; margin-left: -1.5px;
+        background: var(--accent); border-radius: 2px; transition: left 0.35s ease;
+      }
+      .meter-scale {
+        display: flex; justify-content: space-between;
+        font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink-dim);
+        margin-top: 8px;
+      }
+      .meter-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-dim); margin-top: 6px; }
+      .meter-legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
+      .sw.d { background: var(--danger); } .sw.w { background: var(--warn); } .sw.g { background: var(--good); }
+      .sw.t { background: var(--accent); }
+
+      /* Breakdown table */
+      .breakdown { margin-top: 18px; border-top: 1px solid var(--line); }
+      .b-row {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+        padding: 10px 0; border-bottom: 1px solid var(--line);
+      }
+      .b-row:last-child { border-bottom: none; }
+      .b-row .b-label { font-weight: 500; }
+      .b-row .b-label .hint { display: block; font-size: 12.5px; color: var(--ink-dim); font-weight: 400; }
+      .b-row .b-value { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 18px; white-space: nowrap; }
+      .b-row .b-value.accent { color: var(--accent-strong); }
+      .b-row .b-value.good { color: var(--good); }
+      .empty-note { color: var(--ink-dim); font-size: 15px; padding: 10px 0; }
+
+      /* ---------- CTA ---------- */
+      .cta {
+        margin-top: 20px; border-radius: 10px; padding: 22px;
+        background: var(--accent); color: #16130c;
+        display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px;
+        box-shadow: var(--shadow);
+      }
+      .cta p { margin: 0; flex: 1 1 320px; font-size: 17.5px; font-weight: 600; line-height: 1.4; }
+      .cta a {
+        flex: 0 0 auto; background: #16130c; color: #ffb84d; text-decoration: none;
+        font-weight: 700; font-size: 16px; padding: 13px 22px; border-radius: 8px;
+        border: 2px solid #16130c;
+      }
+      .cta a:hover, .cta a:focus-visible { background: transparent; color: #16130c; }
+
+      /* ---------- FAQ ---------- */
+      .faq { margin-top: 34px; }
+      .faq h2 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin: 0 0 14px;
+      }
+      .faq details {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+        padding: 14px 18px; margin-bottom: 10px; box-shadow: var(--shadow);
+      }
+      .faq summary { font-weight: 600; font-size: 16.5px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; font-family: "IBM Plex Mono", monospace; color: var(--accent-strong); font-size: 20px; line-height: 1; }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq details p { margin: 10px 0 2px; color: var(--ink-dim); font-size: 15.5px; }
+      .faq details p strong { color: var(--ink); }
+
+      footer.note { margin-top: 30px; color: var(--ink-dim); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .meter .fill-mask, .meter .marker, .meter .goal-tick { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <p class="kicker">Emergency Fund · Runway Calculator</p>
+        <h1>How long could you last?</h1>
+        <p class="lede">Enter what it costs to keep your household running for one month, plus what you've got saved. We'll show your runway — how many months you'd survive with no paycheck — and exactly when you'll hit your safety target.</p>
+      </header>
+
+      <div class="layout">
+        <!-- ============ INPUTS ============ -->
+        <div class="inputs-col">
+          <section class="panel" aria-labelledby="expenses-h">
+            <h2 id="expenses-h">Monthly essentials</h2>
+            <p class="sub">Only the bills that don't stop if your income does. Skip the extras.</p>
+
+            <div class="field-row">
+              <label for="in-rent">Rent / mortgage</label>
+              <span class="money"><span class="cur">$</span><input id="in-rent" type="number" inputmode="decimal" min="0" step="any" value="1200" /></span>
+            </div>
+            <div class="field-row">
+              <label for="in-utilities">Utilities<span class="hint">Electric, water, phone, internet</span></label>
+              <span class="money"><span class="cur">$</span><input id="in-utilities" type="number" inputmode="decimal" min="0" step="any" value="220" /></span>
+            </div>
+            <div class="field-row">
+              <label for="in-food">Food<span class="hint">Groceries and basics</span></label>
+              <span class="money"><span class="cur">$</span><input id="in-food" type="number" inputmode="decimal" min="0" step="any" value="450" /></span>
+            </div>
+            <div class="field-row">
+              <label for="in-debt">Minimum debt payments<span class="hint">Card and loan minimums only</span></label>
+              <span class="money"><span class="cur">$</span><input id="in-debt" type="number" inputmode="decimal" min="0" step="any" value="180" /></span>
+            </div>
+            <div class="field-row">
+              <label for="in-transport">Transportation<span class="hint">Car payment, insurance, gas</span></label>
+              <span class="money"><span class="cur">$</span><input id="in-transport" type="number" inputmode="decimal" min="0" step="any" value="380" /></span>
+            </div>
+            <div class="field-row">
+              <label for="in-other">Other essentials<span class="hint">Insurance, meds, childcare</span></label>
+              <span class="money"><span class="cur">$</span><input id="in-other" type="number" inputmode="decimal" min="0" step="any" value="120" /></span>
+            </div>
+
+            <div class="total-row">
+              <span class="t-label">Total per month</span>
+              <span class="t-value" id="total-expenses">$0</span>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="savings-h">
+            <h2 id="savings-h">Your savings &amp; target</h2>
+            <p class="sub">Liquid savings means cash you could actually get to this week.</p>
+
+            <div class="field-row">
+              <label for="in-savings">Current liquid savings</label>
+              <span class="money wide"><span class="cur">$</span><input id="in-savings" type="number" inputmode="decimal" min="0" step="any" value="2500" /></span>
+            </div>
+            <div class="field-row">
+              <label for="in-contrib">Monthly contribution<span class="hint">Optional — what you can add each month</span></label>
+              <span class="money wide"><span class="cur">$</span><input id="in-contrib" type="number" inputmode="decimal" min="0" step="any" value="200" /></span>
+            </div>
+
+            <p class="seg-label" id="target-label">Target runway goal</p>
+            <div class="seg" role="group" aria-labelledby="target-label">
+              <button type="button" data-months="1" aria-pressed="false">1 mo<small>Starter</small></button>
+              <button type="button" data-months="3" aria-pressed="true">3 mo<small>Standard</small></button>
+              <button type="button" data-months="6" aria-pressed="false">6 mo<small>Full buffer</small></button>
+              <button type="button" data-months="custom" aria-pressed="false">Custom<small>You pick</small></button>
+            </div>
+            <div class="custom-row" id="custom-row">
+              <label for="in-custom-months">Target months:</label>
+              <span class="money"><input id="in-custom-months" type="number" inputmode="decimal" min="0.5" step="0.5" value="4" /></span>
+            </div>
+          </section>
+        </div>
+
+        <!-- ============ RESULTS ============ -->
+        <div class="results-col">
+          <section class="panel" aria-labelledby="results-h" aria-live="polite">
+            <h2 id="results-h">Your runway</h2>
+
+            <div class="status-banner" id="status-banner">
+              <p class="tier" id="tier-name">—</p>
+              <p class="tier-note" id="tier-note"></p>
+            </div>
+
+            <div class="runway-big">
+              <div><span class="num" id="runway-months">0.0</span> <span class="unit">months of runway</span></div>
+              <div class="weeks" id="runway-weeks">= 0 weeks</div>
+            </div>
+
+            <div class="meter-wrap">
+              <div class="meter" role="img" aria-label="Runway meter scaled from zero to six months">
+                <div class="fill-mask" id="meter-mask"></div>
+                <div class="goal-tick" id="goal-tick"></div>
+                <div class="marker" id="meter-marker"></div>
+              </div>
+              <div class="meter-scale"><span>0</span><span>1 mo</span><span>2</span><span>3 mo</span><span>4</span><span>5</span><span>6+ mo</span></div>
+              <div class="meter-legend">
+                <span><span class="sw d"></span>Danger Zone (&lt;1 mo)</span>
+                <span><span class="sw w"></span>Thin Ice (1–3 mo)</span>
+                <span><span class="sw g"></span>Secure Buffer (3+ mo)</span>
+                <span><span class="sw t"></span>Your goal</span>
+              </div>
+            </div>
+
+            <div class="breakdown" id="breakdown"></div>
+          </section>
+
+          <aside class="cta">
+            <p>Ready to lock in your emergency fund? Grab the 52-Week Cash Stash Thermometer and the Blue-Collar Paycheck Protection &amp; Buffer Binder.</p>
+            <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get them on Gumroad</a>
+          </aside>
+        </div>
+      </div>
+
+      <!-- ============ FAQ ============ -->
+      <section class="faq" aria-labelledby="faq-h">
+        <h2 id="faq-h">Emergency fund basics</h2>
+
+        <details open>
+          <summary>What counts as an "essential" expense?</summary>
+          <p>Only what keeps the household standing if your income stops: <strong>housing, utilities, groceries, minimum debt payments, transportation to get to work, insurance, and medicine</strong>. Leave out eating out, streaming, new clothes, and anything you'd cut in a real emergency. This calculator uses your bare-bones month — not your normal spending month — because that's the month your savings actually has to cover.</p>
+        </details>
+
+        <details>
+          <summary>Why do people say 3–6 months?</summary>
+          <p>Because that's roughly how long it takes to replace a job, recover from an injury, or get through a major repair without going into debt. <strong>One month</strong> is a starter cushion that keeps a surprise bill off a credit card. <strong>Three months</strong> covers most layoffs and setbacks. <strong>Six months</strong> is the full buffer — smart if your income swings with overtime, shifts, or seasonal work, or if you're the only earner in the house.</p>
+        </details>
+
+        <details>
+          <summary>Where should I keep an emergency fund?</summary>
+          <p>In a <strong>separate savings account</strong> — ideally a high-yield savings account at a different bank than your everyday checking. Separate so you're not tempted to spend it, easy to reach within a day or two when something breaks, and never invested in stocks or crypto: the fund's job is to be there at full value on your worst week, not to grow.</p>
+        </details>
+
+        <details>
+          <summary>What if my runway is under one month?</summary>
+          <p>Then your first goal isn't 3 months — it's <strong>the next $500, then one full month</strong>. Set the target to 1 month above, enter whatever you can add each paycheck (even $25 counts), and work the plan. A small fund that exists beats a perfect fund that's still on a wish list.</p>
+        </details>
+      </section>
+
+      <footer class="note">
+        Estimates only — this calculator doesn't count interest earned on savings, and it assumes your essential expenses stay flat. Recheck your numbers whenever rent, a payment, or your shift schedule changes.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var expenseIds = ["in-rent", "in-utilities", "in-food", "in-debt", "in-transport", "in-other"];
+        var moneyFmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+        var targetMonths = 3;
+
+        function num(id) {
+          var v = parseFloat($(id).value);
+          return isFinite(v) && v > 0 ? v : 0;
+        }
+
+        function fmt(n) { return moneyFmt.format(Math.round(n)); }
+
+        function recalc() {
+          var expenses = expenseIds.reduce(function (sum, id) { return sum + num(id); }, 0);
+          var savings = num("in-savings");
+          var contrib = num("in-contrib");
+          var goal = targetMonths * expenses;
+          var gap = Math.max(0, goal - savings);
+
+          $("total-expenses").textContent = fmt(expenses);
+
+          var banner = $("status-banner");
+          var breakdown = $("breakdown");
+
+          if (expenses <= 0) {
+            banner.className = "status-banner";
+            $("tier-name").textContent = "Enter your essentials";
+            $("tier-note").textContent = "Add at least one monthly expense on the left to see your runway.";
+            $("runway-months").textContent = "—";
+            $("runway-weeks").textContent = "";
+            $("meter-mask").style.width = "100%";
+            $("meter-marker").style.left = "0%";
+            $("goal-tick").style.left = "0%";
+            breakdown.innerHTML = '<p class="empty-note">Your breakdown will appear here once you enter your monthly essentials.</p>';
+            return;
+          }
+
+          var runwayMonths = savings / expenses;
+          var weeklyBurn = expenses * 12 / 52;
+          var runwayWeeks = weeklyBurn > 0 ? savings / weeklyBurn : 0;
+
+          // Show two decimals below 1 month so the number never rounds up
+          // across a tier boundary (0.98 must not read as 1.0 / Thin Ice).
+          $("runway-months").textContent =
+            runwayMonths < 1 ? runwayMonths.toFixed(2) :
+            runwayMonths >= 10 ? runwayMonths.toFixed(0) : runwayMonths.toFixed(1);
+          $("runway-weeks").textContent = "= " + (runwayWeeks >= 10 ? Math.round(runwayWeeks) : runwayWeeks.toFixed(1)) + " weeks";
+
+          // Tier
+          var tierClass, tierName, tierNote;
+          if (runwayMonths < 1) {
+            tierClass = "danger"; tierName = "Danger Zone";
+            tierNote = "Less than one month of cover. One missed paycheck or one breakdown puts this on a credit card.";
+          } else if (runwayMonths < 3) {
+            tierClass = "thin"; tierName = "Thin Ice";
+            tierNote = "You've got a cushion, but a layoff or a big repair would burn through it fast. Keep building.";
+          } else {
+            tierClass = "secure"; tierName = "Secure Buffer";
+            tierNote = "Three-plus months of essentials covered. Your household can take a real hit without going into debt.";
+          }
+          banner.className = "status-banner " + tierClass;
+          $("tier-name").textContent = tierName;
+          $("tier-note").textContent = tierNote;
+
+          // Meter (scale: 0–6 months)
+          var pct = Math.min(100, runwayMonths / 6 * 100);
+          $("meter-marker").style.left = pct + "%";
+          $("meter-mask").style.width = (100 - pct) + "%";
+          $("goal-tick").style.left = Math.min(100, targetMonths / 6 * 100) + "%";
+
+          // Breakdown rows
+          var rows = "";
+          rows += row("Monthly essentials", "", fmt(expenses));
+          rows += row("Savings goal", targetMonths + (targetMonths === 1 ? " month" : " months") + " of essentials", fmt(goal));
+
+          if (gap <= 0) {
+            rows += row("Still to save", "Goal reached", '<span class="b-value good">$0 — you\'re there</span>', true);
+          } else {
+            rows += row("Still to save", "Your savings gap", '<span class="b-value accent">' + fmt(gap) + "</span>", true);
+          }
+
+          if (gap <= 0) {
+            rows += row("Target date", "", '<span class="b-value good">Already funded</span>', true);
+          } else if (contrib > 0) {
+            var monthsNeeded = gap / contrib;
+            var wholeMonths = Math.ceil(monthsNeeded);
+            var now = new Date();
+            var target = new Date(now.getFullYear(), now.getMonth() + wholeMonths, 1);
+            var monthName = target.toLocaleString("en-US", { month: "long" });
+            var monthsLabel = monthsNeeded < 1 ? "under 1 month" : (Math.round(monthsNeeded * 10) / 10) + " months at " + fmt(contrib) + "/mo";
+            rows += row("Time to goal", monthsLabel, '<span class="b-value">' + monthName + " " + target.getFullYear() + "</span>", true);
+          } else {
+            rows += row("Time to goal", "Add a monthly contribution to project your target date", '<span class="b-value">—</span>', true);
+          }
+
+          breakdown.innerHTML = rows;
+        }
+
+        function row(label, hint, valueHtml, raw) {
+          var value = raw ? valueHtml : '<span class="b-value">' + valueHtml + "</span>";
+          return '<div class="b-row"><span class="b-label">' + label +
+            (hint ? '<span class="hint">' + hint + "</span>" : "") +
+            "</span>" + value + "</div>";
+        }
+
+        // Target segmented control
+        var segButtons = document.querySelectorAll(".seg button");
+        segButtons.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            segButtons.forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+            btn.setAttribute("aria-pressed", "true");
+            var v = btn.getAttribute("data-months");
+            if (v === "custom") {
+              $("custom-row").classList.add("show");
+              var cv = parseFloat($("in-custom-months").value);
+              targetMonths = isFinite(cv) && cv > 0 ? cv : 1;
+            } else {
+              $("custom-row").classList.remove("show");
+              targetMonths = parseFloat(v);
+            }
+            recalc();
+          });
+        });
+        $("in-custom-months").addEventListener("input", function () {
+          var cv = parseFloat(this.value);
+          if (isFinite(cv) && cv > 0) { targetMonths = cv; recalc(); }
+        });
+
+        expenseIds.concat(["in-savings", "in-contrib"]).forEach(function (id) {
+          $(id).addEventListener("input", recalc);
+        });
+
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

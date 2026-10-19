@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Debt Consolidation &amp; Refinance Simulator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #101010;
+        --bg-2: #171717;
+        --panel: #1c1c1c;
+        --panel-2: #232323;
+        --line: #333333;
+        --line-soft: #2a2a2a;
+        --ink: #f2ede4;
+        --ink-dim: #b8b2a6;
+        --ink-faint: #8a857b;
+        --amber: #f5a623;
+        --orange: #ff6b1a;
+        --amber-dim: #7a5510;
+        --green: #3ecf6e;
+        --green-bg: #0f2b18;
+        --yellow: #ffc233;
+        --yellow-bg: #2e2408;
+        --red: #ff4d3d;
+        --red-bg: #33110d;
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(255,255,255,0.015) 47px, rgba(255,255,255,0.015) 48px),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 20px 16px 56px; }
+
+      /* ---------- header ---------- */
+      .hazard {
+        height: 8px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141414 14px 28px);
+        border-radius: 2px;
+        margin-bottom: 22px;
+      }
+      h1 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-weight: 700;
+        font-size: clamp(30px, 7.5vw, 44px);
+        line-height: 1.02;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 0 0 8px;
+      }
+      h1 .accent { color: var(--amber); }
+      .lede { color: var(--ink-dim); margin: 0 0 26px; max-width: 60ch; font-size: 16.5px; }
+      .lede strong { color: var(--ink); }
+
+      /* ---------- steps ---------- */
+      .step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px 16px 20px;
+        margin-bottom: 18px;
+      }
+      .step-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+      .step-num {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.12em;
+        color: #141414;
+        background: var(--amber);
+        padding: 2px 9px 3px;
+        border-radius: 3px;
+        white-space: nowrap;
+      }
+      .step h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0;
+      }
+      .step-sub { color: var(--ink-faint); font-size: 14px; margin: 2px 0 14px; }
+
+      /* ---------- debt rows ---------- */
+      .debt-row {
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+      .debt-row-top { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+      .debt-row-top input[type="text"] { flex: 1; min-width: 0; }
+      .remove-btn {
+        flex: none;
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink-faint);
+        border-radius: 6px;
+        width: 38px; height: 38px;
+        font-size: 18px; line-height: 1;
+        cursor: pointer;
+      }
+      .remove-btn:hover { color: var(--red); border-color: var(--red); }
+      .debt-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+      .field label {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        margin-bottom: 4px;
+      }
+      input[type="text"], input[type="number"] {
+        width: 100%;
+        background: #121212;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--ink);
+        font-family: inherit;
+        font-size: 16px;
+        padding: 9px 10px;
+        outline: none;
+      }
+      input:focus { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(245,166,35,0.25); }
+      input::placeholder { color: #5c574e; }
+      .add-btn {
+        width: 100%;
+        background: none;
+        border: 1px dashed var(--amber-dim);
+        color: var(--amber);
+        border-radius: 8px;
+        padding: 11px;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .add-btn:hover { border-color: var(--amber); }
+      .add-btn[disabled] { opacity: 0.4; cursor: default; }
+      .totals-strip {
+        display: flex; flex-wrap: wrap; gap: 8px 22px;
+        margin-top: 14px; padding-top: 12px;
+        border-top: 1px solid var(--line-soft);
+        font-size: 14.5px; color: var(--ink-dim);
+      }
+      .totals-strip b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+      /* ---------- refi form ---------- */
+      .refi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 520px) { .refi-grid { grid-template-columns: 1fr 1fr; } .debt-fields { grid-template-columns: 1fr 1fr 1fr; } }
+      .refi-grid .field label { font-size: 12px; }
+      .hint { font-size: 12.5px; color: var(--ink-faint); margin-top: 4px; }
+      .rebound {
+        margin-top: 18px;
+        background: #181410;
+        border: 1px solid var(--amber-dim);
+        border-radius: 8px;
+        padding: 14px;
+      }
+      .rebound p { margin: 0 0 10px; font-weight: 600; font-size: 15.5px; }
+      .rebound p span { color: var(--amber); }
+      .toggle-row { display: flex; gap: 8px; }
+      .toggle-row button {
+        flex: 1;
+        padding: 11px 8px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: #121212;
+        color: var(--ink-dim);
+        font-family: inherit;
+        font-size: 15px; font-weight: 600;
+        cursor: pointer;
+      }
+      .toggle-row button[aria-pressed="true"] { border-color: var(--amber); color: var(--amber); background: rgba(245,166,35,0.1); }
+      .toggle-row button.danger[aria-pressed="true"] { border-color: var(--red); color: var(--red); background: rgba(255,77,61,0.1); }
+
+      /* ---------- summary ---------- */
+      .summary {
+        border-radius: var(--radius);
+        padding: 20px 16px 22px;
+        margin-bottom: 18px;
+        border: 1.5px solid var(--line);
+        background: var(--panel);
+      }
+      .summary.verdict-green { border-color: var(--green); background: linear-gradient(180deg, var(--green-bg), var(--panel) 55%); }
+      .summary.verdict-yellow { border-color: var(--yellow); background: linear-gradient(180deg, var(--yellow-bg), var(--panel) 55%); }
+      .summary.verdict-red { border-color: var(--red); background: linear-gradient(180deg, var(--red-bg), var(--panel) 55%); }
+      .summary-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; font-family: "Barlow Condensed", sans-serif; font-size: 17px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-dim); }
+      .summary-steps .step-num { font-size: 13px; }
+      .summary-steps .arrow-sep { color: var(--ink-faint); }
+      .summary h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 24px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.02em;
+        margin: 0 0 14px;
+      }
+      .badge {
+        display: flex; align-items: center; gap: 12px;
+        border-radius: 8px;
+        padding: 13px 14px;
+        margin-bottom: 18px;
+      }
+      .verdict-green .badge { background: rgba(62,207,110,0.13); }
+      .verdict-yellow .badge { background: rgba(255,194,51,0.12); }
+      .verdict-red .badge { background: rgba(255,77,61,0.13); }
+      .badge .dot { width: 20px; height: 20px; border-radius: 50%; flex: none; }
+      .verdict-green .dot { background: var(--green); box-shadow: 0 0 14px rgba(62,207,110,0.7); }
+      .verdict-yellow .dot { background: var(--yellow); box-shadow: 0 0 14px rgba(255,194,51,0.7); }
+      .verdict-red .dot { background: var(--red); box-shadow: 0 0 14px rgba(255,77,61,0.7); }
+      .badge .badge-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 23px; font-weight: 700; text-transform: uppercase; line-height: 1.05;
+      }
+      .verdict-green .badge-title { color: var(--green); }
+      .verdict-yellow .badge-title { color: var(--yellow); }
+      .verdict-red .badge-title { color: var(--red); }
+      .badge .badge-sub { font-size: 14px; color: var(--ink-dim); margin-top: 2px; }
+
+      .versus { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin-bottom: 6px; }
+      .versus .cell { background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 8px; padding: 12px; text-align: center; }
+      .versus .cell .lbl { font-size: 11.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); }
+      .versus .cell .amt { font-family: "Barlow Semi Condensed", sans-serif; font-size: clamp(24px, 6vw, 32px); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+      .versus .cell .per { font-size: 12.5px; color: var(--ink-faint); }
+      .versus .cell.new .amt { color: var(--amber); }
+      .versus .vs { font-family: "Barlow Condensed", sans-serif; font-weight: 700; color: var(--ink-faint); font-size: 18px; }
+      .pay-diff { text-align: center; font-size: 14.5px; color: var(--ink-dim); margin: 4px 0 18px; }
+      .pay-diff b { font-variant-numeric: tabular-nums; }
+      .pay-diff .good { color: var(--green); }
+      .pay-diff .bad { color: var(--red); }
+
+      .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+      .stat { background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 8px; padding: 12px 14px; }
+      .stat .lbl { font-size: 11.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 3px; }
+      .stat .val { font-family: "Barlow Semi Condensed", sans-serif; font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+      .stat .sub { font-size: 12.5px; color: var(--ink-faint); margin-top: 2px; }
+      .stat .val.neg { color: var(--red); }
+      .stat .val.pos { color: var(--green); }
+
+      .gauge-block { margin-bottom: 6px; }
+      .gauge-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+      .gauge-head .lbl { font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); }
+      .gauge-head .pct { font-family: "Barlow Semi Condensed", sans-serif; font-size: 22px; font-weight: 700; color: var(--amber); font-variant-numeric: tabular-nums; }
+      .gauge { height: 14px; background: #121212; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+      .gauge-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--orange), var(--amber)); border-radius: 7px; transition: width 0.45s ease; }
+      .gauge-note { font-size: 13px; color: var(--ink-faint); margin-top: 6px; }
+      .empty-note { color: var(--ink-dim); font-size: 15px; margin: 0; }
+      .breakdown { font-size: 13.5px; color: var(--ink-faint); border-top: 1px solid var(--line-soft); margin-top: 16px; padding-top: 12px; line-height: 1.6; }
+      .breakdown b { color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+
+      /* ---------- next steps / cta ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+      @media (max-width: 560px) { .next-grid { grid-template-columns: 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 16px;
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .nc-tag { font-size: 11.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--amber); margin-bottom: 5px; }
+      .next-card h3 { font-family: "Barlow Condensed", sans-serif; font-size: 21px; text-transform: uppercase; margin: 0 0 5px; }
+      .next-card p { color: var(--ink-dim); font-size: 14px; margin: 0; }
+      .next-card .arrow { color: var(--amber); font-weight: 700; }
+      .cta {
+        display: block; text-decoration: none;
+        background: linear-gradient(120deg, #2a1c05, #1c1c1c 70%);
+        border: 1.5px solid var(--amber);
+        border-radius: var(--radius);
+        padding: 18px 16px;
+        margin-bottom: 26px;
+        color: var(--ink);
+      }
+      .cta .cta-tag { font-size: 11.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--amber); margin-bottom: 5px; }
+      .cta p { margin: 0; font-size: 16.5px; font-weight: 600; line-height: 1.4; }
+      .cta p .go { color: var(--amber); white-space: nowrap; }
+
+      /* ---------- faq ---------- */
+      .faq h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 24px; font-weight: 700; text-transform: uppercase;
+        margin: 0 0 12px;
+      }
+      details { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; }
+      summary { cursor: pointer; padding: 14px 16px; font-weight: 600; font-size: 15.5px; list-style: none; }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "+"; float: right; color: var(--amber); font-weight: 700; }
+      details[open ] summary::after { content: "–"; }
+      details p { margin: 0; padding: 0 16px 15px; color: var(--ink-dim); font-size: 14.5px; }
+      details p b { color: var(--ink); }
+      .foot { color: var(--ink-faint); font-size: 13px; margin-top: 24px; line-height: 1.55; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .gauge-fill { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hazard" aria-hidden="true"></div>
+      <h1>Debt Consolidation <span class="accent">&amp; Refinance</span> Simulator</h1>
+      <p class="lede">A consolidation offer always <em>sounds</em> cheaper — lower rate, one payment, done. This simulator runs the real math: <strong>every fee, every extra month of term</strong>, and tells you whether the deal actually saves you money or just rearranges the leak.</p>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1h">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1h">Debt Inventory</h2></div>
+        <p class="step-sub">List what you owe right now — up to 5 debts. Use the minimum payment printed on each statement.</p>
+        <div id="debtRows"></div>
+        <button class="add-btn" id="addDebt" type="button">+ Add another debt</button>
+        <div class="totals-strip">
+          <span>Total balance: <b id="totBalance">$0</b></span>
+          <span>Total minimums: <b id="totMin">$0/mo</b></span>
+          <span>Payoff at minimums only: <b id="totPayoff">—</b></span>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2h">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2h">The Refinance Offer</h2></div>
+        <p class="step-sub">Copy the terms straight off the offer letter — including the fees they'd rather you skim past.</p>
+        <div class="refi-grid">
+          <div class="field">
+            <label for="newApr">New APR %</label>
+            <input type="number" id="newApr" inputmode="decimal" min="0" step="0.01" value="11.99" />
+          </div>
+          <div class="field">
+            <label for="newTerm">New loan term (months)</label>
+            <input type="number" id="newTerm" inputmode="numeric" min="1" step="1" value="36" />
+          </div>
+          <div class="field">
+            <label for="feePct">Balance transfer fee %</label>
+            <input type="number" id="feePct" inputmode="decimal" min="0" step="0.1" value="3" />
+            <div class="hint">Charged on the full amount moved. 3–5% is typical.</div>
+          </div>
+          <div class="field">
+            <label for="feeFlat">Origination fee $ (if any)</label>
+            <input type="number" id="feeFlat" inputmode="decimal" min="0" step="1" value="0" placeholder="0" />
+            <div class="hint">Flat fee some lenders add on top. Leave 0 if none.</div>
+          </div>
+        </div>
+        <div class="rebound">
+          <p><span>Honest answer:</span> after consolidating, would you keep the old cards open — and might you use them again?</p>
+          <div class="toggle-row" role="group" aria-label="Rebound risk question">
+            <button type="button" id="reboundNo" aria-pressed="true">No — cards get frozen / cut</button>
+            <button type="button" id="reboundYes" class="danger" aria-pressed="false">Yes — I'd probably swipe again</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 + 4 : SUMMARY -->
+      <section class="summary" id="summaryCard" aria-labelledby="sumh">
+        <div class="summary-steps"><span class="step-num">STEP 3</span> Net Savings Engine <span class="arrow-sep">→</span> <span class="step-num">STEP 4</span> Decision Matrix</div>
+        <h2 id="sumh">Consolidation Execution Summary</h2>
+        <div id="summaryBody"></div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/credit-utilization-calculator.html">
+          <div class="nc-tag">Next step · Credit score</div>
+          <h3>Credit Utilization Calculator</h3>
+          <p>Paying cards down changes your utilization — see exactly how much room you'd free up and what it does to your score. <span class="arrow">→</span></p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/debt-snowball-vs-avalanche-calculator.html">
+          <div class="nc-tag">Next step · Compare strategies</div>
+          <h3>Snowball vs. Avalanche</h3>
+          <p>Skipping the loan? Run the same debts through both payoff orders and see which one kills the interest faster. <span class="arrow">→</span></p>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/">
+        <div class="cta-tag">Take it offline</div>
+        <p>Plan the payoff with the Debt Refinance Planner and track it with the Debt Payoff Tracker on Gumroad — grab the free Paycheck Protection Checklist too. <span class="go">Get them →</span></p>
+      </a>
+
+      <!-- FAQ -->
+      <section class="faq" aria-labelledby="faqh">
+        <h2 id="faqh">Before you sign anything</h2>
+        <details>
+          <summary>How does the balance transfer fee actually work?</summary>
+          <p>The fee is a percentage of everything you move, charged up front and usually rolled into the new loan. Move $8,000 at a 3% fee and you owe <b>$8,240 before a cent of interest</b>. That fee is only worth paying if the interest you avoid beats it — which is exactly what the payback threshold above measures: the month where your savings finally cover the fees. If you'd pay the debt off before that month anyway, the transfer loses money.</p>
+        </details>
+        <details>
+          <summary>What's the extended-term trap?</summary>
+          <p>A longer term shrinks the monthly payment, which feels like winning — but every extra month is another month of interest. A $8,000 balance at 12% over 60 months costs roughly <b>$2,680 in interest</b>; over 36 months it's about <b>$1,560</b>. The payment dropped, the total bill grew. If the new term runs longer than your current payoff timeline, this simulator flags it yellow even when the rate looks better.</p>
+        </details>
+        <details>
+          <summary>Why is reusing the old cards such a big deal?</summary>
+          <p>Consolidation doesn't remove debt — it moves it. The moment the old cards show a $0 balance, they look like free money again. Swipe them back up and you now owe <b>the consolidation loan AND the rebuilt card balances</b> — the classic rebound that leaves people worse off than before they "fixed" it. That's why a yes answer forces a red verdict here: freeze the cards in a block of ice, cut them, or close them first, then consolidate.</p>
+        </details>
+      </section>
+
+      <p class="foot">Estimates only — this simulator assumes fixed APRs, on-time payments, and that each current debt is paid at its stated minimum until gone. Fees are treated as rolled into the new loan balance, the way most consolidation offers structure them. Your actual statements and the lender's fine print are the final word.</p>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var MAX_DEBTS = 5;
+        var CAP_MONTHS = 1200;
+
+        var debts = [
+          { name: "Store Credit Card", balance: 2400, min: 65, apr: 29.99 },
+          { name: "Big Bank Credit Card", balance: 5100, min: 135, apr: 24.99 },
+          { name: "Personal Loan", balance: 3600, min: 118, apr: 17.5 }
+        ];
+        var rebound = false;
+
+        var rowsEl = document.getElementById("debtRows");
+        var addBtn = document.getElementById("addDebt");
+
+        function fmt(n, dec) {
+          if (!isFinite(n)) return "—";
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 });
+        }
+        function num(v) { var x = parseFloat(v); return isNaN(x) || x < 0 ? 0 : x; }
+
+        function renderRows() {
+          rowsEl.innerHTML = "";
+          debts.forEach(function (d, i) {
+            var row = document.createElement("div");
+            row.className = "debt-row";
+            row.innerHTML =
+              '<div class="debt-row-top">' +
+                '<input type="text" data-k="name" data-i="' + i + '" value="' + d.name.replace(/"/g, "&quot;") + '" placeholder="Debt name" aria-label="Debt name" />' +
+                (debts.length > 1 ? '<button type="button" class="remove-btn" data-remove="' + i + '" aria-label="Remove debt">×</button>' : '') +
+              '</div>' +
+              '<div class="debt-fields">' +
+                '<div class="field"><label>Balance $</label><input type="number" inputmode="decimal" min="0" step="any" data-k="balance" data-i="' + i + '" value="' + d.balance + '" aria-label="Balance" /></div>' +
+                '<div class="field"><label>Min $/mo</label><input type="number" inputmode="decimal" min="0" step="any" data-k="min" data-i="' + i + '" value="' + d.min + '" aria-label="Monthly minimum payment" /></div>' +
+                '<div class="field"><label>APR %</label><input type="number" inputmode="decimal" min="0" step="any" data-k="apr" data-i="' + i + '" value="' + d.apr + '" aria-label="APR percent" /></div>' +
+              '</div>';
+            rowsEl.appendChild(row);
+          });
+          addBtn.disabled = debts.length >= MAX_DEBTS;
+          addBtn.textContent = debts.length >= MAX_DEBTS ? "Max 5 debts" : "+ Add another debt";
+        }
+
+        rowsEl.addEventListener("input", function (e) {
+          var t = e.target;
+          if (!t.dataset || t.dataset.i === undefined) return;
+          var i = +t.dataset.i, k = t.dataset.k;
+          debts[i][k] = k === "name" ? t.value : num(t.value);
+          calc();
+        });
+        rowsEl.addEventListener("click", function (e) {
+          var t = e.target;
+          if (t.dataset && t.dataset.remove !== undefined) {
+            debts.splice(+t.dataset.remove, 1);
+            renderRows();
+            calc();
+          }
+        });
+        addBtn.addEventListener("click", function () {
+          if (debts.length < MAX_DEBTS) {
+            debts.push({ name: "", balance: 0, min: 0, apr: 0 });
+            renderRows();
+            calc();
+          }
+        });
+
+        ["newApr", "newTerm", "feePct", "feeFlat"].forEach(function (id) {
+          document.getElementById(id).addEventListener("input", calc);
+        });
+
+        var rNo = document.getElementById("reboundNo");
+        var rYes = document.getElementById("reboundYes");
+        function setRebound(v) {
+          rebound = v;
+          rNo.setAttribute("aria-pressed", String(!v));
+          rYes.setAttribute("aria-pressed", String(v));
+          calc();
+        }
+        rNo.addEventListener("click", function () { setRebound(false); });
+        rYes.addEventListener("click", function () { setRebound(true); });
+
+        // Simulate one debt paid at its fixed minimum. Returns {months, interest, cumInterest[]}
+        // months = Infinity when the minimum never covers the interest.
+        function simulateDebt(balance, aprPct, minPay) {
+          var r = aprPct / 1200, bal = balance, totalInt = 0, cum = [], m = 0;
+          if (bal <= 0) return { months: 0, interest: 0, cum: cum };
+          if (minPay <= 0) return { months: Infinity, interest: Infinity, cum: cum };
+          while (bal > 0.005 && m < CAP_MONTHS) {
+            var interest = bal * r;
+            if (minPay <= interest) return { months: Infinity, interest: Infinity, cum: cum };
+            var pay = Math.min(minPay, bal + interest);
+            bal -= (pay - interest);
+            totalInt += interest;
+            cum.push(totalInt);
+            m++;
+          }
+          return { months: m, interest: totalInt, cum: cum };
+        }
+
+        function calc() {
+          var body = document.getElementById("summaryBody");
+          var card = document.getElementById("summaryCard");
+
+          var active = debts.filter(function (d) { return d.balance > 0; });
+          var totalBalance = active.reduce(function (s, d) { return s + d.balance; }, 0);
+          var totalMin = active.reduce(function (s, d) { return s + d.min; }, 0);
+
+          // Old path
+          var sims = active.map(function (d) { return simulateDebt(d.balance, d.apr, d.min); });
+          var oldInterest = sims.reduce(function (s, x) { return s + x.interest; }, 0);
+          var oldMonths = sims.reduce(function (s, x) { return Math.max(s, x.months); }, 0);
+          var neverPays = sims.some(function (x) { return !isFinite(x.months); });
+
+          // Combined old cumulative interest by month (for payback threshold)
+          var horizon = Math.max(oldMonths === Infinity ? 0 : oldMonths, 1);
+          var oldCum = [];
+          for (var m = 0; m < horizon; m++) {
+            var t = 0;
+            sims.forEach(function (x) {
+              if (isFinite(x.interest)) t += (m < x.cum.length ? x.cum[m] : x.interest);
+            });
+            oldCum.push(t);
+          }
+
+          // Step 1 strip
+          document.getElementById("totBalance").textContent = fmt(totalBalance);
+          document.getElementById("totMin").textContent = fmt(totalMin) + "/mo";
+          document.getElementById("totPayoff").textContent =
+            active.length === 0 ? "—" :
+            neverPays ? "Never — a minimum doesn't cover its interest" :
+            oldMonths + " months";
+
+          if (active.length === 0 || totalBalance <= 0) {
+            card.className = "summary";
+            body.innerHTML = '<p class="empty-note">Add at least one debt with a balance in Step 1 and the verdict lands here — live, as you type.</p>';
+            return;
+          }
+
+          // New path
+          var newApr = num(document.getElementById("newApr").value);
+          var newTerm = Math.max(1, Math.round(num(document.getElementById("newTerm").value)) || 1);
+          var feePct = num(document.getElementById("feePct").value);
+          var feeFlat = num(document.getElementById("feeFlat").value);
+          var transferFee = totalBalance * feePct / 100;
+          var totalFees = transferFee + feeFlat;
+          var principal = totalBalance + totalFees;
+          var rn = newApr / 1200;
+          var newPayment = rn > 0 ? principal * rn / (1 - Math.pow(1 + rn, -newTerm)) : principal / newTerm;
+          var newTotalPaid = newPayment * newTerm;
+          var newInterest = newTotalPaid - principal;
+
+          // New cumulative interest by month (for payback threshold)
+          var newCum = [], nbal = principal, nInt = 0;
+          for (var k = 0; k < newTerm; k++) {
+            var ni = nbal * rn;
+            var npay = Math.min(newPayment, nbal + ni);
+            nbal -= (npay - ni);
+            nInt += ni;
+            newCum.push(nInt);
+          }
+
+          var grossSaved = oldInterest - newInterest;
+          var netSavings = grossSaved - totalFees;
+          var leakPct = oldInterest > 0 ? (grossSaved / oldInterest) * 100 : 0;
+
+          // Payback threshold: first month cumulative old interest beats new interest + fees
+          var payback = null;
+          var lim = Math.min(oldCum.length, newCum.length);
+          for (var j = 0; j < lim; j++) {
+            if (oldCum[j] - newCum[j] >= totalFees) { payback = j + 1; break; }
+          }
+          if (payback === null && totalFees <= 0 && netSavings > 0) payback = 1;
+
+          // ---- Verdict (Step 4 decision matrix) ----
+          var verdict, vClass, vTitle, vSub;
+          var extendsTerm = isFinite(oldMonths) && newTerm > oldMonths;
+          if (rebound) {
+            verdict = "red"; vClass = "verdict-red";
+            vTitle = "Red Light — Don't Consolidate Yet";
+            vSub = "Rebound risk. You'd keep the old cards open and might swipe again — that stacks a brand-new card balance on top of this loan. Freeze the cards (literally, in ice), cut them, or close them first. Then run this again.";
+          } else if (!neverPays && netSavings > 500 && !extendsTerm) {
+            verdict = "green"; vClass = "verdict-green";
+            vTitle = "Green Light — Consolidate";
+            vSub = "The math holds after every fee: real money saved and you're debt-free on a clear timeline of " + newTerm + " months. This is one of the rare offers that does what it promises.";
+          } else {
+            verdict = "yellow"; vClass = "verdict-yellow";
+            vTitle = "Yellow Light — Fee Trap Warning";
+            if (neverPays) {
+              vSub = "One of your minimums doesn't even cover its own interest, so the \"stay put\" cost can't be fully tallied — but watch the fees and term here closely before signing. Probably skip unless the rate gap is huge.";
+            } else if (netSavings <= 0) {
+              vSub = "The fees and new interest eat the entire rate advantage — you'd pay " + fmt(Math.abs(netSavings)) + " MORE than staying put. Probably skip this offer.";
+            } else if (extendsTerm) {
+              vSub = "It saves " + fmt(netSavings) + " on paper, but stretches your payoff from " + oldMonths + " months to " + newTerm + " — a lower payment bought with a longer leash. Probably skip, or take the rate on a shorter term.";
+            } else {
+              vSub = "It saves " + fmt(netSavings) + " after fees — real, but under the $500 bar where a deal is clearly worth the paperwork and the credit inquiry. Probably skip unless the rate gap widens.";
+            }
+          }
+          card.className = "summary " + vClass;
+
+          var payDelta = totalMin - newPayment;
+          var gaugeW = Math.max(0, Math.min(100, leakPct));
+
+          body.innerHTML =
+            '<div class="badge"><div class="dot"></div><div>' +
+              '<div class="badge-title">' + vTitle + '</div>' +
+              '<div class="badge-sub">' + vSub + '</div>' +
+            '</div></div>' +
+
+            '<div class="versus">' +
+              '<div class="cell"><div class="lbl">Old payments</div><div class="amt">' + fmt(totalMin, 2) + '</div><div class="per">per month, ' + active.length + ' debts</div></div>' +
+              '<div class="vs">VS</div>' +
+              '<div class="cell new"><div class="lbl">New single payment</div><div class="amt">' + fmt(newPayment, 2) + '</div><div class="per">per month, ' + newTerm + ' months</div></div>' +
+            '</div>' +
+            '<p class="pay-diff">' + (payDelta >= 0
+              ? 'Monthly cash-flow change: <b class="good">' + fmt(payDelta, 2) + ' less</b> out the door each month'
+              : 'Monthly cash-flow change: <b class="bad">' + fmt(Math.abs(payDelta), 2) + ' more</b> each month — faster payoff, tighter month') + '</p>' +
+
+            '<div class="stat-grid">' +
+              '<div class="stat"><div class="lbl">True net savings</div><div class="val ' + (netSavings > 0 ? "pos" : "neg") + '">' + fmt(netSavings) + '</div><div class="sub">After all fees — the only number that matters</div></div>' +
+              '<div class="stat"><div class="lbl">Total interest saved</div><div class="val">' + fmt(grossSaved) + '</div><div class="sub">' + fmt(oldInterest) + ' old vs. ' + fmt(newInterest) + ' new, before fees</div></div>' +
+              '<div class="stat"><div class="lbl">Payback threshold</div><div class="val">' + (payback !== null ? "Month " + payback : "Never") + '</div><div class="sub">' + (payback !== null ? "When cumulative savings overtake the " + fmt(totalFees) + " in fees" : "Savings never catch up to the fees on this timeline") + '</div></div>' +
+              '<div class="stat"><div class="lbl">Time to debt-free</div><div class="val">' + newTerm + ' mo</div><div class="sub">' + (neverPays ? "Current path: never at minimums" : "Current path: " + oldMonths + " months at minimums") + '</div></div>' +
+            '</div>' +
+
+            '<div class="gauge-block">' +
+              '<div class="gauge-head"><span class="lbl">Interest Leak Reduction</span><span class="pct">' + leakPct.toFixed(0) + '%</span></div>' +
+              '<div class="gauge"><div class="gauge-fill" style="width:' + gaugeW + '%"></div></div>' +
+              '<div class="gauge-note">' + (leakPct > 0
+                ? "Consolidating cuts the total interest these debts would bleed over their lifetime by " + leakPct.toFixed(0) + "% — from " + fmt(oldInterest) + " down to " + fmt(newInterest) + "."
+                : "This offer doesn't plug the leak — over its life the new loan bleeds as much interest as the debts do now.") + '</div>' +
+            '</div>' +
+
+            '<div class="breakdown">The fee math, in the open: balance moved <b>' + fmt(totalBalance) + '</b> · transfer fee (' + feePct + '%) <b>' + fmt(transferFee) + '</b> · origination fee <b>' + fmt(feeFlat) + '</b> · new loan amount <b>' + fmt(principal) + '</b> at ' + newApr + '% APR. Net savings = old interest − new interest − fees.</div>';
+        }
+
+        renderRows();
+        calc();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Compound Interest Velocity Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Dark industrial theme, fixed by design: charcoal base, amber accents. */
+        color-scheme: dark;
+        --bg: #0b0c0e;
+        --bg-raise: #121316;
+        --panel: #16181b;
+        --panel-2: #1d1f23;
+        --line: #2b2e33;
+        --line-soft: #222428;
+        --ink: #f4f1ea;
+        --ink-2: #c9cdd2;
+        --muted: #969da6;
+        --amber: #f5a524;
+        --amber-deep: #e07b12;
+        --orange: #ff7a1a;
+        --steel: #7e8894;
+        --steel-dark: #454c54;
+        --good: #f5a524;
+        --cta-ink: #191104;
+        --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        --radius: 14px;
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(1100px 500px at 85% -10%, rgba(245, 165, 36, 0.08), transparent 60%),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 20px 16px 56px;
+      }
+      h1, h2, h3 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        letter-spacing: 0.01em;
+        margin: 0;
+      }
+      .num { font-variant-numeric: tabular-nums; }
+
+      /* ---------- Intro ---------- */
+      .intro { padding: 10px 2px 18px; }
+      .intro h1 {
+        font-size: clamp(30px, 5.4vw, 44px);
+        font-weight: 700;
+        line-height: 1.05;
+        text-transform: uppercase;
+      }
+      .intro h1 .accent { color: var(--amber); }
+      .intro p {
+        margin: 10px 0 0;
+        max-width: 62ch;
+        color: var(--ink-2);
+        font-size: 17px;
+      }
+
+      /* ---------- Live strip (mobile) ---------- */
+      .live-strip {
+        display: none;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        margin: 0 -16px 14px;
+        padding: 10px 16px;
+        background: color-mix(in srgb, var(--bg-raise) 92%, transparent);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .live-strip .ls-label { font-size: 13px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+      .live-strip .ls-value { font-family: "Barlow Condensed", sans-serif; font-size: 26px; font-weight: 700; color: var(--amber); }
+
+      /* ---------- Layout ---------- */
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        gap: 20px;
+        align-items: start;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .controls { padding: 22px 22px 8px; position: sticky; top: 16px; }
+      .controls h2, .results h2 {
+        font-size: 21px;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .controls h2 svg, .results h2 svg { color: var(--amber); flex: none; }
+
+      /* ---------- Controls ---------- */
+      .field { padding: 16px 0 18px; border-bottom: 1px solid var(--line-soft); }
+      .field:last-child { border-bottom: none; }
+      .field-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .field label { font-weight: 600; font-size: 15px; color: var(--ink-2); }
+      .field .hint { display: block; font-weight: 400; font-size: 13px; color: var(--muted); margin-top: 1px; }
+      .readout {
+        display: flex;
+        align-items: baseline;
+        gap: 2px;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        color: var(--amber);
+        white-space: nowrap;
+      }
+      .readout .prefix, .readout .suffix { font-size: 18px; color: var(--muted); font-family: "Barlow", sans-serif; font-weight: 600; }
+      .readout input {
+        width: 92px;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--amber);
+        font: inherit;
+        font-size: 24px;
+        text-align: right;
+        padding: 2px 8px;
+      }
+      .readout input:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+      .readout .big { font-size: 26px; }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 34px;
+        background: transparent;
+        cursor: pointer;
+        margin: 0;
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        height: 8px;
+        border-radius: 99px;
+        background: var(--track, var(--line));
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 24px;
+        height: 24px;
+        margin-top: -8px;
+        border-radius: 50%;
+        background: var(--amber);
+        border: 3px solid var(--bg);
+        box-shadow: 0 0 0 2px var(--amber), 0 4px 10px rgba(0,0,0,0.4);
+      }
+      input[type="range"]::-moz-range-track {
+        height: 8px;
+        border-radius: 99px;
+        background: var(--line);
+      }
+      input[type="range"]::-moz-range-progress {
+        height: 8px;
+        border-radius: 99px;
+        background: linear-gradient(90deg, var(--amber-deep), var(--orange));
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--amber);
+        border: 3px solid var(--bg);
+        box-shadow: 0 0 0 2px var(--amber);
+      }
+      input[type="range"]:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; border-radius: 8px; }
+      .scale {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12.5px;
+        color: var(--muted);
+        margin-top: -4px;
+      }
+
+      .toggle-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+      .seg {
+        display: inline-flex;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 3px;
+        gap: 3px;
+      }
+      .seg button, .preset {
+        font: inherit;
+        font-weight: 600;
+        font-size: 14.5px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--ink-2);
+        border-radius: 8px;
+        padding: 7px 14px;
+        cursor: pointer;
+      }
+      .seg button[aria-pressed="true"] {
+        background: linear-gradient(135deg, var(--amber), var(--orange));
+        color: var(--cta-ink);
+      }
+      .preset {
+        background: var(--panel-2);
+        border-color: var(--line);
+      }
+      .preset[aria-pressed="true"] {
+        background: linear-gradient(135deg, var(--amber), var(--orange));
+        color: var(--cta-ink);
+        border-color: transparent;
+      }
+      .preset small { display: block; font-size: 12px; font-weight: 500; opacity: 0.85; }
+      .seg button:focus-visible, .preset:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+      /* ---------- Results ---------- */
+      .results { padding: 22px; }
+      .total-block {
+        margin-top: 14px;
+        background: linear-gradient(150deg, var(--panel-2), var(--panel));
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 18px 20px 16px;
+      }
+      .total-block .t-label { font-size: 13.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+      .total-value {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(46px, 8vw, 64px);
+        line-height: 1.02;
+        color: var(--amber);
+        margin: 2px 0 2px;
+      }
+      .total-sub { color: var(--ink-2); font-size: 15.5px; }
+      .total-sub strong { color: var(--ink); }
+
+      .split-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px 16px;
+        background: var(--panel);
+      }
+      .stat .s-label { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+      .dot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+      .dot-principal { background: var(--steel); }
+      .dot-interest { background: linear-gradient(135deg, var(--amber), var(--orange)); }
+      .stat .s-value { font-family: "Barlow Condensed", sans-serif; font-size: 32px; font-weight: 700; line-height: 1.1; margin-top: 4px; }
+      .stat .s-note { font-size: 14px; color: var(--muted); margin-top: 2px; }
+      .stat .s-note strong { color: var(--amber); }
+
+      .stack { margin-top: 16px; }
+      .stack-bar {
+        display: flex;
+        height: 26px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+      }
+      .stack-principal { background: repeating-linear-gradient(135deg, var(--steel) 0 10px, var(--steel-dark) 10px 20px); transition: width 0.25s ease; min-width: 0; }
+      .stack-interest { background: linear-gradient(90deg, var(--amber-deep), var(--orange)); transition: width 0.25s ease; min-width: 0; }
+      .stack-legend { display: flex; justify-content: space-between; gap: 10px; margin-top: 8px; font-size: 14px; color: var(--ink-2); flex-wrap: wrap; }
+
+      .chart-wrap { margin-top: 20px; }
+      .chart-wrap h3 { font-size: 18px; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
+      .chart-wrap svg { width: 100%; height: auto; display: block; }
+      .chart-legend { display: flex; gap: 18px; font-size: 13.5px; color: var(--muted); margin-top: 4px; flex-wrap: wrap; }
+      .chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+      .swatch { width: 18px; height: 4px; border-radius: 2px; display: inline-block; }
+      .swatch-balance { background: var(--amber); }
+      .swatch-contrib { background: var(--steel); }
+
+      /* ---------- Milestones ---------- */
+      .milestones { margin-top: 22px; padding: 22px; }
+      .milestones h2 { font-size: 21px; font-weight: 600; text-transform: uppercase; display: flex; align-items: center; gap: 9px; }
+      .milestones h2 svg { color: var(--amber); }
+      .timeline { list-style: none; margin: 18px 0 2px; padding: 0; position: relative; }
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 15px;
+        top: 8px;
+        bottom: 8px;
+        width: 2px;
+        background: linear-gradient(180deg, var(--steel-dark), var(--amber));
+      }
+      .mile {
+        position: relative;
+        padding: 0 0 20px 48px;
+      }
+      .mile:last-child { padding-bottom: 2px; }
+      .mile::before {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 5px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--panel);
+        border: 3px solid var(--steel);
+      }
+      .mile.target::before { border-color: var(--amber); background: var(--amber); box-shadow: 0 0 0 5px rgba(245, 165, 36, 0.18); }
+      .mile-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+      .mile-year { font-family: "Barlow Condensed", sans-serif; font-size: 20px; font-weight: 600; text-transform: uppercase; }
+      .mile-year .tag {
+        font-family: "Barlow", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        background: linear-gradient(135deg, var(--amber), var(--orange));
+        color: var(--cta-ink);
+        border-radius: 99px;
+        padding: 2px 9px;
+        margin-left: 8px;
+        vertical-align: 3px;
+        text-transform: uppercase;
+      }
+      .mile-balance { font-family: "Barlow Condensed", sans-serif; font-size: 28px; font-weight: 700; color: var(--amber); }
+      .mile-meta { color: var(--muted); font-size: 14.5px; margin-top: 1px; }
+      .mile-meta strong { color: var(--ink-2); font-weight: 600; }
+
+      /* ---------- CTA ---------- */
+      .cta {
+        margin-top: 22px;
+        border-radius: var(--radius);
+        background: linear-gradient(120deg, var(--amber-deep), var(--orange) 70%);
+        color: #fff7ea;
+        padding: 24px 24px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+        box-shadow: var(--shadow);
+      }
+      .cta p {
+        margin: 0;
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(21px, 3.6vw, 27px);
+        font-weight: 600;
+        line-height: 1.2;
+        max-width: 34ch;
+        color: #fff8ec;
+      }
+      .cta a {
+        flex: none;
+        background: #17130a;
+        color: #ffd88a;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 16px;
+        padding: 13px 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(0,0,0,0.35);
+      }
+      .cta a:hover { background: #000; }
+      .cta a:focus-visible { outline: 3px solid #fff3d6; outline-offset: 2px; }
+
+      /* ---------- FAQ & disclaimer ---------- */
+      .faq { margin-top: 22px; padding: 22px; }
+      .faq h2 { font-size: 21px; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
+      .faq details { border-bottom: 1px solid var(--line-soft); }
+      .faq details:last-of-type { border-bottom: none; }
+      .faq summary {
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16.5px;
+        padding: 14px 26px 14px 0;
+        position: relative;
+        list-style: none;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after {
+        content: "+";
+        position: absolute;
+        right: 2px;
+        top: 12px;
+        font-size: 22px;
+        color: var(--amber);
+        font-weight: 700;
+      }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq details p { margin: 0 0 16px; color: var(--ink-2); max-width: 68ch; }
+      .disclaimer {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.55;
+        max-width: 78ch;
+      }
+
+      @media (max-width: 860px) {
+        .layout { grid-template-columns: 1fr; }
+        .controls { position: static; }
+        .live-strip { display: flex; }
+        .split-cards { grid-template-columns: 1fr 1fr; }
+        .cta { flex-direction: column; align-items: flex-start; }
+      }
+      @media (max-width: 420px) {
+        .split-cards { grid-template-columns: 1fr; }
+        .readout input { width: 78px; font-size: 21px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .stack-principal, .stack-interest { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="intro">
+        <h1>Compound Interest <span class="accent">Velocity</span> Calculator</h1>
+        <p>
+          Small, steady deposits plus time — that&rsquo;s the whole engine. Set your starting amount,
+          your recurring contribution, and a rate, then watch how fast interest starts doing the
+          heavy lifting for you.
+        </p>
+      </header>
+
+      <div class="live-strip" aria-hidden="true">
+        <span class="ls-label">Future balance</span>
+        <span class="ls-value num" id="stripTotal">$0</span>
+      </div>
+
+      <div class="layout">
+        <!-- ============ CONTROLS ============ -->
+        <section class="panel controls" aria-label="Calculator inputs">
+          <h2>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+            Your inputs
+          </h2>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="initialRange">Initial deposit
+                <span class="hint">What you&rsquo;re starting with today</span>
+              </label>
+              <div class="readout">
+                <span class="prefix">$</span>
+                <input type="number" id="initialInput" class="num" min="0" max="25000" step="50" value="100" inputmode="numeric" aria-label="Initial deposit in dollars" />
+              </div>
+            </div>
+            <input type="range" id="initialRange" min="0" max="25000" step="50" value="100" aria-label="Initial deposit slider" />
+            <div class="scale"><span>$0</span><span>$25,000</span></div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="contribRange">Recurring contribution
+                <span class="hint" id="contribHint">Added every month, on repeat</span>
+              </label>
+              <div class="readout">
+                <span class="prefix">$</span>
+                <input type="number" id="contribInput" class="num" min="0" max="2000" step="5" value="50" inputmode="numeric" aria-label="Recurring contribution in dollars" />
+              </div>
+            </div>
+            <input type="range" id="contribRange" min="0" max="2000" step="5" value="50" aria-label="Recurring contribution slider" />
+            <div class="scale"><span>$0</span><span>$2,000</span></div>
+            <div class="toggle-row">
+              <div class="seg" role="group" aria-label="Contribution frequency">
+                <button type="button" id="freqWeekly" aria-pressed="false">Weekly</button>
+                <button type="button" id="freqMonthly" aria-pressed="true">Monthly</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="rateRange">Annual rate (APY)
+                <span class="hint">What your money earns per year</span>
+              </label>
+              <div class="readout">
+                <span class="big num" id="rateReadout">4.5</span><span class="suffix">%</span>
+              </div>
+            </div>
+            <input type="range" id="rateRange" min="1" max="12" step="0.1" value="4.5" aria-label="Annual interest rate slider" />
+            <div class="scale"><span>1.0%</span><span>12.0%</span></div>
+            <div class="toggle-row">
+              <button type="button" class="preset" id="presetHysa" aria-pressed="true">HYSA <small>4.5% APY</small></button>
+              <button type="button" class="preset" id="presetIndex" aria-pressed="false">Index Fund <small>8.0% avg. return</small></button>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="yearsRange">Time horizon
+                <span class="hint">How long you let it ride</span>
+              </label>
+              <div class="readout">
+                <span class="big num" id="yearsReadout">10</span><span class="suffix">&nbsp;years</span>
+              </div>
+            </div>
+            <input type="range" id="yearsRange" min="1" max="30" step="1" value="10" aria-label="Time horizon slider" />
+            <div class="scale"><span>1 yr</span><span>30 yrs</span></div>
+          </div>
+        </section>
+
+        <!-- ============ RESULTS ============ -->
+        <section class="panel results" aria-label="Projected results">
+          <h2>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Your projection
+          </h2>
+
+          <div class="total-block">
+            <div class="t-label">Total future balance</div>
+            <div class="total-value num" id="totalValue">$0</div>
+            <div class="total-sub" id="totalSub"></div>
+          </div>
+
+          <div class="split-cards">
+            <div class="stat">
+              <div class="s-label"><span class="dot dot-principal"></span> You put in</div>
+              <div class="s-value num" id="principalValue">$0</div>
+              <div class="s-note" id="principalNote"></div>
+            </div>
+            <div class="stat">
+              <div class="s-label"><span class="dot dot-interest"></span> Free money earned</div>
+              <div class="s-value num" id="interestValue">$0</div>
+              <div class="s-note" id="interestNote"></div>
+            </div>
+          </div>
+
+          <div class="stack" aria-hidden="true">
+            <div class="stack-bar">
+              <div class="stack-principal" id="barPrincipal"></div>
+              <div class="stack-interest" id="barInterest"></div>
+            </div>
+            <div class="stack-legend">
+              <span id="legendPrincipal"></span>
+              <span id="legendInterest"></span>
+            </div>
+          </div>
+
+          <div class="chart-wrap">
+            <h3>Growth curve</h3>
+            <svg id="chart" viewBox="0 0 640 250" role="img" aria-label="Line chart of projected balance growth versus total contributions over time"></svg>
+            <div class="chart-legend">
+              <span><span class="swatch swatch-balance"></span> Balance</span>
+              <span><span class="swatch swatch-contrib"></span> Money you put in</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============ MILESTONES ============ -->
+      <section class="panel milestones" aria-label="Milestone timeline">
+        <h2>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Milestone timeline
+        </h2>
+        <ol class="timeline" id="timeline"></ol>
+      </section>
+
+      <!-- ============ CTA ============ -->
+      <div class="cta">
+        <p>Ready to hit your savings milestones? Grab the 52-Week Cash Stash Thermometer on Gumroad.</p>
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get it on Gumroad &rarr;</a>
+      </div>
+
+      <!-- ============ FAQ ============ -->
+      <section class="panel faq" aria-label="Frequently asked questions">
+        <h2>Quick answers</h2>
+        <details>
+          <summary>What is compound interest?</summary>
+          <p>
+            Compound interest is interest earned on your interest. Your balance grows, then the next
+            round of interest is calculated on that bigger balance — so growth speeds up over time
+            instead of staying flat. It&rsquo;s the difference between money sitting still and money
+            snowballing: the longer it compounds, the steeper the curve gets.
+          </p>
+        </details>
+        <details>
+          <summary>HYSA vs. index funds — what&rsquo;s the difference?</summary>
+          <p>
+            A high-yield savings account (HYSA) pays a steady APY — around 4.5% in the presets above —
+            with your principal protected and accessible anytime, which makes it a good home for an
+            emergency fund. An index fund invests in the stock market and has historically averaged
+            higher returns (the 8% preset), but the balance swings up and down along the way. Many
+            people keep short-term safety money in an HYSA and invest long-term money in index funds.
+          </p>
+        </details>
+        <details>
+          <summary>Why does starting early matter so much?</summary>
+          <p>
+            Because compounding needs time more than it needs big deposits. Most of the growth in the
+            chart above happens in the later years, when interest is being earned on a large balance.
+            Starting with $50 a month at 25 can beat starting with $100 a month at 35 — every year
+            you wait removes the most valuable compounding years at the end of the curve.
+          </p>
+        </details>
+      </section>
+
+      <p class="disclaimer">
+        <strong>Disclaimer:</strong> These projections are estimates for education only and are not
+        financial advice. The calculator assumes a constant rate of return compounded monthly
+        (or weekly, matching your contribution frequency) with contributions made at the end of each
+        period. Real savings account APYs change over time, and investment returns are never
+        guaranteed — actual results will vary. Talk to a qualified financial professional before
+        making decisions with your money.
+      </p>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var $ = function (id) { return document.getElementById(id); };
+
+        var els = {
+          initialRange: $("initialRange"), initialInput: $("initialInput"),
+          contribRange: $("contribRange"), contribInput: $("contribInput"),
+          contribHint: $("contribHint"),
+          freqWeekly: $("freqWeekly"), freqMonthly: $("freqMonthly"),
+          rateRange: $("rateRange"), rateReadout: $("rateReadout"),
+          presetHysa: $("presetHysa"), presetIndex: $("presetIndex"),
+          yearsRange: $("yearsRange"), yearsReadout: $("yearsReadout"),
+          totalValue: $("totalValue"), totalSub: $("totalSub"),
+          stripTotal: $("stripTotal"),
+          principalValue: $("principalValue"), principalNote: $("principalNote"),
+          interestValue: $("interestValue"), interestNote: $("interestNote"),
+          barPrincipal: $("barPrincipal"), barInterest: $("barInterest"),
+          legendPrincipal: $("legendPrincipal"), legendInterest: $("legendInterest"),
+          timeline: $("timeline"),
+          chart: $("chart")
+        };
+
+        var state = { frequency: "monthly" }; // or "weekly"
+
+        var money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+        var moneyCents = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        function fmt(v) { return v >= 10000 ? money.format(v) : moneyCents.format(v); }
+
+        // Future value: lump sum + ordinary annuity of recurring contributions.
+        // A = P(1 + r/n)^nt + PMT * [((1 + r/n)^nt - 1) / (r/n)]
+        function futureValue(P, pmt, annualRate, n, years) {
+          var rn = annualRate / n;
+          var periods = n * years;
+          var growth = Math.pow(1 + rn, periods);
+          var lump = P * growth;
+          var annuity = rn === 0 ? pmt * periods : pmt * ((growth - 1) / rn);
+          return lump + annuity;
+        }
+
+        function principalAt(P, pmt, n, years) {
+          return P + pmt * n * years;
+        }
+
+        function paintRange(input) {
+          var min = parseFloat(input.min), max = parseFloat(input.max), val = parseFloat(input.value);
+          var pct = max > min ? ((val - min) / (max - min)) * 100 : 0;
+          input.style.setProperty("--track",
+            "linear-gradient(90deg, var(--amber-deep), var(--orange) " + pct + "%, var(--line) " + pct + "%)");
+        }
+
+        function readState() {
+          var P = Math.max(0, parseFloat(els.initialRange.value) || 0);
+          var pmt = Math.max(0, parseFloat(els.contribRange.value) || 0);
+          var rate = parseFloat(els.rateRange.value) || 0;
+          var years = parseInt(els.yearsRange.value, 10) || 1;
+          var n = state.frequency === "weekly" ? 52 : 12;
+          return { P: P, pmt: pmt, rate: rate / 100, ratePct: rate, years: years, n: n };
+        }
+
+        function render() {
+          var s = readState();
+          var total = futureValue(s.P, s.pmt, s.rate, s.n, s.years);
+          var principal = principalAt(s.P, s.pmt, s.n, s.years);
+          var interest = Math.max(0, total - principal);
+          var interestPct = total > 0 ? (interest / total) * 100 : 0;
+          var principalPct = total > 0 ? 100 - interestPct : 100;
+          var perLabel = state.frequency === "weekly" ? "week" : "month";
+
+          els.totalValue.textContent = fmt(total);
+          els.stripTotal.textContent = fmt(total);
+          els.totalSub.innerHTML = "after <strong>" + s.years + (s.years === 1 ? " year" : " years") +
+            "</strong> at <strong>" + s.ratePct.toFixed(1) + "%</strong> with " +
+            "<strong>" + money.format(s.pmt) + "</strong> added every " + perLabel;
+
+          els.principalValue.textContent = fmt(principal);
+          els.principalNote.innerHTML = money.format(s.P) + " to start + " + money.format(s.pmt) +
+            " &times; " + (s.n * s.years) + " " + (state.frequency === "weekly" ? "weeks" : "months");
+          els.interestValue.textContent = fmt(interest);
+          els.interestNote.innerHTML = "<strong>" + interestPct.toFixed(1) + "%</strong> of your final balance is interest";
+
+          els.barPrincipal.style.width = principalPct + "%";
+          els.barInterest.style.width = interestPct + "%";
+          els.legendPrincipal.textContent = "Your money: " + principalPct.toFixed(1) + "%";
+          els.legendInterest.textContent = "Interest: " + interestPct.toFixed(1) + "%";
+
+          renderTimeline(s);
+          renderChart(s);
+          syncPresets(s.ratePct);
+        }
+
+        function renderTimeline(s) {
+          var marks = [1, 5, 10, s.years];
+          var seen = {}, years = [];
+          marks.forEach(function (y) {
+            if (y <= s.years && !seen[y]) { seen[y] = true; years.push(y); }
+          });
+          years.sort(function (a, b) { return a - b; });
+
+          els.timeline.innerHTML = "";
+          years.forEach(function (y) {
+            var bal = futureValue(s.P, s.pmt, s.rate, s.n, y);
+            var prin = principalAt(s.P, s.pmt, s.n, y);
+            var intr = Math.max(0, bal - prin);
+            var isTarget = y === s.years;
+
+            var li = document.createElement("li");
+            li.className = "mile" + (isTarget ? " target" : "");
+
+            var head = document.createElement("div");
+            head.className = "mile-head";
+            var yr = document.createElement("span");
+            yr.className = "mile-year";
+            yr.textContent = y === 1 ? "Year 1" : "Year " + y;
+            if (isTarget) {
+              var tag = document.createElement("span");
+              tag.className = "tag";
+              tag.textContent = "Your target";
+              yr.appendChild(tag);
+            }
+            var balEl = document.createElement("span");
+            balEl.className = "mile-balance num";
+            balEl.textContent = fmt(bal);
+            head.appendChild(yr);
+            head.appendChild(balEl);
+
+            var meta = document.createElement("div");
+            meta.className = "mile-meta";
+            meta.innerHTML = "You put in <strong>" + fmt(prin) + "</strong> &middot; interest earned <strong>" + fmt(intr) + "</strong>";
+
+            li.appendChild(head);
+            li.appendChild(meta);
+            els.timeline.appendChild(li);
+          });
+        }
+
+        function renderChart(s) {
+          var W = 640, H = 250, padL = 8, padR = 8, padT = 16, padB = 28;
+          var iw = W - padL - padR, ih = H - padT - padB;
+          var maxBal = futureValue(s.P, s.pmt, s.rate, s.n, s.years);
+          var maxY = maxBal > 0 ? maxBal * 1.05 : 1;
+
+          function x(year) { return padL + (s.years === 0 ? 0 : (year / s.years) * iw); }
+          function y(val) { return padT + ih - (val / maxY) * ih; }
+
+          var balPts = [], prinPts = [];
+          var steps = Math.max(24, s.years * 4);
+          for (var i = 0; i <= steps; i++) {
+            var yr = (i / steps) * s.years;
+            balPts.push([x(yr), y(futureValue(s.P, s.pmt, s.rate, s.n, yr))]);
+            prinPts.push([x(yr), y(principalAt(s.P, s.pmt, s.n, yr))]);
+          }
+          function toPath(pts) {
+            return pts.map(function (p, idx) {
+              return (idx === 0 ? "M" : "L") + p[0].toFixed(1) + "," + p[1].toFixed(1);
+            }).join(" ");
+          }
+          var balPath = toPath(balPts);
+          var prinPath = toPath(prinPts);
+          var areaPath = balPath + " L" + x(s.years).toFixed(1) + "," + y(0).toFixed(1) +
+            " L" + x(0).toFixed(1) + "," + y(0).toFixed(1) + " Z";
+
+          var grid = "";
+          [0.25, 0.5, 0.75, 1].forEach(function (f) {
+            var gy = padT + ih * (1 - f);
+            grid += '<line x1="' + padL + '" y1="' + gy + '" x2="' + (W - padR) + '" y2="' + gy +
+              '" stroke="var(--line-soft)" stroke-width="1"/>';
+          });
+
+          var midYear = Math.round(s.years / 2);
+          els.chart.innerHTML =
+            grid +
+            '<path d="' + areaPath + '" fill="var(--amber)" opacity="0.14"/>' +
+            '<path d="' + prinPath + '" fill="none" stroke="var(--steel)" stroke-width="2.5" stroke-linejoin="round"/>' +
+            '<path d="' + balPath + '" fill="none" stroke="var(--amber)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>' +
+            '<circle cx="' + x(s.years).toFixed(1) + '" cy="' + y(maxBal).toFixed(1) + '" r="5" fill="var(--amber)" stroke="var(--bg)" stroke-width="2"/>' +
+            '<text x="' + padL + '" y="' + (H - 8) + '" fill="var(--muted)" font-size="13">Year 0</text>' +
+            '<text x="' + x(midYear).toFixed(1) + '" y="' + (H - 8) + '" fill="var(--muted)" font-size="13" text-anchor="middle">Year ' + midYear + '</text>' +
+            '<text x="' + (W - padR) + '" y="' + (H - 8) + '" fill="var(--muted)" font-size="13" text-anchor="end">Year ' + s.years + '</text>' +
+            '<text x="' + padL + '" y="' + (padT - 4) + '" fill="var(--muted)" font-size="13">' + fmt(maxBal) + '</text>';
+        }
+
+        function syncPresets(ratePct) {
+          els.presetHysa.setAttribute("aria-pressed", ratePct === 4.5 ? "true" : "false");
+          els.presetIndex.setAttribute("aria-pressed", ratePct === 8 ? "true" : "false");
+        }
+
+        function syncPair(range, input) {
+          input.value = range.value;
+          paintRange(range);
+        }
+
+        // --- Wiring: live recalculation on every input ---
+        els.initialRange.addEventListener("input", function () { syncPair(els.initialRange, els.initialInput); render(); });
+        els.initialInput.addEventListener("input", function () {
+          var v = parseFloat(els.initialInput.value);
+          if (!isNaN(v)) { els.initialRange.value = Math.min(25000, Math.max(0, v)); paintRange(els.initialRange); }
+          render();
+        });
+        els.contribRange.addEventListener("input", function () { syncPair(els.contribRange, els.contribInput); render(); });
+        els.contribInput.addEventListener("input", function () {
+          var v = parseFloat(els.contribInput.value);
+          if (!isNaN(v)) { els.contribRange.value = Math.min(2000, Math.max(0, v)); paintRange(els.contribRange); }
+          render();
+        });
+        els.rateRange.addEventListener("input", function () {
+          els.rateReadout.textContent = parseFloat(els.rateRange.value).toFixed(1);
+          paintRange(els.rateRange);
+          render();
+        });
+        els.yearsRange.addEventListener("input", function () {
+          els.yearsReadout.textContent = els.yearsRange.value;
+          paintRange(els.yearsRange);
+          render();
+        });
+
+        function setFrequency(freq) {
+          state.frequency = freq;
+          els.freqWeekly.setAttribute("aria-pressed", freq === "weekly" ? "true" : "false");
+          els.freqMonthly.setAttribute("aria-pressed", freq === "monthly" ? "true" : "false");
+          els.contribHint.textContent = freq === "weekly" ? "Added every week, on repeat" : "Added every month, on repeat";
+          render();
+        }
+        els.freqWeekly.addEventListener("click", function () { setFrequency("weekly"); });
+        els.freqMonthly.addEventListener("click", function () { setFrequency("monthly"); });
+
+        function setRate(v) {
+          els.rateRange.value = v;
+          els.rateReadout.textContent = parseFloat(v).toFixed(1);
+          paintRange(els.rateRange);
+          render();
+        }
+        els.presetHysa.addEventListener("click", function () { setRate(4.5); });
+        els.presetIndex.addEventListener("click", function () { setRate(8.0); });
+
+        // Init
+        [els.initialRange, els.contribRange, els.rateRange, els.yearsRange].forEach(paintRange);
+        render();
+      })();
+    </script>
+  </body>
+</html>

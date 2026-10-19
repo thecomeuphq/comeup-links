@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Family Emergency Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0e0e10;
+        --panel: #17171b;
+        --panel-2: #1e1e24;
+        --line: #2c2c34;
+        --ink: #f2ede4;
+        --muted: #a8a29a;
+        --faint: #6f6a62;
+        --amber: #f5a524;
+        --orange: #e8590c;
+        --amber-dim: rgba(245, 165, 36, 0.12);
+        --good: #7bc47f;
+        --warn: #f5a524;
+        --bad: #e8590c;
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 20px 16px 56px; }
+
+      /* ---------- Intro ---------- */
+      .intro { padding: 18px 0 8px; }
+      .intro .kicker {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--amber);
+      }
+      .intro h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(34px, 8vw, 52px);
+        line-height: 1.02; font-weight: 700;
+        margin: 10px 0 12px; letter-spacing: 0.01em;
+      }
+      .intro h1 em { font-style: normal; color: var(--amber); }
+      .intro p { color: var(--muted); font-size: 17px; max-width: 620px; margin: 0; }
+      .intro p strong { color: var(--ink); font-weight: 600; }
+
+      /* ---------- Steps ---------- */
+      .step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 20px 18px 22px;
+        margin-top: 22px;
+      }
+      .step-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+      .step-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px; font-weight: 600;
+        color: #0e0e10; background: var(--amber);
+        padding: 3px 9px; border-radius: 4px; white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 26px; font-weight: 600; margin: 0; letter-spacing: 0.02em;
+      }
+      .step-sub { color: var(--muted); font-size: 14.5px; margin: -8px 0 16px; }
+
+      .field-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+      @media (min-width: 640px) { .field-grid { grid-template-columns: 1fr 1fr; } }
+      .field label {
+        display: block; font-size: 13px; font-weight: 600;
+        letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .field .hint { font-size: 13px; color: var(--faint); margin-top: 5px; }
+      input[type="number"], select {
+        width: 100%; background: var(--panel-2); color: var(--ink);
+        border: 1px solid var(--line); border-radius: 8px;
+        padding: 12px 12px; font-size: 17px; font-family: inherit;
+        appearance: none; -webkit-appearance: none;
+      }
+      input[type="number"]:focus, select:focus {
+        outline: none; border-color: var(--amber);
+        box-shadow: 0 0 0 3px var(--amber-dim);
+      }
+      .money { position: relative; }
+      .money::before {
+        content: "$"; position: absolute; left: 12px; top: 50%;
+        transform: translateY(-50%); color: var(--faint); font-size: 16px;
+        pointer-events: none;
+      }
+      .money input { padding-left: 26px; }
+      select {
+        background-image: linear-gradient(45deg, transparent 50%, var(--amber) 50%), linear-gradient(135deg, var(--amber) 50%, transparent 50%);
+        background-position: calc(100% - 18px) 55%, calc(100% - 12px) 55%;
+        background-size: 6px 6px; background-repeat: no-repeat;
+        padding-right: 32px;
+      }
+      .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+      .seg button {
+        flex: 1 1 auto; background: var(--panel-2); color: var(--muted);
+        border: 1px solid var(--line); border-radius: 8px;
+        padding: 11px 10px; font-size: 15px; font-weight: 600;
+        font-family: inherit; cursor: pointer; min-width: 120px;
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--amber-dim); color: var(--amber); border-color: var(--amber);
+      }
+      .hidden { display: none !important; }
+
+      /* ---------- Bridge engine results ---------- */
+      .results { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      @media (min-width: 640px) { .results { grid-template-columns: repeat(3, 1fr); } }
+      .stat {
+        background: var(--panel-2); border: 1px solid var(--line);
+        border-radius: 8px; padding: 14px 16px;
+      }
+      .stat .lbl { font-size: 12.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+      .stat .val {
+        font-family: "IBM Plex Mono", monospace; font-size: 30px; font-weight: 600;
+        margin-top: 4px; color: var(--ink);
+      }
+      .stat .val.amber { color: var(--amber); }
+      .stat .val.bad { color: #ff8a5c; }
+      .stat .sub { font-size: 13px; color: var(--faint); margin-top: 2px; }
+
+      .gauge-block { margin-top: 18px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+      .gauge-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .gauge-top .g-label { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+      .gauge-top .g-score { font-family: "IBM Plex Mono", monospace; font-size: 30px; font-weight: 600; }
+      .gauge-top .g-word { font-family: "Barlow Condensed", sans-serif; font-size: 20px; font-weight: 600; letter-spacing: 0.03em; }
+      .gauge-track { height: 12px; background: #101013; border: 1px solid var(--line); border-radius: 6px; margin-top: 10px; overflow: hidden; }
+      .gauge-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--orange), var(--amber)); transition: width 0.5s ease; }
+      .gauge-note { font-size: 13.5px; color: var(--muted); margin-top: 8px; }
+
+      .toggle-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+      .toggle-row .t-label { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+      .toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+      .toggle button {
+        background: var(--panel-2); color: var(--muted); border: 0;
+        padding: 9px 16px; font-size: 14.5px; font-weight: 600; font-family: inherit; cursor: pointer;
+      }
+      .toggle button[aria-pressed="true"] { background: var(--amber); color: #0e0e10; }
+      input[type="range"] { width: 100%; accent-color: var(--amber); margin-top: 4px; }
+      .range-val { font-family: "IBM Plex Mono", monospace; color: var(--amber); font-weight: 600; }
+
+      /* ---------- Tier strategy ---------- */
+      .tier-badge {
+        display: inline-block; font-family: "IBM Plex Mono", monospace;
+        font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+        padding: 4px 10px; border-radius: 4px; margin-bottom: 10px;
+      }
+      .tier-1 .tier-badge { background: rgba(232, 89, 12, 0.18); color: #ff8a5c; border: 1px solid var(--orange); }
+      .tier-2 .tier-badge { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+      .tier-3 .tier-badge { background: rgba(123, 196, 127, 0.14); color: var(--good); border: 1px solid var(--good); }
+      .tier-name {
+        font-family: "Barlow Condensed", sans-serif; font-size: 30px;
+        font-weight: 700; margin: 0 0 6px; line-height: 1.05;
+      }
+      .tier-why { color: var(--muted); margin: 0 0 14px; max-width: 640px; }
+      .tier-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+      .tier-list li {
+        background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px;
+        padding: 11px 14px; font-size: 15.5px;
+      }
+      .tier-list li strong { color: var(--amber); font-weight: 600; }
+      .tier-3 .tier-list li strong { color: var(--good); }
+
+      .letter-box { margin-top: 18px; }
+      .letter-box .l-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+      .letter-box .l-title { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+      .letter {
+        background: #101013; border: 1px dashed var(--line); border-radius: 8px;
+        padding: 16px; font-size: 15px; white-space: pre-wrap; color: var(--ink);
+        max-height: 340px; overflow-y: auto;
+      }
+      .copy-btn {
+        background: var(--amber); color: #0e0e10; border: 0; border-radius: 8px;
+        padding: 10px 18px; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
+      }
+      .copy-btn:active { transform: translateY(1px); }
+      .copy-btn.ghost { background: transparent; color: var(--amber); border: 1px solid var(--amber); }
+      .copied { color: var(--good); font-size: 14px; font-weight: 600; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 26px;
+        background: linear-gradient(160deg, #1c1a14 0%, #141416 55%);
+        border: 1.5px solid var(--amber);
+        border-radius: 14px; padding: 24px 20px;
+      }
+      .bp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+      .bp-head h2 {
+        font-family: "Barlow Condensed", sans-serif; font-size: 30px;
+        font-weight: 700; margin: 0; line-height: 1.05;
+      }
+      .bp-head .bp-tag { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: 0.12em; color: var(--amber); text-transform: uppercase; }
+      .bp-score { text-align: right; }
+      .bp-score .n { font-family: "IBM Plex Mono", monospace; font-size: 34px; font-weight: 600; color: var(--amber); line-height: 1; }
+      .bp-score .l { font-size: 11.5px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+      .bp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+      @media (max-width: 560px) { .bp-grid { grid-template-columns: 1fr; } }
+      .bp-cell { background: rgba(0,0,0,0.35); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+      .bp-cell .l { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+      .bp-cell .v { font-family: "IBM Plex Mono", monospace; font-size: 24px; font-weight: 600; margin-top: 2px; }
+      .bp-cell .s { font-size: 13px; color: var(--faint); }
+      .bp-section { margin-top: 16px; }
+      .bp-section h3 { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--amber); margin: 0 0 8px; }
+      .bp-section ul { margin: 0; padding-left: 18px; color: var(--ink); font-size: 15px; }
+      .bp-section ul li { margin-bottom: 4px; }
+      .bp-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+      .bp-note { font-size: 13px; color: var(--faint); margin-top: 12px; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 26px; }
+      @media (min-width: 640px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 18px;
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .nc-k { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); }
+      .next-card h3 { font-family: "Barlow Condensed", sans-serif; font-size: 23px; margin: 6px 0 4px; font-weight: 600; }
+      .next-card p { color: var(--muted); font-size: 14.5px; margin: 0; }
+      .next-card .arrow { color: var(--amber); font-weight: 700; }
+
+      .cta {
+        margin-top: 14px; border-radius: var(--radius);
+        background: linear-gradient(120deg, #2a1c05, #1c1206);
+        border: 1px solid var(--amber); padding: 20px 18px;
+        display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+      }
+      .cta p { margin: 0; font-size: 16.5px; flex: 1 1 280px; }
+      .cta p strong { color: var(--amber); }
+      .cta a {
+        background: var(--amber); color: #0e0e10; text-decoration: none;
+        font-weight: 700; padding: 12px 20px; border-radius: 8px; font-size: 15.5px; white-space: nowrap;
+      }
+
+      .faq { margin-top: 30px; }
+      .faq h2 { font-family: "Barlow Condensed", sans-serif; font-size: 28px; font-weight: 600; margin: 0 0 12px; }
+      details {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+        margin-bottom: 10px; padding: 0 16px;
+      }
+      summary {
+        cursor: pointer; font-weight: 600; font-size: 16.5px; padding: 14px 0;
+        list-style: none; display: flex; justify-content: space-between; gap: 10px;
+      }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "+"; color: var(--amber); font-weight: 700; }
+      details[open ] summary::after { content: "–"; }
+      details p { color: var(--muted); margin: 0 0 16px; font-size: 15.5px; }
+      details p strong { color: var(--ink); }
+
+      footer { margin-top: 34px; color: var(--faint); font-size: 13.5px; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <header class="intro">
+        <div class="kicker">Family Emergency Shield</div>
+        <h1>When family calls, money shouldn't be the <em>second emergency.</em></h1>
+        <p>A sudden death or an ICU call means you have to move <strong>now</strong> — and figure out the money on the way. This triage takes about a minute: it totals what the trip really costs, what you'll lose in wages, and builds a calm, step-by-step plan to get through it <strong>without a credit card</strong>.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1">Travel Profile</h2></div>
+        <p class="step-sub">Where you're going, how long you'll be gone, and what the trip itself costs.</p>
+        <div class="field-grid">
+          <div class="field">
+            <label for="distance">Distance</label>
+            <select id="distance">
+              <option value="instate">In-State Drive</option>
+              <option value="outstate" selected>Out-of-State — Flight or Drive</option>
+              <option value="cross">Cross-Country or International</option>
+            </select>
+            <div class="hint" id="distanceHint">Typical last-minute fare + ground costs: $400–$900</div>
+          </div>
+          <div class="field">
+            <label for="daysAway">Days away from work</label>
+            <input type="number" id="daysAway" inputmode="numeric" min="1" max="30" value="5" />
+            <div class="hint">Include travel days and the service itself.</div>
+          </div>
+          <div class="field" style="grid-column: 1 / -1;">
+            <label for="travelCost">Estimated travel + shared service costs</label>
+            <div class="money"><input type="number" id="travelCost" inputmode="decimal" min="0" step="10" value="850" /></div>
+            <div class="hint">Flights or gas, lodging, food on the road — plus your share of funeral or service costs if the family is splitting them.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2">Income Impact</h2></div>
+        <p class="step-sub">What your job covers — and what comes out of your pocket in lost shifts.</p>
+        <div class="field-grid">
+          <div class="field" style="grid-column: 1 / -1;">
+            <label>Employer bereavement coverage</label>
+            <div class="seg" role="group" aria-label="Bereavement coverage">
+              <button type="button" data-coverage="paid" aria-pressed="false">Paid bereavement days</button>
+              <button type="button" data-coverage="unpaid" aria-pressed="true">Unpaid leave</button>
+              <button type="button" data-coverage="none" aria-pressed="false">No coverage — lost shifts</button>
+            </div>
+          </div>
+          <div class="field hidden" id="paidDaysField">
+            <label for="paidDays">Paid bereavement days your employer gives</label>
+            <input type="number" id="paidDays" inputmode="numeric" min="0" max="14" value="3" />
+            <div class="hint">Most employers offer 1–3 days for immediate family, sometimes 5.</div>
+          </div>
+          <div class="field">
+            <label for="dailyWage">Daily missed wage (take-home per shift day)</label>
+            <div class="money"><input type="number" id="dailyWage" inputmode="decimal" min="0" step="5" value="160" /></div>
+            <div class="hint">Your hourly rate × hours per shift, after tax is close enough.</div>
+          </div>
+          <div class="field">
+            <label for="liquidCash">Liquid cash available right now</label>
+            <div class="money"><input type="number" id="liquidCash" inputmode="decimal" min="0" step="10" value="400" /></div>
+            <div class="hint">Checking + savings you can actually touch today — not credit limits.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head"><span class="step-num">STEP 3</span><h2 id="s3">Bridge Engine</h2></div>
+        <p class="step-sub">The real numbers, and the per-paycheck target that closes the gap without debt.</p>
+        <div class="results">
+          <div class="stat">
+            <div class="lbl">Total Crisis Cost</div>
+            <div class="val" id="crisisCost">$0</div>
+            <div class="sub" id="crisisBreakdown">Travel + lost wages</div>
+          </div>
+          <div class="stat">
+            <div class="lbl">Net Emergency Deficit</div>
+            <div class="val amber" id="netDeficit">$0</div>
+            <div class="sub" id="deficitSub">After your cash on hand</div>
+          </div>
+          <div class="stat">
+            <div class="lbl">Per-Paycheck Recovery</div>
+            <div class="val" id="perCheck">$0</div>
+            <div class="sub" id="perCheckSub">Per paycheck to rebuild</div>
+          </div>
+        </div>
+
+        <div class="gauge-block">
+          <div class="gauge-top">
+            <span class="g-label">Crisis Cash Resilience Rating</span>
+            <span><span class="g-score" id="gaugeScore">0</span><span style="color:var(--faint); font-family:'IBM Plex Mono',monospace;"> / 100</span></span>
+            <span class="g-word" id="gaugeWord">—</span>
+          </div>
+          <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
+          <div class="gauge-note" id="gaugeNote"></div>
+        </div>
+
+        <div class="toggle-row">
+          <span class="t-label">Pay schedule</span>
+          <div class="toggle" role="group" aria-label="Pay schedule">
+            <button type="button" data-schedule="weekly" aria-pressed="false">Weekly</button>
+            <button type="button" data-schedule="biweekly" aria-pressed="true">Bi-weekly</button>
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px;">
+          <label for="periods">Recovery window — <span class="range-val" id="periodsVal">6 pay periods</span></label>
+          <input type="range" id="periods" min="4" max="8" step="1" value="6" />
+          <div class="hint">4–8 paychecks to rebuild your buffer. Shorter = faster recovery, bigger bite per check. Longer = gentler, slower.</div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" id="tierSection" aria-labelledby="s4">
+        <div class="step-head"><span class="step-num">STEP 4</span><h2 id="s4">Action Strategy</h2></div>
+        <div id="tierContent"></div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" id="blueprint" aria-labelledby="bpTitle">
+        <div class="bp-head">
+          <div>
+            <div class="bp-tag">Screenshot-ready summary</div>
+            <h2 id="bpTitle">Emergency Family Travel Blueprint</h2>
+          </div>
+          <div class="bp-score">
+            <div class="n" id="bpScore">0</div>
+            <div class="l">Resilience / 100</div>
+          </div>
+        </div>
+        <div class="bp-grid">
+          <div class="bp-cell"><div class="l">Total crisis cost</div><div class="v" id="bpCrisis">$0</div><div class="s" id="bpCrisisSub"></div></div>
+          <div class="bp-cell"><div class="l">Net emergency deficit</div><div class="v" id="bpDeficit">$0</div><div class="s" id="bpDeficitSub"></div></div>
+          <div class="bp-cell"><div class="l">Recovery target</div><div class="v" id="bpPerCheck">$0</div><div class="s" id="bpPerCheckSub"></div></div>
+          <div class="bp-cell"><div class="l">Strategy tier</div><div class="v" id="bpTier" style="font-size:19px; font-family:'Barlow',sans-serif; font-weight:700;">—</div><div class="s" id="bpTierSub"></div></div>
+        </div>
+        <div class="bp-section">
+          <h3>Bill-freeze priorities</h3>
+          <ul id="bpFreeze"></ul>
+        </div>
+        <div class="bp-section">
+          <h3>First three moves</h3>
+          <ul id="bpMoves"></ul>
+        </div>
+        <div class="bp-actions">
+          <button type="button" class="copy-btn" id="copyBlueprint">Copy blueprint summary</button>
+          <span class="copied hidden" id="bpCopied">Copied — paste it anywhere.</span>
+        </div>
+        <p class="bp-note">Screenshot this card or copy the summary before you travel. Numbers update live as you change the steps above.</p>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" target="_blank" rel="noopener">
+          <div class="nc-k">Next step</div>
+          <h3>Emergency Fund Runway Calculator <span class="arrow">→</span></h3>
+          <p>See exactly how many weeks your cash covers if work is interrupted — and what it takes to stretch it.</p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" target="_blank" rel="noopener">
+          <div class="nc-k">Next step</div>
+          <h3>Paycheck Budget Splitter <span class="arrow">→</span></h3>
+          <p>Split each paycheck into bills, buffer, and breathing room so the recovery target fits your real life.</p>
+        </a>
+      </div>
+
+      <div class="cta">
+        <p><strong>One emergency shouldn't become two.</strong> Build the cushion before the next call comes — the $1,000 Emergency Fund Starter Pack and Sinking Funds Tracker walk you there paycheck by paycheck.</p>
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get them on Gumroad</a>
+      </div>
+
+      <!-- FAQ -->
+      <section class="faq" aria-labelledby="faqTitle">
+        <h2 id="faqTitle">Straight answers</h2>
+        <details>
+          <summary>Can I ask my employer for a paycheck advance?</summary>
+          <p>Yes — and it's more common than people think. Many employers offer <strong>paycheck advances, accrued PTO cash-outs, or hardship grants</strong> through HR or payroll, especially for a documented family emergency. Ask in writing, keep it short and factual: what happened, the dates you'll be out, and exactly what you're requesting. The script in Step 4 is written for that conversation. If your company uses an earned-wage-access app (like DailyPay or EarnIn through your employer), that's usually the fastest route — check your employee portal first.</p>
+        </details>
+        <details>
+          <summary>What does bereavement leave usually cover?</summary>
+          <p>Most employers give <strong>1–3 paid days</strong> for an immediate family member (spouse, child, parent, sibling) and sometimes up to 5; extended family is often 1 day or unpaid. There's no federal law requiring paid bereavement leave for private employers — FMLA leave is unpaid and generally doesn't cover bereavement unless your own health is affected — so your company's handbook is the deciding document. Ask HR for the policy in writing before you assume the days are paid, and confirm whether travel days count.</p>
+        </details>
+        <details>
+          <summary>How do I protect my rent during a crisis like this?</summary>
+          <p>Rent is the bill to shield first — a late fee is recoverable, an eviction filing is not. <strong>Call your landlord or property manager before the due date</strong>, explain there's been a death in the family, and ask for a one-time grace period or split payment in writing. Most will work with a tenant who communicates early and has a payment history. Meanwhile, pause subscriptions and non-essentials (the 60-day freeze in Step 4), and if your state or city has an emergency rental assistance program, apply the same week — those funds are first-come and a short application beats a court date.</p>
+        </details>
+      </section>
+
+      <footer>Built for the worst week of the year — so the money part is the one thing already handled.</footer>
+    </div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var state = { coverage: "unpaid", schedule: "biweekly" };
+
+        var distanceHints = {
+          instate: "Typical gas + food for a long drive: $100–$350",
+          outstate: "Typical last-minute fare + ground costs: $400–$900",
+          cross: "Typical cross-country / international costs: $900–$2,500+"
+        };
+
+        function num(id) {
+          var v = parseFloat($(id).value);
+          return isNaN(v) || v < 0 ? 0 : v;
+        }
+        function fmt(n) {
+          return "$" + Math.round(n).toLocaleString("en-US");
+        }
+
+        function hardshipLetter(d) {
+          return "Subject: Request for payroll hardship support — family emergency\n\n" +
+            "Hi [Manager / HR name],\n\n" +
+            "I'm writing because of a sudden family emergency — a death / critical illness in my immediate family. I need to travel " +
+            (d.distanceLabel) + " and will be away for approximately " + d.daysAway + " day(s), returning to work on [return date]. I wanted to notify you in writing as early as possible and confirm my time is properly recorded.\n\n" +
+            "The trip and missed shifts total roughly " + fmt(d.crisis) + ", and after applying the cash I have on hand I'm facing a shortfall of about " + fmt(Math.max(d.deficit, 0)) + ". To get through this without missing rent, I'm respectfully requesting whichever of the following the company can offer:\n\n" +
+            "1. A cash-out of my accrued, unused PTO hours\n" +
+            "2. An employer hardship grant, if the company has a relief fund\n" +
+            "3. A one-time paycheck advance of " + fmt(Math.max(d.deficit, 0)) + ", repaid at " + fmt(d.perCheck) + " per " + (state.schedule === "weekly" ? "week" : "pay period") + " over " + d.periods + " pay periods\n\n" +
+            "I'm happy to provide documentation (obituary, hospital notice, travel receipts) and to sign a written repayment agreement for any advance. I take this job seriously and plan to be back on schedule as soon as I'm home.\n\n" +
+            "Thank you for understanding,\n[Your full name]\n[Employee ID / department]\n[Phone number]";
+        }
+
+        function compute() {
+          var daysAway = Math.max(1, Math.round(num("daysAway")));
+          var travel = num("travelCost");
+          var dailyWage = num("dailyWage");
+          var liquid = num("liquidCash");
+          var paidDays = state.coverage === "paid" ? Math.min(Math.round(num("paidDays")), daysAway) : 0;
+          var unpaidDays = Math.max(0, daysAway - paidDays);
+          var lostWages = unpaidDays * dailyWage;
+          var crisis = travel + lostWages;
+          var deficit = crisis - liquid;
+          var periods = parseInt($("periods").value, 10);
+          var rebuild = Math.max(deficit, 0);
+          var perCheck = periods > 0 ? Math.ceil(rebuild / periods) : 0;
+
+          // Resilience rating: share of crisis covered by cash, tempered by unpaid exposure
+          var score;
+          if (crisis <= 0) { score = 100; }
+          else {
+            var ratio = liquid / crisis;
+            score = Math.round(Math.min(ratio, 1) * 100);
+            if (paidDays > 0) score = Math.min(100, score + 5);
+            if (state.coverage === "none" && unpaidDays >= 4) score = Math.max(0, score - 5);
+          }
+          var word, note;
+          if (score >= 80) { word = "Shielded"; note = "Your cash covers this emergency with room to spare. Core bills stay untouched — focus on being present, not on the money."; }
+          else if (score >= 55) { word = "Stable, with a plan"; note = "You can absorb most of this. The recovery target below closes the rest without interest, as long as it starts with the next paycheck."; }
+          else if (score >= 30) { word = "Stretched"; note = "The gap is real but closable. The freeze and recovery plan below keep rent and utilities safe while you rebuild."; }
+          else { word = "Exposed — act today"; note = "Cash on hand covers only a small share of this crisis. The hardship protocol in Step 4 exists for exactly this — send it before you travel, not after."; }
+
+          // Tier selection
+          var tier;
+          if (deficit > 1000 && unpaidDays > 0) tier = 1;
+          else if (deficit >= 300) tier = 2;
+          else if (deficit > 1000) tier = 2;
+          else tier = 3;
+
+          return {
+            daysAway: daysAway, travel: travel, dailyWage: dailyWage, liquid: liquid,
+            paidDays: paidDays, unpaidDays: unpaidDays, lostWages: lostWages,
+            crisis: crisis, deficit: deficit, periods: periods, perCheck: perCheck,
+            score: score, word: word, note: note, tier: tier,
+            distanceLabel: $("distance").selectedOptions[0].textContent.toLowerCase()
+          };
+        }
+
+        var freezeLists = {
+          1: ["Rent / mortgage — shield at all costs; call the landlord today if the due date falls inside the gap", "Utilities + phone — minimum payments only; ask about hardship deferrals", "Pause every subscription, membership, and delivery app until the advance or grant lands", "Groceries to essentials only; no eating out until the buffer is rebuilt"],
+          2: ["Rent / mortgage and utilities — pay in full and on time; these never enter the freeze", "Pause subscriptions, streaming, gym, and delivery apps for 60 days", "Redirect every freed dollar to the recovery target before it leaks into spending", "One no-spend week per month until the buffer is back"],
+          3: ["No freeze needed — keep all core bills on their normal schedule", "Confirm rent and utilities are covered through the month you're back", "Set the buffer replenishment to auto-transfer on payday so it happens without willpower", "Write down what worked — this becomes your playbook for the next emergency"]
+        };
+
+        var moveLists = {
+          1: ["Send the Payroll Hardship Protocol letter to HR/payroll before you leave — today", "Call your landlord and utility providers; get any grace period in writing", "Book the cheapest workable travel option; skip every upgrade and add-on"],
+          2: ["Start the 60-day freeze the day you get home — cancel, don't just pause, the leaks", "Set a payday auto-transfer for your recovery target amount", "Tell one trusted person the plan so the freeze has backup"],
+          3: ["Verify rent, utilities, and insurance premiums are covered through next month", "Turn on the auto-replenishment transfer for your emergency buffer", "Raise the buffer goal by one week of expenses while this is fresh"]
+        };
+
+        function renderTier(d) {
+          var box = $("tierContent");
+          var letter = hardshipLetter(d);
+          var html = "";
+          if (d.tier === 1) {
+            html =
+              '<div class="tier-1">' +
+              '<span class="tier-badge">TIER 1 — HIGH DEFICIT</span>' +
+              '<h3 class="tier-name">Payroll Hardship Protocol</h3>' +
+              '<p class="tier-why">Your shortfall is ' + fmt(Math.max(d.deficit, 0)) + ' with ' + d.unpaidDays + ' unpaid day(s) — this is the exact situation employer hardship options exist for. Asking early, in writing, is what separates an advance from a payday loan.</p>' +
+              '<ul class="tier-list">' +
+              '<li><strong>Ask for all three, in this order:</strong> accrued PTO cash-out, employer hardship grant, then a paycheck advance repaid from future checks.</li>' +
+              '<li><strong>Send it before you travel.</strong> Payroll needs lead time; a request that lands after you\'re back is a request that lands too late.</li>' +
+              '<li><strong>Bring documentation.</strong> Obituary, hospital notice, or travel receipts turn a hard conversation into a routine approval.</li>' +
+              '<li><strong>Get the terms in writing</strong> — amount, repayment per check, and end date — before you agree to anything.</li>' +
+              '</ul>' +
+              '<div class="letter-box"><div class="l-head"><span class="l-title">Copy-paste request letter</span>' +
+              '<span><button type="button" class="copy-btn" data-copy="letter">Copy letter</button> <span class="copied hidden" data-copied>Copied.</span></span></div>' +
+              '<div class="letter" id="letterText">' + letter.replace(/</g, "&lt;") + '</div></div>' +
+              '</div>';
+          } else if (d.tier === 2) {
+            html =
+              '<div class="tier-2">' +
+              '<span class="tier-badge">TIER 2 — MODERATE GAP</span>' +
+              '<h3 class="tier-name">60-Day Budget Freeze</h3>' +
+              '<p class="tier-why">Your shortfall is ' + fmt(Math.max(d.deficit, 0)) + ' — manageable without borrowing if non-essentials pause and the freed money is redirected on purpose for the next 60 days.</p>' +
+              '<ul class="tier-list">' +
+              '<li><strong>Freeze the leaks:</strong> subscriptions, streaming, gym, delivery apps, and eating out pause for 60 days — cancel beats pause, because pause quietly restarts.</li>' +
+              '<li><strong>Redirect micro-buffers:</strong> every small stash (cash app balance, spare-change apps, the fun-money line) sweeps into the recovery target first.</li>' +
+              '<li><strong>Protect the core four:</strong> rent, utilities, groceries, and transport to work are never part of the freeze.</li>' +
+              '<li><strong>Auto-move ' + fmt(d.perCheck) + ' per ' + (state.schedule === "weekly" ? "week" : "paycheck") + '</strong> on payday, before spending starts — ' + d.periods + ' pay periods closes the gap.</li>' +
+              '</ul>' +
+              '<div class="letter-box"><div class="l-head"><span class="l-title">If the gap grows, this letter is your next step</span>' +
+              '<span><button type="button" class="copy-btn ghost" data-copy="letter">Copy hardship letter</button> <span class="copied hidden" data-copied>Copied.</span></span></div>' +
+              '<div class="letter hidden" id="letterText">' + letter.replace(/</g, "&lt;") + '</div></div>' +
+              '</div>';
+          } else {
+            html =
+              '<div class="tier-3">' +
+              '<span class="tier-badge">TIER 3 — COVERED</span>' +
+              '<h3 class="tier-name">Bereavement Cushion Lock</h3>' +
+              '<p class="tier-why">' + (d.deficit <= 0 ? 'Your cash on hand fully covers this crisis — a surplus of ' + fmt(-d.deficit) + '. The job now is locking that protection in so the next emergency lands the same way.' : 'Your gap is small (' + fmt(Math.max(d.deficit, 0)) + ') — close it with the light recovery target below and lock the cushion back down.') + '</p>' +
+              '<ul class="tier-list">' +
+              '<li><strong>Verify the shield:</strong> confirm rent, utilities, insurance, and car payment are covered through the month you return.</li>' +
+              '<li><strong>Automate replenishment:</strong> set a payday auto-transfer so whatever you spent refills itself — no willpower required.</li>' +
+              '<li><strong>Top up the target:</strong> raise your buffer goal by one week of expenses while the lesson is fresh.</li>' +
+              '<li><strong>Save this blueprint</strong> — screenshot the card below so the next crisis starts from a plan, not a scramble.</li>' +
+              '</ul></div>';
+          }
+          box.innerHTML = html;
+          var tierSection = $("tierSection");
+          tierSection.className = "step tier-" + d.tier;
+        }
+
+        function render() {
+          var d = compute();
+
+          $("crisisCost").textContent = fmt(d.crisis);
+          $("crisisBreakdown").textContent = fmt(d.travel) + " travel + " + fmt(d.lostWages) + " lost wages (" + d.unpaidDays + " unpaid day" + (d.unpaidDays === 1 ? "" : "s") + (d.paidDays > 0 ? ", " + d.paidDays + " paid" : "") + ")";
+          var deficitEl = $("netDeficit");
+          if (d.deficit > 0) {
+            deficitEl.textContent = fmt(d.deficit);
+            deficitEl.className = "val bad";
+            $("deficitSub").textContent = "The gap to close after your cash";
+          } else {
+            deficitEl.textContent = fmt(0);
+            deficitEl.className = "val";
+            deficitEl.style.color = "var(--good)";
+            $("deficitSub").textContent = "Covered — " + fmt(-d.deficit) + " surplus stays in your buffer";
+            setTimeout(function(){ deficitEl.style.color = ""; }, 0);
+          }
+          $("perCheck").textContent = d.deficit > 0 ? fmt(d.perCheck) : fmt(0);
+          $("perCheckSub").textContent = d.deficit > 0
+            ? "Per " + (state.schedule === "weekly" ? "weekly paycheck" : "bi-weekly paycheck") + " × " + d.periods + " — no credit cards"
+            : "Nothing to rebuild — buffer intact";
+
+          $("gaugeScore").textContent = d.score;
+          $("gaugeWord").textContent = d.word;
+          $("gaugeWord").style.color = d.score >= 55 ? "var(--good)" : (d.score >= 30 ? "var(--amber)" : "#ff8a5c");
+          $("gaugeFill").style.width = d.score + "%";
+          $("gaugeNote").textContent = d.note;
+          $("periodsVal").textContent = d.periods + " pay periods (" + (state.schedule === "weekly" ? d.periods + " weeks" : Math.round(d.periods * 2) + " weeks") + ")";
+
+          renderTier(d);
+
+          // Blueprint
+          $("bpScore").textContent = d.score;
+          $("bpCrisis").textContent = fmt(d.crisis);
+          $("bpCrisisSub").textContent = fmt(d.travel) + " travel + " + fmt(d.lostWages) + " lost wages";
+          $("bpDeficit").textContent = d.deficit > 0 ? fmt(d.deficit) : "$0 — covered";
+          $("bpDeficitSub").textContent = "Cash on hand: " + fmt(d.liquid);
+          $("bpPerCheck").textContent = d.deficit > 0 ? fmt(d.perCheck) : "$0";
+          $("bpPerCheckSub").textContent = d.deficit > 0 ? "Per " + (state.schedule === "weekly" ? "weekly" : "bi-weekly") + " paycheck × " + d.periods : "Buffer intact";
+          var tierNames = { 1: "Tier 1 — Payroll Hardship Protocol", 2: "Tier 2 — 60-Day Budget Freeze", 3: "Tier 3 — Bereavement Cushion Lock" };
+          $("bpTier").textContent = tierNames[d.tier];
+          $("bpTierSub").textContent = d.daysAway + " days away · " + d.unpaidDays + " unpaid";
+          $("bpFreeze").innerHTML = freezeLists[d.tier].map(function (x) { return "<li>" + x + "</li>"; }).join("");
+          $("bpMoves").innerHTML = moveLists[d.tier].map(function (x) { return "<li>" + x + "</li>"; }).join("");
+
+          window.__lastCalc = d;
+        }
+
+        function copyText(text, btn) {
+          function done() {
+            var wrap = btn.parentElement;
+            var note = wrap.querySelector("[data-copied]");
+            if (note) { note.classList.remove("hidden"); setTimeout(function () { note.classList.add("hidden"); }, 2500); }
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand("copy"); } catch (e) {}
+            document.body.removeChild(ta); done();
+          }
+        }
+
+        // Events
+        ["daysAway", "travelCost", "dailyWage", "liquidCash", "paidDays", "periods"].forEach(function (id) {
+          $(id).addEventListener("input", render);
+          $(id).addEventListener("change", render);
+        });
+        $("distance").addEventListener("change", function () {
+          $("distanceHint").textContent = distanceHints[$("distance").value];
+          render();
+        });
+        document.querySelectorAll("[data-coverage]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            state.coverage = btn.getAttribute("data-coverage");
+            document.querySelectorAll("[data-coverage]").forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+            $("paidDaysField").classList.toggle("hidden", state.coverage !== "paid");
+            render();
+          });
+        });
+        document.querySelectorAll("[data-schedule]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            state.schedule = btn.getAttribute("data-schedule");
+            document.querySelectorAll("[data-schedule]").forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+            render();
+          });
+        });
+        document.addEventListener("click", function (e) {
+          var btn = e.target.closest("[data-copy]");
+          if (!btn) return;
+          var d = window.__lastCalc;
+          var letterEl = $("letterText");
+          if (letterEl && letterEl.classList.contains("hidden")) letterEl.classList.remove("hidden");
+          copyText(hardshipLetter(d), btn);
+        });
+        $("copyBlueprint").addEventListener("click", function () {
+          var d = window.__lastCalc;
+          var tierNames = { 1: "Tier 1 — Payroll Hardship Protocol", 2: "Tier 2 — 60-Day Budget Freeze", 3: "Tier 3 — Bereavement Cushion Lock" };
+          var text = "EMERGENCY FAMILY TRAVEL BLUEPRINT\n" +
+            "Crisis Cash Resilience Rating: " + d.score + "/100 (" + d.word + ")\n" +
+            "Total crisis cost: " + fmt(d.crisis) + " (" + fmt(d.travel) + " travel + " + fmt(d.lostWages) + " lost wages)\n" +
+            "Cash on hand: " + fmt(d.liquid) + "\n" +
+            "Net emergency deficit: " + (d.deficit > 0 ? fmt(d.deficit) : "$0 — covered") + "\n" +
+            "Recovery target: " + (d.deficit > 0 ? fmt(d.perCheck) + " per " + (state.schedule === "weekly" ? "weekly" : "bi-weekly") + " paycheck × " + d.periods + " pay periods" : "Buffer intact") + "\n" +
+            "Strategy: " + tierNames[d.tier] + "\n\n" +
+            "Bill-freeze priorities:\n- " + freezeLists[d.tier].join("\n- ") + "\n\n" +
+            "First three moves:\n- " + moveLists[d.tier].join("\n- ");
+          copyText(text, this);
+          var note = $("bpCopied");
+          note.classList.remove("hidden");
+          setTimeout(function () { note.classList.add("hidden"); }, 2500);
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

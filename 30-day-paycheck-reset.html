@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>The 30-Day Paycheck Reset</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0b0d;
+        --bg-raise: #141416;
+        --bg-card: #17171a;
+        --bg-card-done: #1c1a12;
+        --line: #2a2a2e;
+        --line-done: #6b5518;
+        --ink: #f4f1ea;
+        --ink-dim: #b8b4aa;
+        --ink-faint: #8a867d;
+        --amber: #f5a302;
+        --amber-hot: #ff7a1a;
+        --amber-soft: rgba(245, 163, 2, 0.12);
+        --btn-ink: #161100;
+        --bar-track: #26262a;
+        --hazard-a: #f5a302;
+        --hazard-b: #101010;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 72px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 44px 0 28px; }
+      .hero-tag {
+        display: inline-block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px; font-weight: 700;
+        letter-spacing: 0.18em; text-transform: uppercase;
+        color: var(--amber);
+        border: 1px solid var(--line-done);
+        background: var(--amber-soft);
+        padding: 5px 10px; border-radius: 3px;
+      }
+      h1 {
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: clamp(42px, 9vw, 68px);
+        line-height: 1.02;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 18px 0 14px;
+      }
+      h1 .amber { color: var(--amber); }
+      .hero-sub {
+        font-size: clamp(17px, 4.4vw, 21px);
+        color: var(--ink-dim);
+        max-width: 34em;
+        margin: 0 0 26px;
+      }
+      .hero-sub strong { color: var(--ink); }
+      .btn-start {
+        display: inline-block;
+        background: var(--amber);
+        color: var(--btn-ink);
+        font-family: "Oswald", sans-serif;
+        font-weight: 600; font-size: 20px;
+        letter-spacing: 0.04em; text-transform: uppercase;
+        text-decoration: none;
+        padding: 16px 34px;
+        border-radius: 4px;
+        box-shadow: 0 6px 24px rgba(245, 163, 2, 0.28);
+      }
+      .btn-start:active { transform: translateY(1px); }
+      .hero-meta {
+        margin-top: 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px; color: var(--ink-faint);
+        letter-spacing: 0.06em;
+      }
+      .hazard {
+        height: 8px;
+        background: repeating-linear-gradient(-45deg, var(--hazard-a) 0 14px, var(--hazard-b) 14px 28px);
+        border-radius: 2px;
+        margin: 30px 0 0;
+        opacity: 0.9;
+      }
+
+      /* ---------- Tracker banner ---------- */
+      .tracker-banner {
+        margin-top: 26px;
+        display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+        background: linear-gradient(135deg, rgba(245, 163, 2, 0.16), rgba(255, 122, 26, 0.08));
+        border: 1px solid var(--amber);
+        border-radius: 6px;
+        padding: 22px;
+        box-shadow: 0 0 0 1px var(--amber), 0 12px 40px rgba(245, 163, 2, 0.15);
+      }
+      .tracker-banner-text { flex: 1 1 300px; min-width: 0; }
+      .tracker-banner-tag {
+        display: inline-block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px; font-weight: 700;
+        letter-spacing: 0.18em; text-transform: uppercase;
+        color: var(--btn-ink);
+        background: var(--amber);
+        padding: 4px 9px; border-radius: 3px;
+        margin-bottom: 10px;
+      }
+      .tracker-banner p {
+        margin: 0;
+        font-size: clamp(17px, 4.2vw, 20px);
+        font-weight: 600;
+        line-height: 1.35;
+      }
+      .tracker-banner p strong { color: var(--amber); }
+      .btn-tracker {
+        display: inline-block;
+        background: var(--amber);
+        color: var(--btn-ink);
+        font-family: "Oswald", sans-serif;
+        font-weight: 600; font-size: 18px;
+        letter-spacing: 0.04em; text-transform: uppercase;
+        text-decoration: none;
+        padding: 14px 28px;
+        border-radius: 4px;
+        box-shadow: 0 6px 24px rgba(245, 163, 2, 0.28);
+        white-space: nowrap;
+      }
+      .btn-tracker:active { transform: translateY(1px); }
+
+      /* ---------- Progress ---------- */
+      .progress-panel {
+        position: sticky; top: 0; z-index: 20;
+        background: var(--bg-raise);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 14px 16px;
+        margin: 26px 0 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      }
+      .progress-top {
+        display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      }
+      .progress-count {
+        font-family: "Oswald", sans-serif;
+        font-size: 22px; font-weight: 600; letter-spacing: 0.03em;
+      }
+      .progress-count .of { color: var(--ink-faint); font-size: 15px; }
+      .progress-stats {
+        display: flex; gap: 18px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px; color: var(--ink-dim);
+        letter-spacing: 0.04em;
+      }
+      .progress-stats b { color: var(--amber); font-size: 15px; }
+      .bar {
+        height: 12px; border-radius: 3px;
+        background: var(--bar-track);
+        margin-top: 10px; overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%; width: 0%;
+        background: linear-gradient(90deg, var(--amber), var(--amber-hot));
+        transition: width 0.45s ease;
+      }
+      .progress-note { margin-top: 9px; font-size: 13px; color: var(--ink-faint); }
+      .progress-note b { color: var(--amber); }
+      .reset-link {
+        background: none; border: none; padding: 0; margin-left: 10px;
+        font: inherit; font-size: 12px; color: var(--ink-faint);
+        text-decoration: underline; cursor: pointer;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .bar-fill { transition: none; }
+        html { scroll-behavior: auto; }
+      }
+
+      /* ---------- Weeks ---------- */
+      .week { margin-top: 44px; }
+      .week-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+      .week-kicker {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px; font-weight: 700; letter-spacing: 0.2em;
+        color: var(--amber);
+      }
+      .week h2 {
+        font-family: "Oswald", sans-serif;
+        font-size: clamp(28px, 6.5vw, 38px);
+        font-weight: 600; text-transform: uppercase;
+        margin: 0; line-height: 1.1;
+      }
+      .week-sub { color: var(--ink-dim); margin: 6px 0 0; font-size: 15px; }
+      .week-progress {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px; color: var(--ink-faint); letter-spacing: 0.05em;
+      }
+
+      .cards { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px; }
+      @media (min-width: 680px) { .cards { grid-template-columns: 1fr 1fr; } }
+
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 18px;
+        display: flex; flex-direction: column; gap: 10px;
+      }
+      .card.is-done { background: var(--bg-card-done); border-color: var(--line-done); }
+      .card.is-next { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
+      .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+      .day-badge {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+        background: var(--amber); color: #161100;
+        padding: 4px 9px; border-radius: 3px;
+      }
+      .card.is-done .day-badge { background: var(--line-done); color: #fff8e1; }
+      .next-tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+        color: var(--amber-hot); text-transform: uppercase;
+      }
+      .card h3 {
+        font-family: "Oswald", sans-serif;
+        font-size: 21px; font-weight: 600; line-height: 1.15;
+        margin: 0;
+      }
+      .card .action { color: var(--ink-dim); margin: 0; font-size: 15px; flex: 1; }
+      .btn-move {
+        display: block; text-align: center;
+        background: var(--amber-soft);
+        border: 1px solid var(--amber);
+        color: var(--amber);
+        font-weight: 700; font-size: 15px;
+        text-decoration: none;
+        padding: 11px 14px; border-radius: 4px;
+      }
+      .btn-move:hover { background: var(--amber); color: var(--btn-ink); }
+      .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+      .deeper { font-size: 13px; color: var(--ink-faint); margin: 0; }
+      .deeper a { color: var(--ink-dim); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+      .deeper a:hover { color: var(--amber); }
+      .btn-done {
+        font-family: "Inter", sans-serif;
+        font-weight: 700; font-size: 14px;
+        padding: 9px 18px; border-radius: 4px;
+        border: 1px solid var(--line);
+        background: transparent; color: var(--ink-dim);
+        cursor: pointer; white-space: nowrap;
+      }
+      .btn-done:hover { border-color: var(--amber); color: var(--amber); }
+      .card.is-done .btn-done { background: var(--amber); border-color: var(--amber); color: var(--btn-ink); }
+
+      /* ---------- Finale ---------- */
+      .finale {
+        margin-top: 48px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 30px 22px;
+        text-align: center;
+        background: var(--bg-raise);
+      }
+      .finale .big {
+        font-family: "Oswald", sans-serif;
+        font-size: clamp(26px, 6vw, 36px);
+        font-weight: 600; text-transform: uppercase;
+        line-height: 1.15; margin: 0 0 10px;
+      }
+      .finale p { color: var(--ink-dim); margin: 0 auto; max-width: 34em; }
+      .finale.locked { opacity: 0.75; }
+      .finale.unlocked { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber), 0 12px 40px rgba(245,163,2,0.15); }
+      .finale .status {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--amber); display: block; margin-bottom: 12px;
+      }
+
+      /* ---------- FAQ ---------- */
+      .faq { margin-top: 52px; }
+      .faq h2 {
+        font-family: "Oswald", sans-serif;
+        font-size: clamp(26px, 6vw, 34px);
+        font-weight: 600; text-transform: uppercase; margin: 0 0 16px;
+      }
+      .faq details {
+        border: 1px solid var(--line); border-radius: 6px;
+        background: var(--bg-card);
+        margin-bottom: 10px; padding: 4px 18px;
+      }
+      .faq summary {
+        cursor: pointer; font-weight: 700; font-size: 16px;
+        padding: 12px 0; list-style: none;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; float: right; color: var(--amber); font-weight: 700; }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq details p { color: var(--ink-dim); margin: 0 0 14px; font-size: 15px; }
+
+      footer {
+        margin-top: 48px; padding-top: 20px;
+        border-top: 1px solid var(--line);
+        color: var(--ink-faint); font-size: 13px;
+      }
+      footer a { color: var(--ink-dim); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- Hero -->
+      <header class="hero">
+        <span class="hero-tag">30 days &middot; 30 moves &middot; ~3 min each</span>
+        <h1>The 30-Day<br />Paycheck <span class="amber">Reset</span></h1>
+        <p class="hero-sub">One 3-minute money move a day. <strong>No budgets that take weekends. No finance degree.</strong> Built for shift workers who get paid by the hour and are tired of watching the check disappear.</p>
+        <a class="btn-start" href="https://thecomeuphq.github.io/comeup-links/paycheck-health-score-quiz.html" target="_blank" rel="noopener">Start Day 1 &rarr;</a>
+        <p class="hero-meta">FREE TOOLS EVERY DAY &middot; PROGRESS SAVES IN THIS BROWSER</p>
+        <div class="hazard" aria-hidden="true"></div>
+      </header>
+
+      <!-- Free tracker banner -->
+      <section class="tracker-banner" aria-label="Free printable Reset Tracker">
+        <div class="tracker-banner-text">
+          <span class="tracker-banner-tag">Free printable</span>
+          <p>Want the printable version? Grab the <strong>FREE Reset Tracker</strong> &mdash; print it, tick the boxes, keep your streak alive.</p>
+        </div>
+        <a class="btn-tracker" href="https://thecomeuphq.github.io/comeup-links/free-reset-tracker-funnel.html" target="_blank" rel="noopener">Get the Free Tracker</a>
+      </section>
+
+      <!-- Progress -->
+      <section class="progress-panel" aria-label="Your progress">
+        <div class="progress-top">
+          <div class="progress-count"><span id="doneCount">0</span><span class="of"> / 30 days done</span></div>
+          <div class="progress-stats">
+            <span>STREAK <b id="streakCount">0</b></span>
+            <span><b id="pctCount">0%</b> COMPLETE</span>
+          </div>
+        </div>
+        <div class="bar" role="progressbar" aria-label="Days completed" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0" id="barWrap">
+          <div class="bar-fill" id="barFill"></div>
+        </div>
+        <p class="progress-note" id="progressNote">Tap <b>Done</b> on each card as you finish the move. Your check-offs are saved on this device.</p>
+        <button class="reset-link" id="resetBtn" type="button">Reset progress</button>
+      </section>
+
+      <!-- Weeks + cards render here -->
+      <main id="weeks"></main>
+
+      <!-- Finale -->
+      <section class="finale locked" id="finale">
+        <span class="status" id="finaleStatus">Finish line &middot; Day 30</span>
+        <p class="big">Reset complete. You did what 90% of people never start.</p>
+        <p id="finaleText">This banner lights up when all 30 moves are checked off. Retake your Paycheck Health Score on Day 30 and compare it to Day 1 &mdash; that jump is the proof.</p>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq">
+        <h2>Straight answers</h2>
+        <details>
+          <summary>Do I have to do them in order?</summary>
+          <p>Mostly, yes &mdash; the weeks build on each other. Week 1 finds the leaks, Week 2 plugs them, Week 3 attacks debt with the money you freed up, and Week 4 puts your overtime to work. Inside a single week, though, you can swap days around to fit your shift schedule. Just don't skip Day 1 or Day 30: those two scores are how you prove the reset worked.</p>
+        </details>
+        <details>
+          <summary>What if I miss a day?</summary>
+          <p>Nothing breaks. There's no restart and no penalty &mdash; pick up the next day with the move you missed, or jump to today's and catch the missed one on your next day off. Your check-offs stay saved in this browser, and your streak counts consecutive days completed in order, so a gap just pauses the run, it doesn't erase your progress.</p>
+        </details>
+        <details>
+          <summary>Is it really only 3 minutes?</summary>
+          <p>Yes. Every move is one small, specific action inside a free tool &mdash; add up a number, get a score, set one dollar amount. No spreadsheets to build, no accounts to connect. If you want to go further, each day links to a printable planner that walks the same move in more depth, but that's optional. The 3-minute version is the whole challenge.</p>
+        </details>
+        <details>
+          <summary>Does it cost anything?</summary>
+          <p>The reset itself is free &mdash; all 30 daily tools are free to use. The &ldquo;Go deeper&rdquo; links point to printable workbooks in the shop if you want the paper version of a move. Skip them and you still get the full 30 days.</p>
+        </details>
+      </section>
+
+      <footer>
+        <p>Built for hourly and shift workers. Printables and workbooks: <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">bradley57.gumroad.com</a></p>
+      </footer>
+    </div>
+
+    <script>
+      var GUMROAD = "https://bradley57.gumroad.com/";
+      var STORE_KEY = "paycheck-reset-done-v1";
+
+      var WEEKS = [
+        {
+          label: "Week 1", name: "Audit", sub: "Expose the leaks. Before you fix anything, you find out where the money is actually going.",
+          days: [
+            { d: 1, t: "Benchmark Your Starting Line", a: "Take the 8-question quiz, get your 0\u2013100 score.", tool: "https://thecomeuphq.github.io/comeup-links/paycheck-health-score-quiz.html", prod: "Free Paycheck Protection Checklist" },
+            { d: 2, t: "Kill 1 Unused Subscription", a: "Log 3 recurring charges, cancel the worst one today.", tool: "https://thecomeuphq.github.io/comeup-links/subscription-audit-worksheet.html", prod: "Subscription & Bill Cut Audit" },
+            { d: 3, t: "Expose Your BNPL Cash Drag", a: "Add up every bi-weekly Klarna/Afterpay payment.", tool: "https://thecomeuphq.github.io/comeup-links/bnpl-freedom-protocol.html", prod: "Paycheck-to-Paycheck Weekly Planner" },
+            { d: 4, t: "Check Your Emergency Runway", a: "How many days could you survive if hours got cut?", tool: "https://thecomeuphq.github.io/comeup-links/emergency-fund-readiness-quiz.html", prod: "$1,000 Emergency Fund Starter Pack" },
+            { d: 5, t: "Scan Your Breakdown Risk", a: "Check your wear items, see your 12-month vehicle exposure.", tool: "https://thecomeuphq.github.io/comeup-links/vehicle-maintenance-defense-planner.html", prod: "Truck & Equipment Maintenance Log" },
+            { d: 6, t: "Stress-Test Your Rent", a: "Can your base pay (no OT) cover rent?", tool: "https://thecomeuphq.github.io/comeup-links/housing-affordability-engine.html", prod: "Blue-Collar Buffer Binder" },
+            { d: 7, t: "Price Your Hustle Honestly", a: "Your real hourly rate after gas, fees, and miles.", tool: "https://thecomeuphq.github.io/comeup-links/hustle-profitability-quiz.html", prod: "Overtime & Shift Worker Cash Flow Log" }
+          ]
+        },
+        {
+          label: "Week 2", name: "Protect", sub: "Build the shields. Route the money before it can leak, and set up the buffers that keep one bad week from wrecking you.",
+          days: [
+            { d: 8, t: "Route This Paycheck", a: "Split today's check into 4 buckets before you spend a dollar.", tool: "https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html", prod: "Zero-Based Budgeting Binder" },
+            { d: 9, t: "Stash Your First $15", a: "Move $15 to savings before anything else.", tool: "https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html", prod: "$1,000 Emergency Fund Starter Pack" },
+            { d: 10, t: "Start a $10 Sinking Fund", a: "Pick your next annual bill, set the micro-transfer.", tool: "https://thecomeuphq.github.io/comeup-links/sinking-fund-planner.html", prod: "Sinking Funds Tracker" },
+            { d: 11, t: "Cap Your Holiday Spending", a: "Set per-person gift limits before the rush.", tool: "https://thecomeuphq.github.io/comeup-links/holiday-expense-defense-engine.html", prod: "Sinking Funds Tracker" },
+            { d: 12, t: "Shield Your Pay From Tax Shock", a: "Set your per-payout tax reserve rate.", tool: "https://thecomeuphq.github.io/comeup-links/tax-withholding-safeguard.html", prod: "Overtime & Shift Worker Cash Flow Log" },
+            { d: 13, t: "Run the Protection Checklist", a: "The 5-step payday defense audit.", tool: "https://thecomeuphq.github.io/comeup-links/paycheck-protection-playbook.html", prod: "Free Paycheck Protection Checklist" },
+            { d: 14, t: "Mid-Reset Checkpoint", a: "Tally everything saved and killed in 14 days.", tool: "https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html", prod: "52-Week Cash Stash Thermometer" }
+          ]
+        },
+        {
+          label: "Week 3", name: "Accelerate", sub: "Attack the debt. Pick a weapon, add fuel, and watch the payoff date move up.",
+          days: [
+            { d: 15, t: "Pick Your Debt Weapon", a: "Snowball or Avalanche for YOUR debts?", tool: "https://thecomeuphq.github.io/comeup-links/debt-strategy-selector.html", prod: "Debt Snowball vs Avalanche Battle Plan" },
+            { d: 16, t: "Add a $25 Payday Boost", a: "See how many months $25/paycheck shaves off.", tool: "https://thecomeuphq.github.io/comeup-links/snowball-accelerator.html", prod: "Debt Payoff Tracker" },
+            { d: 17, t: "Test Consolidation Math", a: "Do transfer fees kill the savings?", tool: "https://thecomeuphq.github.io/comeup-links/consolidation-simulator.html", prod: "Debt Refinance Planner" },
+            { d: 18, t: "Refinance or Pay Down?", a: "Green/yellow/red verdict on your highest-APR card.", tool: "https://thecomeuphq.github.io/comeup-links/payoff-vs-refinance-decision-tree.html", prod: "Debt Refinance Planner" },
+            { d: 19, t: "Drop Your Utilization", a: "Exact dollars to get under 30%.", tool: "https://thecomeuphq.github.io/comeup-links/credit-repair-engine.html", prod: "Debt Payoff Tracker" },
+            { d: 20, t: "Break the BNPL Cycle", a: "Sequence your plans, kill the first one.", tool: "https://thecomeuphq.github.io/comeup-links/bnpl-trap-calculator.html", prod: "Paycheck-to-Paycheck Weekly Planner" },
+            { d: 21, t: "Count Your Interest Saved", a: "Total lifetime interest you're eliminating.", tool: "https://thecomeuphq.github.io/comeup-links/debt-payoff-calculator.html", prod: "Debt Snowball vs Avalanche Battle Plan" }
+          ]
+        },
+        {
+          label: "Week 4", name: "Scale", sub: "Build velocity. Your overtime, windfalls, and side hustle start compounding instead of evaporating.",
+          days: [
+            { d: 22, t: "Know Your True OT Rate", a: "Your actual take-home per overtime hour.", tool: "https://thecomeuphq.github.io/comeup-links/overtime-paycheck-calculator.html", prod: "Overtime & Shift Worker Cash Flow Log" },
+            { d: 23, t: "Split Your OT Check", a: "50/30/20 on every overtime dollar.", tool: "https://thecomeuphq.github.io/comeup-links/overtime-wealth-maximizer.html", prod: "Zero-Based Budgeting Binder" },
+            { d: 24, t: "Pre-Plan Your Next Windfall", a: "60/30/10 before the bonus lands.", tool: "https://thecomeuphq.github.io/comeup-links/windfall-stash-maximizer.html", prod: "52-Week Cash Stash Thermometer" },
+            { d: 25, t: "Deduct Your Hustle Miles", a: "Mileage + expenses = shielded income.", tool: "https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html", prod: "Overtime & Shift Worker Cash Flow Log" },
+            { d: 26, t: "See 5-Year Compound Growth", a: "What $50/month of recovered cash becomes.", tool: "https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html", prod: "52-Week Cash Stash Thermometer" },
+            { d: 27, t: "Time Your Statement Dates", a: "Pay 3 days before closing, boost your score.", tool: "https://thecomeuphq.github.io/comeup-links/credit-utilization-calculator.html", prod: "Free Paycheck Protection Checklist" },
+            { d: 28, t: "Check Your Auto Loan LTV", a: "Are you underwater? What's the strike plan?", tool: "https://thecomeuphq.github.io/comeup-links/debt-payoff-calculator.html", prod: "Auto Loan Payoff Tracker" },
+            { d: 29, t: "Final Clearance Audit", a: "Your new bill-to-income numbers.", tool: "https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html", prod: "Blue-Collar Buffer Binder" },
+            { d: 30, t: "Retake Your Health Score", a: "Measure your 30-day jump. This is the finish line.", tool: "https://thecomeuphq.github.io/comeup-links/paycheck-health-score-quiz.html", prod: "Zero-Based Budgeting Binder" }
+          ]
+        }
+      ];
+
+      var done = {};
+      try {
+        var raw = localStorage.getItem(STORE_KEY);
+        if (raw) done = JSON.parse(raw) || {};
+      } catch (e) { done = {}; }
+
+      function save() {
+        try { localStorage.setItem(STORE_KEY, JSON.stringify(done)); } catch (e) {}
+      }
+
+      function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+      function build() {
+        var host = document.getElementById("weeks");
+        var html = "";
+        WEEKS.forEach(function (w, wi) {
+          html += '<section class="week" id="week-' + (wi + 1) + '">';
+          html += '<div class="week-head"><span class="week-kicker">' + w.label + '</span>';
+          html += '<h2>' + w.name + '</h2>';
+          html += '<span class="week-progress" id="weekProg-' + (wi + 1) + '"></span></div>';
+          html += '<p class="week-sub">' + w.sub + '</p>';
+          html += '<div class="cards">';
+          w.days.forEach(function (day) {
+            html += '<article class="card" id="card-' + day.d + '" data-day="' + day.d + '">';
+            html += '<div class="card-top"><span class="day-badge">DAY ' + pad(day.d) + '</span><span class="next-tag" id="nextTag-' + day.d + '" hidden>Up next</span></div>';
+            html += '<h3>' + day.t + '</h3>';
+            html += '<p class="action">' + day.a + '</p>';
+            html += '<a class="btn-move" href="' + day.tool + '" target="_blank" rel="noopener">Do today&rsquo;s move &rarr;</a>';
+            html += '<div class="card-foot"><p class="deeper">Go deeper: <a href="' + GUMROAD + '" target="_blank" rel="noopener">' + day.prod + '</a></p>';
+            html += '<button class="btn-done" type="button" data-toggle="' + day.d + '" aria-pressed="false">Mark done</button></div>';
+            html += '</article>';
+          });
+          html += '</div></section>';
+        });
+        host.innerHTML = html;
+      }
+
+      function render() {
+        var count = 0;
+        for (var i = 1; i <= 30; i++) if (done[i]) count++;
+
+        // streak = consecutive days completed in order, from Day 1
+        var streak = 0;
+        for (var s = 1; s <= 30; s++) { if (done[s]) streak++; else break; }
+
+        var nextDay = 0;
+        for (var n = 1; n <= 30; n++) { if (!done[n]) { nextDay = n; break; } }
+
+        document.getElementById("doneCount").textContent = count;
+        document.getElementById("streakCount").textContent = streak;
+        document.getElementById("pctCount").textContent = Math.round(count / 30 * 100) + "%";
+        document.getElementById("barFill").style.width = (count / 30 * 100) + "%";
+        document.getElementById("barWrap").setAttribute("aria-valuenow", count);
+
+        var note = document.getElementById("progressNote");
+        if (count === 30) {
+          note.innerHTML = "<b>Reset complete.</b> All 30 moves done. Retake your Day 1 score and compare.";
+        } else if (count === 0) {
+          note.innerHTML = "Tap <b>Done</b> on each card as you finish the move. Your check-offs are saved on this device.";
+        } else {
+          note.innerHTML = "<b>" + count + " down, " + (30 - count) + " to go.</b> Next up: Day " + nextDay + ". One move, three minutes.";
+        }
+
+        WEEKS.forEach(function (w, wi) {
+          var wc = 0;
+          w.days.forEach(function (day) { if (done[day.d]) wc++; });
+          document.getElementById("weekProg-" + (wi + 1)).textContent = wc + "/" + w.days.length + " done";
+        });
+
+        for (var d = 1; d <= 30; d++) {
+          var card = document.getElementById("card-" + d);
+          if (!card) continue;
+          var isDone = !!done[d];
+          card.classList.toggle("is-done", isDone);
+          card.classList.toggle("is-next", d === nextDay);
+          var btn = card.querySelector("[data-toggle]");
+          btn.textContent = isDone ? "\u2713 Done" : "Mark done";
+          btn.setAttribute("aria-pressed", isDone ? "true" : "false");
+          var tag = document.getElementById("nextTag-" + d);
+          if (tag) tag.hidden = d !== nextDay;
+        }
+
+        var finale = document.getElementById("finale");
+        var fStatus = document.getElementById("finaleStatus");
+        var fText = document.getElementById("finaleText");
+        if (count === 30) {
+          finale.classList.remove("locked");
+          finale.classList.add("unlocked");
+          fStatus.textContent = "\u2605 Reset complete \u2605";
+          fText.textContent = "Thirty days, thirty moves. You audited the leaks, built the shields, attacked the debt, and put your overtime to work. Screenshot this page \u2014 then run it back next month and beat your own score.";
+        } else {
+          finale.classList.add("locked");
+          finale.classList.remove("unlocked");
+          fStatus.textContent = "Finish line \u00b7 Day 30";
+          fText.textContent = "This banner lights up when all 30 moves are checked off. Retake your Paycheck Health Score on Day 30 and compare it to Day 1 \u2014 that jump is the proof.";
+        }
+      }
+
+      build();
+      render();
+
+      document.getElementById("weeks").addEventListener("click", function (ev) {
+        var btn = ev.target.closest ? ev.target.closest("[data-toggle]") : null;
+        if (!btn) return;
+        var day = btn.getAttribute("data-toggle");
+        if (done[day]) { delete done[day]; } else { done[day] = true; }
+        save();
+        render();
+      });
+
+      var resetBtn = document.getElementById("resetBtn");
+      var armed = false;
+      resetBtn.addEventListener("click", function () {
+        if (!armed) {
+          armed = true;
+          resetBtn.textContent = "Tap again to clear all check-offs";
+          setTimeout(function () { armed = false; resetBtn.textContent = "Reset progress"; }, 3000);
+          return;
+        }
+        done = {};
+        save();
+        render();
+        armed = false;
+        resetBtn.textContent = "Reset progress";
+      });
+    </script>
+  </body>
+</html>
