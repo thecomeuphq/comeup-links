@@ -1,0 +1,1217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Medical Bill Defense</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #100e0b;
+        --bg-panel: #1a1712;
+        --bg-panel-2: #221e17;
+        --ink: #f3ecdd;
+        --ink-soft: #b3a78d;
+        --line: #35301f;
+        --line-strong: #57492a;
+        --amber: #f5a623;
+        --amber-bright: #ffb63d;
+        --amber-soft: rgba(245, 166, 35, 0.13);
+        --orange: #ff7a1a;
+        --good: #57c878;
+        --bad: #ff6b52;
+        --field: #12100c;
+        --shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 20px 16px 56px;
+      }
+      .hazard {
+        height: 8px;
+        border-radius: 4px;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--amber) 0 14px,
+          transparent 14px 28px
+        );
+        opacity: 0.85;
+        margin-bottom: 18px;
+      }
+      h1 {
+        font-family: "Barlow Condensed", "Barlow", sans-serif;
+        font-size: clamp(34px, 9vw, 46px);
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        line-height: 1.02;
+        margin: 0 0 8px;
+        text-transform: uppercase;
+      }
+      h1 .accent { color: var(--amber); }
+      .lede {
+        color: var(--ink-soft);
+        font-size: 16.5px;
+        margin: 0 0 22px;
+        max-width: 56ch;
+      }
+      .lede strong { color: var(--ink); }
+
+      /* ---------- Panels & steps ---------- */
+      .panel {
+        background: var(--bg-panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px 16px 20px;
+        margin-bottom: 16px;
+      }
+      .step-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .step-num {
+        flex: 0 0 auto;
+        width: 30px;
+        height: 30px;
+        border-radius: 6px;
+        background: var(--amber);
+        color: #171106;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .step-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 23px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        margin: 0;
+      }
+      .step-sub {
+        color: var(--ink-soft);
+        font-size: 14.5px;
+        margin: 0 0 16px 40px;
+      }
+      @media (max-width: 420px) {
+        .step-sub { margin-left: 0; }
+      }
+
+      label.field-label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.01em;
+        margin: 14px 0 6px;
+      }
+      label.field-label:first-of-type { margin-top: 2px; }
+      .money-input {
+        display: flex;
+        align-items: center;
+        background: var(--field);
+        border: 1.5px solid var(--line-strong);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .money-input span {
+        padding: 0 4px 0 13px;
+        font-weight: 700;
+        color: var(--amber);
+        font-size: 18px;
+      }
+      .money-input input {
+        flex: 1;
+        min-width: 0;
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        font: inherit;
+        font-size: 19px;
+        font-weight: 600;
+        padding: 11px 12px 11px 2px;
+        outline: none;
+      }
+      .money-input:focus-within { border-color: var(--amber); }
+      .field-hint {
+        font-size: 13px;
+        color: var(--ink-soft);
+        margin-top: 5px;
+      }
+
+      /* ---------- Segmented controls ---------- */
+      .seg {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .seg button {
+        flex: 1 1 0;
+        min-width: 96px;
+        appearance: none;
+        border: 1.5px solid var(--line-strong);
+        background: var(--field);
+        color: var(--ink-soft);
+        font: inherit;
+        font-weight: 600;
+        font-size: 14.5px;
+        padding: 10px 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        line-height: 1.25;
+      }
+      .seg button small {
+        display: block;
+        font-weight: 500;
+        font-size: 12px;
+        opacity: 0.85;
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--amber);
+        border-color: var(--amber);
+        color: #171106;
+      }
+      .seg button:focus-visible,
+      .yn button:focus-visible,
+      .copy-btn:focus-visible,
+      a.card-link:focus-visible {
+        outline: 2.5px solid var(--orange);
+        outline-offset: 2px;
+      }
+
+      /* ---------- Audit toggles ---------- */
+      .audit-row {
+        border-top: 1px solid var(--line);
+        padding: 14px 0 4px;
+      }
+      .audit-row:first-of-type { border-top: 0; padding-top: 4px; }
+      .audit-q {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .audit-q p {
+        margin: 0;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 1.35;
+      }
+      .yn {
+        flex: 0 0 auto;
+        display: flex;
+        border: 1.5px solid var(--line-strong);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .yn button {
+        appearance: none;
+        border: 0;
+        background: var(--field);
+        color: var(--ink-soft);
+        font: inherit;
+        font-weight: 700;
+        font-size: 14px;
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+      .yn button[aria-pressed="true"].yes {
+        background: var(--good);
+        color: #fff;
+      }
+      .yn button[aria-pressed="true"].no {
+        background: var(--bad);
+        color: #fff;
+      }
+      .audit-action {
+        margin: 10px 0 10px;
+        background: var(--amber-soft);
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        padding: 11px 13px;
+        font-size: 14.5px;
+      }
+      .audit-action strong { color: var(--amber); }
+      .audit-done {
+        margin: 8px 0 10px;
+        font-size: 14px;
+        color: var(--good);
+        font-weight: 600;
+      }
+
+      /* ---------- Engine outputs ---------- */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 16px;
+      }
+      @media (max-width: 380px) {
+        .stat-grid { grid-template-columns: 1fr; }
+      }
+      .stat {
+        background: var(--bg-panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px 13px;
+      }
+      .stat .k {
+        font-size: 12.5px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 3px;
+      }
+      .stat .v {
+        font-family: "Barlow Semi Condensed", "Barlow", sans-serif;
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.1;
+      }
+      .stat .v.amber { color: var(--amber); }
+      .stat .note {
+        font-size: 13px;
+        color: var(--ink-soft);
+        margin-top: 3px;
+      }
+      .likelihood {
+        display: inline-block;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: var(--amber);
+        color: #171106;
+        margin-bottom: 6px;
+      }
+
+      /* ---------- Shield rating ---------- */
+      .shield-panel {
+        border-color: var(--line-strong);
+        background: linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+      }
+      .shield-flex {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .shield-score {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 64px;
+        font-weight: 700;
+        line-height: 0.95;
+        color: var(--amber);
+      }
+      .shield-score small {
+        font-size: 22px;
+        color: var(--ink-soft);
+        font-weight: 600;
+      }
+      .shield-meta { flex: 1; min-width: 200px; }
+      .shield-label {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 21px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+      .shield-desc {
+        color: var(--ink-soft);
+        font-size: 14px;
+        margin-top: 2px;
+      }
+      .shield-bar {
+        height: 12px;
+        border-radius: 6px;
+        background: var(--field);
+        border: 1px solid var(--line-strong);
+        overflow: hidden;
+        margin-top: 14px;
+      }
+      .shield-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--orange), var(--amber));
+        transition: width 0.45s ease;
+      }
+      .shield-scale {
+        display: flex;
+        justify-content: space-between;
+        font-size: 11.5px;
+        color: var(--ink-soft);
+        margin-top: 5px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius);
+        padding: 15px 15px 13px;
+        margin-bottom: 12px;
+        background: var(--bg-panel-2);
+        position: relative;
+      }
+      .tier.primary {
+        border-color: var(--amber);
+        background: var(--amber-soft);
+      }
+      .tier-head {
+        display: flex;
+        align-items: baseline;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+      .tier-tag {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        color: var(--amber);
+        text-transform: uppercase;
+      }
+      .tier-name {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 21px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+      }
+      .start-badge {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        background: var(--amber);
+        color: #171106;
+        border-radius: 999px;
+        padding: 2.5px 9px;
+      }
+      .tier p { margin: 0 0 8px; font-size: 15px; }
+      .tier ol, .tier ul {
+        margin: 6px 0 4px;
+        padding-left: 21px;
+        font-size: 14.5px;
+      }
+      .tier li { margin-bottom: 5px; }
+      .tier .tier-num {
+        font-weight: 700;
+        color: var(--amber);
+      }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        border: 2px solid var(--amber);
+        border-radius: 12px;
+        background: var(--bg-panel);
+        box-shadow: var(--shadow);
+        padding: 20px 17px;
+        margin-bottom: 16px;
+      }
+      .blueprint-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 4px;
+      }
+      .blueprint-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 27px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0;
+      }
+      .blueprint-title .accent { color: var(--amber); }
+      .blueprint-sub {
+        color: var(--ink-soft);
+        font-size: 14px;
+        margin: 0 0 14px;
+      }
+      .bp-rows { border-top: 1px solid var(--line); }
+      .bp-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 14px;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 15px;
+      }
+      .bp-row .k { color: var(--ink-soft); font-weight: 500; }
+      .bp-row .v {
+        font-weight: 700;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .bp-row .v.amber { color: var(--amber); }
+      .bp-row .v.good { color: var(--good); }
+      .script-box {
+        margin-top: 16px;
+        background: var(--field);
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        padding: 14px 15px;
+      }
+      .script-box h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 17px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0 0 8px;
+        color: var(--amber);
+      }
+      .script-text {
+        font-size: 15px;
+        line-height: 1.6;
+        margin: 0;
+        font-style: italic;
+      }
+      .copy-btn {
+        margin-top: 12px;
+        appearance: none;
+        border: 0;
+        background: var(--amber);
+        color: #171106;
+        font: inherit;
+        font-weight: 700;
+        font-size: 15px;
+        padding: 11px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+      }
+      .copy-btn:active { transform: translateY(1px); }
+      .bp-foot {
+        font-size: 13px;
+        color: var(--ink-soft);
+        margin-top: 12px;
+      }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 26px 0 12px;
+      }
+      .next-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      @media (max-width: 480px) {
+        .next-grid { grid-template-columns: 1fr; }
+      }
+      a.card-link {
+        display: block;
+        text-decoration: none;
+        color: var(--ink);
+        background: var(--bg-panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 15px 15px 13px;
+        box-shadow: var(--shadow);
+      }
+      a.card-link .card-k {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--amber);
+      }
+      a.card-link .card-t {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 21px;
+        font-weight: 600;
+        line-height: 1.15;
+        margin: 3px 0 5px;
+      }
+      a.card-link .card-d {
+        font-size: 14px;
+        color: var(--ink-soft);
+      }
+      a.card-link .card-go {
+        font-weight: 700;
+        color: var(--amber);
+        font-size: 14.5px;
+        margin-top: 8px;
+        display: inline-block;
+      }
+      .cta {
+        display: block;
+        text-decoration: none;
+        margin-top: 14px;
+        border-radius: var(--radius);
+        background: linear-gradient(120deg, var(--orange), var(--amber));
+        color: #1d1204;
+        padding: 18px 17px;
+        box-shadow: var(--shadow);
+      }
+      .cta .cta-t {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+      }
+      .cta .cta-d { font-size: 15px; font-weight: 500; margin-top: 4px; }
+      .cta .cta-go {
+        display: inline-block;
+        margin-top: 10px;
+        font-weight: 700;
+        background: #1d1204;
+        color: var(--amber-bright);
+        padding: 8px 16px;
+        border-radius: 7px;
+        font-size: 14.5px;
+      }
+      details.faq {
+        background: var(--bg-panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        margin-bottom: 9px;
+        padding: 0 15px;
+      }
+      details.faq summary {
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 13px 0;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      details.faq summary::-webkit-details-marker { display: none; }
+      details.faq summary::after {
+        content: "+";
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--amber);
+        line-height: 1;
+      }
+      details.faq[open ] summary::after { content: "–"; }
+      details.faq p {
+        margin: 0 0 14px;
+        font-size: 14.5px;
+        color: var(--ink-soft);
+      }
+      details.faq p strong { color: var(--ink); }
+      .disclaimer {
+        margin-top: 22px;
+        font-size: 13px;
+        color: var(--ink-soft);
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .shield-fill { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <div class="hazard" aria-hidden="true"></div>
+      <h1>Medical Bill <span class="accent">Defense Engine</span></h1>
+      <p class="lede">
+        A surprise hospital bill is not a debt yet — it's a <strong>negotiation that hasn't
+        started</strong>. Run the audit, check what assistance you qualify for, and lock in a
+        0% micro-payment plan before a credit card ever gets involved.
+      </p>
+
+      <!-- Shield rating -->
+      <section class="panel shield-panel" aria-label="Deductible Shield Rating">
+        <div class="step-head">
+          <div class="step-num" aria-hidden="true">◈</div>
+          <h2 class="step-title">Deductible Shield Rating</h2>
+        </div>
+        <div class="shield-flex">
+          <div class="shield-score"><span id="shieldScore">0</span><small>/100</small></div>
+          <div class="shield-meta">
+            <div class="shield-label" id="shieldLabel">—</div>
+            <div class="shield-desc" id="shieldDesc">
+              How safely your current cash buffer absorbs this bill without touching
+              high-APR debt. Fill in Step 1 to see your rating.
+            </div>
+          </div>
+        </div>
+        <div class="shield-bar"><div class="shield-fill" id="shieldFill"></div></div>
+        <div class="shield-scale"><span>0 · Exposed</span><span>50 · Guarded</span><span>100 · Fortified</span></div>
+      </section>
+
+      <!-- STEP 1 -->
+      <section class="panel" aria-labelledby="s1t">
+        <div class="step-head">
+          <div class="step-num" aria-hidden="true">1</div>
+          <h2 class="step-title" id="s1t">Bill Profile</h2>
+        </div>
+        <p class="step-sub">The bill as it stands today — before any defense is applied.</p>
+
+        <label class="field-label" for="billAmount">Total bill amount</label>
+        <div class="money-input">
+          <span aria-hidden="true">$</span>
+          <input id="billAmount" type="number" inputmode="decimal" min="0" step="1" value="2400" />
+        </div>
+
+        <label class="field-label">Insurance status</label>
+        <div class="seg" role="group" aria-label="Insurance status" id="insuranceSeg">
+          <button type="button" data-val="employer" aria-pressed="false">Employer plan<small>Group coverage through work</small></button>
+          <button type="button" data-val="highded" aria-pressed="true">High-deductible<small>Big deductible still owed</small></button>
+          <button type="button" data-val="uninsured" aria-pressed="false">Uninsured<small>No coverage at all</small></button>
+        </div>
+
+        <label class="field-label" for="emergencyCash">Emergency cash available right now</label>
+        <div class="money-input">
+          <span aria-hidden="true">$</span>
+          <input id="emergencyCash" type="number" inputmode="decimal" min="0" step="1" value="350" />
+        </div>
+        <p class="field-hint">Cash you could reach today without borrowing — savings, checking cushion, cash on hand.</p>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="panel" aria-labelledby="s2t">
+        <div class="step-head">
+          <div class="step-num" aria-hidden="true">2</div>
+          <h2 class="step-title" id="s2t">Bill Audit Check</h2>
+        </div>
+        <p class="step-sub">Three checks that decide how much of this bill is even real. Every “No” unlocks a money-saving move.</p>
+
+        <div class="audit-row" data-audit="itemized">
+          <div class="audit-q">
+            <p>Is the bill itemized?</p>
+            <div class="yn" role="group" aria-label="Is the bill itemized?">
+              <button type="button" class="yes" data-v="yes" aria-pressed="false">Yes</button>
+              <button type="button" class="no" data-v="no" aria-pressed="true">No</button>
+            </div>
+          </div>
+          <div class="audit-action" data-when="no">
+            <strong>Move unlocked:</strong> Do not pay a cent yet. Call billing and demand an
+            itemized statement with CPT codes for every line. Summary bills hide duplicate
+            charges, wrong quantities, and services that were never rendered — you can't
+            dispute what you can't see.
+          </div>
+          <p class="audit-done" data-when="yes" hidden>✓ Good — keep that itemized statement next to your discharge papers for Step 4.</p>
+        </div>
+
+        <div class="audit-row" data-audit="errors">
+          <div class="audit-q">
+            <p>Checked for coding / billing errors?</p>
+            <div class="yn" role="group" aria-label="Checked for coding or billing errors?">
+              <button type="button" class="yes" data-v="yes" aria-pressed="false">Yes</button>
+              <button type="button" class="no" data-v="no" aria-pressed="true">No</button>
+            </div>
+          </div>
+          <div class="audit-action" data-when="no">
+            <strong>Move unlocked:</strong> Line up the itemized bill against your discharge
+            summary. Hunt for duplicate charges, “upcoded” room or ER levels, cancelled tests
+            that still got billed, and supplies charged at 10–50× retail. Industry audits
+            routinely find errors on hospital bills — every wrong line is leverage.
+          </div>
+          <p class="audit-done" data-when="yes" hidden>✓ Good — flag anything left in writing; verbal disputes disappear.</p>
+        </div>
+
+        <div class="audit-row" data-audit="assistance">
+          <div class="audit-q">
+            <p>Asked about financial assistance / charity care?</p>
+            <div class="yn" role="group" aria-label="Asked about hospital financial assistance or charity care?">
+              <button type="button" class="yes" data-v="yes" aria-pressed="false">Yes</button>
+              <button type="button" class="no" data-v="no" aria-pressed="true">No</button>
+            </div>
+          </div>
+          <div class="audit-action" data-when="no">
+            <strong>Move unlocked:</strong> Ask the billing office for the financial assistance
+            application — nonprofit hospitals are required to have a policy, and many for-profit
+            hospitals have hardship programs too. At many hospitals, applying puts a hold on
+            collections while your application is reviewed. Run Step 3 to see where you land.
+          </div>
+          <p class="audit-done" data-when="yes" hidden>✓ Good — ask for the decision in writing and keep the account on hold until it arrives.</p>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="panel" aria-labelledby="s3t">
+        <div class="step-head">
+          <div class="step-num" aria-hidden="true">3</div>
+          <h2 class="step-title" id="s3t">Assistance &amp; Settlement Engine</h2>
+        </div>
+        <p class="step-sub">Charity-care eligibility is mostly math — household income against the federal poverty line. Then we size a payment your paycheck can actually carry.</p>
+
+        <label class="field-label" for="householdIncome">Household income (per year, before taxes)</label>
+        <div class="money-input">
+          <span aria-hidden="true">$</span>
+          <input id="householdIncome" type="number" inputmode="decimal" min="0" step="100" value="46000" />
+        </div>
+
+        <label class="field-label" for="householdSize">Household size</label>
+        <div class="seg" role="group" aria-label="Household size" id="hhSeg">
+          <button type="button" data-val="1" aria-pressed="false">1</button>
+          <button type="button" data-val="2" aria-pressed="true">2</button>
+          <button type="button" data-val="3" aria-pressed="false">3</button>
+          <button type="button" data-val="4" aria-pressed="false">4</button>
+          <button type="button" data-val="5" aria-pressed="false">5</button>
+          <button type="button" data-val="6" aria-pressed="false">6+</button>
+        </div>
+
+        <label class="field-label">How often do you get paid?</label>
+        <div class="seg" role="group" aria-label="Pay frequency" id="paySeg">
+          <button type="button" data-val="4.333" aria-pressed="false">Weekly</button>
+          <button type="button" data-val="2.167" aria-pressed="true">Every 2 weeks</button>
+          <button type="button" data-val="2" aria-pressed="false">Twice a month</button>
+          <button type="button" data-val="1" aria-pressed="false">Monthly</button>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="likelihood" id="eligBadge">—</span>
+            <div class="k">Charity-care eligibility</div>
+            <div class="v amber" id="eligDiscount">—</div>
+            <div class="note" id="eligNote">—</div>
+          </div>
+          <div class="stat">
+            <div class="k">Estimated savings</div>
+            <div class="v" id="eligSavings">—</div>
+            <div class="note" id="eligSavingsNote">Off the current bill if assistance lands in the expected range.</div>
+          </div>
+          <div class="stat">
+            <div class="k">Hardship payment ceiling</div>
+            <div class="v amber" id="ceilMonthly">—</div>
+            <div class="note" id="ceilNote">Hospital hardship policies typically cap required payments near 5% of monthly income. Never agree to more than this at 0% interest.</div>
+          </div>
+          <div class="stat">
+            <div class="k">Your plan micro-payment</div>
+            <div class="v" id="ceilPerCheck">—</div>
+            <div class="note" id="perCheckNote">A $10–$30 slice of every payday, sized to never be missed. Stretch up to your ceiling anytime to finish faster.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="panel" aria-labelledby="s4t">
+        <div class="step-head">
+          <div class="step-num" aria-hidden="true">4</div>
+          <h2 class="step-title" id="s4t">Your Defense Plan</h2>
+        </div>
+        <p class="step-sub">Three tiers, worked in order. The highlighted tier is where your numbers say to start.</p>
+
+        <div class="tier" id="tier1">
+          <div class="tier-head">
+            <span class="tier-tag">Tier 1</span>
+            <span class="tier-name">Charity Care Candidate</span>
+            <span class="start-badge" data-start hidden>Start here</span>
+          </div>
+          <p id="tier1Intro">If your income qualifies, the hospital writes off most or all of the bill — this beats every payment plan.</p>
+          <ol>
+            <li>Call billing and say: <em>“I'm applying for financial assistance under your charity care policy. Please send the application and place my account on hold.”</em></li>
+            <li>Gather proof of income: last 2–3 pay stubs, most recent tax return, and a bank statement.</li>
+            <li>Submit the full application before the deadline — an incomplete application is the #1 reason people get denied.</li>
+            <li>Get the decision <span class="tier-num">in writing</span>. If denied, ask for the denial reason and appeal — approvals on appeal are common.</li>
+            <li>Whatever balance survives drops straight into Tier 3.</li>
+          </ol>
+        </div>
+
+        <div class="tier" id="tier2">
+          <div class="tier-head">
+            <span class="tier-tag">Tier 2</span>
+            <span class="tier-name">Itemized Audit &amp; Settlement</span>
+            <span class="start-badge" data-start hidden>Start here</span>
+          </div>
+          <p id="tier2Intro">Dispute what's wrong, then offer to settle what's left. Hospitals routinely accept 20–40% reductions rather than chase a balance for years.</p>
+          <ol>
+            <li>Demand the itemized bill with CPT codes (Step 2) and dispute every wrong line <span class="tier-num">in writing</span>.</li>
+            <li>Ask for the self-pay / prompt-pay discount in the same call — it's often approved on the spot.</li>
+            <li>Offer a lump-sum settlement from your cash buffer if the discount is deep enough, or carry the reduced balance into Tier 3.</li>
+          </ol>
+          <p id="tier2Math"></p>
+        </div>
+
+        <div class="tier" id="tier3">
+          <div class="tier-head">
+            <span class="tier-tag">Tier 3</span>
+            <span class="tier-name">0% Payment Plan</span>
+            <span class="start-badge" data-start hidden>Start here</span>
+          </div>
+          <p>Whatever balance remains gets paid on your terms: a fixed slice of every paycheck, at 0% interest, confirmed in writing. No credit card — a card turns a negotiable 0% hospital balance into 25%+ APR debt and can void assistance eligibility.</p>
+          <ul>
+            <li><span class="tier-num" id="tier3PerCheck">—</span> every payday, straight from cash flow.</li>
+            <li><span class="tier-num" id="tier3Months">—</span> to clear the defended balance at that pace.</li>
+            <li id="tier3Stretch"></li>
+            <li>If a paycheck comes up short, call <em>before</em> the due date — hospitals extend hardship plans for callers, and send silent accounts to collections.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bpt">
+        <div class="blueprint-head">
+          <h2 class="blueprint-title" id="bpt">Medical Bill <span class="accent">Hardship Blueprint</span></h2>
+        </div>
+        <p class="blueprint-sub">Your numbers, your plan. Screenshot this card before you call the billing department.</p>
+        <div class="bp-rows">
+          <div class="bp-row"><span class="k">Original bill</span><span class="v" id="bpBill">—</span></div>
+          <div class="bp-row"><span class="k">Insurance status</span><span class="v" id="bpInsurance">—</span></div>
+          <div class="bp-row"><span class="k">Estimated defense discount</span><span class="v good" id="bpDiscount">—</span></div>
+          <div class="bp-row"><span class="k">Target balance after defense</span><span class="v amber" id="bpTarget">—</span></div>
+          <div class="bp-row"><span class="k">Cash buffer kept in reserve</span><span class="v" id="bpCash">—</span></div>
+          <div class="bp-row"><span class="k">0% payment — per paycheck</span><span class="v amber" id="bpPerCheck">—</span></div>
+          <div class="bp-row"><span class="k">0% payment — per month</span><span class="v" id="bpMonthly">—</span></div>
+          <div class="bp-row"><span class="k">Months to debt-free</span><span class="v" id="bpMonths">—</span></div>
+          <div class="bp-row"><span class="k">Deductible Shield Rating</span><span class="v" id="bpShield">—</span></div>
+        </div>
+
+        <div class="script-box">
+          <h3>Say this — word for word</h3>
+          <p class="script-text" id="scriptText"></p>
+          <button type="button" class="copy-btn" id="copyBtn">Copy the script</button>
+        </div>
+        <p class="bp-foot">Call during business hours, get the representative's name, and ask for the 0% plan terms in writing before the first payment. If they push a credit card or a third-party medical loan, decline — that's the trap this plan exists to avoid.</p>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <h2 class="section-title">Build the buffer behind the plan</h2>
+      <div class="next-grid">
+        <a class="card-link" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html">
+          <span class="card-k">Next step · Savings</span>
+          <div class="card-t">Emergency Fund Runway Calculator</div>
+          <div class="card-d">See exactly how many weeks your cash covers if the hours dry up — and what it takes to stretch it.</div>
+          <span class="card-go">Open the calculator →</span>
+        </a>
+        <a class="card-link" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html">
+          <span class="card-k">Next step · Budgeting</span>
+          <div class="card-t">Paycheck Budget Splitter</div>
+          <div class="card-d">Split every paycheck into bills, buffer, and breathing room so the micro-payment fits without breaking the month.</div>
+          <span class="card-go">Open the splitter →</span>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/">
+        <div class="cta-t">A buffer turns a $2,000 ER visit from a crisis into a payment plan</div>
+        <div class="cta-d">The Blue-Collar Buffer Binder and $1,000 Emergency Fund Starter Pack on Gumroad — the worksheets that build the cash shield this plan depends on.</div>
+        <span class="cta-go">Get them on Gumroad →</span>
+      </a>
+
+      <!-- FAQ -->
+      <h2 class="section-title">Straight answers</h2>
+      <details class="faq">
+        <summary>How does charity care actually work?</summary>
+        <p>Nonprofit hospitals are required to maintain a <strong>financial assistance policy</strong> — it's a condition of their tax-exempt status. Discounts are usually based on your household income measured against the federal poverty line: at or below roughly 200% of the line, many hospitals forgive <strong>75–100%</strong> of the bill, with sliding discounts up to about 300%. You apply with pay stubs and a tax return, the hospital reviews it, and at many hospitals the account is placed on hold — no collections — while they decide. It can often be applied to bills that are already a few months old, and plenty of for-profit hospitals run hardship programs too. The catch: they rarely advertise it. You have to ask.</p>
+      </details>
+      <details class="faq">
+        <summary>Why should I never put a medical bill on a credit card?</summary>
+        <p>Three reasons. <strong>Interest:</strong> a hospital payment plan is typically 0% — a credit card charges 25%+ APR, so a $2,000 bill can quietly become $2,600+. <strong>Leverage:</strong> the moment you pay the hospital with a card, the negotiable bill becomes non-negotiable card debt — discounts, disputes, and charity care are off the table because the hospital already got paid. <strong>Protection:</strong> unpaid medical bills have billing-dispute rights and, in many cases, a grace period before they can hit your credit; credit card debt has none of that. If a billing rep pushes a card or a third-party “medical loan,” that's a sales pitch, not a payment plan.</p>
+      </details>
+      <details class="faq">
+        <summary>How do I ask for an itemized bill?</summary>
+        <p>Call the billing department number on your statement and say: <strong>“Please send me an itemized statement with the CPT codes for every charge.”</strong> You're entitled to it. Then compare each line against your discharge paperwork: check for duplicate charges, services you never received, cancelled tests, and supplies billed at wild markups. Dispute anything wrong <strong>in writing</strong> (email or certified letter) and keep copies — a written dispute creates a paper trail a phone call doesn't. While a charge is under dispute, ask for the account to be placed on hold so it isn't sent to collections mid-review.</p>
+      </details>
+
+      <p class="disclaimer">
+        This tool is educational information, not legal or financial advice. Charity-care thresholds,
+        hardship policies, and billing rules vary by hospital and state — confirm the details with the
+        hospital's financial assistance office and your own policy documents before acting. Estimates
+        here are based on typical nonprofit hospital policies and the 2025 federal poverty guidelines.
+      </p>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var FPL = { 1: 15650, 2: 21150, 3: 26650, 4: 32150, 5: 37650, 6: 43150 };
+        var INS_LABEL = {
+          employer: "Employer plan",
+          highded: "High-deductible plan",
+          uninsured: "Uninsured"
+        };
+
+        var state = {
+          bill: 2400,
+          insurance: "highded",
+          cash: 350,
+          income: 46000,
+          hhSize: 2,
+          paydaysPerMonth: 2.167,
+          audit: { itemized: "no", errors: "no", assistance: "no" }
+        };
+
+        function $(id) { return document.getElementById(id); }
+        function num(v) {
+          var n = parseFloat(v);
+          return isNaN(n) || n < 0 ? 0 : n;
+        }
+        function money(n) {
+          return "$" + Math.round(n).toLocaleString("en-US");
+        }
+        function moneyRange(lo, hi) {
+          return money(lo) + "–" + money(hi);
+        }
+        function round5(n) { return Math.round(n / 5) * 5; }
+
+        /* ---------- segmented controls ---------- */
+        function wireSeg(id, onPick) {
+          var el = $(id);
+          var btns = el.querySelectorAll("button");
+          btns.forEach(function (b) {
+            b.addEventListener("click", function () {
+              btns.forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+              b.setAttribute("aria-pressed", "true");
+              onPick(b.getAttribute("data-val"));
+            });
+          });
+        }
+        wireSeg("insuranceSeg", function (v) { state.insurance = v; render(); });
+        wireSeg("hhSeg", function (v) { state.hhSize = parseInt(v, 10); render(); });
+        wireSeg("paySeg", function (v) { state.paydaysPerMonth = parseFloat(v); render(); });
+
+        /* ---------- number inputs ---------- */
+        $("billAmount").addEventListener("input", function (e) { state.bill = num(e.target.value); render(); });
+        $("emergencyCash").addEventListener("input", function (e) { state.cash = num(e.target.value); render(); });
+        $("householdIncome").addEventListener("input", function (e) { state.income = num(e.target.value); render(); });
+
+        /* ---------- audit toggles ---------- */
+        document.querySelectorAll(".audit-row").forEach(function (row) {
+          var key = row.getAttribute("data-audit");
+          var btns = row.querySelectorAll(".yn button");
+          btns.forEach(function (b) {
+            b.addEventListener("click", function () {
+              state.audit[key] = b.getAttribute("data-v");
+              render();
+            });
+          });
+        });
+
+        /* ---------- copy script ---------- */
+        $("copyBtn").addEventListener("click", function () {
+          var btn = $("copyBtn");
+          var text = $("scriptText").textContent;
+          function done() {
+            btn.textContent = "Copied — you're ready to call";
+            setTimeout(function () { btn.textContent = "Copy the script"; }, 2200);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); done(); } catch (e) { btn.textContent = "Select the script text above to copy"; }
+            document.body.removeChild(ta);
+          }
+        });
+
+        /* ---------- core math ---------- */
+        function compute() {
+          var bill = state.bill;
+          var fpl = FPL[state.hhSize] || 43150;
+          var pctFPL = state.income > 0 ? (state.income / fpl) * 100 : 0;
+
+          // Charity-care likelihood by % of federal poverty line
+          var elig;
+          if (state.income <= 0 || pctFPL <= 200) {
+            elig = { label: "Very likely", lo: 75, hi: 100, tier: 1 };
+          } else if (pctFPL <= 250) {
+            elig = { label: "Likely", lo: 50, hi: 75, tier: 1 };
+          } else if (pctFPL <= 300) {
+            elig = { label: "Possible", lo: 25, hi: 50, tier: 1 };
+          } else {
+            elig = { label: "Unlikely — negotiate", lo: 0, hi: 25, tier: 2 };
+          }
+
+          // Defense discount: charity range when eligible, else settlement 20–40%
+          var disc;
+          if (elig.tier === 1) {
+            disc = { lo: elig.lo, hi: elig.hi, source: "charity care / financial assistance" };
+          } else {
+            disc = { lo: 20, hi: 40, source: "itemized audit + settlement negotiation" };
+          }
+          var saveLo = bill * disc.lo / 100;
+          var saveHi = bill * disc.hi / 100;
+          var targetLo = bill - saveHi; // best case balance
+          var targetHi = bill - saveLo; // conservative balance
+
+          // Hardship ceiling: ~5% of monthly income. The plan payment itself is a
+          // $10–$30/payday micro-allocation, floored so the monthly total never
+          // exceeds the ceiling.
+          var monthlyIncome = state.income / 12;
+          var ceilingRaw = monthlyIncome * 0.05;
+          var ceilingPerCheck = Math.floor((ceilingRaw / state.paydaysPerMonth) / 5) * 5;
+          if (ceilingPerCheck < 10) ceilingPerCheck = Math.max(5, Math.round(ceilingRaw / state.paydaysPerMonth));
+          var perCheck = Math.min(30, ceilingPerCheck);
+          var monthlyFromChecks = perCheck * state.paydaysPerMonth;
+          var ceilingMonthly = Math.max(ceilingRaw, monthlyFromChecks);
+
+          var monthsLo = monthlyFromChecks > 0 ? Math.ceil(targetLo / monthlyFromChecks) : 0;
+          var monthsHi = monthlyFromChecks > 0 ? Math.ceil(targetHi / monthlyFromChecks) : 0;
+
+          // Deductible Shield Rating
+          var ratio = bill > 0 ? state.cash / bill : 1;
+          var base = 110 * (1 - Math.exp(-1.9 * ratio));
+          if (base > 91) base = 91;
+          var yesCount = 0;
+          Object.keys(state.audit).forEach(function (k) { if (state.audit[k] === "yes") yesCount++; });
+          var shield = Math.round(Math.min(100, base + yesCount * 3));
+          if (bill <= 0) shield = 100;
+
+          // Recommended starting tier
+          var startTier;
+          if (elig.tier === 1) startTier = 1;
+          else if (yesCount < 3) startTier = 2;
+          else startTier = 3;
+
+          return {
+            pctFPL: pctFPL, elig: elig, disc: disc,
+            saveLo: saveLo, saveHi: saveHi,
+            targetLo: targetLo, targetHi: targetHi,
+            ceilingMonthly: ceilingMonthly, ceilingPerCheck: ceilingPerCheck,
+            perCheck: perCheck, monthlyFromChecks: monthlyFromChecks,
+            monthsLo: monthsLo, monthsHi: monthsHi,
+            shield: shield, yesCount: yesCount, startTier: startTier
+          };
+        }
+
+        function shieldText(score) {
+          if (score >= 90) return ["Fortified", "Your buffer can absorb this bill outright or nearly — pay on your schedule, not theirs."];
+          if (score >= 75) return ["Strong", "Your buffer covers most of this. A short 0% plan handles the rest without touching a card."];
+          if (score >= 50) return ["Guarded", "Your buffer covers a real chunk. Defense discounts plus a micro-payment plan close the gap safely."];
+          if (score >= 25) return ["Thin shield", "Your buffer won't carry this alone — the audit and assistance tiers below do the heavy lifting."];
+          return ["Exposed", "Right now this bill would push you toward high-APR debt. Work the tiers in order — charity care first, card never."];
+        }
+
+        /* ---------- render ---------- */
+        function render() {
+          var c = compute();
+          var bill = state.bill;
+
+          // audit rows
+          document.querySelectorAll(".audit-row").forEach(function (row) {
+            var key = row.getAttribute("data-audit");
+            var val = state.audit[key];
+            row.querySelectorAll(".yn button").forEach(function (b) {
+              b.setAttribute("aria-pressed", b.getAttribute("data-v") === val ? "true" : "false");
+            });
+            row.querySelectorAll("[data-when]").forEach(function (el) {
+              el.hidden = el.getAttribute("data-when") !== val;
+            });
+          });
+
+          // shield
+          $("shieldScore").textContent = c.shield;
+          $("shieldFill").style.width = c.shield + "%";
+          var st = shieldText(c.shield);
+          $("shieldLabel").textContent = st[0];
+          $("shieldDesc").textContent = st[1] +
+            (c.yesCount < 3 ? " Completing the Step 2 audit checks raises your rating." : "");
+
+          // step 3 outputs
+          $("eligBadge").textContent = c.elig.label;
+          $("eligDiscount").textContent = c.elig.lo + "–" + c.elig.hi + "% off";
+          $("eligNote").textContent =
+            "Household income is about " + Math.round(c.pctFPL) + "% of the 2025 federal poverty line for a household of " +
+            state.hhSize + " (" + money(FPL[state.hhSize]) + "). Most nonprofit hospitals forgive the most at or under 200%." +
+            (state.insurance === "uninsured" ? " Uninsured patients often qualify for an additional self-pay discount — ask for both." : "");
+          $("eligSavings").textContent = moneyRange(c.saveLo, c.saveHi);
+          $("ceilMonthly").textContent = money(c.ceilingMonthly) + " /mo";
+          $("ceilNote").textContent =
+            "Hospital hardship policies typically cap required payments near 5% of monthly income — for you that's up to " +
+            money(c.ceilingPerCheck) + " per paycheck. Never agree to more than this at 0% interest.";
+          $("ceilPerCheck").textContent = money(c.perCheck) + " /payday";
+          $("perCheckNote").textContent =
+            "That's " + money(c.monthlyFromChecks) + " a month across your pay schedule — a $10–$30 slice of every payday, sized to never be missed. Stretch up to your " +
+            money(c.ceilingPerCheck) + " ceiling anytime to finish faster.";
+
+          // tiers
+          [1, 2, 3].forEach(function (n) {
+            var t = $("tier" + n);
+            t.classList.toggle("primary", c.startTier === n);
+            t.querySelector("[data-start]").hidden = c.startTier !== n;
+          });
+          $("tier1Intro").textContent =
+            c.elig.tier === 1
+              ? "Your income puts you in " + c.elig.label.toLowerCase() + " territory for charity care — an estimated " +
+                c.elig.lo + "–" + c.elig.hi + "% of this bill (" + moneyRange(c.saveLo, c.saveHi) + ") could be written off entirely. This beats every payment plan."
+              : "Your income is above the typical charity-care range, but apply anyway if you're uninsured or the bill followed an emergency — exceptions and hardship reviews exist, and a denial costs you nothing.";
+          $("tier2Math").innerHTML =
+            "On a " + money(bill) + " bill, a 20–40% settlement means paying <span class='tier-num'>" +
+            moneyRange(bill * 0.6, bill * 0.8) + "</span> instead — saving <span class='tier-num'>" +
+            moneyRange(bill * 0.2, bill * 0.4) + "</span> before any interest ever accrues.";
+          $("tier3PerCheck").textContent = money(c.perCheck);
+          $("tier3Stretch").innerHTML =
+            "Headroom check: your hardship ceiling allows up to <span class='tier-num'>" + money(c.ceilingPerCheck) +
+            " per paycheck</span> — pitch the micro-payment first; raise it only if the hospital balks.";
+          $("tier3Months").textContent =
+            c.monthsHi > 0
+              ? (c.monthsLo === c.monthsHi ? "~" + c.monthsHi + " months" : "~" + c.monthsLo + "–" + c.monthsHi + " months")
+              : "—";
+
+          // blueprint
+          $("bpBill").textContent = money(bill);
+          $("bpInsurance").textContent = INS_LABEL[state.insurance];
+          $("bpDiscount").textContent =
+            c.disc.lo + "–" + c.disc.hi + "% (" + moneyRange(c.saveLo, c.saveHi) + ") via " + c.disc.source;
+          $("bpTarget").textContent = moneyRange(c.targetLo, c.targetHi);
+          $("bpCash").textContent = money(state.cash);
+          $("bpPerCheck").textContent = money(c.perCheck);
+          $("bpMonthly").textContent = money(c.monthlyFromChecks);
+          $("bpMonths").textContent =
+            c.monthsHi > 0
+              ? (c.monthsLo === c.monthsHi ? "~" + c.monthsHi : "~" + c.monthsLo + "–" + c.monthsHi)
+              : "—";
+          $("bpShield").textContent = c.shield + "/100 — " + st[0];
+
+          $("scriptText").textContent =
+            "\u201CHi, my name is ______, and I'm calling about account number ______, for " + money(bill) +
+            ". Before I pay anything, I need an itemized statement with the CPT codes for every charge. " +
+            "I'm also applying for financial assistance under your hospital's charity care policy — please send me the application and place my account on hold while it's reviewed, so nothing goes to collections. " +
+            "If I don't qualify for full assistance, I'm asking for a discount on the remaining balance, and a zero-percent payment plan. " +
+            "Based on my pay schedule, I can pay " + money(c.perCheck) + " every payday — that's about " + money(c.monthlyFromChecks) +
+            " a month — with no interest and no fees. Can you set that up today and send me the terms in writing?\u201D";
+        }
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

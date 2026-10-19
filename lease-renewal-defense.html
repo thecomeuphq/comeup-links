@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Lease Renewal Defense</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0f0d0a;
+        --bg-deep: #080706;
+        --panel: #1a1712;
+        --panel-2: #221e16;
+        --ink: #f2ead8;
+        --muted: #a99c80;
+        --line: #3a3423;
+        --accent: #ffb020;
+        --accent-2: #ff7a1a;
+        --accent-soft: rgba(255, 176, 32, 0.13);
+        --danger: #ff6b5e;
+        --ok: #7bc47f;
+        --hazard-a: #ffb020;
+        --hazard-b: #0f0d0a;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(1200px 500px at 50% -120px, var(--accent-soft), transparent 60%),
+          linear-gradient(180deg, var(--bg), var(--bg-deep));
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 56px; }
+      .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .hazard {
+        height: 10px;
+        background: repeating-linear-gradient(-45deg, var(--hazard-a) 0 14px, var(--hazard-b) 14px 28px);
+        border-radius: 2px;
+      }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 18px 2px 6px; }
+      .kicker {
+        display: inline-block;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 13px;
+        color: var(--accent-2);
+        border: 1px solid var(--accent-2);
+        padding: 3px 10px;
+        border-radius: 3px;
+        margin-bottom: 14px;
+      }
+      h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(38px, 9.5vw, 58px);
+        line-height: 0.98;
+        text-transform: uppercase;
+        margin: 0 0 12px;
+        letter-spacing: 0.01em;
+      }
+      h1 .hot { color: var(--accent-2); }
+      .lede { font-size: 17px; color: var(--muted); margin: 0 0 16px; max-width: 56ch; }
+      .lede strong { color: var(--ink); }
+      .hike-chip {
+        display: inline-flex; align-items: baseline; gap: 8px;
+        background: var(--panel); border: 1px solid var(--line);
+        border-left: 4px solid var(--accent-2);
+        padding: 8px 14px; border-radius: 4px; font-size: 14px;
+      }
+      .hike-chip .big { font-size: 20px; font-weight: 700; color: var(--accent-2); }
+
+      /* ---------- Steps ---------- */
+      .step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        margin-top: 26px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .step-head {
+        display: flex; align-items: center; gap: 12px;
+        padding: 14px 18px 10px;
+      }
+      .step-num {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; font-size: 15px; letter-spacing: 0.08em;
+        background: var(--ink); color: var(--bg);
+        padding: 3px 10px; border-radius: 3px; white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600; font-size: 24px; letter-spacing: 0.03em;
+        text-transform: uppercase; margin: 0;
+      }
+      .step-body { padding: 4px 18px 20px; }
+      .step-note { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+      .field label {
+        display: block; font-size: 13px; font-weight: 600;
+        letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .money {
+        display: flex; align-items: center;
+        background: var(--panel-2); border: 1px solid var(--line);
+        border-radius: 6px; padding: 0 12px;
+      }
+      .money span { color: var(--accent-2); font-weight: 700; margin-right: 6px; }
+      .money input, .plain input {
+        width: 100%; min-width: 0; border: 0; background: transparent;
+        color: var(--ink); font-family: "IBM Plex Mono", monospace;
+        font-size: 19px; font-weight: 600; padding: 11px 0; outline: none;
+      }
+      .plain {
+        display: flex; align-items: center;
+        background: var(--panel-2); border: 1px solid var(--line);
+        border-radius: 6px; padding: 0 12px;
+      }
+      .plain .unit { color: var(--muted); font-size: 13px; font-weight: 600; margin-left: 6px; white-space: nowrap; }
+      .money:focus-within, .plain:focus-within { border-color: var(--accent-2); box-shadow: 0 0 0 2px var(--accent-soft); }
+
+      .seg {
+        display: flex; gap: 6px; flex-wrap: wrap;
+      }
+      .seg button {
+        flex: 1 1 auto; cursor: pointer;
+        font-family: "Barlow", sans-serif; font-size: 14px; font-weight: 600;
+        color: var(--muted); background: var(--panel-2);
+        border: 1px solid var(--line); border-radius: 6px;
+        padding: 10px 8px;
+      }
+      .seg button[aria-pressed="true"] {
+        color: var(--bg); background: var(--accent-2); border-color: var(--accent-2);
+      }
+      .field.full { grid-column: 1 / -1; }
+
+      .readout {
+        margin-top: 16px; padding: 12px 14px;
+        background: var(--accent-soft); border: 1px dashed var(--accent-2);
+        border-radius: 6px; font-size: 15px;
+      }
+      .readout strong { color: var(--accent-2); }
+      .alert {
+        margin-top: 14px; padding: 12px 14px; border-radius: 6px;
+        background: rgba(255, 107, 94, 0.12); border: 1px solid var(--danger);
+        color: var(--ink); font-size: 15px; display: none;
+      }
+      .alert.show { display: block; }
+      .alert strong { color: var(--danger); text-transform: uppercase; letter-spacing: 0.04em; font-size: 13px; }
+
+      /* ---------- Engine stats ---------- */
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      @media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }
+      .stat {
+        background: var(--panel-2); border: 1px solid var(--line);
+        border-top: 4px solid var(--accent-2);
+        border-radius: 6px; padding: 14px;
+      }
+      .stat .lbl { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .stat .val { font-family: "IBM Plex Mono", monospace; font-size: 30px; font-weight: 700; margin: 4px 0 2px; }
+      .stat .sub { font-size: 13px; color: var(--muted); }
+      .formula { font-size: 12.5px; color: var(--muted); margin-top: 14px; }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        border: 1px solid var(--line); border-radius: 8px;
+        padding: 16px; margin-top: 14px; background: var(--panel-2);
+        opacity: 0.55;
+      }
+      .tier.active { opacity: 1; border-color: var(--accent-2); box-shadow: 0 0 0 2px var(--accent-soft); background: var(--panel); }
+      .tier-tag {
+        display: inline-block; font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; letter-spacing: 0.1em; font-size: 13px;
+        padding: 2px 9px; border-radius: 3px; text-transform: uppercase;
+      }
+      .t1 .tier-tag { background: var(--danger); color: #fff; }
+      .t2 .tier-tag { background: var(--accent-2); color: #fff; }
+      .t3 .tier-tag { background: var(--ok); color: #fff; }
+      .tier h3 {
+        font-family: "Barlow Condensed", sans-serif; font-size: 22px;
+        text-transform: uppercase; letter-spacing: 0.02em; margin: 8px 0 4px;
+      }
+      .tier p { margin: 6px 0; font-size: 15px; }
+      .tier ul { margin: 8px 0 4px; padding-left: 20px; font-size: 15px; }
+      .tier li { margin: 4px 0; }
+      .tier .your-tier {
+        display: none; float: right; font-size: 12px; font-weight: 700;
+        letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-2);
+      }
+      .tier.active .your-tier { display: inline; }
+      .tier .callout {
+        margin-top: 10px; padding: 10px 12px; border-radius: 6px;
+        background: var(--accent-soft); font-size: 15px;
+      }
+      .tier .callout strong { color: var(--accent-2); }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 30px; border: 2px solid var(--accent-2); border-radius: 10px;
+        background: var(--panel); overflow: hidden; box-shadow: var(--shadow);
+      }
+      .bp-head { padding: 18px 18px 6px; }
+      .bp-head h2 {
+        font-family: "Barlow Condensed", sans-serif; font-size: 30px;
+        text-transform: uppercase; margin: 0; letter-spacing: 0.02em;
+      }
+      .bp-head p { color: var(--muted); margin: 2px 0 0; font-size: 14px; }
+      .score-row {
+        display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+        padding: 14px 18px 4px;
+      }
+      .score-num {
+        font-family: "IBM Plex Mono", monospace; font-size: 64px; font-weight: 700;
+        line-height: 1; color: var(--accent-2);
+      }
+      .score-meta { flex: 1 1 220px; min-width: 200px; }
+      .score-meta .lbl { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+      .score-meta .verdict { font-family: "Barlow Condensed", sans-serif; font-size: 24px; text-transform: uppercase; margin: 2px 0 8px; }
+      .gauge { height: 12px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+      .gauge > div { height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); width: 0%; transition: width 0.4s ease; }
+      .bp-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 16px; }
+      @media (min-width: 561px) { .bp-stats { grid-template-columns: repeat(4, 1fr); } }
+      .bp-stat { background: var(--panel); padding: 12px 14px; }
+      .bp-stat .lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .bp-stat .val { font-family: "IBM Plex Mono", monospace; font-size: 21px; font-weight: 700; margin-top: 2px; }
+      .bp-body { padding: 16px 18px 20px; }
+      .bp-body h3 {
+        font-family: "Barlow Condensed", sans-serif; font-size: 20px;
+        text-transform: uppercase; margin: 0 0 8px; letter-spacing: 0.03em;
+      }
+      .letter {
+        white-space: pre-wrap; word-break: break-word;
+        background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px;
+        padding: 14px; font-size: 14px; line-height: 1.55;
+        font-family: "Barlow", sans-serif; margin: 0;
+      }
+      .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+      button.copy {
+        cursor: pointer; border: 0; border-radius: 6px;
+        font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+        letter-spacing: 0.06em; text-transform: uppercase; font-size: 16px;
+        padding: 12px 18px; background: var(--accent-2); color: #fff;
+      }
+      button.copy.secondary { background: transparent; color: var(--accent-2); border: 1px solid var(--accent-2); }
+      button.copy:active { transform: translateY(1px); }
+      .tenure-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+      @media (max-width: 560px) { .tenure-row { grid-template-columns: 1fr; } }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 26px; }
+      @media (max-width: 560px) { .next-grid { grid-template-columns: 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+        padding: 18px;
+      }
+      .next-card .tag { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-2); }
+      .next-card h3 { font-family: "Barlow Condensed", sans-serif; font-size: 24px; text-transform: uppercase; margin: 6px 0 4px; }
+      .next-card p { color: var(--muted); font-size: 14.5px; margin: 0; }
+      .next-card .go { color: var(--accent-2); font-weight: 700; margin-top: 10px; display: inline-block; }
+      .cta {
+        margin-top: 26px; border-radius: 10px; overflow: hidden;
+        border: 1px solid var(--accent-2); background: var(--panel);
+      }
+      .cta-body { padding: 20px 18px; }
+      .cta-body h3 { font-family: "Barlow Condensed", sans-serif; font-size: 26px; text-transform: uppercase; margin: 0 0 6px; line-height: 1.1; }
+      .cta-body p { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+      .cta a.btn {
+        display: inline-block; text-decoration: none;
+        font-family: "Barlow Condensed", sans-serif; font-weight: 700;
+        letter-spacing: 0.06em; text-transform: uppercase; font-size: 17px;
+        background: var(--accent-2); color: #fff; padding: 12px 20px; border-radius: 6px;
+      }
+      .faq { margin-top: 30px; }
+      .faq h2 { font-family: "Barlow Condensed", sans-serif; font-size: 28px; text-transform: uppercase; margin: 0 0 10px; }
+      details {
+        background: var(--panel); border: 1px solid var(--line);
+        border-radius: 8px; padding: 14px 16px; margin-top: 10px;
+      }
+      summary {
+        cursor: pointer; font-weight: 700; font-size: 16.5px;
+        font-family: "Barlow Condensed", sans-serif; letter-spacing: 0.02em;
+        text-transform: uppercase; list-style: none;
+      }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "+"; float: right; color: var(--accent-2); font-size: 20px; }
+      details[open ] summary::after { content: "–"; }
+      details p { color: var(--muted); font-size: 15px; margin: 10px 0 2px; }
+      details p strong { color: var(--ink); }
+      .fineprint { color: var(--muted); font-size: 13px; margin-top: 28px; text-align: center; }
+      @media (prefers-reduced-motion: reduce) { .gauge > div { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hazard" aria-hidden="true"></div>
+
+      <header class="hero">
+        <span class="kicker">Lease Renewal Defense</span>
+        <h1>Your landlord raised the rent <span class="hot">$200</span>.<br />Here&rsquo;s your counter-move.</h1>
+        <p class="lede">A renewal spike isn&rsquo;t a bill &mdash; it&rsquo;s an opening offer. Run your numbers, measure the damage, and get the exact protocol for your situation: <strong>negotiate it down, sink a buffer, or stabilize and redirect the cash.</strong></p>
+        <div class="hike-chip">Your hike: <span class="big mono" id="hikeChip">+$200/mo</span> <span id="hikeChipSub">&mdash; that&rsquo;s $2,400 a year walking out the door.</span></div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1">Rent Profile</h2></div>
+        <div class="step-body">
+          <p class="step-note">Use <strong>guaranteed</strong> pay only &mdash; base hours, no overtime, no tips, no &ldquo;good week&rdquo; money. Defense is built on the floor, not the ceiling.</p>
+          <div class="grid">
+            <div class="field">
+              <label for="curRent">Current monthly rent</label>
+              <div class="money"><span>$</span><input id="curRent" type="number" inputmode="decimal" min="0" value="1200" /></div>
+            </div>
+            <div class="field">
+              <label for="newRent">Proposed renewal rent</label>
+              <div class="money"><span>$</span><input id="newRent" type="number" inputmode="decimal" min="0" value="1400" /></div>
+            </div>
+            <div class="field">
+              <label for="netPay">Guaranteed net pay / paycheck</label>
+              <div class="money"><span>$</span><input id="netPay" type="number" inputmode="decimal" min="0" value="1250" /></div>
+            </div>
+            <div class="field">
+              <label>Pay frequency</label>
+              <div class="seg" role="group" aria-label="Pay frequency">
+                <button type="button" id="freqWeekly" aria-pressed="false">Weekly</button>
+                <button type="button" id="freqBi" aria-pressed="true">Bi-Weekly</button>
+              </div>
+            </div>
+          </div>
+          <div class="readout">Monthly guaranteed net pay: <strong class="mono" id="monthlyPayOut">$2,708</strong> <span id="monthlyPaySub">(bi-weekly &times; 26 &divide; 12)</span>. Every number below is built on this floor.</div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2">Lease Scan</h2></div>
+        <div class="step-body">
+          <p class="step-note">How much time do you have, how big is the hit, and did your landlord even follow the notice rules? A sloppy notice is leverage.</p>
+          <div class="grid">
+            <div class="field">
+              <label for="daysLeft">Days left on current lease</label>
+              <div class="plain"><input id="daysLeft" type="number" inputmode="numeric" min="0" value="60" /><span class="unit">days</span></div>
+            </div>
+            <div class="field">
+              <label for="increase">Monthly increase (from Step 1)</label>
+              <div class="money"><span>$</span><input id="increase" type="number" inputmode="decimal" min="0" value="200" /></div>
+            </div>
+            <div class="field full">
+              <label>Renewal notice status</label>
+              <div class="seg" role="group" aria-label="Notice compliance">
+                <button type="button" data-notice="30" aria-pressed="false">30-day notice given</button>
+                <button type="button" data-notice="60" aria-pressed="true">60-day notice given</button>
+                <button type="button" data-notice="late" aria-pressed="false">Notice late or missing</button>
+              </div>
+            </div>
+          </div>
+          <div class="readout" id="windowReadout">You have <strong class="mono" id="checksLeftOut">4 paychecks</strong> before the new rate hits. That&rsquo;s your build window.</div>
+          <div class="alert" id="noticeAlert" role="alert">
+            <strong>Leverage detected</strong><br />
+            <span id="noticeAlertText">The renewal notice didn&rsquo;t meet the required window. In many states and under many leases, a late or missing notice means the increase can&rsquo;t take effect on the stated date &mdash; and it&rsquo;s a strong opener in negotiation. The counter-offer letter below already calls it out.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head"><span class="step-num">STEP 3</span><h2 id="s3">Burden Engine</h2></div>
+        <div class="step-body">
+          <div class="stats">
+            <div class="stat">
+              <div class="lbl">Housing Burden Index</div>
+              <div class="val mono" id="burdenOut">51.7%</div>
+              <div class="sub" id="burdenSub">of guaranteed net pay goes to the new rent</div>
+            </div>
+            <div class="stat">
+              <div class="lbl">Annual Outflow Surge</div>
+              <div class="val mono" id="surgeOut">$2,400</div>
+              <div class="sub">extra dollars out the door over 12 months</div>
+            </div>
+            <div class="stat">
+              <div class="lbl">Per-Paycheck Buffer Target</div>
+              <div class="val mono" id="bufferOut">$150</div>
+              <div class="sub" id="bufferSub">per paycheck banks a 3-month hike cushion before day one</div>
+            </div>
+          </div>
+          <p class="formula">Burden Index = proposed rent &divide; monthly guaranteed net pay &times; 100 &nbsp;&bull;&nbsp; Surge = monthly increase &times; 12 &nbsp;&bull;&nbsp; Buffer target = (increase &times; 3 months) &divide; paychecks left in your window. The 3-month cushion is what turns the first quarter at the new rate from a scramble into a non-event.</p>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head"><span class="step-num">STEP 4</span><h2 id="s4">Defense Strategy</h2></div>
+        <div class="step-body">
+          <p class="step-note">Your burden index picks the play. Your tier is lit up &mdash; the other two stay here so you can see the whole board.</p>
+
+          <div class="tier t1" id="tier1">
+            <span class="tier-tag">Tier 1 &middot; Severe &middot; Over 45%</span><span class="your-tier">Your play &#9654;</span>
+            <h3>Landlord Counter-Offer Protocol</h3>
+            <p>At this burden, signing as-is means rent eats your guaranteed pay before utilities and debt get a vote. Don&rsquo;t sign the first number &mdash; counter it in writing.</p>
+            <ul>
+              <li>Counter at a <strong>2&ndash;3% increase</strong> over your current rent, not a dollar off their ask. For you that&rsquo;s <strong class="mono" id="counterRentOut">$1,230/mo</strong>.</li>
+              <li>Lead with your record: tenure + zero late payments = zero turnover cost for them. A vacant month costs a landlord more than your discount.</li>
+              <li>Offer speed: &ldquo;Signed this week on a 12-month term&rdquo; in exchange for the capped rate.</li>
+              <li>If they won&rsquo;t move: use the window to fund a move-out deposit instead &mdash; <strong class="mono" id="depositOut">$350/paycheck</strong> banks one month at the new rate before your lease ends.</li>
+            </ul>
+            <div class="callout">Send the letter in the Blueprint below. Written beats verbal &mdash; it creates a paper trail and forces a real answer.</div>
+          </div>
+
+          <div class="tier t2" id="tier2">
+            <span class="tier-tag">Tier 2 &middot; Moderate &middot; 30&ndash;45%</span><span class="your-tier">Your play &#9654;</span>
+            <h3>Payday Lease-Sinking Protocol</h3>
+            <p>The new rate is survivable &mdash; if the increase never gets a chance to ambush a single paycheck. Start paying the higher rent to <em>yourself</em>, now, while you&rsquo;re still on the old rate.</p>
+            <ul>
+              <li>Every payday, auto-move <strong class="mono" id="sinkOut">$60</strong> into a separate buffer account before anything else touches the money.</li>
+              <li>You&rsquo;re rehearsing the new rent at the old rate &mdash; by renewal day the payment is already muscle memory.</li>
+              <li>Keep going after renewal until the buffer holds a full 3 months of the increase, then redirect the same auto-transfer to debt.</li>
+            </ul>
+            <div class="callout" id="sinkCallout">At $60/paycheck, your 3-month cushion is banked in about 10 paychecks.</div>
+          </div>
+
+          <div class="tier t3" id="tier3">
+            <span class="tier-tag">Tier 3 &middot; Sustainable &middot; Under 30%</span><span class="your-tier">Your play &#9654;</span>
+            <h3>Lease Stabilization Protocol</h3>
+            <p>The hike stings but the math holds. Now the move is locking in certainty and putting the headroom to work.</p>
+            <ul>
+              <li>Ask for a <strong>18&ndash;24 month term</strong> at the new rate &mdash; trade a longer commitment for no second hike next year.</li>
+              <li>Get any cap on the <em>next</em> renewal in writing before you sign.</li>
+              <li>Route your headroom &mdash; the gap between the new rent and the 30% line &mdash; straight to your highest-interest debt.</li>
+            </ul>
+            <div class="callout" id="freedCallout">Headroom at the new rate: <strong class="mono" id="freedOut">$0/mo</strong> under the 30% line. That&rsquo;s debt-payoff ammo, not lifestyle creep.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bpTitle">
+        <div class="hazard" aria-hidden="true"></div>
+        <div class="bp-head">
+          <h2 id="bpTitle">Lease Renewal Defense Blueprint</h2>
+          <p>Screenshot this. These are your numbers and your next move.</p>
+        </div>
+        <div class="score-row">
+          <div class="score-num mono" id="scoreOut">33</div>
+          <div class="score-meta">
+            <div class="lbl">Housing Shock Resistance Score</div>
+            <div class="verdict" id="scoreVerdict">At Risk</div>
+            <div class="gauge" aria-hidden="true"><div id="scoreBar"></div></div>
+          </div>
+        </div>
+        <div class="bp-stats">
+          <div class="bp-stat"><div class="lbl">Burden Index</div><div class="val mono" id="bpBurden">51.7%</div></div>
+          <div class="bp-stat"><div class="lbl">Annual Surge</div><div class="val mono" id="bpSurge">$2,400</div></div>
+          <div class="bp-stat"><div class="lbl">Buffer / Paycheck</div><div class="val mono" id="bpBuffer">$150</div></div>
+          <div class="bp-stat"><div class="lbl">Counter-Offer Rent</div><div class="val mono" id="bpCounter">$1,230</div></div>
+        </div>
+        <div class="bp-body">
+          <h3>Your counter-move: <span id="bpTierName">Landlord Counter-Offer Protocol</span></h3>
+          <div class="tenure-row">
+            <div class="field">
+              <label for="tenure">Years you&rsquo;ve lived here</label>
+              <div class="plain"><input id="tenure" type="number" inputmode="numeric" min="0" value="2" /><span class="unit">years</span></div>
+            </div>
+            <div class="field">
+              <label for="lateCount">Late payments, ever</label>
+              <div class="plain"><input id="lateCount" type="number" inputmode="numeric" min="0" value="0" /><span class="unit">late</span></div>
+            </div>
+          </div>
+          <pre class="letter" id="letterText"></pre>
+          <div class="btn-row">
+            <button type="button" class="copy" id="copyLetter">Copy the letter</button>
+            <button type="button" class="copy secondary" id="copySummary">Copy blueprint summary</button>
+          </div>
+        </div>
+        <div class="hazard" aria-hidden="true"></div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/housing-affordability-engine.html" target="_blank" rel="noopener">
+          <span class="tag">Next move</span>
+          <h3>Housing Affordability Engine</h3>
+          <p>Thinking about moving instead? See the maximum rent your guaranteed pay can actually carry &mdash; before you sign anything.</p>
+          <span class="go">Run your max rent &rarr;</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" target="_blank" rel="noopener">
+          <span class="tag">Next move</span>
+          <h3>Paycheck Budget Splitter</h3>
+          <p>Split every paycheck on purpose: rent, buffer, bills, debt. Give the buffer target above a permanent line in the split.</p>
+          <span class="go">Split my paycheck &rarr;</span>
+        </a>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta">
+        <div class="hazard" aria-hidden="true"></div>
+        <div class="cta-body">
+          <h3>A buffer turns a rent hike from a crisis into a line item.</h3>
+          <p>The <strong>Blue-Collar Buffer Binder</strong> and <strong>Zero-Based Budgeting Binder</strong> turn the plan on this page into printable, payday-by-payday worksheets &mdash; buffer trackers, sinking-fund logs, and a budget that assigns every dollar before the landlord gets a say.</p>
+          <a class="btn" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get the binders on Gumroad &rarr;</a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <section class="faq" aria-labelledby="faqTitle">
+        <h2 id="faqTitle">Straight Answers</h2>
+        <details>
+          <summary>Can you actually negotiate rent?</summary>
+          <p>Yes &mdash; a renewal offer is an asking price, not a court order. Landlords negotiate because turnover is expensive: a vacant unit, cleaning, repairs, and re-listing commonly cost a month&rsquo;s rent or more. Your leverage is a clean payment record and a fast signature on a longer term. <strong>Counter in writing, counter with a specific number, and give them a deadline.</strong> The worst realistic outcome is &ldquo;no&rdquo; &mdash; and you&rsquo;re exactly where you started.</p>
+        </details>
+        <details>
+          <summary>What if the notice was late or missing?</summary>
+          <p>Most leases and many state and local laws require advance written notice &mdash; commonly 30 or 60 days &mdash; before a rent increase or non-renewal takes effect. If your landlord missed that window, the increase may not be enforceable on the date they named, which buys you time at the old rate. <strong>Don&rsquo;t just ignore the letter:</strong> respond in writing, note the notice date, and use the extra runway to negotiate or fund a move. Notice rules vary a lot by state and city, so check your lease and local tenant law &mdash; many areas have free legal-aid hotlines for exactly this.</p>
+        </details>
+        <details>
+          <summary>When does moving beat paying?</summary>
+          <p>Run the honest math. Moving costs roughly one month&rsquo;s rent as a deposit, plus application fees, movers or a truck, and overlap days &mdash; often $800&ndash;$2,000+ all-in. <strong>If a comparable place saves you more per month than that total divided by 12, moving wins within the first year.</strong> Moving also wins when the burden index stays over 45% even after a counter-offer &mdash; at that point the unit, not the budget, is the problem. If the gap is small and your counter lands, staying and banking the buffer is usually the cheaper fight.</p>
+        </details>
+      </section>
+
+      <p class="fineprint">Estimates only &mdash; not legal or financial advice. Notice periods and tenant protections vary by state, city, and lease. Check your lease and local law before acting on a notice dispute.</p>
+    </div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var fmt = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+        var fmt2 = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        var state = { freq: "bi", notice: "60" };
+
+        function num(id) {
+          var v = parseFloat($(id).value);
+          return isNaN(v) || v < 0 ? 0 : v;
+        }
+        function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+        // Frequency segmented control
+        function setFreq(f) {
+          state.freq = f;
+          $("freqWeekly").setAttribute("aria-pressed", f === "weekly" ? "true" : "false");
+          $("freqBi").setAttribute("aria-pressed", f === "bi" ? "true" : "false");
+          update();
+        }
+        $("freqWeekly").addEventListener("click", function () { setFreq("weekly"); });
+        $("freqBi").addEventListener("click", function () { setFreq("bi"); });
+
+        // Notice segmented control
+        var noticeBtns = document.querySelectorAll("[data-notice]");
+        noticeBtns.forEach(function (b) {
+          b.addEventListener("click", function () {
+            state.notice = b.getAttribute("data-notice");
+            noticeBtns.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+            update();
+          });
+        });
+
+        // Keep the increase field synced with Step 1 unless the user overrides it directly.
+        var increaseTouched = false;
+        $("increase").addEventListener("input", function () { increaseTouched = true; update(); });
+        ["curRent", "newRent"].forEach(function (id) {
+          $(id).addEventListener("input", function () {
+            if (!increaseTouched) {
+              $("increase").value = Math.max(0, num("newRent") - num("curRent"));
+            }
+            update();
+          });
+        });
+        ["netPay", "daysLeft", "tenure", "lateCount"].forEach(function (id) {
+          $(id).addEventListener("input", update);
+        });
+
+        function buildLetter(d) {
+          var lines = [];
+          lines.push("Dear Property Manager,");
+          lines.push("");
+          lines.push("I'm writing about the renewal offer for my unit, which raises my rent from " +
+            fmt.format(d.cur) + " to " + fmt.format(d.proposed) + " per month — an increase of " +
+            fmt.format(d.increase) + " (" + d.pctIncrease.toFixed(1) + "%) in a single step.");
+          lines.push("");
+          var tenureTxt = d.tenure === 1 ? "1 year" : d.tenure + " years";
+          var recordTxt = d.late === 0
+            ? "I have paid rent on time every single month — zero late payments"
+            : "I have a strong on-time payment record over that span";
+          lines.push("I've lived here for " + tenureTxt + ", and " + recordTxt + ". A tenant who pays in full, on time, every month saves you the real costs of turnover: a vacant month, cleaning, repairs, and re-listing — which typically add up to more than the difference we're discussing.");
+          lines.push("");
+          lines.push("I'd like to renew at " + fmt.format(d.counter) + " per month — a 2.5% increase over my current rent — on a 12-month term, and I'm ready to sign this week. That gives you a guaranteed year of on-time income with zero vacancy risk.");
+          if (d.noticeBad) {
+            lines.push("");
+            lines.push("One housekeeping item: the renewal notice reached me inside the required notice window, so I'm hoping we can settle the rate and timeline in a way that works for both of us before dates become an issue.");
+          }
+          lines.push("");
+          var byDate = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
+          var byStr = byDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+          lines.push("Please let me know by " + byStr + " whether " + fmt.format(d.counter) + " works. I value living here and would rather renew than move — I just need the number to stay within what my guaranteed pay can carry.");
+          lines.push("");
+          lines.push("Thank you for your time,");
+          lines.push("[Your name] · Unit [#]");
+          return lines.join("\n");
+        }
+
+        var last = null;
+
+        function update() {
+          var cur = num("curRent");
+          var proposed = num("newRent");
+          var net = num("netPay");
+          var days = Math.floor(num("daysLeft"));
+          var increase = num("increase");
+          var tenure = Math.floor(num("tenure"));
+          var late = Math.floor(num("lateCount"));
+
+          var periodsPerYear = state.freq === "weekly" ? 52 : 26;
+          var periodDays = state.freq === "weekly" ? 7 : 14;
+          var monthlyPay = net * periodsPerYear / 12;
+
+          var burden = monthlyPay > 0 ? (proposed / monthlyPay) * 100 : 0;
+          var curBurden = monthlyPay > 0 ? (cur / monthlyPay) * 100 : 0;
+          var surge = increase * 12;
+          var checksLeft = Math.max(1, Math.round(days / periodDays));
+          var bufferGoal = increase * 3;
+          var bufferPerCheck = checksLeft > 0 ? bufferGoal / checksLeft : 0;
+          var depositPerCheck = checksLeft > 0 ? proposed / checksLeft : 0;
+          var counter = Math.round(cur * 1.025);
+          var pctIncrease = cur > 0 ? (increase / cur) * 100 : 0;
+
+          // Tier
+          var tier = burden > 45 ? 1 : (burden >= 30 ? 2 : 3);
+
+          // Shock Resistance Score: burden-driven, with a penalty when the
+          // required buffer eats more than 10% of a paycheck.
+          var score = 100 - Math.max(0, burden - 25) * 2.5;
+          var bufferPct = net > 0 ? (bufferPerCheck / net) * 100 : 0;
+          if (bufferPct > 10) score -= Math.min(15, bufferPct - 10);
+          if (state.notice === "late") score += 4; // leverage: landlord's timeline problem, not yours
+          score = Math.round(clamp(score, 0, 100));
+          var verdict = score >= 80 ? "Fortified" : score >= 60 ? "Stable" : score >= 40 ? "Strained" : score >= 20 ? "At Risk" : "Critical";
+
+          // Notice compliance: late/missing selected, or the stated window exceeds days left.
+          var noticeBad = state.notice === "late" ||
+            (state.notice === "30" && days < 30) ||
+            (state.notice === "60" && days < 60);
+
+          // ---- Render: hero + step 1/2 readouts
+          $("hikeChip").textContent = "+" + fmt.format(increase) + "/mo";
+          $("hikeChipSub").textContent = "— that's " + fmt.format(surge) + " a year walking out the door.";
+          $("monthlyPayOut").textContent = fmt.format(monthlyPay);
+          $("monthlyPaySub").textContent = state.freq === "weekly" ? "(weekly × 52 ÷ 12)" : "(bi-weekly × 26 ÷ 12)";
+          $("checksLeftOut").textContent = checksLeft + (checksLeft === 1 ? " paycheck" : " paychecks");
+          $("noticeAlert").classList.toggle("show", noticeBad);
+          if (noticeBad && state.notice !== "late") {
+            $("noticeAlertText").textContent = "You selected a " + state.notice + "-day notice, but only " + days + " days remain on your lease — the notice window and the calendar don't line up. In many states and under many leases, that means the increase can't take effect on the stated date, and it's a strong opener in negotiation. The counter-offer letter below already calls it out.";
+          } else if (noticeBad) {
+            $("noticeAlertText").textContent = "The renewal notice was late or never arrived. In many states and under many leases, a late or missing notice means the increase can't take effect on the stated date — and it's a strong opener in negotiation. The counter-offer letter below already calls it out.";
+          }
+
+          // ---- Render: engine
+          $("burdenOut").textContent = burden.toFixed(1) + "%";
+          $("burdenSub").textContent = "of guaranteed net pay goes to the new rent (now " + curBurden.toFixed(1) + "%)";
+          $("surgeOut").textContent = fmt.format(surge);
+          $("bufferOut").textContent = fmt.format(Math.round(bufferPerCheck));
+          $("bufferSub").textContent = "per paycheck banks a " + fmt.format(bufferGoal) + " cushion (3 months of the hike) across your " + checksLeft + " remaining paychecks";
+
+          // ---- Render: tiers
+          [1, 2, 3].forEach(function (t) {
+            $("tier" + t).classList.toggle("active", t === tier);
+          });
+          $("counterRentOut").textContent = fmt.format(counter) + "/mo";
+          $("depositOut").textContent = fmt.format(Math.round(depositPerCheck)) + "/paycheck";
+          var sink = bufferPerCheck > 0 ? clamp(Math.round(bufferPerCheck), 25, 60) : 25;
+          if (bufferPerCheck > 0 && bufferPerCheck < 25) sink = Math.max(1, Math.round(bufferPerCheck));
+          $("sinkOut").textContent = fmt.format(sink);
+          var sinkChecks = sink > 0 ? Math.ceil(bufferGoal / sink) : 0;
+          $("sinkCallout").innerHTML = bufferGoal > 0
+            ? "At <strong>" + fmt.format(sink) + "/paycheck</strong>, your 3-month cushion (" + fmt.format(bufferGoal) + ") is banked in about " + sinkChecks + " paychecks."
+            : "No increase to sink against — keep the auto-transfer habit pointed at debt instead.";
+          var headroom = Math.max(0, monthlyPay * 0.30 - proposed);
+          $("freedCallout").innerHTML = headroom > 0
+            ? "Headroom at the new rate: <strong class=\"mono\">" + fmt.format(Math.round(headroom)) + "/mo</strong> under the 30% line. That's debt-payoff ammo, not lifestyle creep."
+            : "No headroom under the 30% line at this rate — stabilization here means negotiating the term and the next-renewal cap in writing.";
+
+          // ---- Render: blueprint
+          $("scoreOut").textContent = score;
+          $("scoreVerdict").textContent = verdict;
+          $("scoreBar").style.width = score + "%";
+          $("bpBurden").textContent = burden.toFixed(1) + "%";
+          $("bpSurge").textContent = fmt.format(surge);
+          $("bpBuffer").textContent = fmt.format(Math.round(bufferPerCheck));
+          $("bpCounter").textContent = fmt.format(counter);
+          $("bpTierName").textContent = tier === 1 ? "Landlord Counter-Offer Protocol" : tier === 2 ? "Payday Lease-Sinking Protocol" : "Lease Stabilization Protocol";
+
+          var d = {
+            cur: cur, proposed: proposed, increase: increase, pctIncrease: pctIncrease,
+            counter: counter, tenure: tenure, late: late, noticeBad: noticeBad
+          };
+          $("letterText").textContent = buildLetter(d);
+
+          last = {
+            burden: burden, surge: surge, bufferPerCheck: bufferPerCheck, counter: counter,
+            score: score, verdict: verdict, tier: tier, increase: increase, days: days,
+            checksLeft: checksLeft, monthlyPay: monthlyPay, proposed: proposed, cur: cur
+          };
+        }
+
+        function copyText(text, btn, doneLabel) {
+          var original = btn.textContent;
+          function done() {
+            btn.textContent = doneLabel;
+            setTimeout(function () { btn.textContent = original; }, 2000);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); } catch (e) {}
+            document.body.removeChild(ta);
+            done();
+          }
+        }
+
+        $("copyLetter").addEventListener("click", function () {
+          copyText($("letterText").textContent, this, "Letter copied ✓");
+        });
+        $("copySummary").addEventListener("click", function () {
+          if (!last) return;
+          var tierName = last.tier === 1 ? "Tier 1 — Landlord Counter-Offer Protocol" : last.tier === 2 ? "Tier 2 — Payday Lease-Sinking Protocol" : "Tier 3 — Lease Stabilization Protocol";
+          var s = [
+            "LEASE RENEWAL DEFENSE BLUEPRINT",
+            "Current rent: " + fmt.format(last.cur) + " → Proposed: " + fmt.format(last.proposed) + " (+" + fmt.format(last.increase) + "/mo)",
+            "Housing Burden Index: " + last.burden.toFixed(1) + "% of guaranteed net pay",
+            "Annual Outflow Surge: " + fmt.format(last.surge),
+            "Per-Paycheck Buffer Target: " + fmt.format(Math.round(last.bufferPerCheck)) + " (" + last.checksLeft + " paychecks left in the window)",
+            "Counter-Offer Rent (2.5% cap): " + fmt.format(last.counter),
+            "Housing Shock Resistance Score: " + last.score + "/100 — " + last.verdict,
+            "Strategy: " + tierName
+          ].join("\n");
+          copyText(s, this, "Summary copied ✓");
+        });
+
+        update();
+      })();
+    </script>
+  </body>
+</html>

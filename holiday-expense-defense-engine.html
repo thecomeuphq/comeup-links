@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Holiday Expense Defense Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0b0b0d;
+        --bg-2: #101013;
+        --panel: #16161a;
+        --panel-2: #1d1d22;
+        --line: #2b2b31;
+        --line-soft: #232328;
+        --ink: #f4f1ea;
+        --muted: #a8a49a;
+        --faint: #77736a;
+        --amber: #ffb02e;
+        --amber-deep: #f08c00;
+        --orange: #ff6b1a;
+        --green: #43d17c;
+        --red: #ff5252;
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(900px 480px at 85% -10%, rgba(255, 140, 0, 0.10), transparent 60%),
+          radial-gradient(700px 420px at -10% 30%, rgba(255, 176, 46, 0.05), transparent 55%),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 920px; margin: 0 auto; padding: 20px 16px 56px; }
+      .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 14px 0 6px; }
+      .hero-tag {
+        display: inline-block;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+        font-size: 13px; color: var(--amber);
+        border: 1px solid rgba(255, 176, 46, 0.45);
+        padding: 4px 10px; border-radius: 4px;
+        background: rgba(255, 176, 46, 0.07);
+      }
+      h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; text-transform: uppercase;
+        font-size: clamp(38px, 9vw, 62px);
+        line-height: 0.98; letter-spacing: 0.01em;
+        margin: 14px 0 10px;
+      }
+      h1 .amp { color: var(--amber); }
+      .hero p { color: var(--muted); max-width: 620px; margin: 0 0 6px; font-size: 17px; }
+      .hero p strong { color: var(--ink); }
+
+      /* ---------- Panels / steps ---------- */
+      .panel {
+        background: linear-gradient(180deg, var(--panel-2), var(--panel));
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 20px 18px 22px;
+        margin-top: 22px;
+      }
+      .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+      .step-num {
+        flex: 0 0 auto;
+        width: 38px; height: 38px;
+        display: grid; place-items: center;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700; font-size: 20px; color: #141414;
+        background: linear-gradient(160deg, var(--amber), var(--orange));
+        border-radius: 6px;
+        box-shadow: 0 2px 10px rgba(255, 140, 0, 0.35);
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+        font-size: 24px; margin: 0; line-height: 1.1;
+      }
+      .step-sub { color: var(--muted); margin: 2px 0 16px; font-size: 15px; }
+
+      label.f-label {
+        display: block; font-size: 13px; font-weight: 600;
+        letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+        margin: 0 0 6px;
+      }
+      input[type="text"], input[type="number"], input[type="date"], select {
+        width: 100%;
+        background: #0e0e11;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: var(--ink);
+        font: inherit; font-size: 16px;
+        padding: 11px 12px;
+        outline: none;
+      }
+      input:focus, select:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(255, 176, 46, 0.18); }
+      input[type="date"] { color-scheme: dark; }
+      .money-wrap { position: relative; }
+      .money-wrap::before {
+        content: "$"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+        color: var(--faint); font-weight: 600; pointer-events: none;
+      }
+      .money-wrap input { padding-left: 26px; }
+      .grid2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+      @media (min-width: 640px) { .grid2 { grid-template-columns: 1fr 1fr; } .grid2 .span2 { grid-column: span 2; } }
+      .field { margin-bottom: 14px; }
+      .field:last-child { margin-bottom: 0; }
+      .hint { font-size: 13px; color: var(--faint); margin-top: 5px; }
+
+      /* event chips */
+      .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+      .chip {
+        appearance: none; cursor: pointer;
+        background: #0e0e11; color: var(--muted);
+        border: 1px solid var(--line); border-radius: 999px;
+        font: inherit; font-weight: 600; font-size: 14.5px;
+        padding: 9px 15px;
+      }
+      .chip[aria-pressed="true"] {
+        color: #161310; border-color: var(--amber);
+        background: linear-gradient(160deg, var(--amber), var(--amber-deep));
+      }
+
+      /* segmented toggle */
+      .seg { display: flex; background: #0e0e11; border: 1px solid var(--line); border-radius: 8px; padding: 4px; gap: 4px; margin-bottom: 16px; }
+      .seg button {
+        flex: 1; appearance: none; cursor: pointer; border: 0; border-radius: 5px;
+        background: transparent; color: var(--muted);
+        font: inherit; font-weight: 600; font-size: 15px; padding: 9px 6px;
+      }
+      .seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--amber); box-shadow: inset 0 0 0 1px var(--line); }
+
+      /* roster rows */
+      .row-line { display: grid; grid-template-columns: 1fr 118px 38px; gap: 8px; margin-bottom: 8px; align-items: center; }
+      .row-line.cat { grid-template-columns: 1fr 118px; }
+      .row-line .rm {
+        appearance: none; cursor: pointer; width: 38px; height: 44px;
+        background: #0e0e11; border: 1px solid var(--line); border-radius: 7px;
+        color: var(--faint); font-size: 18px; line-height: 1;
+      }
+      .row-line .rm:hover { color: var(--red); border-color: var(--red); }
+      .cat-name {
+        display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15.5px;
+        background: #0e0e11; border: 1px solid var(--line-soft); border-radius: 7px; padding: 10px 12px; min-height: 46px;
+      }
+      .cat-dot { width: 9px; height: 9px; border-radius: 2px; background: var(--amber); flex: 0 0 auto; }
+      .add-btn {
+        appearance: none; cursor: pointer; width: 100%;
+        background: rgba(255, 176, 46, 0.08); color: var(--amber);
+        border: 1px dashed rgba(255, 176, 46, 0.5); border-radius: 7px;
+        font: inherit; font-weight: 600; padding: 11px; margin-top: 4px;
+      }
+      .add-btn:hover { background: rgba(255, 176, 46, 0.14); }
+
+      /* running total */
+      .tally { margin-top: 18px; background: #0e0e11; border: 1px solid var(--line-soft); border-radius: 8px; padding: 14px; }
+      .tally-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .tally-top .t-label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+      .tally-top .t-nums { font-size: 19px; font-weight: 600; }
+      .bar { height: 10px; background: #232328; border-radius: 5px; overflow: hidden; margin-top: 10px; }
+      .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--amber), var(--orange)); transition: width 0.25s ease; }
+      .bar > div.over { background: var(--red); }
+      .tally-msg { margin-top: 9px; font-size: 14px; color: var(--muted); }
+      .tally-msg.bad { color: var(--red); font-weight: 600; }
+      .tally-msg.good { color: var(--green); }
+
+      /* siphon readout */
+      .readout { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+      @media (min-width: 640px) { .readout { grid-template-columns: repeat(4, 1fr); } }
+      .stat { background: #0e0e11; border: 1px solid var(--line-soft); border-radius: 8px; padding: 12px; }
+      .stat .s-label { font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
+      .stat .s-val { font-size: 22px; font-weight: 600; margin-top: 3px; }
+      .stat .s-val.amber { color: var(--amber); }
+      .stat .s-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+      /* stress check */
+      .verdict { border-radius: 8px; padding: 15px 16px; margin-top: 16px; border: 1px solid; font-size: 15.5px; }
+      .verdict.ok { background: rgba(67, 209, 124, 0.08); border-color: rgba(67, 209, 124, 0.45); }
+      .verdict.warn { background: rgba(255, 82, 82, 0.08); border-color: rgba(255, 82, 82, 0.5); }
+      .verdict .v-title { font-family: "Barlow Condensed", sans-serif; font-size: 21px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 4px; }
+      .verdict.ok .v-title { color: var(--green); }
+      .verdict.warn .v-title { color: var(--red); }
+      .verdict p { margin: 0; color: var(--ink); }
+      .fix-list { margin: 12px 0 0; padding: 0; list-style: none; }
+      .fix-list li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px dashed var(--line); font-size: 15px; }
+      .fix-list li:first-child { border-top: 0; }
+      .fix-list .from { color: var(--faint); text-decoration: line-through; margin-right: 8px; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 26px;
+        border: 1px solid rgba(255, 176, 46, 0.55);
+        border-radius: 12px;
+        background:
+          repeating-linear-gradient(-45deg, rgba(255, 176, 46, 0.16) 0 14px, rgba(0,0,0,0) 14px 28px) top left / 100% 12px no-repeat,
+          linear-gradient(180deg, #1b1a17, #131315);
+        padding: 30px 20px 22px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      }
+      .bp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; flex-wrap: wrap; }
+      .bp-kicker { font-family: "Barlow Condensed", sans-serif; letter-spacing: 0.16em; text-transform: uppercase; font-size: 13px; color: var(--amber); font-weight: 600; }
+      .bp-head h2 { font-family: "Barlow Condensed", sans-serif; font-size: clamp(28px, 6vw, 38px); font-weight: 700; text-transform: uppercase; margin: 4px 0 2px; line-height: 1.05; }
+      .bp-head .bp-date { color: var(--muted); font-size: 15.5px; }
+      .print-btn {
+        appearance: none; cursor: pointer; flex: 0 0 auto;
+        background: var(--amber); color: #161310; border: 0; border-radius: 7px;
+        font: inherit; font-weight: 700; font-size: 15px; padding: 11px 18px;
+      }
+      .print-btn:hover { background: var(--amber-deep); }
+      .bp-grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 18px; }
+      @media (min-width: 680px) { .bp-grid { grid-template-columns: 1.25fr 1fr; } }
+      .bp-sec-title { font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 0 0 8px; }
+      .bp-list { list-style: none; margin: 0; padding: 0; }
+      .bp-list li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: 15.5px; }
+      .bp-list li:last-child { border-bottom: 0; }
+      .bp-list .amt { font-weight: 600; }
+      .bp-list .total-row { font-weight: 700; color: var(--amber); border-top: 1px solid var(--line); border-bottom: 0; margin-top: 4px; padding-top: 10px; }
+      .bp-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .bp-stat { background: rgba(0,0,0,0.35); border: 1px solid var(--line-soft); border-radius: 8px; padding: 12px; }
+      .bp-stat .s-label { font-size: 11.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
+      .bp-stat .s-val { font-size: 21px; font-weight: 600; margin-top: 2px; }
+      .bp-stat .s-val.amber { color: var(--amber); }
+      .score-box { margin-top: 14px; background: rgba(0,0,0,0.35); border: 1px solid var(--line-soft); border-radius: 8px; padding: 14px; }
+      .score-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+      .score-num { font-size: 40px; font-weight: 700; line-height: 1; }
+      .score-num small { font-size: 16px; color: var(--faint); font-weight: 500; }
+      .score-verdict { font-family: "Barlow Condensed", sans-serif; font-size: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; text-align: right; }
+      .score-bar { height: 12px; background: #232328; border-radius: 6px; overflow: hidden; margin-top: 12px; }
+      .score-bar > div { height: 100%; width: 0%; transition: width 0.3s ease; background: var(--green); }
+      .score-why { margin: 10px 0 0; padding: 0; list-style: none; font-size: 14px; color: var(--muted); }
+      .score-why li { padding: 3px 0 3px 18px; position: relative; }
+      .score-why li::before { content: "▸"; position: absolute; left: 2px; color: var(--amber); }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 26px; }
+      @media (min-width: 640px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 18px;
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .n-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--amber); }
+      .next-card h3 { font-family: "Barlow Condensed", sans-serif; font-size: 23px; font-weight: 600; text-transform: uppercase; margin: 5px 0 5px; }
+      .next-card p { color: var(--muted); margin: 0; font-size: 15px; }
+      .next-card .go { color: var(--amber); font-weight: 700; display: inline-block; margin-top: 10px; }
+      .cta {
+        margin-top: 14px; border-radius: var(--radius); padding: 20px;
+        background: linear-gradient(120deg, rgba(255, 176, 46, 0.16), rgba(255, 107, 26, 0.12));
+        border: 1px solid rgba(255, 176, 46, 0.5);
+      }
+      .cta p { margin: 0 0 12px; font-size: 17px; font-weight: 600; }
+      .cta a.btn {
+        display: inline-block; text-decoration: none;
+        background: linear-gradient(160deg, var(--amber), var(--orange)); color: #161310;
+        font-weight: 700; padding: 12px 20px; border-radius: 7px;
+      }
+      .faq { margin-top: 30px; }
+      .faq h2 { font-family: "Barlow Condensed", sans-serif; font-size: 28px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin: 0 0 12px; }
+      .faq details { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 18px; margin-bottom: 10px; }
+      .faq summary { cursor: pointer; font-weight: 600; font-size: 16.5px; padding: 12px 0; }
+      .faq details p { color: var(--muted); margin: 0 0 14px; }
+      .foot { color: var(--faint); font-size: 13.5px; text-align: center; margin-top: 34px; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .bar > div, .score-bar > div { transition: none; }
+      }
+
+      /* ---------- Print: blueprint only, light & clean ---------- */
+      @media print {
+        body { background: #fff; color: #111; }
+        .wrap { max-width: none; padding: 0; }
+        .hero, .panel, .next-grid, .cta, .faq, .foot, .print-btn { display: none !important; }
+        .blueprint {
+          margin: 0; border: 2px solid #111; border-radius: 0; box-shadow: none;
+          background: #fff; color: #111; padding: 20px;
+        }
+        .bp-head .bp-date, .bp-sec-title, .score-why, .bp-stat .s-label { color: #444; }
+        .bp-kicker { color: #111; }
+        .bp-list li { border-bottom-color: #bbb; }
+        .bp-list .total-row { color: #111; border-top-color: #111; }
+        .bp-stat, .score-box { background: #fff; border-color: #999; }
+        .bp-stat .s-val.amber, .score-num { color: #111; }
+        .score-bar { background: #ddd; border: 1px solid #999; }
+        .score-bar > div { background: #555 !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <span class="hero-tag">Cash-Funded Events Only</span>
+        <h1>Holiday <span class="amp">&amp;</span> Special Event<br />Expense Defense Engine</h1>
+        <p>Christmas, birthdays, vacations, back-to-school — the events are predictable, so the debt is optional. Set a hard cap per person, and this engine turns it into an <strong>exact amount to siphon from each paycheck</strong> so the event is fully paid for in cash before it happens.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="panel" aria-labelledby="s1h">
+        <div class="step-head"><div class="step-num">1</div><h2 id="s1h">Event Setup</h2></div>
+        <p class="step-sub">Name the event, lock the date, and set the total budget cap — the ceiling nothing crosses.</p>
+
+        <label class="f-label" for="eventType">Event type</label>
+        <div class="chips" id="eventChips" role="group" aria-label="Event type">
+          <button type="button" class="chip" data-type="christmas" aria-pressed="true">Christmas / Holidays</button>
+          <button type="button" class="chip" data-type="school" aria-pressed="false">Back to School</button>
+          <button type="button" class="chip" data-type="vacation" aria-pressed="false">Vacation / Travel</button>
+          <button type="button" class="chip" data-type="birthday" aria-pressed="false">Birthdays / Weddings</button>
+          <button type="button" class="chip" data-type="custom" aria-pressed="false">Custom Event</button>
+        </div>
+
+        <div class="grid2">
+          <div class="field" id="customNameField" hidden>
+            <label class="f-label" for="customName">Event name</label>
+            <input type="text" id="customName" placeholder="e.g. Family Reunion" maxlength="40" />
+          </div>
+          <div class="field">
+            <label class="f-label" for="eventDate">Target date</label>
+            <input type="date" id="eventDate" value="2026-12-25" />
+          </div>
+          <div class="field">
+            <label class="f-label" for="budgetCap">Total budget cap</label>
+            <div class="money-wrap"><input type="number" id="budgetCap" min="0" step="10" value="800" inputmode="decimal" /></div>
+            <div class="hint">The absolute most this event is allowed to cost. Everything below has to fit inside it.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="panel" aria-labelledby="s2h">
+        <div class="step-head"><div class="step-num">2</div><h2 id="s2h">Recipient Breakdown</h2></div>
+        <p class="step-sub">Cap every person — or split by category. A cap written down before the season starts is what keeps January clean.</p>
+
+        <div class="seg" role="group" aria-label="Breakdown mode">
+          <button type="button" id="modePeople" aria-pressed="true">By Person</button>
+          <button type="button" id="modeCats" aria-pressed="false">By Category</button>
+        </div>
+
+        <div id="peopleBlock">
+          <div id="roster"></div>
+          <button type="button" class="add-btn" id="addPerson">+ Add a person</button>
+        </div>
+
+        <div id="catsBlock" hidden>
+          <div class="row-line cat">
+            <div class="cat-name"><span class="cat-dot"></span>Gifts</div>
+            <div class="money-wrap"><input type="number" class="cat-amt" data-cat="Gifts" min="0" step="5" value="400" inputmode="decimal" aria-label="Gifts cap" /></div>
+          </div>
+          <div class="row-line cat">
+            <div class="cat-name"><span class="cat-dot"></span>Food / Hosting</div>
+            <div class="money-wrap"><input type="number" class="cat-amt" data-cat="Food / Hosting" min="0" step="5" value="150" inputmode="decimal" aria-label="Food and hosting cap" /></div>
+          </div>
+          <div class="row-line cat">
+            <div class="cat-name"><span class="cat-dot"></span>Travel</div>
+            <div class="money-wrap"><input type="number" class="cat-amt" data-cat="Travel" min="0" step="5" value="100" inputmode="decimal" aria-label="Travel cap" /></div>
+          </div>
+          <div class="row-line cat">
+            <div class="cat-name"><span class="cat-dot"></span>Decor / Extras</div>
+            <div class="money-wrap"><input type="number" class="cat-amt" data-cat="Decor / Extras" min="0" step="5" value="50" inputmode="decimal" aria-label="Decor and extras cap" /></div>
+          </div>
+        </div>
+
+        <div class="tally" aria-live="polite">
+          <div class="tally-top">
+            <span class="t-label">Allocated vs. budget cap</span>
+            <span class="t-nums mono"><span id="allocTotal">$0</span> <span style="color:var(--faint)">/ $</span><span id="allocCap">0</span></span>
+          </div>
+          <div class="bar"><div id="allocBar"></div></div>
+          <div class="tally-msg" id="allocMsg"></div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="panel" aria-labelledby="s3h">
+        <div class="step-head"><div class="step-num">3</div><h2 id="s3h">Paycheck Siphon Engine</h2></div>
+        <p class="step-sub">The engine counts the paychecks between your next payday and the event, then splits the plan across them — small, automatic, painless.</p>
+
+        <div class="grid2">
+          <div class="field">
+            <label class="f-label" for="payFreq">Pay frequency</label>
+            <select id="payFreq">
+              <option value="weekly">Weekly</option>
+              <option value="biweekly" selected>Bi-Weekly (every 2 weeks)</option>
+              <option value="semimonthly">Semi-Monthly (twice a month)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="f-label" for="nextPayday">Next payday</label>
+            <input type="date" id="nextPayday" />
+            <div class="hint">Counting starts here — this check counts as siphon #1.</div>
+          </div>
+        </div>
+
+        <div class="readout">
+          <div class="stat"><div class="s-label">Days to event</div><div class="s-val mono" id="daysOut">—</div><div class="s-sub" id="daysOutSub"></div></div>
+          <div class="stat"><div class="s-label">Paychecks left</div><div class="s-val mono" id="checksLeft">—</div><div class="s-sub" id="checksSub"></div></div>
+          <div class="stat"><div class="s-label">Funding target</div><div class="s-val mono" id="fundTarget">—</div><div class="s-sub">What you're cash-funding</div></div>
+          <div class="stat"><div class="s-label">Siphon per paycheck</div><div class="s-val mono amber" id="siphonAmt">—</div><div class="s-sub">Move this the day pay hits</div></div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="panel" aria-labelledby="s4h">
+        <div class="step-head"><div class="step-num">4</div><h2 id="s4h">Debt-Prevention Stress Check</h2></div>
+        <p class="step-sub">Rule of the shield: a siphon over <strong style="color:var(--amber)">10% of your net pay</strong> is where "saving for it" quietly turns into "charging it anyway." This check keeps the plan honest.</p>
+
+        <div class="grid2">
+          <div class="field">
+            <label class="f-label" for="netPay">Net pay per paycheck (take-home)</label>
+            <div class="money-wrap"><input type="number" id="netPay" min="0" step="25" value="1450" inputmode="decimal" /></div>
+            <div class="hint">What actually lands in your account each pay period.</div>
+          </div>
+        </div>
+
+        <div class="verdict ok" id="verdict" aria-live="polite">
+          <p class="v-title" id="verdictTitle">Shield holding</p>
+          <p id="verdictBody"></p>
+          <ul class="fix-list" id="fixList" hidden></ul>
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" id="blueprint" aria-labelledby="bph">
+        <div class="bp-head">
+          <div>
+            <div class="bp-kicker">Event Cash-Shield Blueprint</div>
+            <h2 id="bph">Christmas / Holidays</h2>
+            <div class="bp-date" id="bpDate">—</div>
+          </div>
+          <button type="button" class="print-btn" id="printBtn">Print Blueprint</button>
+        </div>
+
+        <div class="bp-grid">
+          <div>
+            <p class="bp-sec-title" id="bpListTitle">Per-person caps</p>
+            <ul class="bp-list" id="bpList"></ul>
+          </div>
+          <div>
+            <div class="bp-stats">
+              <div class="bp-stat"><div class="s-label">Paychecks left</div><div class="s-val mono" id="bpChecks">—</div></div>
+              <div class="bp-stat"><div class="s-label">Days to go</div><div class="s-val mono" id="bpDays">—</div></div>
+              <div class="bp-stat"><div class="s-label">Total to fund</div><div class="s-val mono" id="bpTotal">—</div></div>
+              <div class="bp-stat"><div class="s-label">Per-paycheck siphon</div><div class="s-val mono amber" id="bpSiphon">—</div></div>
+            </div>
+            <div class="score-box">
+              <div class="score-top">
+                <div>
+                  <div class="bp-sec-title" style="margin:0">Debt-Free Event Score</div>
+                  <div class="score-num mono"><span id="scoreNum">—</span><small>/100</small></div>
+                </div>
+                <div class="score-verdict" id="scoreVerdict">—</div>
+              </div>
+              <div class="score-bar"><div id="scoreBar"></div></div>
+              <ul class="score-why" id="scoreWhy"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" target="_blank" rel="noopener">
+          <span class="n-tag">Next step</span>
+          <h3>Paycheck Budget Splitter</h3>
+          <p>Your siphon only works if the rest of the check is assigned too. Split every paycheck into bills, needs, and goals before spending starts.</p>
+          <span class="go">Open the Splitter →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/subscription-drain-audit.html" target="_blank" rel="noopener">
+          <span class="n-tag">Free up cash</span>
+          <h3>Subscription Drain Audit</h3>
+          <p>Forgotten subscriptions quietly eat the exact dollars this plan needs. Find the leaks and redirect them straight into your event fund.</p>
+          <span class="go">Run the Audit →</span>
+        </a>
+      </div>
+
+      <div class="cta">
+        <p>Fund every event debt-free with the Sinking Funds Tracker and the Paycheck-to-Paycheck Weekly Planner on Gumroad — grab the free Paycheck Protection Checklist too.</p>
+        <a class="btn" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get the tools on Gumroad →</a>
+      </div>
+
+      <!-- FAQ -->
+      <section class="faq" aria-labelledby="faqh">
+        <h2 id="faqh">Straight Answers</h2>
+        <details>
+          <summary>Why do the holidays cause so much January debt?</summary>
+          <p>Because the spending is concentrated but the income isn't. Most people fund five or six weeks of gifts, food, and travel out of one or two regular paychecks, so the overflow lands on credit cards and buy-now-pay-later plans — then January's minimum payments, interest, and post-holiday bills all hit at once. The fix isn't spending less overall; it's spreading the same total across every paycheck from now until the event, which is exactly what the siphon does.</p>
+        </details>
+        <details>
+          <summary>How does the per-person cap trick work?</summary>
+          <p>You decide the number before the season starts — say $75 per person — and that number, not the store display or a last-minute guilt trip, decides the gift. Caps kill the two biggest budget leaks: upgrading "just a little" for each person, and panic-buying extras in the final week. Write the cap next to each name in Step 2, and when a gift hits the cap, you're done with that person. Done is a good feeling.</p>
+        </details>
+        <details>
+          <summary>What if the event is only 3 weeks away?</summary>
+          <p>Then the math gets blunt: fewer paychecks means a bigger siphon from each one, and the stress check will probably flag it. You have three honest levers — trim the per-person caps until the siphon fits under 10% of your net pay, shrink the guest or gift list, or split the difference and cash-fund most of it instead of all of it. What doesn't work is charging it and hoping January-you earns more. Short runway is exactly when the caps matter most.</p>
+        </details>
+      </section>
+
+      <p class="foot">Built for shift workers and paycheck-to-paycheck households. Every number on this page is calculated from your inputs, right here in your browser.</p>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+        var $ = function (id) { return document.getElementById(id); };
+        var money = function (n) {
+          if (!isFinite(n)) n = 0;
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+        var money0 = function (n) {
+          if (!isFinite(n)) n = 0;
+          return "$" + Math.round(n).toLocaleString("en-US");
+        };
+        var num = function (v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; };
+
+        var EVENT_LABELS = {
+          christmas: "Christmas / Holidays",
+          school: "Back to School",
+          vacation: "Vacation / Travel",
+          birthday: "Birthdays / Weddings",
+          custom: "Custom Event"
+        };
+        var state = { type: "christmas", mode: "people" };
+
+        /* ---------- default next payday: upcoming Friday ---------- */
+        function upcomingFriday() {
+          var d = new Date(); d.setHours(0, 0, 0, 0);
+          var add = (5 - d.getDay() + 7) % 7;
+          if (add === 0) add = 7;
+          d.setDate(d.getDate() + add);
+          return d;
+        }
+        function toISO(d) {
+          var m = String(d.getMonth() + 1).padStart(2, "0");
+          var day = String(d.getDate()).padStart(2, "0");
+          return d.getFullYear() + "-" + m + "-" + day;
+        }
+        $("nextPayday").value = toISO(upcomingFriday());
+
+        /* suggested dates when switching event type */
+        function suggestedDate(type) {
+          var now = new Date(); now.setHours(0, 0, 0, 0);
+          var d;
+          if (type === "christmas") {
+            d = new Date(now.getFullYear(), 11, 25);
+            if (d <= now) d = new Date(now.getFullYear() + 1, 11, 25);
+          } else if (type === "school") {
+            d = new Date(now.getFullYear(), 7, 15);
+            if (d <= now) d = new Date(now.getFullYear() + 1, 7, 15);
+          } else if (type === "vacation") {
+            d = new Date(now); d.setDate(d.getDate() + 90);
+          } else {
+            d = new Date(now); d.setDate(d.getDate() + 60);
+          }
+          return toISO(d);
+        }
+
+        /* ---------- event chips ---------- */
+        var chips = document.querySelectorAll("#eventChips .chip");
+        chips.forEach(function (chip) {
+          chip.addEventListener("click", function () {
+            chips.forEach(function (c) { c.setAttribute("aria-pressed", "false"); });
+            chip.setAttribute("aria-pressed", "true");
+            state.type = chip.getAttribute("data-type");
+            $("customNameField").hidden = state.type !== "custom";
+            $("eventDate").value = suggestedDate(state.type);
+            recalc();
+          });
+        });
+
+        /* ---------- breakdown mode toggle ---------- */
+        function setMode(mode) {
+          state.mode = mode;
+          $("modePeople").setAttribute("aria-pressed", mode === "people" ? "true" : "false");
+          $("modeCats").setAttribute("aria-pressed", mode === "cats" ? "true" : "false");
+          $("peopleBlock").hidden = mode !== "people";
+          $("catsBlock").hidden = mode !== "cats";
+          recalc();
+        }
+        $("modePeople").addEventListener("click", function () { setMode("people"); });
+        $("modeCats").addEventListener("click", function () { setMode("cats"); });
+
+        /* ---------- roster ---------- */
+        var roster = $("roster");
+        function addPerson(name, amt) {
+          var row = document.createElement("div");
+          row.className = "row-line";
+          var nameInput = document.createElement("input");
+          nameInput.type = "text"; nameInput.className = "p-name";
+          nameInput.placeholder = "Name"; nameInput.maxLength = 30;
+          nameInput.value = name || ""; nameInput.setAttribute("aria-label", "Recipient name");
+          var wrap = document.createElement("div");
+          wrap.className = "money-wrap";
+          var amtInput = document.createElement("input");
+          amtInput.type = "number"; amtInput.className = "p-amt";
+          amtInput.min = "0"; amtInput.step = "5"; amtInput.inputMode = "decimal";
+          amtInput.value = amt != null ? amt : ""; amtInput.placeholder = "Cap";
+          amtInput.setAttribute("aria-label", "Spending cap for this person");
+          wrap.appendChild(amtInput);
+          var rm = document.createElement("button");
+          rm.type = "button"; rm.className = "rm"; rm.textContent = "×";
+          rm.setAttribute("aria-label", "Remove this person");
+          rm.addEventListener("click", function () { row.remove(); recalc(); });
+          row.appendChild(nameInput); row.appendChild(wrap); row.appendChild(rm);
+          roster.appendChild(row);
+        }
+        addPerson("Partner", 200);
+        addPerson("Kids", 250);
+        addPerson("Parents", 100);
+        addPerson("Friends / Coworkers", 75);
+        $("addPerson").addEventListener("click", function () { addPerson("", ""); recalc(); });
+
+        function getAllocations() {
+          var items = [];
+          if (state.mode === "people") {
+            roster.querySelectorAll(".row-line").forEach(function (row) {
+              var n = row.querySelector(".p-name").value.trim();
+              var a = num(row.querySelector(".p-amt").value);
+              if (n || a > 0) items.push({ name: n || "Unnamed", amt: a });
+            });
+          } else {
+            document.querySelectorAll(".cat-amt").forEach(function (inp) {
+              items.push({ name: inp.getAttribute("data-cat"), amt: num(inp.value) });
+            });
+          }
+          return items;
+        }
+
+        /* ---------- paycheck math ---------- */
+        function advance(d, freq) {
+          var n = new Date(d);
+          if (freq === "weekly") n.setDate(n.getDate() + 7);
+          else if (freq === "biweekly") n.setDate(n.getDate() + 14);
+          else { /* semi-monthly: ~15 days, alternating to land twice a month */
+            if (n.getDate() <= 15) n.setDate(n.getDate() + 15);
+            else { n.setMonth(n.getMonth() + 1); n.setDate(n.getDate() - 15); }
+          }
+          return n;
+        }
+        function paycheckInfo(nextISO, eventISO, freq) {
+          if (!nextISO || !eventISO) return { count: 0, last: null };
+          var d = new Date(nextISO + "T00:00:00");
+          var end = new Date(eventISO + "T00:00:00");
+          var count = 0, last = null, guard = 0;
+          while (d <= end && guard < 800) { count++; last = new Date(d); d = advance(d, freq); guard++; }
+          return { count: count, last: last };
+        }
+        function fmtDate(d) {
+          return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+        }
+
+        /* ---------- main recalc ---------- */
+        function recalc() {
+          var budget = num($("budgetCap").value);
+          var items = getAllocations();
+          var allocTotal = items.reduce(function (s, i) { return s + i.amt; }, 0);
+          var target = allocTotal > 0 ? allocTotal : budget;
+
+          /* Step 2 tally */
+          $("allocTotal").textContent = money0(allocTotal);
+          $("allocCap").textContent = Math.round(budget).toLocaleString("en-US");
+          var pct = budget > 0 ? (allocTotal / budget) * 100 : (allocTotal > 0 ? 100 : 0);
+          var bar = $("allocBar");
+          bar.style.width = Math.min(100, pct) + "%";
+          bar.classList.toggle("over", allocTotal > budget && budget > 0);
+          var msg = $("allocMsg");
+          if (budget === 0) {
+            msg.className = "tally-msg"; msg.textContent = "Set a budget cap in Step 1 to see how the plan fits.";
+          } else if (allocTotal > budget) {
+            msg.className = "tally-msg bad";
+            msg.textContent = "Over the cap by " + money0(allocTotal - budget) + ". Trim caps now — the store won't trim them for you.";
+          } else if (allocTotal === 0) {
+            msg.className = "tally-msg"; msg.textContent = "Nothing allocated yet. Add caps above.";
+          } else {
+            msg.className = "tally-msg good";
+            msg.textContent = money0(budget - allocTotal) + " of headroom left under the cap. That buffer is what absorbs surprises.";
+          }
+
+          /* Step 3 siphon */
+          var eventISO = $("eventDate").value;
+          var nextISO = $("nextPayday").value;
+          var freq = $("payFreq").value;
+          var info = paycheckInfo(nextISO, eventISO, freq);
+          var today = new Date(); today.setHours(0, 0, 0, 0);
+          var evDate = eventISO ? new Date(eventISO + "T00:00:00") : null;
+          var days = evDate ? Math.round((evDate - today) / 86400000) : null;
+          var siphon = info.count > 0 ? target / info.count : target;
+
+          $("daysOut").textContent = days === null ? "—" : days;
+          $("daysOutSub").textContent = days === null ? "" : (days < 0 ? "That date has passed" : days === 0 ? "The event is today" : "until the event");
+          $("checksLeft").textContent = info.count;
+          $("checksSub").textContent = info.last ? "Last siphon: " + fmtDate(info.last) : "No payday lands before the event";
+          $("fundTarget").textContent = money(target);
+          $("siphonAmt").textContent = info.count > 0 ? money(siphon) : (target > 0 ? money(target) + " now" : "—");
+
+          /* Step 4 stress check */
+          var netPay = num($("netPay").value);
+          var siphonPct = netPay > 0 && info.count > 0 ? (siphon / netPay) * 100 : null;
+          var verdict = $("verdict"), vTitle = $("verdictTitle"), vBody = $("verdictBody"), fixList = $("fixList");
+          fixList.hidden = true; fixList.innerHTML = "";
+          if (netPay === 0) {
+            verdict.className = "verdict ok";
+            vTitle.textContent = "Add your take-home pay";
+            vBody.textContent = "Enter your net pay per paycheck above and the shield will stress-test this plan against the 10% rule.";
+          } else if (info.count === 0) {
+            verdict.className = "verdict warn";
+            vTitle.textContent = "No runway — cash is due now";
+            vBody.textContent = "No paycheck lands between your next payday and this event, so the full " + money(target) + " has to come out of money you already have. If it isn't sitting in savings, cut the caps before the event cuts you.";
+          } else if (siphonPct > 10) {
+            verdict.className = "verdict warn";
+            vTitle.textContent = "Shield breach — siphon too heavy";
+            var safeTotal = Math.floor(0.10 * netPay * info.count);
+            vBody.textContent = "Your siphon is " + money(siphon) + " per paycheck — that's " + siphonPct.toFixed(1) + "% of your " + money0(netPay) + " take-home, over the 10% safety line. At this weight the plan competes with rent and bills, and the card comes out anyway. A plan your paycheck can actually carry tops out at " + money0(safeTotal) + " total. Scaled-down caps:";
+            var scale = target > 0 ? safeTotal / target : 0;
+            items.forEach(function (i) {
+              if (i.amt <= 0) return;
+              var li = document.createElement("li");
+              var left = document.createElement("span");
+              left.innerHTML = "";
+              left.textContent = i.name;
+              var right = document.createElement("span");
+              right.className = "mono";
+              var from = document.createElement("span");
+              from.className = "from"; from.textContent = money0(i.amt);
+              right.appendChild(from);
+              right.appendChild(document.createTextNode(money0(Math.max(0, Math.floor(i.amt * scale / 5) * 5))));
+              li.appendChild(left); li.appendChild(right);
+              fixList.appendChild(li);
+            });
+            if (fixList.children.length) fixList.hidden = false;
+          } else {
+            verdict.className = "verdict ok";
+            vTitle.textContent = "Shield holding";
+            vBody.textContent = "Your siphon is " + money(siphon) + " per paycheck — " + siphonPct.toFixed(1) + "% of your " + money0(netPay) + " take-home, inside the 10% safety line. This plan funds itself without squeezing the bills. Set the transfer for payday and forget it.";
+          }
+
+          /* ---------- Score ---------- */
+          var score = 100, why = [];
+          if (budget > 0 && allocTotal > budget) {
+            var overPct = ((allocTotal - budget) / budget) * 100;
+            score -= Math.min(35, Math.round(overPct));
+            why.push("Allocations run " + money0(allocTotal - budget) + " over the budget cap.");
+          } else if (allocTotal > 0 && budget > 0) {
+            why.push("Plan fits inside the budget cap with " + money0(budget - allocTotal) + " to spare.");
+          }
+          if (allocTotal === 0) { score -= 10; why.push("No caps set yet — an unplanned event is an unshielded one."); }
+          if (siphonPct !== null) {
+            if (siphonPct > 10) { score -= Math.min(45, Math.round((siphonPct - 10) * 1.8)); why.push("Siphon takes " + siphonPct.toFixed(1) + "% of net pay — past the 10% safety line."); }
+            else if (siphonPct > 7) { score -= 5; why.push("Siphon takes " + siphonPct.toFixed(1) + "% of net pay — workable, but close to the line."); }
+            else { why.push("Siphon is only " + siphonPct.toFixed(1) + "% of net pay — easily carried."); }
+          }
+          if (info.count === 0) { score -= 40; why.push("No paychecks left before the event — no runway to fund it."); }
+          else if (info.count === 1) { score -= 25; why.push("Only 1 paycheck left — the whole plan rides on a single check."); }
+          else if (info.count === 2) { score -= 12; why.push("Only 2 paychecks left — a tight runway."); }
+          else if (info.count === 3) { score -= 5; why.push("3 paychecks of runway — workable if you start this payday."); }
+          else { why.push(info.count + " paychecks of runway — time is doing the heavy lifting."); }
+          score = Math.max(0, Math.min(100, Math.round(score)));
+
+          /* ---------- Blueprint ---------- */
+          var name = state.type === "custom"
+            ? ($("customName").value.trim() || "Custom Event")
+            : EVENT_LABELS[state.type];
+          $("bph").textContent = name;
+          $("bpDate").textContent = evDate ? fmtDate(evDate) + (days !== null && days >= 0 ? " · " + days + " days away" : "") : "No date set";
+          $("bpListTitle").textContent = state.mode === "people" ? "Per-person caps" : "Category caps";
+          var list = $("bpList"); list.innerHTML = "";
+          var shown = items.filter(function (i) { return i.amt > 0 || i.name; });
+          if (!shown.length) {
+            var li0 = document.createElement("li");
+            li0.innerHTML = "<span>No caps set yet</span><span class='amt mono'>$0</span>";
+            list.appendChild(li0);
+          }
+          shown.forEach(function (i) {
+            var li = document.createElement("li");
+            var nm = document.createElement("span"); nm.textContent = i.name;
+            var am = document.createElement("span"); am.className = "amt mono"; am.textContent = money0(i.amt);
+            li.appendChild(nm); li.appendChild(am); list.appendChild(li);
+          });
+          var tot = document.createElement("li");
+          tot.className = "total-row";
+          tot.innerHTML = "<span>Total to cash-fund</span><span class='amt mono'>" + money(target) + "</span>";
+          list.appendChild(tot);
+
+          $("bpChecks").textContent = info.count;
+          $("bpDays").textContent = days === null ? "—" : days;
+          $("bpTotal").textContent = money(target);
+          $("bpSiphon").textContent = info.count > 0 ? money(siphon) : money(target);
+          $("scoreNum").textContent = score;
+          var sVerdict, sColor;
+          if (score >= 90) { sVerdict = "Fully Shielded"; sColor = "var(--green)"; }
+          else if (score >= 70) { sVerdict = "Solid Plan"; sColor = "var(--green)"; }
+          else if (score >= 50) { sVerdict = "Tight — Trim Caps"; sColor = "var(--amber)"; }
+          else { sVerdict = "Credit Risk Zone"; sColor = "var(--red)"; }
+          var sv = $("scoreVerdict"); sv.textContent = sVerdict; sv.style.color = sColor;
+          $("scoreNum").style.color = sColor;
+          var sb = $("scoreBar"); sb.style.width = score + "%"; sb.style.background = sColor;
+          var whyEl = $("scoreWhy"); whyEl.innerHTML = "";
+          why.forEach(function (w) {
+            var li = document.createElement("li"); li.textContent = w; whyEl.appendChild(li);
+          });
+        }
+
+        /* ---------- wiring ---------- */
+        document.addEventListener("input", recalc);
+        document.addEventListener("change", recalc);
+        $("printBtn").addEventListener("click", function () { window.print(); });
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

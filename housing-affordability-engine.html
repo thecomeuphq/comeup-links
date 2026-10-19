@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Housing Affordability Engine — Shift-Worker Rent Stress Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #101013;
+        --bg-2: #17171b;
+        --panel: #1c1c21;
+        --panel-2: #232329;
+        --line: #33333c;
+        --line-soft: #2a2a31;
+        --ink: #f2f0ea;
+        --ink-2: #b9b6ab;
+        --ink-3: #8b887e;
+        --amber: #f5a623;
+        --amber-hot: #ff7a1a;
+        --amber-ink: #1a1206;
+        --green: #3ecf6e;
+        --red: #ff5247;
+        --gold: #ffb52e;
+        --hazard-a: #f5a623;
+        --hazard-b: #141416;
+        --shadow: 0 10px 30px rgba(0,0,0,.45);
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- header ---------- */
+      header { padding: 28px 0 8px; }
+      .hazard {
+        height: 10px; border-radius: 3px; margin-bottom: 22px;
+        background: repeating-linear-gradient(-45deg, var(--hazard-a) 0 14px, var(--hazard-b) 14px 28px);
+      }
+      h1 {
+        font-family: "Oswald", sans-serif; font-weight: 700; text-transform: uppercase;
+        font-size: clamp(30px, 7.4vw, 46px); line-height: 1.04; letter-spacing: .01em;
+        margin: 0 0 10px;
+      }
+      h1 .accent { color: var(--amber); }
+      .lede { color: var(--ink-2); font-size: 18px; margin: 0; max-width: 56ch; }
+      .lede strong { color: var(--ink); }
+
+      /* ---------- step sections ---------- */
+      section.step {
+        background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+        margin-top: 26px; box-shadow: var(--shadow); overflow: hidden;
+      }
+      .step-head {
+        display: flex; align-items: center; gap: 14px;
+        padding: 16px 18px 4px;
+      }
+      .step-num {
+        font-family: "Oswald", sans-serif; font-weight: 700; font-size: 15px;
+        background: var(--amber); color: var(--amber-ink);
+        min-width: 70px; text-align: center; padding: 5px 8px; border-radius: 6px;
+        letter-spacing: .06em; white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase;
+        font-size: 21px; letter-spacing: .02em; margin: 0;
+      }
+      .step-sub { color: var(--ink-3); font-size: 15px; padding: 2px 18px 0; margin: 0; }
+      @media (min-width: 620px) { .step-sub { padding-left: 102px; } }
+      .fields { padding: 14px 18px 6px; display: grid; gap: 14px; }
+      @media (min-width: 620px) { .fields.two { grid-template-columns: 1fr 1fr; } }
+      .field label {
+        display: block; font-weight: 600; font-size: 15px; margin-bottom: 6px; color: var(--ink);
+      }
+      .field .hint { display: block; font-weight: 400; font-size: 13.5px; color: var(--ink-3); margin-top: 2px; }
+      .input-row {
+        display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: 10px;
+        background: var(--bg-2); overflow: hidden;
+      }
+      .input-row .unit {
+        display: flex; align-items: center; padding: 0 12px; font-family: "IBM Plex Mono", monospace;
+        font-size: 15px; color: var(--amber); background: var(--panel-2); border-right: 1px solid var(--line-soft);
+        white-space: nowrap;
+      }
+      .input-row .unit.suffix { border-right: 0; border-left: 1px solid var(--line-soft); }
+      .input-row input, .input-row select {
+        flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink);
+        font-family: "IBM Plex Mono", monospace; font-size: 18px; font-weight: 600;
+        padding: 12px 12px; outline: none; appearance: none; -webkit-appearance: none;
+      }
+      .input-row input:focus, .input-row select:focus { background: rgba(245,166,35,.08); }
+      .input-row:focus-within { border-color: var(--amber); }
+      .input-row select { font-family: "Barlow", sans-serif; font-weight: 600; }
+
+      .readout {
+        margin: 8px 18px 18px; background: var(--bg-2); border: 1px dashed var(--line);
+        border-radius: 10px; padding: 14px 16px;
+        display: grid; gap: 8px;
+      }
+      @media (min-width: 620px) { .readout.cols { grid-template-columns: 1fr 1fr; } }
+      .ro-item .ro-label { font-size: 13px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); font-weight: 600; }
+      .ro-item .ro-value { font-family: "IBM Plex Mono", monospace; font-size: 24px; font-weight: 700; color: var(--ink); }
+      .ro-item .ro-value.amber { color: var(--amber); }
+      .ro-item .ro-note { font-size: 13.5px; color: var(--ink-2); }
+
+      /* ---------- stress engine ---------- */
+      .gauge-wrap { padding: 6px 18px 0; text-align: center; }
+      .gauge-wrap svg { width: 100%; max-width: 420px; height: auto; }
+      .ratio-big {
+        font-family: "IBM Plex Mono", monospace; font-weight: 700;
+        font-size: clamp(40px, 10vw, 56px); line-height: 1; margin-top: -34px;
+      }
+      .ratio-big small { font-size: 20px; color: var(--ink-3); font-weight: 600; }
+      .ratio-caption { color: var(--ink-2); font-size: 15px; margin: 6px 0 0; }
+      .tier-badge {
+        display: inline-block; font-family: "Oswald", sans-serif; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .05em; font-size: 19px; padding: 9px 20px; border-radius: 8px; margin-top: 16px;
+      }
+      .tier-badge.danger { background: var(--red); color: #fff; }
+      .tier-badge.moderate { background: var(--gold); color: #231600; }
+      .tier-badge.fortified { background: var(--green); color: #06230f; }
+      .tier-badge.idle { background: var(--panel-2); color: var(--ink-3); border: 1px solid var(--line); }
+      .tier-body { padding: 14px 18px 18px; text-align: left; }
+      .tier-verdict { font-size: 17.5px; margin: 0 0 10px; }
+      .strategy {
+        border-left: 4px solid var(--amber); background: var(--bg-2);
+        padding: 12px 14px; border-radius: 0 10px 10px 0; margin: 0;
+      }
+      .strategy .s-label { font-size: 12.5px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--amber); display: block; margin-bottom: 3px; }
+      .ot-compare { padding: 0 18px 18px; color: var(--ink-2); font-size: 15px; margin: 0; }
+      .ot-compare strong { color: var(--ink); font-family: "IBM Plex Mono", monospace; }
+
+      /* ---------- report ---------- */
+      .report {
+        margin-top: 30px; border: 2px solid var(--amber); border-radius: var(--radius);
+        background: var(--panel); box-shadow: var(--shadow); overflow: hidden;
+      }
+      .report-head {
+        background: var(--panel-2); border-bottom: 1px solid var(--line);
+        padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      }
+      .report-head h2 {
+        font-family: "Oswald", sans-serif; font-weight: 700; text-transform: uppercase;
+        font-size: 24px; margin: 0; letter-spacing: .02em;
+      }
+      .report-grid { display: grid; grid-template-columns: 1fr 1fr; }
+      .report-cell { padding: 14px 18px; border-bottom: 1px solid var(--line-soft); }
+      .report-cell:nth-child(odd) { border-right: 1px solid var(--line-soft); }
+      .report-cell.full { grid-column: 1 / -1; border-right: 0; }
+      .report-cell .rc-label { font-size: 12.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); font-weight: 700; }
+      .report-cell .rc-value { font-family: "IBM Plex Mono", monospace; font-size: 26px; font-weight: 700; }
+      .report-cell .rc-value.amber { color: var(--amber); }
+      .report-cell .rc-note { font-size: 14px; color: var(--ink-2); }
+      .report-strategy { padding: 14px 18px 18px; }
+      .print-btn {
+        font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
+        background: var(--amber); color: var(--amber-ink); border: 0; border-radius: 9px;
+        font-size: 16px; padding: 11px 20px; cursor: pointer;
+      }
+      .print-btn:active { transform: translateY(1px); }
+
+      /* ---------- next steps / CTA / FAQ ---------- */
+      .next-grid { display: grid; gap: 14px; margin-top: 30px; }
+      @media (min-width: 620px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 18px; box-shadow: var(--shadow);
+      }
+      .next-card h3 { font-family: "Oswald", sans-serif; text-transform: uppercase; font-size: 19px; margin: 0 0 6px; font-weight: 600; }
+      .next-card p { color: var(--ink-2); margin: 0 0 10px; font-size: 15.5px; }
+      .next-card .go { color: var(--amber); font-weight: 700; font-size: 15px; }
+      .cta {
+        margin-top: 16px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line);
+        background: var(--panel); box-shadow: var(--shadow);
+      }
+      .cta .hazard { margin: 0; border-radius: 0; }
+      .cta-body { padding: 18px; }
+      .cta-body p { margin: 0 0 14px; font-size: 17.5px; }
+      .cta-body p strong { color: var(--amber); }
+      .cta-btn {
+        display: inline-block; text-decoration: none; font-family: "Oswald", sans-serif; font-weight: 600;
+        text-transform: uppercase; letter-spacing: .05em; background: var(--amber-hot); color: #fff;
+        padding: 12px 22px; border-radius: 9px; font-size: 16px;
+      }
+      .faq { margin-top: 34px; }
+      .faq h2 { font-family: "Oswald", sans-serif; text-transform: uppercase; font-size: 24px; font-weight: 700; margin: 0 0 12px; }
+      details {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px;
+      }
+      summary { cursor: pointer; font-weight: 700; font-size: 17px; padding: 14px 16px; }
+      details p { margin: 0; padding: 0 16px 16px; color: var(--ink-2); }
+      footer { margin-top: 30px; color: var(--ink-3); font-size: 14px; text-align: center; }
+
+      /* ---------- print ---------- */
+      @media print {
+        :root {
+          --bg: #fff; --bg-2: #fff; --panel: #fff; --panel-2: #f2f2f2;
+          --line: #999; --line-soft: #ccc; --ink: #000; --ink-2: #333; --ink-3: #555;
+          --amber: #b06f00; --shadow: none;
+        }
+        body { background: #fff; font-size: 13px; }
+        .no-print, .next-grid, .cta, .faq, .print-btn, .hazard { display: none !important; }
+        section.step, .report { box-shadow: none; break-inside: avoid; margin-top: 14px; }
+        .wrap { padding-bottom: 0; }
+        input, select { color: #000 !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="hazard" aria-hidden="true"></div>
+        <h1>Shift-Worker Housing &amp; Rental <span class="accent">Affordability Engine</span></h1>
+        <p class="lede">Landlords approve you on your gross pay. Rent comes due on your <strong>guaranteed</strong> pay. This engine stress-tests a lease against your base hours only — because overtime is a bonus, never a promise — then builds the cash plan to sign it safely.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1-title">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1-title">Your Income — Base vs. Overtime</h2></div>
+        <p class="step-sub">Only the hours in writing count as guaranteed. Everything else is upside.</p>
+        <div class="fields two">
+          <div class="field">
+            <label for="basePay">Guaranteed base hourly pay</label>
+            <div class="input-row"><span class="unit">$</span><input id="basePay" type="number" inputmode="decimal" min="0" step="0.25" value="20" /><span class="unit suffix">/hr</span></div>
+          </div>
+          <div class="field">
+            <label for="baseHours">Guaranteed hours per week</label>
+            <div class="input-row"><input id="baseHours" type="number" inputmode="decimal" min="0" step="1" value="40" /><span class="unit suffix">hrs</span></div>
+            <span class="hint">Scheduled hours you can count on even in a slow week.</span>
+          </div>
+          <div class="field">
+            <label for="otHours">Average overtime hours per week</label>
+            <div class="input-row"><input id="otHours" type="number" inputmode="decimal" min="0" step="0.5" value="6" /><span class="unit suffix">hrs</span></div>
+            <span class="hint">Priced at time-and-a-half (1.5× base) in the math below.</span>
+          </div>
+          <div class="field">
+            <label for="otExtra">OT / shift-differential extra per week</label>
+            <div class="input-row"><span class="unit">$</span><input id="otExtra" type="number" inputmode="decimal" min="0" step="5" value="50" /><span class="unit suffix">/wk</span></div>
+            <span class="hint">Night/weekend premiums, per-diems, anything above the OT rate.</span>
+          </div>
+          <div class="field">
+            <label for="deductPct">Estimated deductions (taxes &amp; benefits)</label>
+            <div class="input-row"><input id="deductPct" type="number" inputmode="decimal" min="0" max="60" step="1" value="20" /><span class="unit suffix">%</span></div>
+            <span class="hint">Turns gross into take-home. 18–25% is typical for hourly work.</span>
+          </div>
+        </div>
+        <div class="readout cols">
+          <div class="ro-item">
+            <div class="ro-label">Guaranteed monthly net (base only)</div>
+            <div class="ro-value amber" id="guaranteedNet">$0</div>
+            <div class="ro-note">The only number rent gets judged against.</div>
+          </div>
+          <div class="ro-item">
+            <div class="ro-label">Total monthly net (with OT)</div>
+            <div class="ro-value" id="totalNet">$0</div>
+            <div class="ro-note" id="otCushionNote">OT cushion: $0/mo — gravy, not rent money.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2-title">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2-title">The Real Cost of the Place</h2></div>
+        <p class="step-sub">Rent is the headline. Utilities, fees, and insurance are the fine print that actually hits your account.</p>
+        <div class="fields two">
+          <div class="field">
+            <label for="rent">Target monthly rent</label>
+            <div class="input-row"><span class="unit">$</span><input id="rent" type="number" inputmode="decimal" min="0" step="25" value="1150" /></div>
+          </div>
+          <div class="field">
+            <label for="utilities">Estimated utilities</label>
+            <div class="input-row"><span class="unit">$</span><input id="utilities" type="number" inputmode="decimal" min="0" step="10" value="150" /><span class="unit suffix">/mo</span></div>
+            <span class="hint">Power, water, gas, internet — your honest average, not the best month.</span>
+          </div>
+          <div class="field">
+            <label for="fees">Parking / pet fees</label>
+            <div class="input-row"><span class="unit">$</span><input id="fees" type="number" inputmode="decimal" min="0" step="5" value="25" /><span class="unit suffix">/mo</span></div>
+          </div>
+          <div class="field">
+            <label for="insurance">Renters insurance</label>
+            <div class="input-row"><span class="unit">$</span><input id="insurance" type="number" inputmode="decimal" min="0" step="1" value="18" /><span class="unit suffix">/mo</span></div>
+            <span class="hint">Most leases require it — and one break-in without it costs more than a decade of premiums.</span>
+          </div>
+        </div>
+        <div class="readout">
+          <div class="ro-item">
+            <div class="ro-label">Total monthly housing cost</div>
+            <div class="ro-value amber" id="housingTotal">$0</div>
+            <div class="ro-note">This — not the sticker rent — is what the stress test uses.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3-title">
+        <div class="step-head"><span class="step-num">STEP 3</span><h2 id="s3-title">The Rent Stress Engine</h2></div>
+        <p class="step-sub">Housing cost ÷ guaranteed monthly net. Overtime is deliberately left out of the denominator.</p>
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 200 118" role="img" aria-label="Rent-to-guaranteed-income gauge">
+            <path id="zoneGreen" fill="none" stroke-width="16" stroke-linecap="butt" />
+            <path id="zoneAmber" fill="none" stroke-width="16" stroke-linecap="butt" />
+            <path id="zoneRed" fill="none" stroke-width="16" stroke-linecap="butt" />
+            <path id="gaugeValue" fill="none" stroke-width="16" stroke-linecap="round" />
+            <text x="14" y="116" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">0%</text>
+            <text x="94" y="14" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">30%</text>
+            <text x="168" y="34" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">40%</text>
+            <text x="172" y="116" font-size="10" fill="var(--ink-3)" font-family="IBM Plex Mono, monospace">60%+</text>
+          </svg>
+          <div class="ratio-big"><span id="ratioBig">—</span><small id="ratioUnit"></small></div>
+          <p class="ratio-caption">of your guaranteed take-home goes to housing</p>
+          <div><span class="tier-badge idle" id="tierBadge">Enter your numbers</span></div>
+        </div>
+        <div class="tier-body">
+          <p class="tier-verdict" id="tierVerdict">Fill in Steps 1 and 2 and the engine will grade this lease against your base pay.</p>
+          <p class="strategy"><span class="s-label">Strategy</span><span id="tierStrategy">—</span></p>
+        </div>
+        <p class="ot-compare" id="otCompare"></p>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4-title">
+        <div class="step-head"><span class="step-num">STEP 4</span><h2 id="s4-title">Move-In Cash Shield</h2></div>
+        <p class="step-sub">Signing day is the most expensive day of the lease. These fields start matched to your rent — edit any of them if your landlord's math differs.</p>
+        <div class="fields two">
+          <div class="field">
+            <label for="firstMonth">First month's rent</label>
+            <div class="input-row"><span class="unit">$</span><input id="firstMonth" type="number" inputmode="decimal" min="0" step="25" value="1150" data-sync="rent" /></div>
+          </div>
+          <div class="field">
+            <label for="lastMonth">Last month's rent</label>
+            <div class="input-row"><span class="unit">$</span><input id="lastMonth" type="number" inputmode="decimal" min="0" step="25" value="1150" data-sync="rent" /></div>
+            <span class="hint">Not every landlord collects this — set to $0 if yours doesn't.</span>
+          </div>
+          <div class="field">
+            <label for="deposit">Security deposit</label>
+            <div class="input-row"><span class="unit">$</span><input id="deposit" type="number" inputmode="decimal" min="0" step="25" value="1150" data-sync="rent" /></div>
+            <span class="hint">Commonly one month's rent; some states cap it lower.</span>
+          </div>
+          <div class="field">
+            <label for="moveBuffer">Move-in buffer</label>
+            <div class="input-row"><span class="unit">$</span><input id="moveBuffer" type="number" inputmode="decimal" min="0" step="25" value="300" /></div>
+            <span class="hint">Truck, deposits for utilities, locks, the stuff nobody budgets for.</span>
+          </div>
+          <div class="field">
+            <label for="moveDate">Target move-in date</label>
+            <div class="input-row"><input id="moveDate" type="date" /></div>
+          </div>
+          <div class="field">
+            <label for="payFreq">How often you get paid</label>
+            <div class="input-row">
+              <select id="payFreq">
+                <option value="weekly">Weekly</option>
+                <option value="biweekly" selected>Every 2 weeks</option>
+                <option value="semimonthly">Twice a month</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="paychecksLeft">Paychecks left before move-in</label>
+            <div class="input-row"><input id="paychecksLeft" type="number" inputmode="numeric" min="1" step="1" value="3" /><span class="unit suffix">checks</span></div>
+            <span class="hint">Auto-filled from your move date — adjust it if your paydays land differently.</span>
+          </div>
+        </div>
+        <div class="readout cols">
+          <div class="ro-item">
+            <div class="ro-label">Total cash needed upfront</div>
+            <div class="ro-value amber" id="moveInTotal">$0</div>
+          </div>
+          <div class="ro-item">
+            <div class="ro-label">Save per paycheck</div>
+            <div class="ro-value" id="perPaycheck">$0</div>
+            <div class="ro-note" id="perPaycheckNote"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REPORT -->
+      <section class="report" aria-labelledby="report-title">
+        <div class="report-head">
+          <h2 id="report-title">Housing Safety Report</h2>
+        </div>
+        <div class="report-grid">
+          <div class="report-cell">
+            <div class="rc-label">Stress tier</div>
+            <div class="rc-value" id="repTier">—</div>
+          </div>
+          <div class="report-cell">
+            <div class="rc-label">Rent-to-base ratio</div>
+            <div class="rc-value amber" id="repRatio">—</div>
+            <div class="rc-note" id="repRatioNote"></div>
+          </div>
+          <div class="report-cell">
+            <div class="rc-label">Total monthly housing cost</div>
+            <div class="rc-value" id="repHousing">—</div>
+            <div class="rc-note" id="repHousingNote"></div>
+          </div>
+          <div class="report-cell">
+            <div class="rc-label">Guaranteed monthly net</div>
+            <div class="rc-value" id="repBase">—</div>
+            <div class="rc-note" id="repBaseNote"></div>
+          </div>
+          <div class="report-cell">
+            <div class="rc-label">Move-in cash needed</div>
+            <div class="rc-value amber" id="repMoveIn">—</div>
+            <div class="rc-note" id="repMoveInNote"></div>
+          </div>
+          <div class="report-cell">
+            <div class="rc-label">Savings plan</div>
+            <div class="rc-value" id="repPerCheck">—</div>
+            <div class="rc-note" id="repPerCheckNote"></div>
+          </div>
+          <div class="report-cell full">
+            <div class="rc-label">The play</div>
+            <div class="rc-note" id="repStrategy" style="font-size:16px; color:var(--ink);"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid no-print">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" target="_blank" rel="noopener">
+          <h3>Paycheck Budget Splitter</h3>
+          <p>Passed the stress test? Now split every check on purpose — needs, bills, buffer, and breathing room — so the rent is covered before the money lands.</p>
+          <span class="go">Split my paycheck →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" target="_blank" rel="noopener">
+          <h3>Emergency Fund Runway Calculator</h3>
+          <p>See exactly how many months your savings keep the lights — and the lease — paid if hours get cut, the plant slows down, or overtime dries up.</p>
+          <span class="go">Check my runway →</span>
+        </a>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta no-print">
+        <div class="hazard" aria-hidden="true"></div>
+        <div class="cta-body">
+          <p>Budget the new place with the <strong>Zero-Based Budgeting Binder</strong> and protect it with the <strong>Blue-Collar Buffer Binder</strong> on Gumroad — grab the <strong>free Paycheck Protection Checklist</strong> too.</p>
+          <a class="cta-btn" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get the binders on Gumroad →</a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="faq no-print">
+        <h2>Straight Answers</h2>
+        <details>
+          <summary>What is the 30% rule, and where does it come from?</summary>
+          <p>The long-standing rule of thumb says housing should cost no more than 30% of your income — above that, you're officially "cost-burdened." This engine runs the rule harder than the banks do: it measures against your <em>guaranteed take-home</em> pay, not your gross and not your best month. Under 30% of base net, a lease survives slow weeks, cut shifts, and a busted transmission without a missed payment.</p>
+        </details>
+        <details>
+          <summary>Why judge rent on base pay instead of pay with overtime?</summary>
+          <p>Because overtime is the first thing to disappear. Production slows, a line goes down, a new hire takes the extra shifts — and the OT you were counting on is gone, but the rent is still due on the 1st. If base pay alone covers the lease, OT becomes what it should be: fuel for debt payoff, savings, and getting ahead — not a load-bearing wall in your housing.</p>
+        </details>
+        <details>
+          <summary>How does the first + last + deposit math actually work?</summary>
+          <p>Many landlords collect three chunks at signing: the first month's rent (paying for the month you're about to live there), the last month's rent (held and applied to your final month), and a security deposit (held against damage, refundable if you leave the place as you found it). On a $1,150 lease that's $1,150 × 3 = $3,450 due before you get the keys — plus moving costs. This engine adds a buffer on top so signing day doesn't drain you to zero. Not every landlord charges all three; set any line to $0 if yours doesn't.</p>
+        </details>
+      </div>
+
+      <footer>Estimates only — your actual take-home depends on your tax situation, benefits, and garnishments. Run your real pay stub numbers before signing anything.</footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+        var $ = function (id) { return document.getElementById(id); };
+        var money = function (n) {
+          return "$" + Math.round(n).toLocaleString("en-US");
+        };
+        var num = function (id) {
+          var v = parseFloat($(id).value);
+          return isNaN(v) || v < 0 ? 0 : v;
+        };
+
+        /* default move date: 45 days out */
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var def = new Date(today.getTime() + 45 * 86400000);
+        $("moveDate").value = def.toISOString().slice(0, 10);
+
+        var PERIOD_DAYS = { weekly: 7, biweekly: 14, semimonthly: 30.4375 / 2, monthly: 30.4375 };
+        var checksTouched = false;
+        $("paychecksLeft").addEventListener("input", function () { checksTouched = true; });
+
+        function syncChecks() {
+          if (checksTouched) return;
+          var d = $("moveDate").value ? new Date($("moveDate").value + "T00:00:00") : null;
+          if (!d || isNaN(d)) return;
+          var days = Math.max(0, Math.round((d - today) / 86400000));
+          var per = PERIOD_DAYS[$("payFreq").value] || 14;
+          $("paychecksLeft").value = Math.max(1, Math.floor(days / per));
+        }
+
+        /* move-in fields follow rent until the user edits them */
+        var syncFields = document.querySelectorAll("[data-sync='rent']");
+        syncFields.forEach(function (f) {
+          f.addEventListener("input", function () { f.dataset.touched = "1"; });
+        });
+        $("rent").addEventListener("input", function () {
+          var r = $("rent").value;
+          syncFields.forEach(function (f) { if (!f.dataset.touched) f.value = r; });
+        });
+
+        /* gauge geometry: semicircle, center (100,100), r=78, scale 0..60% */
+        function polar(cx, cy, r, pct) {
+          var angle = Math.PI * (1 - pct / 60);
+          return [cx + r * Math.cos(angle), cy - r * Math.sin(angle)];
+        }
+        function arcPath(pctFrom, pctTo) {
+          var a = polar(100, 100, 78, pctFrom), b = polar(100, 100, 78, pctTo);
+          return "M " + a[0].toFixed(2) + " " + a[1].toFixed(2) +
+                 " A 78 78 0 0 1 " + b[0].toFixed(2) + " " + b[1].toFixed(2);
+        }
+        var zoneColors = { green: "#3ecf6e", amber: "#ffb52e", red: "#ff5247" };
+        $("zoneGreen").setAttribute("d", arcPath(0, 30));
+        $("zoneGreen").setAttribute("stroke", zoneColors.green);
+        $("zoneAmber").setAttribute("d", arcPath(30.8, 40));
+        $("zoneAmber").setAttribute("stroke", zoneColors.amber);
+        $("zoneRed").setAttribute("d", arcPath(40.8, 60));
+        $("zoneRed").setAttribute("stroke", zoneColors.red);
+        $("gaugeValue").setAttribute("stroke", "#f5a623");
+
+        var TIERS = {
+          danger: {
+            name: "High Stress Danger", cls: "danger", color: zoneColors.red,
+            verdict: "This lease only works if the overtime never stops. One slow month — a line shutdown, cut shifts, a short check — and rent is missed. The landlord gets paid by your best weeks, not your guaranteed ones.",
+            strategy: "Build a mandatory 2-month rent buffer in a separate account before you sign anything. If you can't stack that buffer first, negotiate the rent down or keep looking — a cheaper lease beats an eviction filing every time."
+          },
+          moderate: {
+            name: "Moderate Exposure", cls: "moderate", color: zoneColors.amber,
+            verdict: "Base pay covers this lease, but there's not much slack. A surprise bill or a light month will hurt — it just won't sink you, as long as you're disciplined about where the rent money sits.",
+            strategy: "Automate it: on the first payday of each month, move the full housing cost into a dedicated bills account the same hour your check lands. Rent you never see is rent you never spend."
+          },
+          fortified: {
+            name: "Fortified Lease", cls: "fortified", color: zoneColors.green,
+            verdict: "Your guaranteed pay handles this housing cost with room to spare. Slow weeks, lost OT, even a short month won't touch your ability to pay — this is what a stress-proof lease looks like.",
+            strategy: "Route every overtime and bonus dollar straight to debt payoff or investing. Base pay runs the household; OT builds the future. Don't let lifestyle creep eat the gap."
+          }
+        };
+
+        function calc() {
+          syncChecks();
+
+          /* STEP 1 — income */
+          var basePay = num("basePay"), baseHours = num("baseHours");
+          var otHours = num("otHours"), otExtra = num("otExtra");
+          var deduct = Math.min(num("deductPct"), 60) / 100;
+          var WEEKS_PER_MONTH = 52 / 12;
+          var baseWeeklyGross = basePay * baseHours;
+          var otWeeklyGross = otHours * basePay * 1.5 + otExtra;
+          var guaranteedNet = baseWeeklyGross * WEEKS_PER_MONTH * (1 - deduct);
+          var totalNet = (baseWeeklyGross + otWeeklyGross) * WEEKS_PER_MONTH * (1 - deduct);
+          var otCushion = totalNet - guaranteedNet;
+
+          $("guaranteedNet").textContent = money(guaranteedNet);
+          $("totalNet").textContent = money(totalNet);
+          $("otCushionNote").textContent = "OT cushion: " + money(otCushion) + "/mo — gravy, not rent money.";
+
+          /* STEP 2 — housing */
+          var rent = num("rent");
+          var housing = rent + num("utilities") + num("fees") + num("insurance");
+          $("housingTotal").textContent = money(housing);
+
+          /* STEP 3 — stress engine */
+          var badge = $("tierBadge"), tier = null, ratio = null;
+          if (guaranteedNet > 0 && housing > 0) {
+            ratio = housing / guaranteedNet * 100;
+            tier = ratio > 40 ? TIERS.danger : (ratio >= 30 ? TIERS.moderate : TIERS.fortified);
+            $("ratioBig").textContent = ratio.toFixed(1);
+            $("ratioUnit").textContent = "%";
+            badge.textContent = tier.name;
+            badge.className = "tier-badge " + tier.cls;
+            $("tierVerdict").textContent = tier.verdict;
+            $("tierStrategy").textContent = tier.strategy;
+            var capped = Math.min(ratio, 60);
+            if (capped > 0.4) {
+              $("gaugeValue").setAttribute("d", arcPath(0, capped));
+              $("gaugeValue").setAttribute("stroke", tier.color);
+              $("gaugeValue").style.display = "";
+            } else {
+              $("gaugeValue").style.display = "none";
+            }
+            var otRatio = totalNet > 0 ? housing / totalNet * 100 : 0;
+            $("otCompare").innerHTML = "For comparison: counting overtime, this housing cost is <strong>" +
+              otRatio.toFixed(1) + "%</strong> of your total take-home (" + money(totalNet) + "/mo). Landlords and lenders look at that rosier number — this engine grades you on the harsher one, because that's the one that has to show up every month.";
+          } else {
+            $("ratioBig").textContent = "—";
+            $("ratioUnit").textContent = "";
+            badge.textContent = "Enter your numbers";
+            badge.className = "tier-badge idle";
+            $("tierVerdict").textContent = "Fill in Steps 1 and 2 and the engine will grade this lease against your base pay.";
+            $("tierStrategy").textContent = "—";
+            $("gaugeValue").style.display = "none";
+            $("otCompare").textContent = "";
+          }
+
+          /* STEP 4 — move-in shield */
+          var moveIn = num("firstMonth") + num("lastMonth") + num("deposit") + num("moveBuffer");
+          var checks = Math.max(1, Math.round(num("paychecksLeft")) || 1);
+          var perCheck = moveIn / checks;
+          $("moveInTotal").textContent = money(moveIn);
+          $("perPaycheck").textContent = money(perCheck);
+          $("perPaycheckNote").textContent = "per paycheck × " + checks + " paycheck" + (checks === 1 ? "" : "s") + " before move-in day.";
+
+          /* REPORT */
+          $("repTier").textContent = tier ? tier.name : "—";
+          $("repTier").style.color = tier ? tier.color : "";
+          $("repRatio").textContent = ratio !== null ? ratio.toFixed(1) + "%" : "—";
+          $("repRatioNote").textContent = ratio !== null ? "of guaranteed net pay (" + money(guaranteedNet) + "/mo)" : "";
+          $("repHousing").textContent = money(housing);
+          $("repHousingNote").textContent = "Rent " + money(rent) + " + utilities, fees & insurance";
+          $("repBase").textContent = money(guaranteedNet);
+          $("repBaseNote").textContent = "Total with OT: " + money(totalNet) + "/mo";
+          $("repMoveIn").textContent = money(moveIn);
+          $("repMoveInNote").textContent = "First + last + deposit + buffer";
+          $("repPerCheck").textContent = money(perCheck);
+          $("repPerCheckNote").textContent = "per paycheck × " + checks + " paychecks";
+          $("repStrategy").textContent = tier ? tier.strategy : "Enter your income and housing numbers above to generate your plan.";
+        }
+
+        document.querySelectorAll("input, select").forEach(function (el) {
+          el.addEventListener("input", calc);
+          el.addEventListener("change", calc);
+        });
+        calc();
+      })();
+    </script>
+  </body>
+</html>

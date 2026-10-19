@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>OT Yield Maximizer — Are Your Overtime Hours Actually Worth It?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #100e0b;
+        --bg-2: #171410;
+        --card: #1c1914;
+        --card-2: #221e17;
+        --line: #332c21;
+        --line-soft: #29241c;
+        --ink: #f3ede1;
+        --ink-2: #c9bfa9;
+        --ink-3: #978a72;
+        --amber: #f5a524;
+        --orange: #ff7a1a;
+        --amber-dim: #3a2c12;
+        --good: #7bc96f;
+        --bad: #ff5d47;
+        --warn: #ffb03a;
+        --field: #12100d;
+        --shadow: 0 10px 30px rgba(0,0,0,.45);
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .hazard {
+        height: 8px; border-radius: 4px; margin-bottom: 22px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #14110c 14px 28px);
+        opacity: .9;
+      }
+      .hero h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(2.1rem, 7.5vw, 3.4rem);
+        line-height: 1.02; margin: 0 0 10px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .01em;
+      }
+      .hero h1 .hl { color: var(--amber); }
+      .hero p { margin: 0; color: var(--ink-2); font-size: 1.06rem; max-width: 56ch; }
+      .hero p strong { color: var(--ink); }
+
+      /* ---------- Steps ---------- */
+      .step {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 20px 18px 22px;
+        margin-top: 22px;
+        box-shadow: var(--shadow);
+      }
+      .step-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+      .step-num {
+        font-family: "JetBrains Mono", monospace; font-weight: 700;
+        background: var(--amber); color: #171106;
+        border-radius: 6px; padding: 2px 9px; font-size: .95rem; flex: none;
+      }
+      .step h2 {
+        font-family: "Barlow Condensed", sans-serif; text-transform: uppercase;
+        font-size: 1.45rem; margin: 0; letter-spacing: .02em; font-weight: 600;
+      }
+      .step .lede { color: var(--ink-3); margin: 2px 0 16px; font-size: .95rem; }
+
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .grid .full { grid-column: auto; } }
+      .grid .full { grid-column: 1 / -1; }
+      label.field { display: block; }
+      label.field span {
+        display: block; font-size: .82rem; font-weight: 600; letter-spacing: .04em;
+        text-transform: uppercase; color: var(--ink-2); margin-bottom: 6px;
+      }
+      label.field small { display: block; text-transform: none; letter-spacing: 0; color: var(--ink-3); font-weight: 400; margin-top: 5px; font-size: .8rem; }
+      .input-row { display: flex; align-items: stretch; }
+      .prefix {
+        display: flex; align-items: center; padding: 0 10px;
+        background: var(--card-2); border: 1px solid var(--line); border-right: 0;
+        border-radius: 9px 0 0 9px; color: var(--ink-3); font-family: "JetBrains Mono", monospace; font-size: .9rem;
+      }
+      input[type="number"], select {
+        width: 100%; appearance: none; -webkit-appearance: none;
+        background: var(--field); color: var(--ink);
+        border: 1px solid var(--line); border-radius: 9px;
+        padding: 11px 12px; font-size: 1.05rem; font-family: "JetBrains Mono", monospace;
+        font-variant-numeric: tabular-nums;
+      }
+      .input-row input { border-radius: 0 9px 9px 0; }
+      input[type="number"]:focus, select:focus { outline: 2px solid var(--amber); outline-offset: 0; border-color: var(--amber); }
+      select { font-family: "Barlow", sans-serif; font-size: 1rem; }
+
+      /* ---------- Yield engine ---------- */
+      .yield-hero {
+        background: var(--card-2); border: 1px solid var(--line);
+        border-radius: 12px; padding: 18px; text-align: center; margin-bottom: 16px;
+      }
+      .yield-hero .cap { font-size: .8rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+      .yield-hero .big {
+        font-family: "JetBrains Mono", monospace; font-weight: 700;
+        font-size: clamp(2.6rem, 10vw, 3.6rem); line-height: 1.1; color: var(--amber);
+      }
+      .yield-hero .sub { color: var(--ink-2); font-size: .95rem; }
+      .yield-hero .sub strong { color: var(--ink); }
+
+      .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+      @media (max-width: 480px) { .vs { grid-template-columns: 1fr; } }
+      .vs .pane { border: 1px solid var(--line-soft); border-radius: 10px; padding: 14px; background: var(--field); }
+      .vs .pane h3 { margin: 0 0 8px; font-size: .8rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-3); font-weight: 600; }
+      .vs .amt { font-family: "JetBrains Mono", monospace; font-size: 1.5rem; font-weight: 700; }
+      .vs .pane.gross .amt { color: var(--ink); }
+      .vs .pane.net .amt { color: var(--amber); }
+      .bar { height: 10px; border-radius: 5px; background: var(--line-soft); margin-top: 10px; overflow: hidden; }
+      .bar i { display: block; height: 100%; border-radius: 5px; transition: width .35s ease; }
+      .bar i.grossfill { background: var(--ink-3); }
+      .bar i.netfill { background: linear-gradient(90deg, var(--amber), var(--orange)); }
+      .vs .note { font-size: .83rem; color: var(--ink-3); margin-top: 8px; }
+
+      table.lines { width: 100%; border-collapse: collapse; font-size: .98rem; }
+      table.lines td { padding: 7px 2px; border-bottom: 1px dashed var(--line-soft); }
+      table.lines tr:last-child td { border-bottom: 0; }
+      table.lines td:last-child { text-align: right; font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      table.lines tr.total td { font-weight: 700; border-top: 2px solid var(--line); border-bottom: 0; padding-top: 10px; }
+      table.lines tr.sub td { color: var(--ink-3); font-size: .9rem; }
+      .drag { color: var(--bad); }
+
+      /* ---------- Verdict ---------- */
+      .alert {
+        display: none; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px;
+        border: 1px solid var(--bad); background: color-mix(in srgb, var(--bad) 10%, transparent);
+      }
+      .alert.on { display: block; }
+      .alert h3 { margin: 0 0 4px; font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; font-size: 1.3rem; color: var(--bad); letter-spacing: .02em; }
+      .alert p { margin: 0; color: var(--ink-2); font-size: .95rem; }
+      .allclear {
+        display: none; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px;
+        border: 1px solid var(--good); background: color-mix(in srgb, var(--good) 9%, transparent);
+      }
+      .allclear.on { display: block; }
+      .allclear h3 { margin: 0 0 4px; font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; font-size: 1.3rem; color: var(--good); }
+      .allclear p { margin: 0; color: var(--ink-2); font-size: .95rem; }
+
+      .score-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+      .score-num { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 3rem; line-height: 1; }
+      .score-num small { font-size: 1.1rem; color: var(--ink-3); }
+      .score-meta { flex: 1; min-width: 200px; }
+      .score-meta .cap { font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+      .meter { height: 14px; border-radius: 7px; background: var(--line-soft); overflow: hidden; }
+      .meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--orange), var(--amber)); transition: width .35s ease; }
+      .score-word { font-weight: 700; margin-top: 8px; font-size: 1.05rem; }
+
+      .route { margin-top: 20px; }
+      .route h3 { font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; font-size: 1.25rem; margin: 0 0 4px; letter-spacing: .02em; }
+      .route p.why { color: var(--ink-3); font-size: .92rem; margin: 0 0 14px; }
+      .route-stack { display: flex; height: 34px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+      .route-stack div { transition: width .35s ease; }
+      .seg-debt { background: var(--orange); }
+      .seg-buffer { background: var(--amber); }
+      .seg-free { background: var(--ink-3); }
+      .route-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+      .route-list li { display: flex; align-items: center; gap: 12px; background: var(--field); border: 1px solid var(--line-soft); border-radius: 10px; padding: 11px 14px; }
+      .route-list .dot { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+      .route-list .what { flex: 1; }
+      .route-list .what b { display: block; font-size: .98rem; }
+      .route-list .what span { color: var(--ink-3); font-size: .85rem; }
+      .route-list .amt { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.05rem; white-space: nowrap; }
+      .route-list .amt small { color: var(--ink-3); font-weight: 500; }
+
+      .empty-note { display: none; border: 1px dashed var(--line); border-radius: 10px; padding: 14px; color: var(--ink-2); font-size: .95rem; margin-bottom: 14px; }
+      .empty-note.on { display: block; }
+
+      /* ---------- Breakdown card ---------- */
+      .breakdown {
+        margin-top: 26px; border: 2px solid var(--amber); border-radius: var(--radius);
+        background: var(--card); padding: 22px 20px; box-shadow: var(--shadow);
+      }
+      .breakdown h2 {
+        font-family: "Barlow Condensed", sans-serif; text-transform: uppercase;
+        font-size: 1.6rem; margin: 0 0 2px; letter-spacing: .02em;
+      }
+      .breakdown .period { color: var(--ink-3); font-size: .9rem; margin-bottom: 14px; }
+      .bd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+      @media (max-width: 480px) { .bd-grid { grid-template-columns: 1fr; } }
+      .bd-cell { background: var(--field); border: 1px solid var(--line-soft); border-radius: 10px; padding: 14px; }
+      .bd-cell .cap { font-size: .76rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+      .bd-cell .val { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 1.55rem; margin-top: 4px; }
+      .bd-cell .val.amber { color: var(--amber); }
+      .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+      button.act, a.act {
+        appearance: none; border: 0; cursor: pointer; text-decoration: none;
+        font-family: "Barlow", sans-serif; font-weight: 700; font-size: 1rem;
+        border-radius: 10px; padding: 13px 20px; display: inline-block;
+      }
+      .act-primary { background: linear-gradient(90deg, var(--amber), var(--orange)); color: #1c1204; }
+      .act-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+      .fineprint { color: var(--ink-3); font-size: .82rem; margin-top: 14px; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-family: "Barlow Condensed", sans-serif; text-transform: uppercase;
+        font-size: 1.5rem; margin: 34px 0 12px; letter-spacing: .02em;
+      }
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 560px) { .next-grid { grid-template-columns: 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 18px;
+      }
+      a.next-card h3 { margin: 0 0 6px; font-size: 1.12rem; }
+      a.next-card p { margin: 0 0 10px; color: var(--ink-2); font-size: .94rem; }
+      a.next-card .go { color: var(--amber); font-weight: 700; font-size: .92rem; }
+      .cta {
+        margin-top: 16px; border-radius: var(--radius); padding: 22px 20px;
+        background: linear-gradient(120deg, var(--amber-dim), var(--card-2));
+        border: 1px solid var(--amber);
+      }
+      .cta h3 { margin: 0 0 6px; font-family: "Barlow Condensed", sans-serif; text-transform: uppercase; font-size: 1.45rem; letter-spacing: .02em; }
+      .cta p { margin: 0 0 14px; color: var(--ink-2); max-width: 58ch; }
+      details.faq {
+        background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+        padding: 14px 16px; margin-bottom: 10px;
+      }
+      details.faq summary { cursor: pointer; font-weight: 600; font-size: 1rem; }
+      details.faq p { color: var(--ink-2); margin: 10px 0 2px; font-size: .95rem; }
+      .disclaimer { color: var(--ink-3); font-size: .85rem; margin-top: 26px; border-top: 1px solid var(--line-soft); padding-top: 16px; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .bar i, .meter i, .route-stack div { transition: none; }
+      }
+
+      /* ---------- Print: breakdown card only ---------- */
+      @media print {
+        body { background: #fff; }
+        body * { visibility: hidden; }
+        #breakdownCard, #breakdownCard * { visibility: visible; }
+        #breakdownCard {
+          position: absolute; inset: 0 auto auto 0; width: 100%;
+          border: 2px solid #111; box-shadow: none; background: #fff; color: #111;
+        }
+        #breakdownCard .actions, #breakdownCard .fineprint { display: none; }
+        #breakdownCard .bd-cell, #breakdownCard table.lines td { border-color: #bbb; }
+        #breakdownCard .val, #breakdownCard .val.amber { color: #111; }
+        #breakdownCard .cap, #breakdownCard .period, #breakdownCard td { color: #333; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <!-- HERO -->
+      <header class="hero">
+        <div class="hazard" aria-hidden="true"></div>
+        <h1>Are your overtime hours <span class="hl">actually worth it?</span></h1>
+        <p>Run a full audit on your paycheck. Enter your rate and hours, and this engine shows what your overtime <strong>really pays per hour after taxes</strong> — not the number on the schedule board, the number that lands in your account.</p>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">01</span><h2 id="s1">Baseline Pay</h2></div>
+        <p class="lede">Your straight-time setup — the foundation every premium hour is built on.</p>
+        <div class="grid">
+          <label class="field">
+            <span>Base hourly rate</span>
+            <div class="input-row"><div class="prefix">$</div><input type="number" id="baseRate" value="20" min="0" step="0.25" inputmode="decimal" /></div>
+          </label>
+          <label class="field">
+            <span>Regular hours / pay period</span>
+            <div class="input-row"><div class="prefix">hrs</div><input type="number" id="regHours" value="80" min="0" step="1" inputmode="decimal" /></div>
+          </label>
+          <label class="field">
+            <span>Pay schedule</span>
+            <select id="payFreq">
+              <option value="52">Weekly (52 checks/yr)</option>
+              <option value="26" selected>Biweekly (26 checks/yr)</option>
+              <option value="24">Twice a month (24 checks/yr)</option>
+              <option value="12">Monthly (12 checks/yr)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Filing status (tax estimate)</span>
+            <select id="filing">
+              <option value="single" selected>Single</option>
+              <option value="mfj">Married filing jointly</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Shift differential</span>
+            <div class="input-row"><div class="prefix">$</div><input type="number" id="diffRate" value="1.50" min="0" step="0.25" inputmode="decimal" /></div>
+            <small>Extra $/hr your employer pays for nights, weekends, or undesirable shifts.</small>
+          </label>
+          <label class="field">
+            <span>Hours earning the differential</span>
+            <div class="input-row"><div class="prefix">hrs</div><input type="number" id="diffHours" value="80" min="0" step="1" inputmode="decimal" /></div>
+            <small>Hours per period the differential applies to. Premium hours below earn it too — set this to straight-time hours only.</small>
+          </label>
+          <label class="field full">
+            <span>State (for tax estimate)</span>
+            <select id="stateSel"></select>
+            <small>State tax is estimated with a typical effective rate for that state. Some states have no income tax.</small>
+          </label>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">02</span><h2 id="s2">Overtime Breakdown</h2></div>
+        <p class="lede">Every premium hour you worked this pay period, by multiplier.</p>
+        <div class="grid">
+          <label class="field">
+            <span>Overtime hours (1.5×)</span>
+            <div class="input-row"><div class="prefix">hrs</div><input type="number" id="otHours" value="10" min="0" step="0.5" inputmode="decimal" /></div>
+          </label>
+          <label class="field">
+            <span>Double-time hours (2.0×)</span>
+            <div class="input-row"><div class="prefix">hrs</div><input type="number" id="dtHours" value="0" min="0" step="0.5" inputmode="decimal" /></div>
+          </label>
+          <label class="field">
+            <span>Holiday / hazard hours</span>
+            <div class="input-row"><div class="prefix">hrs</div><input type="number" id="holHours" value="0" min="0" step="0.5" inputmode="decimal" /></div>
+          </label>
+          <label class="field">
+            <span>Holiday / hazard multiplier</span>
+            <div class="input-row"><div class="prefix">×</div><input type="number" id="holMult" value="2.5" min="1" step="0.25" inputmode="decimal" /></div>
+            <small>Your employer's premium for those hours — 2×, 2.5×, 3×, whatever your policy pays.</small>
+          </label>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head"><span class="step-num">03</span><h2 id="s3">The Yield Engine</h2></div>
+        <p class="lede">Your premium hours, audited. The tax on your OT is calculated the honest way — the extra tax those hours actually cause, at your marginal bracket.</p>
+
+        <div class="empty-note" id="noOtNote">Add at least one premium hour in Step 2 (overtime, double-time, or holiday/hazard) to see your yield. The totals below still reflect your baseline check.</div>
+
+        <div class="yield-hero">
+          <div class="cap">Real Net Hourly Yield — your OT hours, after tax</div>
+          <div class="big" id="yieldBig">$0.00</div>
+          <div class="sub" id="yieldSub">per premium hour, in your pocket</div>
+        </div>
+
+        <div class="vs">
+          <div class="pane gross">
+            <h3>What OT looks like (gross)</h3>
+            <div class="amt" id="otGrossAmt">$0</div>
+            <div class="bar"><i class="grossfill" id="otGrossBar" style="width:100%"></i></div>
+            <div class="note" id="otGrossNote">—</div>
+          </div>
+          <div class="pane net">
+            <h3>What actually lands (net)</h3>
+            <div class="amt" id="otNetAmt">$0</div>
+            <div class="bar"><i class="netfill" id="otNetBar" style="width:0%"></i></div>
+            <div class="note" id="otNetNote">—</div>
+          </div>
+        </div>
+
+        <table class="lines" aria-label="Paycheck math">
+          <tr><td>Gross regular pay</td><td id="lnRegGross">$0</td></tr>
+          <tr><td>Gross overtime pay (1.5×)</td><td id="lnOt">$0</td></tr>
+          <tr><td>Gross double-time pay (2.0×)</td><td id="lnDt">$0</td></tr>
+          <tr><td>Gross holiday / hazard pay</td><td id="lnHol">$0</td></tr>
+          <tr><td>Gross shift differential pay</td><td id="lnDiff">$0</td></tr>
+          <tr class="total"><td>Total gross pay</td><td id="lnGrossTotal">$0</td></tr>
+          <tr><td>Federal income tax (est.)</td><td class="drag" id="lnFed">−$0</td></tr>
+          <tr><td>State income tax (est.)</td><td class="drag" id="lnState">−$0</td></tr>
+          <tr><td>FICA — Social Security + Medicare (7.65%)</td><td class="drag" id="lnFica">−$0</td></tr>
+          <tr class="total"><td>Estimated net pay (whole check)</td><td id="lnNetTotal">$0</td></tr>
+          <tr class="sub"><td>Tax drag caused by your premium hours alone</td><td class="drag" id="lnOtDrag">−$0</td></tr>
+        </table>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head"><span class="step-num">04</span><h2 id="s4">The Verdict</h2></div>
+        <p class="lede">Is the extra grind converting into real money — or is the tax drag eating your hours?</p>
+
+        <div class="alert" id="burnoutAlert" role="alert">
+          <h3>⚠ OT Burnout Alert</h3>
+          <p id="burnoutText">Your premium hours are keeping less than 65¢ of every gross dollar.</p>
+        </div>
+        <div class="allclear" id="allClear">
+          <h3>OT Cleared — Hours Are Paying</h3>
+          <p id="allClearText">Your premium hours are converting to spendable cash at a healthy rate.</p>
+        </div>
+
+        <div class="score-row">
+          <div class="score-num"><span id="scoreNum">0</span><small>/100</small></div>
+          <div class="score-meta">
+            <div class="cap">Overtime Efficiency Rating</div>
+            <div class="meter"><i id="scoreBar" style="width:0%"></i></div>
+            <div class="score-word" id="scoreWord">—</div>
+          </div>
+        </div>
+
+        <div class="route">
+          <h3>Paycheck Routing Guide</h3>
+          <p class="why" id="routeWhy">Where this period's net OT pay should go the day it lands.</p>
+          <div class="route-stack" aria-hidden="true">
+            <div class="seg-debt" id="segDebt" style="width:50%"></div>
+            <div class="seg-buffer" id="segBuffer" style="width:30%"></div>
+            <div class="seg-free" id="segFree" style="width:20%"></div>
+          </div>
+          <ul class="route-list">
+            <li>
+              <span class="dot seg-debt"></span>
+              <div class="what"><b>Debt snowball</b><span>Smallest balance first — kill a card, free a payment.</span></div>
+              <div class="amt"><span id="amtDebt">$0</span> <small id="pctDebt">50%</small></div>
+            </li>
+            <li>
+              <span class="dot seg-buffer"></span>
+              <div class="what"><b>Buffer fund</b><span>Build toward one full paycheck of cushion.</span></div>
+              <div class="amt"><span id="amtBuffer">$0</span> <small id="pctBuffer">30%</small></div>
+            </li>
+            <li>
+              <span class="dot seg-free"></span>
+              <div class="what"><b>Guilt-free</b><span>Spent on purpose, no apologies — this is the point of the grind.</span></div>
+              <div class="amt"><span id="amtFree">$0</span> <small id="pctFree">20%</small></div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- BREAKDOWN CARD -->
+      <section class="breakdown" id="breakdownCard" aria-labelledby="bdTitle">
+        <h2 id="bdTitle">Paycheck Yield Breakdown</h2>
+        <div class="period" id="bdPeriod">Per pay period · estimates only</div>
+        <table class="lines">
+          <tr><td>Gross pay (whole check)</td><td id="bdGross">$0</td></tr>
+          <tr><td>Federal withholding (est.)</td><td class="drag" id="bdFed">−$0</td></tr>
+          <tr><td>State withholding (est.)</td><td class="drag" id="bdState">−$0</td></tr>
+          <tr><td>FICA (est.)</td><td class="drag" id="bdFica">−$0</td></tr>
+          <tr class="total"><td>Net pay (whole check)</td><td id="bdNet">$0</td></tr>
+        </table>
+        <div class="bd-grid">
+          <div class="bd-cell">
+            <div class="cap">Net OT take-home</div>
+            <div class="val amber" id="bdOtNet">$0</div>
+          </div>
+          <div class="bd-cell">
+            <div class="cap">Effective net hourly wage (all hours)</div>
+            <div class="val" id="bdEffWage">$0.00</div>
+          </div>
+          <div class="bd-cell">
+            <div class="cap">Real net OT yield / premium hr</div>
+            <div class="val amber" id="bdYield">$0.00</div>
+          </div>
+          <div class="bd-cell">
+            <div class="cap">Overtime efficiency rating</div>
+            <div class="val" id="bdScore">0/100</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="act act-primary" id="downloadBtn">Download breakdown</button>
+        </div>
+        <p class="fineprint">Screenshot this card or download it — the card is print-clean, so it also comes out sharp from a browser print. Then compare it against your actual pay stub. If the stub shows a bigger tax bite than this estimate, your W-4 withholding is set higher than your real bracket — that's fixable.</p>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <h2 class="section-title">Keep the audit going</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/overtime-paycheck-calculator.html" target="_blank" rel="noopener">
+          <h3>Overtime Paycheck Calculator</h3>
+          <p>Project your next check before you volunteer for the shift — gross, taxes, and take-home for any hours mix.</p>
+          <span class="go">Open the calculator →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html" target="_blank" rel="noopener">
+          <h3>Side-Hustle Tax Estimator</h3>
+          <p>DoorDash, delivery, gig income — find out what to set aside per payout so April never blindsides you.</p>
+          <span class="go">Estimate your set-aside →</span>
+        </a>
+      </div>
+
+      <div class="cta">
+        <h3>Log every OT hour. Make them count.</h3>
+        <p>The <strong>Overtime &amp; Shift Worker Cash Flow Log</strong> and the <strong>Paycheck-to-Paycheck Weekly Planner</strong> turn audits like this one into a system — track every premium hour, route every dollar, and watch the debt shrink on paper.</p>
+        <a class="act act-primary" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get them on Gumroad →</a>
+      </div>
+
+      <!-- FAQ -->
+      <h2 class="section-title">Straight answers</h2>
+      <details class="faq">
+        <summary>Why does a big OT week sometimes barely move my check?</summary>
+        <p>Because overtime is taxed at your <em>marginal</em> rate, not your average rate. Your regular pay fills up the cheap tax brackets first, so every OT dollar lands in the highest bracket you've reached — plus 7.65% FICA on top. A fat OT week can also push your annualized income into the next bracket on that check's withholding math. The hours still pay; they just pay less per hour than the 1.5× on the board suggests. That gap is exactly what the Real Net Hourly Yield above measures.</p>
+      </details>
+      <details class="faq">
+        <summary>How do shift differentials work?</summary>
+        <p>A differential is an extra amount per hour — say $1.50/hr — paid on top of your base rate for nights, weekends, or hard-to-fill shifts. It usually applies to every hour on that shift, including overtime hours, and at many employers the OT premium is calculated on your rate <em>including</em> the differential. This tool adds the differential on your straight-time hours to your baseline and counts it on premium hours too, so check your own pay policy if your numbers look slightly different.</p>
+      </details>
+      <details class="faq">
+        <summary>What does the 65% Burnout Alert actually mean?</summary>
+        <p>It compares what each premium hour pays after tax (your Real Net Hourly Yield) against what that hour pays before tax (its gross premium rate). If you're keeping less than 65% of the gross rate, taxes are eating more than a third of every extra hour — the point where a lot of workers find the missed sleep, missed games, and missed rest stop feeling worth it. It doesn't mean "never take OT." It means the routing matters more: aim those dollars at high-interest debt first, where every dollar also kills future interest.</p>
+      </details>
+      <details class="faq">
+        <summary>Is the Overtime Efficiency Rating my credit score or something official?</summary>
+        <p>No — it's a score this tool calculates for this paycheck only. It measures how efficiently your premium hours converted into spendable cash after estimated taxes. Higher means your OT is working hard for you; lower means bracket creep and withholding are taking a bigger cut, and it's worth looking at your W-4 or your routing split.</p>
+      </details>
+
+      <p class="disclaimer">Tax figures on this page are estimates built from 2025 federal brackets, the standard deduction, FICA at 7.65%, and a typical effective state rate. They do not account for pre-tax deductions (401(k), health premiums), local taxes, garnishments, or your exact W-4 elections, and they are not tax advice. For decisions that matter, compare against your real pay stub or talk to a tax professional.</p>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // ---- State effective-rate estimates (percent), labeled as estimates in UI ----
+        var STATES = [
+          ["AL","Alabama",4.0],["AK","Alaska",0],["AZ","Arizona",2.5],["AR","Arkansas",3.9],
+          ["CA","California",6.0],["CO","Colorado",4.4],["CT","Connecticut",5.0],["DE","Delaware",5.2],
+          ["DC","District of Columbia",6.0],["FL","Florida",0],["GA","Georgia",5.39],["HI","Hawaii",7.0],
+          ["ID","Idaho",5.8],["IL","Illinois",4.95],["IN","Indiana",3.05],["IA","Iowa",3.8],
+          ["KS","Kansas",5.2],["KY","Kentucky",4.0],["LA","Louisiana",3.0],["ME","Maine",6.5],
+          ["MD","Maryland",5.0],["MA","Massachusetts",5.0],["MI","Michigan",4.25],["MN","Minnesota",7.0],
+          ["MS","Mississippi",4.7],["MO","Missouri",4.7],["MT","Montana",5.9],["NE","Nebraska",5.2],
+          ["NV","Nevada",0],["NH","New Hampshire",0],["NJ","New Jersey",5.5],["NM","New Mexico",4.9],
+          ["NY","New York",6.0],["NC","North Carolina",4.25],["ND","North Dakota",2.5],["OH","Ohio",3.5],
+          ["OK","Oklahoma",4.75],["OR","Oregon",8.75],["PA","Pennsylvania",3.07],["RI","Rhode Island",4.75],
+          ["SC","South Carolina",6.2],["SD","South Dakota",0],["TN","Tennessee",0],["TX","Texas",0],
+          ["UT","Utah",4.55],["VT","Vermont",6.6],["VA","Virginia",5.0],["WA","Washington",0],
+          ["WV","West Virginia",4.8],["WI","Wisconsin",5.3],["WY","Wyoming",0]
+        ];
+
+        // ---- 2025 federal brackets ----
+        var BRACKETS = {
+          single: { deduction: 15000, bands: [[0.10,11925],[0.12,48475],[0.22,103350],[0.24,197300],[0.32,250525],[0.35,626350],[0.37,Infinity]] },
+          mfj:    { deduction: 30000, bands: [[0.10,23850],[0.12,96950],[0.22,206700],[0.24,394600],[0.32,501050],[0.35,751600],[0.37,Infinity]] }
+        };
+        var SS_WAGE_BASE = 176100;
+
+        var $ = function (id) { return document.getElementById(id); };
+        var stateSel = $("stateSel");
+        STATES.forEach(function (s) {
+          var o = document.createElement("option");
+          o.value = s[0]; o.textContent = s[1] + (s[2] === 0 ? " — no state income tax" : "");
+          if (s[0] === "GA") o.selected = true;
+          stateSel.appendChild(o);
+        });
+        function stateRate() {
+          for (var i = 0; i < STATES.length; i++) if (STATES[i][0] === stateSel.value) return STATES[i][2] / 100;
+          return 0;
+        }
+        function num(id) { var v = parseFloat($(id).value); return isNaN(v) || v < 0 ? 0 : v; }
+        function money(v) { return "$" + Math.round(v).toLocaleString("en-US"); }
+        function money2(v) { return "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+        function neg(v) { return v > 0.5 ? "−" + money(v) : "$0"; }
+
+        function federalTax(annualGross, filing) {
+          var b = BRACKETS[filing];
+          var taxable = Math.max(0, annualGross - b.deduction);
+          var tax = 0, prev = 0;
+          for (var i = 0; i < b.bands.length; i++) {
+            var cap = b.bands[i][1], rate = b.bands[i][0];
+            if (taxable > prev) tax += (Math.min(taxable, cap) - prev) * rate;
+            prev = cap;
+          }
+          return tax;
+        }
+        function annualTaxes(annualGross, filing) {
+          var fed = federalTax(annualGross, filing);
+          var ss = Math.min(annualGross, SS_WAGE_BASE) * 0.062;
+          var med = annualGross * 0.0145 + Math.max(0, annualGross - 200000) * 0.009;
+          var st = annualGross * stateRate();
+          return { fed: fed, fica: ss + med, state: st, total: fed + ss + med + st };
+        }
+
+        var last = null;
+
+        function compute() {
+          var rate = num("baseRate"), regH = num("regHours"), periods = parseFloat($("payFreq").value);
+          var filing = $("filing").value;
+          var diffRate = num("diffRate"), diffH = num("diffHours");
+          var otH = num("otHours"), dtH = num("dtHours"), holH = num("holHours");
+          var holMult = Math.max(1, num("holMult") || 1);
+
+          var premiumH = otH + dtH + holH;
+          var totalH = regH + premiumH;
+
+          // Gross buckets (differential counts on straight-time hours in baseline,
+          // and on premium hours inside the premium bucket)
+          var regGross = rate * regH + diffRate * diffH;
+          var otGross = rate * 1.5 * otH + diffRate * otH;
+          var dtGross = rate * 2.0 * dtH + diffRate * dtH;
+          var holGross = rate * holMult * holH + diffRate * holH;
+          var premiumGross = otGross + dtGross + holGross;
+          var diffTotal = diffRate * (diffH + premiumH);
+          var grossTotal = regGross + premiumGross;
+
+          // Taxes: marginal method — OT drag = tax(with premium) − tax(baseline only)
+          var tAll = annualTaxes(grossTotal * periods, filing);
+          var tBase = annualTaxes(regGross * periods, filing);
+          var per = function (o) { return { fed: o.fed / periods, fica: o.fica / periods, state: o.state / periods, total: o.total / periods }; };
+          var taxAll = per(tAll), taxDrag = per({ fed: tAll.fed - tBase.fed, fica: tAll.fica - tBase.fica, state: tAll.state - tBase.state, total: tAll.total - tBase.total });
+
+          var netTotal = grossTotal - taxAll.total;
+          var netPremium = premiumGross - taxDrag.total;
+
+          var blendedGrossRate = premiumH > 0 ? premiumGross / premiumH : 0;
+          var yieldPerHr = premiumH > 0 ? netPremium / premiumH : 0;
+          var keepRatio = blendedGrossRate > 0 ? yieldPerHr / blendedGrossRate : 0;
+          var score = premiumH > 0 ? Math.max(0, Math.min(100, Math.round(keepRatio * 100))) : 0;
+          var effWage = totalH > 0 ? netTotal / totalH : 0;
+          var burnout = premiumH > 0 && keepRatio < 0.65;
+
+          // ---- Step 3 render ----
+          $("noOtNote").classList.toggle("on", premiumH === 0);
+          $("yieldBig").textContent = premiumH > 0 ? money2(yieldPerHr) : "$0.00";
+          $("yieldSub").innerHTML = premiumH > 0
+            ? "per premium hour, in your pocket — vs <strong>" + money2(blendedGrossRate) + "</strong> gross"
+            : "add premium hours in Step 2 to run the audit";
+
+          $("otGrossAmt").textContent = money(premiumGross);
+          $("otNetAmt").textContent = money(Math.max(0, netPremium));
+          $("otGrossNote").textContent = premiumH > 0
+            ? premiumH + " premium hrs at a blended " + money2(blendedGrossRate) + "/hr gross"
+            : "No premium hours entered.";
+          $("otNetNote").textContent = premiumH > 0
+            ? "After " + money(taxDrag.total) + " of tax those hours caused — you keep " + Math.round(keepRatio * 100) + "%"
+            : "—";
+          $("otNetBar").style.width = (premiumGross > 0 ? Math.max(0, Math.min(100, netPremium / premiumGross * 100)) : 0) + "%";
+
+          $("lnRegGross").textContent = money(rate * regH);
+          $("lnOt").textContent = money(rate * 1.5 * otH);
+          $("lnDt").textContent = money(rate * 2.0 * dtH);
+          $("lnHol").textContent = money(rate * holMult * holH);
+          $("lnDiff").textContent = money(diffTotal);
+          $("lnGrossTotal").textContent = money(grossTotal);
+          $("lnFed").textContent = neg(taxAll.fed);
+          $("lnState").textContent = neg(taxAll.state);
+          $("lnFica").textContent = neg(taxAll.fica);
+          $("lnNetTotal").textContent = money(netTotal);
+          $("lnOtDrag").textContent = premiumH > 0 ? neg(taxDrag.total) : "$0";
+
+          // ---- Step 4 render ----
+          $("burnoutAlert").classList.toggle("on", burnout);
+          $("allClear").classList.toggle("on", premiumH > 0 && !burnout);
+          if (burnout) {
+            $("burnoutText").textContent = "Your premium hours keep only " + Math.round(keepRatio * 100) +
+              "% of their gross rate — " + money2(yieldPerHr) + " net per hour against " + money2(blendedGrossRate) +
+              " gross. Taxes are eating more than a third of every extra hour. The grind may still be worth it, but only if those dollars are aimed at high-interest debt first.";
+          }
+          if (premiumH > 0 && !burnout) {
+            $("allClearText").textContent = "Your premium hours keep " + Math.round(keepRatio * 100) +
+              "% of their gross rate — " + money2(yieldPerHr) + " net per hour. That's a healthy conversion. Route it with intent below and the hours compound.";
+          }
+          $("scoreNum").textContent = score;
+          $("scoreBar").style.width = score + "%";
+          $("scoreWord").textContent =
+            premiumH === 0 ? "Add premium hours to get your rating." :
+            score >= 85 ? "Elite conversion — these hours are printing money." :
+            score >= 75 ? "Strong — OT is paying close to face value." :
+            score >= 65 ? "Fair — worth it if the routing is disciplined." :
+            score >= 50 ? "Leaky — bracket creep is taking a real cut." :
+                          "Drained — most of the premium is evaporating in tax.";
+
+          // Routing split depends on verdict
+          var split = burnout ? [55, 30, 15] : (score >= 80 ? [40, 30, 30] : [50, 30, 20]);
+          var routable = Math.max(0, netPremium);
+          $("segDebt").style.width = split[0] + "%";
+          $("segBuffer").style.width = split[1] + "%";
+          $("segFree").style.width = split[2] + "%";
+          $("amtDebt").textContent = money(routable * split[0] / 100);
+          $("amtBuffer").textContent = money(routable * split[1] / 100);
+          $("amtFree").textContent = money(routable * split[2] / 100);
+          $("pctDebt").textContent = split[0] + "%";
+          $("pctBuffer").textContent = split[1] + "%";
+          $("pctFree").textContent = split[2] + "%";
+          $("routeWhy").textContent = premiumH === 0
+            ? "Routing applies to your net OT pay once premium hours are entered."
+            : burnout
+              ? "Burnout mode: when the tax drag is heavy, debt payoff does double duty — every dollar routed there also deletes future interest. Guilt-free shrinks until the yield recovers."
+              : "Split of this period's net OT take-home (" + money(routable) + "), applied the day the check lands — before the money drifts.";
+
+          // ---- Breakdown card ----
+          var freqLabel = $("payFreq").options[$("payFreq").selectedIndex].text;
+          $("bdPeriod").textContent = "Per pay period · " + freqLabel + " · " + stateSel.options[stateSel.selectedIndex].text.replace(/ — no state income tax$/, "") + " · estimates only";
+          $("bdGross").textContent = money(grossTotal);
+          $("bdFed").textContent = neg(taxAll.fed);
+          $("bdState").textContent = neg(taxAll.state);
+          $("bdFica").textContent = neg(taxAll.fica);
+          $("bdNet").textContent = money(netTotal);
+          $("bdOtNet").textContent = money(routable);
+          $("bdEffWage").textContent = money2(effWage);
+          $("bdYield").textContent = premiumH > 0 ? money2(yieldPerHr) : "$0.00";
+          $("bdScore").textContent = score + "/100";
+
+          last = {
+            grossTotal: grossTotal, taxAll: taxAll, netTotal: netTotal, netPremium: routable,
+            yieldPerHr: yieldPerHr, blendedGrossRate: blendedGrossRate, keepRatio: keepRatio,
+            score: score, effWage: effWage, premiumH: premiumH, split: split,
+            freqLabel: freqLabel, burnout: burnout, taxDrag: taxDrag.total
+          };
+        }
+
+        var ids = ["baseRate","regHours","payFreq","filing","diffRate","diffHours","stateSel","otHours","dtHours","holHours","holMult"];
+        ids.forEach(function (id) {
+          $(id).addEventListener("input", compute);
+          $(id).addEventListener("change", compute);
+        });
+        compute();
+
+        // ---- Download breakdown (generated file) ----
+        $("downloadBtn").addEventListener("click", function () {
+          if (!last) return;
+          var s = last.split;
+          var lines = [
+            "PAYCHECK YIELD BREAKDOWN",
+            "========================",
+            "Pay schedule: " + last.freqLabel,
+            "",
+            "Gross pay (whole check):        " + money(last.grossTotal),
+            "Federal withholding (est.):    " + neg(last.taxAll.fed),
+            "State withholding (est.):      " + neg(last.taxAll.state),
+            "FICA (est.):                    " + neg(last.taxAll.fica),
+            "Net pay (whole check):          " + money(last.netTotal),
+            "",
+            "Premium hours worked:           " + last.premiumH,
+            "Net OT take-home:               " + money(last.netPremium),
+            "Gross premium rate / hr:        " + money2(last.blendedGrossRate),
+            "Real net OT yield / hr:         " + money2(last.yieldPerHr),
+            "You keep:                       " + Math.round(last.keepRatio * 100) + "% of gross premium pay",
+            "Tax drag from premium hours:    " + money(last.taxDrag),
+            "Effective net hourly wage:      " + money2(last.effWage),
+            "Overtime Efficiency Rating:     " + last.score + "/100",
+            last.burnout ? "VERDICT: OT BURNOUT ALERT — net yield under 65% of gross premium rate." : "VERDICT: OT cleared — premium hours converting at a healthy rate.",
+            "",
+            "ROUTING GUIDE (of net OT pay)",
+            "  Debt snowball (" + s[0] + "%):  " + money(last.netPremium * s[0] / 100),
+            "  Buffer fund   (" + s[1] + "%):  " + money(last.netPremium * s[1] / 100),
+            "  Guilt-free    (" + s[2] + "%):  " + money(last.netPremium * s[2] / 100),
+            "",
+            "Estimates only — 2025 federal brackets, FICA 7.65%, typical state effective rate. Not tax advice."
+          ];
+          var blob = new Blob([lines.join("\n")], { type: "text/plain" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url; a.download = "paycheck-yield-breakdown.txt";
+          document.body.appendChild(a); a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+        });
+
+      })();
+    </script>
+  </body>
+</html>

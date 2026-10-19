@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Injury Cash Shield — Survive the Workers' Comp Gap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #111113;
+        --bg-2: #17171a;
+        --panel: #1d1d21;
+        --panel-2: #232329;
+        --line: #33333b;
+        --line-soft: #2a2a31;
+        --ink: #f4f0e6;
+        --ink-2: #c9c4b4;
+        --ink-3: #948f80;
+        --amber: #f5a81c;
+        --orange: #ff6b1a;
+        --amber-soft: rgba(245, 168, 28, 0.12);
+        --red: #ff4d3d;
+        --red-soft: rgba(255, 77, 61, 0.12);
+        --green: #4cc38a;
+        --green-soft: rgba(76, 195, 138, 0.12);
+        --blueprint: #191512;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 30px 0 8px; }
+      .hazard {
+        height: 10px;
+        border-radius: 2px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141414 14px 28px);
+        margin-bottom: 22px;
+      }
+      .hero h1 {
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: clamp(30px, 6.4vw, 52px);
+        line-height: 1.08;
+        letter-spacing: 0.01em;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+      }
+      .hero h1 .hl { color: var(--amber); }
+      .hero h1 .hl2 { color: var(--orange); }
+      .hero p {
+        margin: 0;
+        font-size: clamp(16px, 2.6vw, 19px);
+        color: var(--ink-2);
+        max-width: 640px;
+      }
+      .hero p strong { color: var(--ink); }
+
+      /* ---------- Layout ---------- */
+      .layout { display: grid; gap: 20px; margin-top: 26px; }
+      @media (min-width: 920px) {
+        .layout { grid-template-columns: minmax(0, 1fr) 400px; align-items: start; }
+        .side { position: sticky; top: 16px; }
+      }
+      .col { display: grid; gap: 20px; min-width: 0; }
+
+      /* ---------- Panels & steps ---------- */
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+      .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+      .step-num {
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        background: var(--amber);
+        color: #171204;
+        border-radius: 6px;
+        padding: 4px 10px;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Oswald", sans-serif;
+        font-size: 21px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0;
+      }
+      .step-sub { color: var(--ink-3); font-size: 14px; margin: 0 0 16px; }
+
+      .grid2 { display: grid; gap: 14px; }
+      @media (min-width: 560px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+      .field label {
+        display: block;
+        font-weight: 600;
+        font-size: 13.5px;
+        letter-spacing: 0.02em;
+        margin-bottom: 6px;
+        color: var(--ink-2);
+      }
+      .field .hint { font-size: 12.5px; color: var(--ink-3); margin-top: 5px; }
+      .input-wrap { position: relative; }
+      .input-wrap .prefix {
+        position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+        color: var(--ink-3); font-family: "IBM Plex Mono", monospace; font-size: 15px;
+        pointer-events: none;
+      }
+      input[type="number"], input[type="text"] {
+        width: 100%;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 17px;
+        padding: 11px 12px 11px 28px;
+        outline: none;
+      }
+      input[type="number"]:focus, input[type="text"]:focus { border-color: var(--amber); }
+      input.no-prefix { padding-left: 12px; }
+
+      .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+      .seg label { flex: 1 1 auto; position: relative; display: block; }
+      .seg input {
+        position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+        width: 17px; height: 17px; margin: 0; accent-color: var(--amber);
+        cursor: pointer; z-index: 1;
+      }
+      .seg .opt {
+        display: block;
+        text-align: center;
+        border: 1px solid var(--line);
+        background: var(--bg-2);
+        border-radius: 8px;
+        padding: 10px 8px 10px 30px;
+        font-weight: 600;
+        font-size: 14.5px;
+        cursor: pointer;
+        color: var(--ink-2);
+      }
+      .seg input:checked + .opt { border-color: var(--amber); background: var(--amber-soft); color: var(--ink); }
+      .seg input:focus-visible + .opt { outline: 2px solid var(--amber); outline-offset: 2px; }
+      .seg .opt small { display: block; font-weight: 500; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+
+      .toggle-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 14px;
+        border: 1px solid var(--line-soft); border-radius: 8px; padding: 12px 14px;
+        background: var(--bg-2);
+      }
+      .toggle-row .t-label { font-weight: 600; font-size: 15px; }
+      .toggle-row .t-sub { font-size: 12.5px; color: var(--ink-3); }
+      .switch { position: relative; width: 52px; height: 30px; flex: none; display: inline-block; }
+      .switch input {
+        appearance: none; -webkit-appearance: none;
+        width: 52px; height: 30px; margin: 0; cursor: pointer;
+        border-radius: 999px; background: var(--line);
+        position: relative; transition: background 0.15s ease; display: block;
+      }
+      .switch input::after {
+        content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px;
+        border-radius: 50%; background: #f4f0e6; transition: left 0.15s ease;
+      }
+      .switch input:checked { background: var(--amber); }
+      .switch input:checked::after { left: 25px; }
+      .switch input:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+      input[type="range"] { width: 100%; accent-color: var(--amber); height: 32px; }
+      .range-head { display: flex; justify-content: space-between; align-items: baseline; }
+      .range-val { font-family: "IBM Plex Mono", monospace; font-weight: 700; color: var(--amber); font-size: 17px; }
+
+      /* ---------- Gap engine ---------- */
+      .gap-grid { display: grid; gap: 12px; }
+      @media (min-width: 560px) { .gap-grid { grid-template-columns: 1fr 1fr; } }
+      .gap-card {
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        background: var(--bg-2);
+        padding: 14px 16px;
+      }
+      .gap-card.wide { grid-column: 1 / -1; }
+      .gap-card .g-label {
+        font-size: 12.5px; font-weight: 700; letter-spacing: 0.09em;
+        text-transform: uppercase; color: var(--ink-3); margin: 0 0 4px;
+      }
+      .gap-card .g-value {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: clamp(26px, 5vw, 32px); font-weight: 700; color: var(--amber); line-height: 1.1;
+      }
+      .gap-card.hot .g-value { color: var(--orange); }
+      .gap-card .g-note { font-size: 13px; color: var(--ink-2); margin-top: 5px; }
+      .assump { font-size: 12.5px; color: var(--ink-3); margin: 14px 0 0; }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 12px;
+        background: var(--bg-2);
+        opacity: 0.62;
+      }
+      .tier.active { opacity: 1; border-color: var(--amber); background: var(--panel-2); }
+      .tier.active.t1 { border-color: var(--red); }
+      .tier.active.t3 { border-color: var(--green); }
+      .tier-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+      .tier-tag {
+        font-family: "Oswald", sans-serif; font-weight: 700; font-size: 13px;
+        letter-spacing: 0.08em; padding: 3px 9px; border-radius: 5px; text-transform: uppercase;
+      }
+      .t1 .tier-tag { background: var(--red-soft); color: var(--red); }
+      .t2 .tier-tag { background: var(--amber-soft); color: var(--amber); }
+      .t3 .tier-tag { background: var(--green-soft); color: var(--green); }
+      .tier-head h3 { font-family: "Oswald", sans-serif; font-size: 17px; margin: 0; text-transform: uppercase; letter-spacing: 0.03em; }
+      .your-tier {
+        margin-left: auto; font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em;
+        text-transform: uppercase; color: #171204; background: var(--amber);
+        padding: 3px 8px; border-radius: 4px; display: none;
+      }
+      .tier.active .your-tier { display: inline-block; }
+      .tier .trigger { font-size: 13px; color: var(--ink-3); margin: 6px 0 0; }
+      .tier-body { display: none; margin-top: 12px; }
+      .tier.active .tier-body { display: block; }
+      .tier-body ul { margin: 0; padding-left: 20px; color: var(--ink-2); font-size: 14.5px; }
+      .tier-body li { margin-bottom: 6px; }
+      .tier-body li strong { color: var(--ink); }
+
+      .script-box {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 14px;
+        color: var(--ink-2);
+        white-space: pre-wrap;
+        margin-top: 12px;
+        line-height: 1.55;
+      }
+      .btn {
+        appearance: none; border: 0; cursor: pointer;
+        font-family: "Barlow", sans-serif; font-weight: 700; font-size: 15px;
+        border-radius: 8px; padding: 12px 18px;
+        background: var(--amber); color: #171204;
+        display: inline-flex; align-items: center; gap: 8px;
+      }
+      .btn:active { transform: translateY(1px); }
+      .btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+      .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+      .copied { color: var(--green); font-weight: 700; font-size: 14px; align-self: center; }
+
+      /* ---------- Score ---------- */
+      .score-panel { text-align: center; }
+      .score-panel h2 {
+        font-family: "Oswald", sans-serif; text-transform: uppercase; letter-spacing: 0.04em;
+        font-size: 19px; margin: 0 0 2px;
+      }
+      .score-panel .s-sub { color: var(--ink-3); font-size: 13.5px; margin: 0 0 8px; }
+      .gauge { max-width: 260px; margin: 0 auto; display: block; }
+      .score-num {
+        font-family: "IBM Plex Mono", monospace; font-weight: 700;
+        font-size: 52px; line-height: 1; margin-top: -64px;
+      }
+      .score-band { font-family: "Oswald", sans-serif; font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+      .score-detail { font-size: 13.5px; color: var(--ink-2); margin: 12px 0 0; text-align: left; }
+      .score-detail li { margin-bottom: 5px; }
+      .score-detail { padding-left: 20px; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        background: var(--blueprint);
+        border: 2px solid var(--amber);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .blueprint .bp-stripe {
+        height: 12px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141414 14px 28px);
+      }
+      .blueprint-inner { padding: 20px; }
+      .blueprint h2 {
+        font-family: "Oswald", sans-serif; font-size: 22px; text-transform: uppercase;
+        letter-spacing: 0.04em; margin: 0;
+      }
+      .blueprint .bp-sub { color: var(--ink-3); font-size: 13px; margin: 2px 0 16px; }
+      .bp-rows { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+      .bp-row {
+        display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+        padding: 11px 14px; background: var(--bg-2);
+      }
+      .bp-row + .bp-row { border-top: 1px solid var(--line-soft); }
+      .bp-row .k { font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+      .bp-row .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 17px; color: var(--amber); white-space: nowrap; }
+      .bp-row .v.hot { color: var(--orange); }
+      .bp-h {
+        font-family: "Oswald", sans-serif; font-size: 15px; text-transform: uppercase;
+        letter-spacing: 0.05em; margin: 18px 0 8px;
+      }
+      .budget-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+      .budget-table td { padding: 5px 0; color: var(--ink-2); }
+      .budget-table td:last-child { text-align: right; font-family: "IBM Plex Mono", monospace; font-weight: 600; color: var(--ink); }
+      .budget-table tr.total td { border-top: 1px solid var(--line); font-weight: 700; color: var(--ink); padding-top: 8px; }
+      .blueprint .script-box { font-size: 13px; }
+      .bp-foot { font-size: 12px; color: var(--ink-3); margin: 14px 0 0; }
+
+      /* ---------- Below the fold ---------- */
+      .section-h {
+        font-family: "Oswald", sans-serif; font-size: 22px; text-transform: uppercase;
+        letter-spacing: 0.04em; margin: 34px 0 14px;
+      }
+      .next-grid { display: grid; gap: 14px; }
+      @media (min-width: 640px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      .next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px;
+      }
+      .next-card:hover { border-color: var(--amber); }
+      .next-card .n-kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); }
+      .next-card h3 { font-family: "Oswald", sans-serif; margin: 6px 0 6px; font-size: 19px; text-transform: uppercase; letter-spacing: 0.03em; }
+      .next-card p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+      .next-card .arrow { color: var(--amber); font-weight: 700; }
+
+      .cta {
+        display: block; text-decoration: none; margin-top: 14px;
+        border: 2px solid var(--amber); border-radius: 10px; padding: 20px;
+        background: var(--amber-soft); color: var(--ink);
+      }
+      .cta h3 { font-family: "Oswald", sans-serif; margin: 0 0 6px; font-size: 20px; text-transform: uppercase; letter-spacing: 0.03em; }
+      .cta p { margin: 0; color: var(--ink-2); font-size: 15px; }
+      .cta .go { color: var(--amber); font-weight: 700; }
+
+      details.faq {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+        padding: 4px 18px; margin-bottom: 10px;
+      }
+      details.faq summary {
+        cursor: pointer; font-weight: 700; font-size: 16px; padding: 12px 0; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      }
+      details.faq summary::-webkit-details-marker { display: none; }
+      details.faq summary::after { content: "+"; font-family: "IBM Plex Mono", monospace; color: var(--amber); font-size: 20px; }
+      details.faq[open ] summary::after { content: "–"; }
+      details.faq p { margin: 0 0 14px; color: var(--ink-2); font-size: 15px; }
+      .disclaimer { font-size: 13px; color: var(--ink-3); margin-top: 26px; border-top: 1px solid var(--line-soft); padding-top: 16px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- ================= HERO ================= -->
+      <header class="hero">
+        <div class="hazard" aria-hidden="true"></div>
+        <h1>Workers' comp pays <span class="hl">66%</span> and takes <span class="hl2">6 weeks</span>.</h1>
+        <p>Here's how you survive the gap. <strong>Injury Cash Shield</strong> turns your paycheck, your claim stage, and your cushion into an exact dollar plan — what you'll lose, when the hole hits, and what to do about it before the first check shows up.</p>
+      </header>
+
+      <div class="layout">
+        <!-- ================= LEFT: STEPS ================= -->
+        <div class="col">
+          <!-- STEP 1 -->
+          <section class="panel" aria-labelledby="s1h">
+            <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1h">Pay Baseline</h2></div>
+            <p class="step-sub">What you actually bring home when you're working — including the overtime that's about to disappear.</p>
+            <div class="grid2">
+              <div class="field">
+                <label for="grossPay">Average gross weekly pay</label>
+                <div class="input-wrap"><span class="prefix">$</span><input type="number" id="grossPay" inputmode="decimal" min="0" step="10" value="1380" /></div>
+                <div class="hint">Before taxes, in a normal week with your usual OT.</div>
+              </div>
+              <div class="field">
+                <label for="otHours">Overtime hours lost per week</label>
+                <div class="input-wrap"><input type="number" class="no-prefix" id="otHours" inputmode="decimal" min="0" step="0.5" value="10" /></div>
+                <div class="hint">Regular OT hours you won't work while you're out.</div>
+              </div>
+            </div>
+            <div class="field" style="margin-top:14px;">
+              <label>Pay frequency</label>
+              <div class="seg" role="radiogroup" aria-label="Pay frequency">
+                <label><input type="radio" name="freq" value="weekly" checked /><span class="opt">Weekly<small>52 checks a year</small></span></label>
+                <label><input type="radio" name="freq" value="biweekly" /><span class="opt">Bi-Weekly<small>26 checks a year</small></span></label>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 2 -->
+          <section class="panel" aria-labelledby="s2h">
+            <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2h">Claim Status &amp; Cushion</h2></div>
+            <p class="step-sub">Where your claim stands, how long you'll be out, and what you've got to bridge with.</p>
+            <div class="field">
+              <label>Claim stage</label>
+              <div class="seg" role="radiogroup" aria-label="Claim stage">
+                <label><input type="radio" name="stage" value="just" /><span class="opt">Just injured<small>Not filed / just filed</small></span></label>
+                <label><input type="radio" name="stage" value="waiting" checked /><span class="opt">Waiting on approval<small>Carrier is reviewing</small></span></label>
+                <label><input type="radio" name="stage" value="approved" /><span class="opt">Approved<small>First check pending</small></span></label>
+              </div>
+            </div>
+            <div class="grid2" style="margin-top:14px;">
+              <div class="field">
+                <label for="leaveWeeks">Estimated leave duration (weeks)</label>
+                <div class="input-wrap"><input type="number" class="no-prefix" id="leaveWeeks" inputmode="numeric" min="1" max="52" step="1" value="6" /></div>
+              </div>
+              <div class="field">
+                <label for="ptoHours">PTO / sick hours banked</label>
+                <div class="input-wrap"><input type="number" class="no-prefix" id="ptoHours" inputmode="decimal" min="0" step="1" value="16" /></div>
+                <div class="hint">Hours you could cash out or burn to bridge the wait.</div>
+              </div>
+              <div class="field">
+                <label for="savings">Liquid savings on hand</label>
+                <div class="input-wrap"><span class="prefix">$</span><input type="number" id="savings" inputmode="decimal" min="0" step="25" value="450" /></div>
+                <div class="hint">Cash you can touch this week without a penalty.</div>
+              </div>
+              <div class="field" style="align-self:end;">
+                <div class="toggle-row">
+                  <div>
+                    <div class="t-label">Short-term disability</div>
+                    <div class="t-sub">Employer or private STD policy</div>
+                  </div>
+                  <span class="switch"><input type="checkbox" id="stdToggle" aria-label="Short-term disability coverage" /></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- STEP 3 -->
+          <section class="panel" aria-labelledby="s3h">
+            <div class="step-head"><span class="step-num">STEP 3</span><h2 id="s3h">The Gap Engine</h2></div>
+            <p class="step-sub">Your real numbers, live. Adjust the waiting period and your state's benefit cap to match your claim.</p>
+            <div class="grid2">
+              <div class="field">
+                <div class="range-head">
+                  <label for="waitDays" style="margin:0;">Unpaid waiting period</label>
+                  <span class="range-val"><span id="waitDaysVal">7</span> days</span>
+                </div>
+                <input type="range" id="waitDays" min="3" max="14" step="1" value="7" />
+                <div class="hint">Most states: 3–7 unpaid days before benefits start. Georgia is 7.</div>
+              </div>
+              <div class="field">
+                <label for="stateCap">State max weekly comp benefit</label>
+                <div class="input-wrap"><span class="prefix">$</span><input type="number" id="stateCap" inputmode="decimal" min="0" step="10" value="800" /></div>
+                <div class="hint">Georgia caps weekly comp at $800. Set to 0 if your state has no cap.</div>
+              </div>
+            </div>
+
+            <div class="gap-grid" style="margin-top:16px;">
+              <div class="gap-card hot">
+                <p class="g-label">Waiting-period cash deficit</p>
+                <div class="g-value" id="outWaitDeficit">$0</div>
+                <div class="g-note" id="outWaitNote">Full take-home lost while comp pays nothing.</div>
+              </div>
+              <div class="gap-card">
+                <p class="g-label">Weekly wage loss deficit</p>
+                <div class="g-value" id="outWeeklyDeficit">$0</div>
+                <div class="g-note" id="outWeeklyNote">What each week on comp still leaves you short.</div>
+              </div>
+              <div class="gap-card">
+                <p class="g-label">Per-paycheck micro-deferral target</p>
+                <div class="g-value" id="outDeferral">$0</div>
+                <div class="g-note" id="outDeferralNote">Bills to push per pay period until the first check lands.</div>
+              </div>
+              <div class="gap-card">
+                <p class="g-label">Total projected income loss</p>
+                <div class="g-value" id="outTotalLoss">$0</div>
+                <div class="g-note" id="outTotalNote">Across your full estimated leave.</div>
+              </div>
+              <div class="gap-card wide">
+                <p class="g-label">Your weekly money, side by side</p>
+                <div class="g-note" style="margin-top:8px; font-size:14.5px;" id="outCompare">—</div>
+              </div>
+            </div>
+            <p class="assump">How the math works: take-home pay is estimated at 80% of gross (after taxes &amp; typical deductions). The comp benefit is 66% of your gross weekly wage, capped at your state's max, and is generally tax-free. Short-term disability, if on, is modeled at 60% of take-home during the waiting period only. Your state, carrier, and claim details will move the real numbers — treat these as planning estimates.</p>
+          </section>
+
+          <!-- STEP 4 -->
+          <section class="panel" aria-labelledby="s4h">
+            <div class="step-head"><span class="step-num">STEP 4</span><h2 id="s4h">Survival Strategy</h2></div>
+            <p class="step-sub">Your numbers land you in one tier. That's the play you run — the other two are shown so you can see what would change it.</p>
+
+            <div class="tier t1" id="tier1">
+              <div class="tier-head">
+                <span class="tier-tag">Tier 1 · Critical</span>
+                <h3>HR Advance Protocol</h3>
+                <span class="your-tier">Your tier</span>
+              </div>
+              <p class="trigger">Triggers when your waiting-period gap tops $1,000 and you have no short-term disability.</p>
+              <div class="tier-body">
+                <ul>
+                  <li><strong>Act this week.</strong> A gap this size won't close itself — the move is a payroll emergency advance or a PTO/sick-leave cash-out from your employer, asked for <em>before</em> the missed check, not after.</li>
+                  <li><strong>Ask in writing.</strong> Use the script below — it names the exact dollar gap, the waiting period, and a repayment plan tied to your first comp check. Written requests get answered; hallway asks get forgotten.</li>
+                  <li><strong>Line up the fallback the same day:</strong> call your auto lender and utility company, state "workplace injury, workers' comp pending," and request a 30-day hardship deferral before any payment comes due.</li>
+                </ul>
+                <div class="script-box" id="hrScript"></div>
+                <div class="btn-row">
+                  <button class="btn" type="button" id="copyScriptBtn">Copy the HR script</button>
+                  <span class="copied" id="copyScriptMsg" hidden>Copied ✓</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tier t2" id="tier2">
+              <div class="tier-head">
+                <span class="tier-tag">Tier 2 · Moderate</span>
+                <h3>Bare-Bones Injury Budget</h3>
+                <span class="your-tier">Your tier</span>
+              </div>
+              <p class="trigger">Triggers when comp leaves you 20% or more short of your normal take-home each week.</p>
+              <div class="tier-body">
+                <ul>
+                  <li><strong>Freeze non-essentials today:</strong> streaming, subscriptions, eating out, and any autopay that isn't housing, food, utilities, transport, or a minimum payment. Every frozen dollar is a dollar the gap can't eat.</li>
+                  <li><strong>Pause optional debt the right way:</strong> call each card issuer, say "temporary workplace injury," and ask for a hardship program — reduced minimums or a 1–2 month deferral beat a missed payment and a late fee spiral.</li>
+                  <li><strong>Reallocate buffers:</strong> run the bare-bones budget in your Blueprint — it splits each comp check across essentials only until you're back on full pay.</li>
+                  <li><strong>Protect the essentials first</strong> if money gets tight mid-week: housing, then utilities, then food, then the car that gets you back to work.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="tier t3" id="tier3">
+              <div class="tier-head">
+                <span class="tier-tag">Tier 3 · Protected</span>
+                <h3>Supplemental Buffer Lock</h3>
+                <span class="your-tier">Your tier</span>
+              </div>
+              <p class="trigger">Triggers when your weekly loss stays under 20% of take-home — the gap is real but manageable.</p>
+              <div class="tier-body">
+                <ul>
+                  <li><strong>Don't raid the emergency fund for comfort spending.</strong> Your loss is small enough to absorb with trimming — keep reserves locked for a true second emergency.</li>
+                  <li><strong>Watch the benefit cap:</strong> if your wage rises or OT returns before full duty, re-check that your comp check still matches 66% of your average weekly wage — underpayments are common and correctable.</li>
+                  <li><strong>Bank the difference on return:</strong> when full pay resumes, route the first two "catch-up" checks to rebuild whatever cushion you touched before lifestyle spending creeps back.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- ================= RIGHT: SCORE + BLUEPRINT ================= -->
+        <div class="col side">
+          <section class="panel score-panel" aria-labelledby="scoreH">
+            <h2 id="scoreH">Disability Cash Resilience Score</h2>
+            <p class="s-sub">How safely your cash + PTO bridge a 30-day injury leave without new debt.</p>
+            <svg class="gauge" viewBox="0 0 200 112" role="img" aria-label="Resilience score gauge">
+              <path d="M 16 104 A 84 84 0 0 1 184 104" fill="none" stroke="var(--line)" stroke-width="14" stroke-linecap="round" />
+              <path id="gaugeArc" d="M 16 104 A 84 84 0 0 1 184 104" fill="none" stroke="var(--amber)" stroke-width="14" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" />
+            </svg>
+            <div class="score-num" id="scoreNum">0</div>
+            <div class="score-band" id="scoreBand">—</div>
+            <ul class="score-detail" id="scoreDetail"></ul>
+          </section>
+
+          <section class="blueprint" aria-labelledby="bpH">
+            <div class="bp-stripe" aria-hidden="true"></div>
+            <div class="blueprint-inner">
+              <h2 id="bpH">Workers' Comp Cash Gap Blueprint</h2>
+              <p class="bp-sub">Screenshot this. It's your whole plan on one card.</p>
+              <div class="bp-rows">
+                <div class="bp-row"><span class="k">Waiting-period wage gap</span><span class="v hot" id="bpWait">$0</span></div>
+                <div class="bp-row"><span class="k">Weekly payout deficit on comp</span><span class="v" id="bpWeekly">$0</span></div>
+                <div class="bp-row"><span class="k">Comp check (weekly, est.)</span><span class="v" id="bpBenefit">$0</span></div>
+                <div class="bp-row"><span class="k">Normal take-home (weekly)</span><span class="v" id="bpNet">$0</span></div>
+                <div class="bp-row"><span class="k">Defer per pay period til 1st check</span><span class="v" id="bpDeferral">$0</span></div>
+                <div class="bp-row"><span class="k">First check ETA</span><span class="v" id="bpEta">—</span></div>
+                <div class="bp-row"><span class="k">Total loss over leave</span><span class="v hot" id="bpTotal">$0</span></div>
+                <div class="bp-row"><span class="k">Resilience score</span><span class="v" id="bpScore">0 / 100</span></div>
+                <div class="bp-row"><span class="k">Your tier</span><span class="v" id="bpTier">—</span></div>
+              </div>
+
+              <h3 class="bp-h">Bare-bones survival budget <span style="color:var(--ink-3); font-size:12px; letter-spacing:0;">(per week, from your comp check)</span></h3>
+              <table class="budget-table">
+                <tbody id="bpBudget"></tbody>
+              </table>
+
+              <h3 class="bp-h">HR advance request script</h3>
+              <div class="script-box" id="bpScript"></div>
+              <div class="btn-row">
+                <button class="btn" type="button" id="copyBpScriptBtn">Copy script</button>
+                <button class="btn ghost" type="button" id="copySummaryBtn">Copy blueprint summary</button>
+                <span class="copied" id="copyBpMsg" hidden>Copied ✓</span>
+              </div>
+              <p class="bp-foot">Estimates only — benefit amounts, caps, and waiting periods vary by state and claim. Verify your numbers with your carrier or HR.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ================= NEXT STEPS ================= -->
+      <h2 class="section-h">Keep the shield up</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" target="_blank" rel="noopener">
+          <span class="n-kicker">Next step</span>
+          <h3>Emergency Fund Runway Calculator</h3>
+          <p>See exactly how many days your savings carry you at bare-bones spending — and what it takes to stretch the runway. <span class="arrow">→</span></p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/payday-cash-flow-allocator.html" target="_blank" rel="noopener">
+          <span class="n-kicker">Next step</span>
+          <h3>Payday Cash Flow Allocator</h3>
+          <p>When checks do land — comp, advance, or your first full paycheck back — split every dollar on purpose instead of watching it evaporate. <span class="arrow">→</span></p>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+        <h3>An injury shouldn't mean debt</h3>
+        <p>The <strong>$1,000 Emergency Fund Starter Pack</strong> and <strong>Blue-Collar Buffer Binder</strong> on Gumroad — build the cushion now so the next gap is an inconvenience, not a crisis. <span class="go">Get them on Gumroad →</span></p>
+      </a>
+
+      <!-- ================= FAQ ================= -->
+      <h2 class="section-h">Straight answers</h2>
+      <details class="faq">
+        <summary>How long does workers' comp take to pay?</summary>
+        <p>Longer than anyone tells you at the ER. After the unpaid waiting period, most states require the carrier to issue the first check within about 14–21 days of your first missed work — but paperwork delays, employer reporting lag, and carrier reviews routinely stretch the real wait to 3–6 weeks before money is in your hand. That's the gap this page plans for: assume the slow timeline and be pleasantly surprised, not the other way around.</p>
+      </details>
+      <details class="faq">
+        <summary>What is the waiting period?</summary>
+        <p>It's the first stretch of missed work that workers' comp doesn't pay for at all — typically 3 to 7 days depending on your state (Georgia is 7 days). You lose those days of wages completely unless you cover them with PTO, sick leave, or savings. One important catch: in many states, if your disability lasts past a threshold (21 consecutive days in Georgia), the waiting-period days get paid retroactively. That refund helps later — it does nothing for rent this week.</p>
+      </details>
+      <details class="faq">
+        <summary>Can I ask HR for a payroll advance while I wait?</summary>
+        <p>Yes — and injured workers do it all the time. The strongest asks are in writing, name the exact dollar shortfall, and propose repayment from your first comp checks or cashed-out PTO. Many employers would rather advance pay than lose a trained worker to a debt spiral. Use the Tier 1 script above: it's firm, specific, and gives HR a clean way to say yes. If your employer says no, ask about cashing out accrued PTO or sick time instead — it's your earned time.</p>
+      </details>
+
+      <p class="disclaimer">Injury Cash Shield is an educational planning tool, not legal, tax, or financial advice, and not a substitute for your state workers' compensation board, your claims adjuster, or an attorney. Benefit rates, waiting periods, caps, and retroactive-pay rules vary by state and by claim — confirm your specifics before acting on any estimate here.</p>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+        var $ = function (id) { return document.getElementById(id); };
+        var els = {
+          gross: $("grossPay"), ot: $("otHours"), leave: $("leaveWeeks"),
+          pto: $("ptoHours"), savings: $("savings"), std: $("stdToggle"),
+          wait: $("waitDays"), cap: $("stateCap")
+        };
+        var money = function (n) {
+          n = Math.round(n);
+          return "$" + n.toLocaleString("en-US");
+        };
+        var num = function (el, fallback) {
+          var v = parseFloat(el.value);
+          return isNaN(v) || v < 0 ? fallback : v;
+        };
+        var checkedVal = function (name) {
+          var r = document.querySelector('input[name="' + name + '"]:checked');
+          return r ? r.value : "";
+        };
+
+        var STAGE_WEEKS = { just: 4, waiting: 3, approved: 1.5 };
+        var STAGE_LABEL = { just: "Just injured", waiting: "Waiting on carrier approval", approved: "Approved — first check pending" };
+        var lastScript = "", lastSummary = "";
+
+        function compute() {
+          var gross = num(els.gross, 0);
+          var otHours = num(els.ot, 0);
+          var leaveWeeks = Math.max(1, num(els.leave, 1));
+          var ptoHours = num(els.pto, 0);
+          var savings = num(els.savings, 0);
+          var hasSTD = els.std.checked;
+          var waitDays = parseInt(els.wait.value, 10) || 7;
+          var cap = num(els.cap, 0);
+          var freq = checkedVal("freq");
+          var stage = checkedVal("stage");
+
+          $("waitDaysVal").textContent = waitDays;
+
+          // Derived hourly rate: gross = 40h straight + OT at 1.5x
+          var rate = gross / (40 + 1.5 * otHours);
+          var net = gross * 0.80;                       // est. take-home
+          var benefitRaw = gross * 0.66;                // ~66% comp
+          var benefit = cap > 0 ? Math.min(benefitRaw, cap) : benefitRaw;
+          var capped = benefit < benefitRaw - 0.01;
+
+          var weeklyDeficit = Math.max(0, net - benefit);
+          var lossPct = net > 0 ? (weeklyDeficit / net) * 100 : 0;
+
+          var waitWeeks = waitDays / 7;
+          var stdBridge = hasSTD ? net * 0.60 * waitWeeks : 0;  // STD covers 60% of take-home during wait
+          var waitDeficit = Math.max(0, net * waitWeeks - stdBridge);
+
+          // Cash hole until first check + per-pay-period deferral target
+          var weeksToCheck = STAGE_WEEKS[stage] || 3;
+          var periodsToCheck = freq === "biweekly" ? weeksToCheck / 2 : weeksToCheck;
+          var holeToCheck = Math.max(0, net * weeksToCheck - stdBridge);
+          var deferral = periodsToCheck > 0 ? holeToCheck / periodsToCheck : 0;
+
+          // Total projected loss across leave
+          var postWaitWeeks = Math.max(0, leaveWeeks - waitWeeks);
+          var totalLoss = waitDeficit + weeklyDeficit * postWaitWeeks;
+
+          // Resilience score: cushion vs 30-day gap
+          var ptoValue = ptoHours * rate * 0.80;
+          var resources = savings + ptoValue;
+          var gap30 = waitDeficit + weeklyDeficit * Math.max(0, 30 / 7 - waitWeeks);
+          var score = gap30 <= 0 ? 100 : Math.min(100, Math.round((resources / gap30) * 100));
+
+          // Tier selection
+          var tier = 3;
+          if (waitDeficit > 1000 && !hasSTD) tier = 1;
+          else if (lossPct >= 20) tier = 2;
+          else tier = 3;
+
+          render({
+            gross: gross, otHours: otHours, rate: rate, net: net, benefit: benefit,
+            capped: capped, weeklyDeficit: weeklyDeficit, lossPct: lossPct,
+            waitDays: waitDays, waitDeficit: waitDeficit, hasSTD: hasSTD,
+            weeksToCheck: weeksToCheck, deferral: deferral, freq: freq,
+            totalLoss: totalLoss, leaveWeeks: leaveWeeks, stage: stage,
+            ptoHours: ptoHours, ptoValue: ptoValue, savings: savings,
+            resources: resources, gap30: gap30, score: score, tier: tier,
+            stdBridge: stdBridge
+          });
+        }
+
+        function buildScript(d) {
+          var s =
+            "Subject: Request for payroll advance / PTO cash-out during workers' comp waiting period\n\n" +
+            "Hi [HR / Manager name],\n\n" +
+            "I was injured on the job and my workers' comp claim is currently " +
+            (d.stage === "approved" ? "approved, with my first benefit check still pending" :
+             d.stage === "just" ? "in the filing stage" : "filed and waiting on carrier approval") +
+            ". Under our state's rules, the first " + d.waitDays + " days of missed work are an unpaid waiting period, and my first comp check isn't expected for about " +
+            (d.weeksToCheck % 1 === 0 ? d.weeksToCheck : d.weeksToCheck.toFixed(1)) + " weeks.\n\n" +
+            "That leaves me about " + money(d.waitDeficit) + " short during the waiting period alone, and roughly " +
+            money(d.hole || d.waitDeficit) + " short in total before the first benefit check arrives. Once benefits start, comp replaces only about 66% of my pay, so I'll still be about " +
+            money(d.weeklyDeficit) + " short each week.\n\n" +
+            "I'm requesting one of the following, whichever the company can do:\n" +
+            "1) A payroll emergency advance of " + money(d.waitDeficit) + ", repaid from my first comp checks / return-to-work pay; or\n" +
+            "2) A cash-out of my accrued PTO/sick time" + (d.ptoHours > 0 ? " (I have about " + d.ptoHours + " hours banked)" : "") + " to cover the waiting period.\n\n" +
+            "I'm not asking for a gift — I'm asking for a bridge I can repay on a set schedule, and I'm happy to sign whatever agreement the company needs. Getting ahead of this keeps a short injury from turning into a bigger problem for both of us.\n\n" +
+            "Thank you for your time,\n[Your name]\n[Employee ID / department]";
+          return s;
+        }
+
+        function render(d) {
+          d.hole = Math.max(0, d.net * d.weeksToCheck - d.stdBridge);
+
+          // Gap engine
+          $("outWaitDeficit").textContent = money(d.waitDeficit);
+          $("outWaitNote").textContent = d.hasSTD
+            ? d.waitDays + " unpaid days, after your short-term disability bridge (" + money(d.stdBridge) + ") is counted."
+            : d.waitDays + " unpaid days at " + money(d.net) + " take-home per week — comp pays $0 during the wait.";
+          $("outWeeklyDeficit").textContent = money(d.weeklyDeficit);
+          $("outWeeklyNote").textContent = "That's " + d.lossPct.toFixed(0) + "% of your normal take-home, gone every week you're on comp" + (d.capped ? " — your state cap is cutting the 66% benefit." : ".");
+          $("outDeferral").textContent = money(d.deferral);
+          $("outDeferralNote").textContent = "First check ETA ~" + (d.weeksToCheck % 1 === 0 ? d.weeksToCheck : d.weeksToCheck.toFixed(1)) + " weeks (" + STAGE_LABEL[d.stage].toLowerCase() + "). Total hole before it lands: " + money(d.hole) + ", split across your " + (d.freq === "biweekly" ? "bi-weekly" : "weekly") + " pay periods.";
+          $("outTotalLoss").textContent = money(d.totalLoss);
+          $("outTotalNote").textContent = "Across a " + d.leaveWeeks + "-week leave: waiting-period loss plus the weekly deficit.";
+          $("outCompare").innerHTML =
+            "Normal take-home: <strong class='mono'>" + money(d.net) + "/wk</strong> &nbsp;→&nbsp; " +
+            "On comp: <strong class='mono'>" + money(d.benefit) + "/wk</strong> &nbsp;→&nbsp; " +
+            "Lost OT alone: <strong class='mono'>" + money(d.rate * 1.5 * d.otHours) + "/wk</strong> of your gross is overtime pay." +
+            (d.capped ? " &nbsp;Your uncapped 66% benefit would be " + money(d.gross * 0.66) + " — the state cap trims it to " + money(d.benefit) + "." : "");
+
+          // Tiers
+          [1, 2, 3].forEach(function (t) {
+            $("tier" + t).classList.toggle("active", d.tier === t);
+          });
+          var script = buildScript(d);
+          $("hrScript").textContent = script;
+          $("bpScript").textContent = script;
+          lastScript = script;
+
+          // Score
+          var score = d.score;
+          var arc = $("gaugeArc");
+          var ARC_LEN = 264;
+          arc.style.strokeDashoffset = String(ARC_LEN - (ARC_LEN * score) / 100);
+          arc.style.stroke = score >= 70 ? "var(--green)" : score >= 40 ? "var(--amber)" : "var(--red)";
+          $("scoreNum").textContent = score;
+          $("scoreNum").style.color = score >= 70 ? "var(--green)" : score >= 40 ? "var(--amber)" : "var(--red)";
+          var band = score >= 85 ? "Fully bridged" : score >= 70 ? "Solid bridge" : score >= 40 ? "Thin bridge" : score >= 1 ? "Exposed" : "No bridge";
+          $("scoreBand").textContent = band;
+          $("scoreBand").style.color = score >= 70 ? "var(--green)" : score >= 40 ? "var(--amber)" : "var(--red)";
+          $("scoreDetail").innerHTML =
+            "<li>30-day cash gap to cover: <strong class='mono'>" + money(d.gap30) + "</strong></li>" +
+            "<li>Liquid savings: <strong class='mono'>" + money(d.savings) + "</strong></li>" +
+            "<li>PTO cash-out value (" + d.ptoHours + " hrs @ " + money(d.rate * 0.8) + "/hr take-home): <strong class='mono'>" + money(d.ptoValue) + "</strong></li>" +
+            "<li>Total bridge: <strong class='mono'>" + money(d.resources) + "</strong> — " + (d.gap30 > 0 ? Math.round((d.resources / d.gap30) * 100) + "% of the gap" : "gap is $0") + "</li>";
+
+          // Blueprint
+          $("bpWait").textContent = money(d.waitDeficit);
+          $("bpWeekly").textContent = money(d.weeklyDeficit) + "/wk";
+          $("bpBenefit").textContent = money(d.benefit);
+          $("bpNet").textContent = money(d.net);
+          $("bpDeferral").textContent = money(d.deferral);
+          $("bpEta").textContent = "~" + (d.weeksToCheck % 1 === 0 ? d.weeksToCheck : d.weeksToCheck.toFixed(1)) + " wks";
+          $("bpTotal").textContent = money(d.totalLoss);
+          $("bpScore").textContent = score + " / 100";
+          $("bpTier").textContent = d.tier === 1 ? "Tier 1 · Critical" : d.tier === 2 ? "Tier 2 · Moderate" : "Tier 3 · Protected";
+
+          var b = d.benefit;
+          var rows = [
+            ["Housing (rent/mortgage share)", b * 0.45],
+            ["Food & household basics", b * 0.20],
+            ["Utilities & phone", b * 0.15],
+            ["Transport (gas / insurance share)", b * 0.10],
+            ["Minimum payments & cushion", b * 0.10]
+          ];
+          $("bpBudget").innerHTML =
+            rows.map(function (r) { return "<tr><td>" + r[0] + "</td><td>" + money(r[1]) + "</td></tr>"; }).join("") +
+            "<tr class='total'><td>Weekly comp check</td><td>" + money(b) + "</td></tr>";
+
+          lastSummary =
+            "WORKERS' COMP CASH GAP BLUEPRINT\n" +
+            "Waiting-period wage gap: " + money(d.waitDeficit) + " (" + d.waitDays + " days)\n" +
+            "Weekly payout deficit on comp: " + money(d.weeklyDeficit) + "\n" +
+            "Comp check (est.): " + money(d.benefit) + "/wk vs normal take-home " + money(d.net) + "/wk\n" +
+            "Defer per pay period until 1st check: " + money(d.deferral) + " (ETA ~" + d.weeksToCheck + " wks)\n" +
+            "Total loss over " + d.leaveWeeks + "-week leave: " + money(d.totalLoss) + "\n" +
+            "Resilience score: " + score + "/100 · Tier: " + (d.tier === 1 ? "1 Critical" : d.tier === 2 ? "2 Moderate" : "3 Protected");
+        }
+
+        function copyText(text, msgEl) {
+          function done() {
+            msgEl.hidden = false;
+            setTimeout(function () { msgEl.hidden = true; }, 2200);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); } catch (e) { /* no-op */ }
+            document.body.removeChild(ta);
+            done();
+          }
+        }
+
+        $("copyScriptBtn").addEventListener("click", function () { copyText(lastScript, $("copyScriptMsg")); });
+        $("copyBpScriptBtn").addEventListener("click", function () { copyText(lastScript, $("copyBpMsg")); });
+        $("copySummaryBtn").addEventListener("click", function () { copyText(lastSummary, $("copyBpMsg")); });
+
+        var inputs = [els.gross, els.ot, els.leave, els.pto, els.savings, els.std, els.wait, els.cap];
+        inputs.forEach(function (el) {
+          el.addEventListener("input", compute);
+          el.addEventListener("change", compute);
+        });
+        document.querySelectorAll('input[name="freq"], input[name="stage"]').forEach(function (el) {
+          el.addEventListener("change", compute);
+        });
+
+        compute();
+      })();
+    </script>
+  </body>
+</html>

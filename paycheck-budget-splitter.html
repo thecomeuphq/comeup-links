@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Paycheck Budget Splitter — Shift Worker Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #101012;
+        --bg-deep: #0a0a0b;
+        --panel: #1a1a1e;
+        --panel-2: #222228;
+        --panel-edge: #33333c;
+        --ink: #f2f0ea;
+        --ink-dim: #b8b4aa;
+        --ink-faint: #8a867c;
+        --amber: #f59e0b;
+        --amber-hot: #ff7a1a;
+        --amber-soft: rgba(245, 158, 11, 0.14);
+        --needs: #3b82f6;
+        --needs-soft: rgba(59, 130, 246, 0.13);
+        --wants: #a855f7;
+        --wants-soft: rgba(168, 85, 247, 0.13);
+        --save: #22c55e;
+        --save-soft: rgba(34, 197, 94, 0.13);
+        --radius: 14px;
+        --font-body: "Barlow", system-ui, sans-serif;
+        --font-display: "Barlow Condensed", "Barlow", sans-serif;
+        --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(245, 158, 11, 0.025) 47px, rgba(245, 158, 11, 0.025) 48px),
+          linear-gradient(180deg, var(--bg-deep), var(--bg) 220px);
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 16.5px;
+        line-height: 1.5;
+        padding: 0 16px 64px;
+      }
+      .wrap { max-width: 880px; margin: 0 auto; }
+
+      /* ---------- Header ---------- */
+      header { padding: 30px 0 6px; }
+      .kicker {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--amber);
+        margin: 0 0 8px;
+      }
+      h1 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(38px, 9vw, 58px);
+        line-height: 0.98;
+        letter-spacing: 0.01em;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+      }
+      h1 .accent { color: var(--amber); }
+      .lede { color: var(--ink-dim); max-width: 56ch; margin: 0; font-size: 17px; }
+      .lede strong { color: var(--ink); }
+
+      /* ---------- Panels ---------- */
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--panel-edge);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-top: 20px;
+      }
+      .panel-label {
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        margin: 0 0 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .panel-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--panel-edge);
+      }
+
+      /* ---------- Paycheck input ---------- */
+      .pay-grid { display: grid; gap: 18px; }
+      @media (min-width: 640px) {
+        .pay-grid { grid-template-columns: 1.15fr 1fr; align-items: end; }
+      }
+      .amount-field { min-width: 0; }
+      .amount-field label, .freq-field > span {
+        display: block;
+        font-weight: 600;
+        font-size: 14.5px;
+        margin-bottom: 8px;
+        color: var(--ink-dim);
+      }
+      .amount-wrap {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+        background: var(--panel-2);
+        border: 2px solid var(--amber);
+        border-radius: 10px;
+        padding: 6px 14px;
+        gap: 4px;
+      }
+      .amount-wrap .dollar {
+        font-family: var(--font-mono);
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--amber);
+      }
+      .amount-wrap input {
+        flex: 1 1 0;
+        width: 100%;
+        min-width: 0;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--ink);
+        font-family: var(--font-mono);
+        font-size: 30px;
+        font-weight: 700;
+        padding: 4px 0;
+      }
+      .amount-wrap input::placeholder { color: var(--ink-faint); }
+      .freq-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+      .freq-btns button, .fw-btns button {
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--ink-dim);
+        background: var(--panel-2);
+        border: 1.5px solid var(--panel-edge);
+        border-radius: 9px;
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: border-color 0.15s, color 0.15s, background 0.15s;
+      }
+      .freq-btns button:hover, .fw-btns button:hover { border-color: var(--amber); color: var(--ink); }
+      .freq-btns button.active, .fw-btns button.active {
+        border-color: var(--amber);
+        background: var(--amber-soft);
+        color: var(--ink);
+      }
+      .freq-note { font-size: 13.5px; color: var(--ink-faint); margin: 10px 0 0; }
+
+      /* ---------- Framework + sliders ---------- */
+      .fw-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+      .fw-btns button small { display: block; font-weight: 500; font-size: 12px; color: var(--ink-faint); }
+      .fw-btns button.active small { color: var(--ink-dim); }
+      .slider-row { padding: 14px 0 4px; border-bottom: 1px dashed var(--panel-edge); }
+      .slider-row:last-of-type { border-bottom: none; }
+      .slider-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      .slider-name { font-weight: 700; font-size: 17px; display: flex; align-items: center; gap: 9px; }
+      .dot { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+      .dot-needs { background: var(--needs); }
+      .dot-wants { background: var(--wants); }
+      .dot-save { background: var(--save); }
+      .slider-pct {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 22px;
+        white-space: nowrap;
+      }
+      .slider-pct .pct-sign { font-size: 14px; color: var(--ink-faint); }
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 10px;
+        border-radius: 5px;
+        background: var(--panel-2);
+        outline: none;
+        cursor: pointer;
+        margin: 4px 0 8px;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--ink);
+        border: 4px solid var(--thumb, var(--amber));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+        cursor: grab;
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--ink);
+        border: 4px solid var(--thumb, var(--amber));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+        cursor: grab;
+      }
+      #range-needs { --thumb: var(--needs); }
+      #range-wants { --thumb: var(--wants); }
+      #range-save { --thumb: var(--save); }
+      .slider-sub { font-size: 13.5px; color: var(--ink-faint); margin: 0; }
+      .total-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--panel-edge);
+        font-family: var(--font-mono);
+        font-size: 14px;
+        color: var(--ink-dim);
+      }
+      .total-line .total-val { font-weight: 700; color: var(--save); font-size: 17px; }
+
+      /* ---------- Stacked bar ---------- */
+      .stack {
+        display: flex;
+        height: 26px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 20px;
+        border: 1px solid var(--panel-edge);
+      }
+      .stack div { transition: width 0.25s ease; min-width: 0; }
+      .stack-needs { background: var(--needs); }
+      .stack-wants { background: var(--wants); }
+      .stack-save { background: var(--save); }
+
+      /* ---------- Bucket cards ---------- */
+      .buckets { display: grid; gap: 14px; margin-top: 14px; }
+      @media (min-width: 700px) { .buckets { grid-template-columns: repeat(3, 1fr); } }
+      .bucket {
+        border-radius: var(--radius);
+        padding: 18px;
+        border: 1px solid var(--panel-edge);
+        background: var(--panel);
+        position: relative;
+        overflow: hidden;
+      }
+      .bucket::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 5px;
+        background: var(--bucket-color);
+      }
+      .bucket-needs { --bucket-color: var(--needs); background: linear-gradient(180deg, var(--needs-soft), var(--panel) 55%); }
+      .bucket-wants { --bucket-color: var(--wants); background: linear-gradient(180deg, var(--wants-soft), var(--panel) 55%); }
+      .bucket-save { --bucket-color: var(--save); background: linear-gradient(180deg, var(--save-soft), var(--panel) 55%); }
+      .bucket h3 {
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin: 4px 0 2px;
+        color: var(--bucket-color);
+      }
+      .bucket .bucket-pct { font-family: var(--font-mono); font-size: 13px; color: var(--ink-faint); letter-spacing: 0.08em; }
+      .bucket .per-check {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: clamp(30px, 7vw, 36px);
+        line-height: 1.1;
+        margin: 10px 0 2px;
+      }
+      .bucket .per-check-label { font-size: 13px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
+      .bucket .monthly {
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--panel-edge);
+        font-size: 15px;
+        color: var(--ink-dim);
+      }
+      .bucket .monthly strong { font-family: var(--font-mono); color: var(--ink); font-size: 17px; }
+      .bucket ul { margin: 12px 0 0; padding: 0; list-style: none; font-size: 14.5px; color: var(--ink-dim); }
+      .bucket ul li { padding: 2.5px 0 2.5px 16px; position: relative; }
+      .bucket ul li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 11px;
+        width: 7px;
+        height: 2px;
+        background: var(--bucket-color);
+      }
+
+      /* ---------- Checklist ---------- */
+      .checklist { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+      .checklist li {
+        counter-increment: step;
+        display: flex;
+        gap: 14px;
+        padding: 13px 0;
+        border-bottom: 1px dashed var(--panel-edge);
+      }
+      .checklist li:last-child { border-bottom: none; padding-bottom: 2px; }
+      .checklist li::before {
+        content: counter(step);
+        flex: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: var(--amber-soft);
+        border: 1.5px solid var(--amber);
+        color: var(--amber);
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1px;
+      }
+      .checklist .step-title { font-weight: 700; display: block; }
+      .checklist .step-body { color: var(--ink-dim); font-size: 15px; }
+      .checklist .amt { font-family: var(--font-mono); font-weight: 700; color: var(--ink); white-space: nowrap; }
+      .checklist .amt-needs { color: var(--needs); }
+      .checklist .amt-wants { color: var(--wants); }
+      .checklist .amt-save { color: var(--save); }
+
+      /* ---------- CTA ---------- */
+      .cta {
+        margin-top: 22px;
+        border-radius: var(--radius);
+        border: 2px solid var(--amber);
+        background:
+          linear-gradient(120deg, var(--amber-soft), transparent 55%),
+          var(--panel);
+        padding: 24px 22px;
+        display: grid;
+        gap: 14px;
+      }
+      @media (min-width: 640px) {
+        .cta { grid-template-columns: 1fr auto; align-items: center; }
+      }
+      .cta h2 {
+        font-family: var(--font-display);
+        font-size: clamp(26px, 5.5vw, 34px);
+        font-weight: 700;
+        text-transform: uppercase;
+        line-height: 1.05;
+        margin: 0 0 6px;
+      }
+      .cta p { margin: 0; color: var(--ink-dim); max-width: 48ch; }
+      .cta a {
+        display: inline-block;
+        background: linear-gradient(180deg, var(--amber-hot), var(--amber));
+        color: #171106;
+        font-weight: 700;
+        font-size: 17px;
+        text-decoration: none;
+        padding: 14px 22px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
+        white-space: nowrap;
+      }
+      .cta a:hover { filter: brightness(1.08); }
+
+      /* ---------- FAQ ---------- */
+      .faq { margin-top: 26px; }
+      .faq h2 {
+        font-family: var(--font-display);
+        font-size: 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin: 0 0 6px;
+      }
+      details {
+        background: var(--panel);
+        border: 1px solid var(--panel-edge);
+        border-radius: 10px;
+        margin-top: 10px;
+        padding: 0 18px;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 16.5px;
+        padding: 15px 0;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      summary::-webkit-details-marker { display: none; }
+      summary::after { content: "+"; font-family: var(--font-mono); color: var(--amber); font-size: 22px; font-weight: 700; }
+      details[open ] summary::after { content: "–"; }
+      details p { margin: 0 0 16px; color: var(--ink-dim); font-size: 15.5px; }
+      details p strong { color: var(--ink); }
+
+      footer { margin-top: 34px; text-align: center; color: var(--ink-faint); font-size: 13.5px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <p class="kicker">Shift Worker Money Tool</p>
+        <h1>Paycheck <span class="accent">Budget</span> Splitter</h1>
+        <p class="lede">
+          Every check gets a job the second it lands. Enter your take-home pay, pick a split,
+          and see <strong>exactly where each dollar goes</strong> — per check and per month.
+        </p>
+      </header>
+
+      <!-- Paycheck input -->
+      <section class="panel" aria-label="Your paycheck">
+        <p class="panel-label">Step 1 — Your paycheck</p>
+        <div class="pay-grid">
+          <div class="amount-field">
+            <label for="amount">Net (take-home) pay per check</label>
+            <div class="amount-wrap">
+              <span class="dollar">$</span>
+              <input id="amount" type="number" inputmode="decimal" min="0" step="10" value="1150" aria-label="Net paycheck amount in dollars" />
+            </div>
+          </div>
+          <div class="freq-field">
+            <span id="freq-label">How often do you get paid?</span>
+            <div class="freq-btns" role="group" aria-labelledby="freq-label">
+              <button type="button" data-freq="weekly">Weekly</button>
+              <button type="button" data-freq="biweekly" class="active">Bi-weekly</button>
+              <button type="button" data-freq="semimonthly">Semi-monthly</button>
+            </div>
+            <p class="freq-note" id="freq-note">26 checks a year — monthly figures use ×26 ÷ 12.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Framework + sliders -->
+      <section class="panel" aria-label="Budget framework">
+        <p class="panel-label">Step 2 — Pick your split</p>
+        <div class="fw-btns" role="group" aria-label="Budget framework">
+          <button type="button" data-fw="503020" class="active">50 / 30 / 20 Rule<small>Balanced classic</small></button>
+          <button type="button" data-fw="702010">70 / 20 / 10 Rule<small>Bills-heavy, high rent</small></button>
+          <button type="button" data-fw="custom">Custom<small>Drag the sliders</small></button>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-head">
+            <span class="slider-name"><span class="dot dot-needs"></span>Needs</span>
+            <span class="slider-pct" id="pct-needs">50<span class="pct-sign">%</span></span>
+          </div>
+          <input type="range" id="range-needs" min="0" max="100" step="1" value="50" aria-label="Needs percentage" />
+          <p class="slider-sub">Rent, utilities, groceries, gas &amp; base transport, minimum payments.</p>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-head">
+            <span class="slider-name"><span class="dot dot-wants"></span>Wants</span>
+            <span class="slider-pct" id="pct-wants">30<span class="pct-sign">%</span></span>
+          </div>
+          <input type="range" id="range-wants" min="0" max="100" step="1" value="30" aria-label="Wants percentage" />
+          <p class="slider-sub">Eating out, shopping, streaming, games, fun money.</p>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-head">
+            <span class="slider-name"><span class="dot dot-save"></span>Savings / Debt</span>
+            <span class="slider-pct" id="pct-save">20<span class="pct-sign">%</span></span>
+          </div>
+          <input type="range" id="range-save" min="0" max="100" step="1" value="20" aria-label="Savings and debt percentage" />
+          <p class="slider-sub">Emergency fund first, then extra payments that kill debt faster.</p>
+        </div>
+
+        <div class="total-line">
+          <span>TOTAL ALLOCATED</span>
+          <span class="total-val" id="total-val">100%</span>
+        </div>
+
+        <div class="stack" aria-hidden="true">
+          <div class="stack-needs" id="stack-needs" style="width:50%"></div>
+          <div class="stack-wants" id="stack-wants" style="width:30%"></div>
+          <div class="stack-save" id="stack-save" style="width:20%"></div>
+        </div>
+      </section>
+
+      <!-- Bucket cards -->
+      <div class="buckets" aria-live="polite">
+        <article class="bucket bucket-needs">
+          <span class="bucket-pct" id="card-pct-needs">50% OF EVERY CHECK</span>
+          <h3>Needs</h3>
+          <div class="per-check" id="amt-needs">$575.00</div>
+          <div class="per-check-label">Per paycheck</div>
+          <div class="monthly">Monthly equivalent<br /><strong id="mo-needs">$1,245.83</strong></div>
+          <ul>
+            <li>Rent or mortgage</li>
+            <li>Utilities &amp; phone</li>
+            <li>Groceries</li>
+            <li>Gas &amp; base transport</li>
+            <li>Minimum card payments</li>
+          </ul>
+        </article>
+
+        <article class="bucket bucket-wants">
+          <span class="bucket-pct" id="card-pct-wants">30% OF EVERY CHECK</span>
+          <h3>Wants</h3>
+          <div class="per-check" id="amt-wants">$345.00</div>
+          <div class="per-check-label">Per paycheck</div>
+          <div class="monthly">Monthly equivalent<br /><strong id="mo-wants">$747.50</strong></div>
+          <ul>
+            <li>Dining out &amp; takeout</li>
+            <li>Shopping</li>
+            <li>Entertainment &amp; games</li>
+            <li>Streaming &amp; subscriptions</li>
+          </ul>
+        </article>
+
+        <article class="bucket bucket-save">
+          <span class="bucket-pct" id="card-pct-save">20% OF EVERY CHECK</span>
+          <h3>Savings / Debt</h3>
+          <div class="per-check" id="amt-save">$230.00</div>
+          <div class="per-check-label">Per paycheck</div>
+          <div class="monthly">Monthly equivalent<br /><strong id="mo-save">$498.33</strong></div>
+          <ul>
+            <li>Emergency fund</li>
+            <li>Extra debt payoff</li>
+            <li>Sinking funds (car repairs, holidays)</li>
+          </ul>
+        </article>
+      </div>
+
+      <!-- Payday checklist -->
+      <section class="panel" aria-label="Payday transfer checklist">
+        <p class="panel-label">Step 3 — Payday transfer checklist</p>
+        <ol class="checklist">
+          <li>
+            <div>
+              <span class="step-title">Move the Savings / Debt money first</span>
+              <span class="step-body">The moment the check hits, transfer <span class="amt amt-save" id="chk-save">$230.00</span> to a separate savings account — ideally at a different bank so it's out of sight. Pay yourself before the shift eats it.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="step-title">Cover the Needs bucket</span>
+              <span class="step-body">Leave <span class="amt amt-needs" id="chk-needs">$575.00</span> in your bills account. Rent, utilities, groceries, and gas come out of this — nothing else touches it.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="step-title">Load your Wants money</span>
+              <span class="step-body">Move <span class="amt amt-wants" id="chk-wants">$345.00</span> to a separate spending card or account. When it's gone, it's gone — that's the guardrail that keeps fun from eating the rent.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="step-title">Throw the extra at debt</span>
+              <span class="step-body">Once your emergency fund holds $1,000, aim the Savings / Debt bucket at your highest-interest card as an extra payment — on top of the minimums already sitting in Needs.</span>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="step-title">Check the account before you spend</span>
+              <span class="step-body">Quick 30-second look: transfers landed, bills scheduled, spending card loaded. Then you're done until next payday — no daily budget math.</span>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta">
+        <div>
+          <h2>Want the full framework on paper?</h2>
+          <p>Grab the Paycheck Protection Checklist and Buffer Binder on Gumroad — the printable system that walks every payday, step by step.</p>
+        </div>
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get it on Gumroad →</a>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq" aria-label="Frequently asked questions">
+        <h2>Questions</h2>
+
+        <details>
+          <summary>What is the 50/30/20 rule?</summary>
+          <p>It's a simple budgeting framework: <strong>50% of your take-home pay goes to Needs</strong> (rent, bills, groceries, transport), <strong>30% to Wants</strong> (eating out, shopping, entertainment), and <strong>20% to Savings and extra debt payoff</strong>. It works because there are only three decisions to make — every dollar gets sorted into one of three buckets the day you're paid, instead of tracking dozens of categories.</p>
+        </details>
+
+        <details>
+          <summary>My rent eats more than 50%. Should I use 70/20/10?</summary>
+          <p>Yes — that's exactly who the 70/20/10 split is for. If rent, a car note, and insurance already take most of your check, forcing 50/30/20 just sets you up to fail. Use <strong>70% Needs / 20% Wants / 10% Savings</strong> while your fixed costs are high, protect that 10% no matter what, and shift the sliders toward savings as debts die off or pay goes up.</p>
+        </details>
+
+        <details>
+          <summary>How do I adapt this for variable shift income?</summary>
+          <p>Budget off your <strong>worst normal check, not your best one</strong>. Add up your last 6–8 paychecks and split the smallest typical one — the one without overtime or shift differentials. When a fatter check lands (OT, holiday pay, weekend premium), run the same percentages on the extra and send most of that bonus straight to savings or debt. Your bills stay covered on a lean month, and good months accelerate you instead of getting spent.</p>
+        </details>
+
+        <details>
+          <summary>Where should I put the savings bucket?</summary>
+          <p>In a <strong>separate high-yield savings account, ideally at a different bank</strong> than your everyday checking. The 1–2 day transfer delay is a feature — it stops impulse spending while keeping the money reachable for a real emergency. Build a $1,000 starter buffer first, then split the bucket: half keeps growing the emergency fund toward one month of expenses, half goes to extra debt payments.</p>
+        </details>
+      </section>
+
+      <footer>
+        Estimates based on the numbers you enter. Monthly equivalents assume 52 weeks, 26 bi-weekly, or 24 semi-monthly checks per year.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var FREQ = {
+          weekly:      { perYear: 52, note: "52 checks a year — monthly figures use ×52 ÷ 12." },
+          biweekly:    { perYear: 26, note: "26 checks a year — monthly figures use ×26 ÷ 12." },
+          semimonthly: { perYear: 24, note: "24 checks a year — monthly figures use ×24 ÷ 12 (exactly 2 per month)." }
+        };
+        var PRESETS = { "503020": [50, 30, 20], "702010": [70, 20, 10] };
+
+        var amountInput = document.getElementById("amount");
+        var freqNote = document.getElementById("freq-note");
+        var freqBtns = document.querySelectorAll("[data-freq]");
+        var fwBtns = document.querySelectorAll("[data-fw]");
+        var sliders = {
+          needs: document.getElementById("range-needs"),
+          wants: document.getElementById("range-wants"),
+          save:  document.getElementById("range-save")
+        };
+        var keys = ["needs", "wants", "save"];
+        var state = { freq: "biweekly" };
+
+        function money(n) {
+          return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function setActive(list, el) {
+          list.forEach(function (b) { b.classList.toggle("active", b === el); });
+        }
+
+        function applyPcts(p) {
+          keys.forEach(function (k, i) { sliders[k].value = p[i]; });
+          render();
+        }
+
+        // Keep the three sliders at exactly 100% total: when one moves,
+        // take/give the difference from the other two, biggest first.
+        function rebalance(changedKey) {
+          var vals = keys.map(function (k) { return parseInt(sliders[k].value, 10) || 0; });
+          var ci = keys.indexOf(changedKey);
+          var diff = 100 - (vals[0] + vals[1] + vals[2]);
+          if (diff === 0) return;
+          var others = [0, 1, 2].filter(function (i) { return i !== ci; });
+          others.sort(function (a, b) { return vals[b] - vals[a]; });
+          for (var j = 0; j < others.length && diff !== 0; j++) {
+            var i = others[j];
+            if (diff > 0) {
+              var add = Math.min(diff, 100 - vals[i]);
+              vals[i] += add; diff -= add;
+            } else {
+              var sub = Math.min(-diff, vals[i]);
+              vals[i] -= sub; diff += sub;
+            }
+          }
+          // Rounding edge: if the moved slider itself must absorb the rest.
+          if (diff !== 0) vals[ci] += diff;
+          keys.forEach(function (k, i) { sliders[k].value = vals[i]; });
+        }
+
+        function render() {
+          var amount = parseFloat(amountInput.value) || 0;
+          if (amount < 0) amount = 0;
+          var pcts = keys.map(function (k) { return parseInt(sliders[k].value, 10) || 0; });
+          var total = pcts[0] + pcts[1] + pcts[2];
+
+          // Exact per-check dollars; give the rounding remainder to the
+          // largest bucket so the three always sum to the paycheck.
+          var raw = pcts.map(function (p) { return amount * p / 100; });
+          var cents = raw.map(function (v) { return Math.round(v * 100); });
+          var target = Math.round(amount * 100);
+          var drift = target - (cents[0] + cents[1] + cents[2]);
+          if (drift !== 0) {
+            var big = 0;
+            for (var i = 1; i < 3; i++) if (cents[i] > cents[big]) big = i;
+            cents[big] += drift;
+          }
+          var perCheck = cents.map(function (c) { return c / 100; });
+          var perYear = FREQ[state.freq].perYear;
+          var monthly = perCheck.map(function (v) { return v * perYear / 12; });
+
+          keys.forEach(function (k, i) {
+            document.getElementById("pct-" + k).innerHTML = pcts[i] + '<span class="pct-sign">%</span>';
+            document.getElementById("card-pct-" + k).textContent = pcts[i] + "% OF EVERY CHECK";
+            document.getElementById("amt-" + k).textContent = money(perCheck[i]);
+            document.getElementById("mo-" + k).textContent = money(monthly[i]);
+            document.getElementById("stack-" + k).style.width = pcts[i] + "%";
+          });
+          document.getElementById("total-val").textContent = total + "%";
+          document.getElementById("chk-needs").textContent = money(perCheck[0]);
+          document.getElementById("chk-wants").textContent = money(perCheck[1]);
+          document.getElementById("chk-save").textContent = money(perCheck[2]);
+        }
+
+        amountInput.addEventListener("input", render);
+
+        freqBtns.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            state.freq = btn.getAttribute("data-freq");
+            setActive(Array.prototype.slice.call(freqBtns), btn);
+            freqNote.textContent = FREQ[state.freq].note;
+            render();
+          });
+        });
+
+        fwBtns.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var fw = btn.getAttribute("data-fw");
+            setActive(Array.prototype.slice.call(fwBtns), btn);
+            if (PRESETS[fw]) applyPcts(PRESETS[fw]);
+            else render();
+          });
+        });
+
+        keys.forEach(function (k) {
+          sliders[k].addEventListener("input", function () {
+            // Dragging any slider switches the framework to Custom.
+            fwBtns.forEach(function (b) {
+              b.classList.toggle("active", b.getAttribute("data-fw") === "custom");
+            });
+            rebalance(k);
+            render();
+          });
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

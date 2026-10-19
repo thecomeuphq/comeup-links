@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Overtime Wealth Maximizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0e0e10;
+        --bg-2: #141416;
+        --panel: #1a1a1e;
+        --panel-2: #212127;
+        --line: #2d2d34;
+        --line-soft: #26262c;
+        --ink: #f4efe6;
+        --muted: #a9a294;
+        --faint: #7c7668;
+        --amber: #ffb020;
+        --orange: #ff6b1a;
+        --debt: #ff7043;
+        --buffer: #ffc233;
+        --reward: #58c98b;
+        --danger: #ff5252;
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(900px 480px at 85% -10%, rgba(255, 107, 26, 0.10), transparent 60%),
+          radial-gradient(700px 420px at -10% 30%, rgba(255, 176, 32, 0.06), transparent 60%),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+      .wrap { max-width: 920px; margin: 0 auto; padding: 20px 16px 64px; }
+
+      /* ---------- Header ---------- */
+      header.hero { padding: 18px 0 8px; }
+      .hero h1 {
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        font-size: clamp(30px, 7.5vw, 46px);
+        line-height: 1.05;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 0 0 10px;
+      }
+      .hero h1 .amp { color: var(--amber); }
+      .hero p { color: var(--muted); font-size: 17px; margin: 0; max-width: 620px; }
+      .hazard {
+        height: 8px; border-radius: 4px; margin: 18px 0 4px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141414 14px 28px);
+        opacity: 0.9;
+      }
+
+      /* ---------- Steps ---------- */
+      section.step {
+        background: linear-gradient(180deg, var(--panel) 0%, var(--bg-2) 100%);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 20px 18px 22px;
+        margin-top: 22px;
+      }
+      .step-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+      .step-num {
+        font-family: "Oswald", sans-serif; font-weight: 700; font-size: 13px;
+        letter-spacing: 0.14em; color: #141414; background: var(--amber);
+        padding: 3px 9px; border-radius: 5px; white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: "Oswald", sans-serif; font-weight: 600; font-size: 22px;
+        text-transform: uppercase; letter-spacing: 0.02em; margin: 0;
+      }
+      .step-sub { color: var(--muted); margin: 2px 0 16px; font-size: 15px; }
+
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .grid .full { grid-column: 1 / -1; }
+      @media (max-width: 560px) { .grid { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 400px) { .grid { grid-template-columns: 1fr; } }
+
+      label.field { display: block; }
+      label.field span {
+        display: block; font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em;
+        text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+      }
+      label.field small { display: block; text-transform: none; letter-spacing: 0; color: var(--faint); font-weight: 400; margin-top: 5px; font-size: 12.5px; }
+      input[type="number"], select {
+        width: 100%; background: var(--panel-2); color: var(--ink);
+        border: 1px solid var(--line); border-radius: 9px;
+        padding: 11px 12px; font-size: 17px; font-family: "IBM Plex Mono", monospace;
+        appearance: none; -webkit-appearance: none;
+      }
+      select {
+        background-image: linear-gradient(45deg, transparent 50%, var(--amber) 50%), linear-gradient(135deg, var(--amber) 50%, transparent 50%);
+        background-position: calc(100% - 18px) 55%, calc(100% - 12px) 55%;
+        background-size: 6px 6px; background-repeat: no-repeat; padding-right: 32px;
+        font-family: "Barlow", sans-serif; font-weight: 600;
+      }
+      input[type="number"]:focus, select:focus { outline: 2px solid var(--amber); outline-offset: 1px; border-color: var(--amber); }
+      .prefix { position: relative; }
+      .prefix::before {
+        content: "$"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+        color: var(--amber); font-family: "IBM Plex Mono", monospace; font-weight: 700; pointer-events: none;
+      }
+      .prefix input { padding-left: 26px; }
+      .suffix { position: relative; }
+      .suffix::after {
+        content: attr(data-suffix); position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+        color: var(--faint); font-family: "IBM Plex Mono", monospace; font-size: 14px; pointer-events: none;
+      }
+      .suffix input { padding-right: 44px; }
+
+      /* ---------- Step 2 results ---------- */
+      .versus { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 10px; margin: 6px 0 16px; }
+      @media (max-width: 480px) { .versus { grid-template-columns: 1fr; } .versus .vs-badge { justify-self: center; transform: rotate(90deg); } }
+      .vs-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+      .vs-card .k { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+      .vs-card .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 30px; margin-top: 2px; }
+      .vs-card.net { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber) inset, 0 8px 28px rgba(255, 176, 32, 0.10); }
+      .vs-card.net .v { color: var(--amber); }
+      .vs-badge {
+        align-self: center; font-family: "Oswald", sans-serif; font-weight: 700; font-size: 13px;
+        background: var(--orange); color: #161006; border-radius: 50%;
+        width: 38px; height: 38px; display: grid; place-items: center; letter-spacing: 0.05em;
+      }
+      table.ledger { width: 100%; border-collapse: collapse; font-size: 15px; }
+      table.ledger td { padding: 7px 2px; border-bottom: 1px dashed var(--line-soft); }
+      table.ledger td:last-child { text-align: right; font-family: "IBM Plex Mono", monospace; font-weight: 600; white-space: nowrap; }
+      table.ledger tr.total td { border-bottom: none; border-top: 2px solid var(--line); font-weight: 700; padding-top: 10px; }
+      table.ledger tr.total td:last-child { color: var(--amber); }
+      .note { color: var(--faint); font-size: 13.5px; margin-top: 12px; }
+      .stat-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+      .stat {
+        flex: 1 1 140px; background: var(--bg-2); border: 1px solid var(--line-soft);
+        border-radius: 10px; padding: 10px 12px;
+      }
+      .stat .k { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .stat .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 19px; margin-top: 1px; }
+
+      /* ---------- Step 3 presets & sliders ---------- */
+      .presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+      @media (max-width: 620px) { .presets { grid-template-columns: 1fr; } }
+      .preset {
+        text-align: left; cursor: pointer; background: var(--panel-2); color: var(--ink);
+        border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+        font-family: "Barlow", sans-serif;
+      }
+      .preset:hover { border-color: var(--faint); }
+      .preset.active { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber) inset; }
+      .preset .name { font-family: "Oswald", sans-serif; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 0.03em; }
+      .preset .mix { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+      .slider-row { padding: 12px 0; border-bottom: 1px dashed var(--line-soft); }
+      .slider-row:last-of-type { border-bottom: none; }
+      .slider-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+      .slider-top .bucket-name { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+      .dot { width: 11px; height: 11px; border-radius: 3px; display: inline-block; flex: none; }
+      .dot.debt { background: var(--debt); } .dot.buffer { background: var(--buffer); } .dot.reward { background: var(--reward); }
+      .slider-top .amt { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 18px; }
+      .slider-top .pct { font-family: "IBM Plex Mono", monospace; color: var(--muted); font-size: 14px; min-width: 48px; text-align: right; }
+      input[type="range"] { width: 100%; margin: 10px 0 2px; accent-color: var(--amber); height: 28px; cursor: pointer; }
+      input[type="range"].r-debt { accent-color: var(--debt); }
+      input[type="range"].r-buffer { accent-color: var(--buffer); }
+      input[type="range"].r-reward { accent-color: var(--reward); }
+      .bucket-desc { color: var(--faint); font-size: 13.5px; }
+      .total-bar { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+      .total-pill {
+        font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 14px;
+        padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line);
+        background: var(--panel-2); white-space: nowrap;
+      }
+      .total-pill.ok { border-color: var(--reward); color: var(--reward); }
+      .total-pill.bad { border-color: var(--danger); color: var(--danger); }
+      .total-msg { font-size: 14px; color: var(--muted); }
+      .split-bar { display: flex; height: 16px; border-radius: 6px; overflow: hidden; margin-top: 14px; border: 1px solid var(--line); }
+      .split-bar div { transition: width 0.25s ease; min-width: 0; }
+      .split-bar .seg-debt { background: var(--debt); }
+      .split-bar .seg-buffer { background: var(--buffer); }
+      .split-bar .seg-reward { background: var(--reward); }
+
+      /* ---------- Step 4 ---------- */
+      .goal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end; padding: 12px 0; border-bottom: 1px dashed var(--line-soft); }
+      .goal-row:last-of-type { border-bottom: none; }
+      @media (max-width: 560px) { .goal-row { grid-template-columns: 1fr; } }
+      .goal-out { background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 10px; padding: 10px 14px; }
+      .goal-out .k { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+      .goal-out .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 20px; }
+      .goal-out .v small { font-size: 13px; color: var(--muted); font-weight: 500; }
+      .warn {
+        margin-top: 14px; border: 1px solid rgba(255, 176, 32, 0.45); background: rgba(255, 176, 32, 0.07);
+        border-radius: 10px; padding: 12px 14px; font-size: 14.5px; color: #ffd98a; display: none;
+      }
+      .warn.show { display: block; }
+
+      /* ---------- Blueprint ---------- */
+      section.blueprint {
+        margin-top: 26px; border-radius: var(--radius); overflow: hidden;
+        border: 2px solid var(--amber); background: #17130a;
+      }
+      .bp-head {
+        background: linear-gradient(90deg, var(--amber), var(--orange));
+        color: #171006; padding: 14px 18px;
+        display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+      }
+      .bp-head h2 { font-family: "Oswald", sans-serif; font-weight: 700; font-size: 21px; text-transform: uppercase; letter-spacing: 0.03em; margin: 0; }
+      .bp-head .freq { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+      .bp-body { padding: 18px; background: linear-gradient(180deg, #1c1811, #131109); }
+      .bp-net { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px; padding-bottom: 14px; border-bottom: 1px dashed #4a3d22; }
+      .bp-net .k { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #cdbd93; }
+      .bp-net .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 34px; color: var(--amber); }
+      .bp-net .sub { width: 100%; color: #9a8c6a; font-size: 13.5px; }
+      table.bp-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 15px; }
+      table.bp-table th { text-align: left; font-size: 11.5px; letter-spacing: 0.09em; text-transform: uppercase; color: #9a8c6a; padding: 8px 4px; border-bottom: 1px solid #3a3220; }
+      table.bp-table th:last-child, table.bp-table td:last-child { text-align: right; }
+      table.bp-table td { padding: 10px 4px; border-bottom: 1px dashed #38301d; vertical-align: top; }
+      table.bp-table tr:last-child td { border-bottom: none; }
+      table.bp-table td.amt { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 17px; white-space: nowrap; }
+      table.bp-table td.hrs { font-family: "IBM Plex Mono", monospace; white-space: nowrap; }
+      table.bp-table td.hrs small { display: block; color: #9a8c6a; font-family: "Barlow", sans-serif; font-size: 12.5px; }
+      .bp-foot { color: #9a8c6a; font-size: 13px; margin-top: 12px; }
+      @media (max-width: 560px) {
+        .bp-body { padding: 14px 12px; }
+        table.bp-table { font-size: 13.5px; }
+        table.bp-table th { padding: 6px 3px; font-size: 10.5px; }
+        table.bp-table td { padding: 8px 3px; }
+        table.bp-table td.amt { font-size: 14.5px; }
+        table.bp-table td.hrs small { font-size: 11.5px; }
+        .bp-net .v { font-size: 28px; }
+      }
+      .print-btn {
+        margin: 16px 18px 18px; width: calc(100% - 36px); cursor: pointer;
+        background: var(--amber); color: #171006; border: none; border-radius: 10px;
+        font-family: "Oswald", sans-serif; font-weight: 700; font-size: 17px; letter-spacing: 0.06em;
+        text-transform: uppercase; padding: 14px; display: flex; align-items: center; justify-content: center; gap: 10px;
+      }
+      .print-btn:hover { background: #ffc44d; }
+      .print-btn svg { width: 19px; height: 19px; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 26px; }
+      @media (max-width: 620px) { .next-grid { grid-template-columns: 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px;
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card .tag { font-size: 11.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange); }
+      a.next-card h3 { font-family: "Oswald", sans-serif; font-weight: 600; font-size: 19px; text-transform: uppercase; margin: 6px 0 6px; }
+      a.next-card p { color: var(--muted); font-size: 14.5px; margin: 0 0 10px; }
+      a.next-card .go { color: var(--amber); font-weight: 700; font-size: 14.5px; }
+      .cta {
+        margin-top: 16px; display: block; text-decoration: none; border-radius: var(--radius);
+        padding: 20px; color: #171006; background: linear-gradient(100deg, var(--amber), var(--orange));
+      }
+      .cta .tag { font-size: 11.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+      .cta p { font-size: 18px; font-weight: 600; line-height: 1.45; margin: 6px 0 8px; }
+      .cta .go { font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+      section.faq { margin-top: 30px; }
+      section.faq h2 { font-family: "Oswald", sans-serif; font-weight: 600; font-size: 22px; text-transform: uppercase; margin: 0 0 12px; }
+      details.faq-item { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; }
+      details.faq-item summary {
+        cursor: pointer; padding: 15px 16px; font-weight: 700; font-size: 16.5px; list-style: none;
+        display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      }
+      details.faq-item summary::-webkit-details-marker { display: none; }
+      details.faq-item summary::after { content: "+"; color: var(--amber); font-family: "IBM Plex Mono", monospace; font-size: 22px; font-weight: 700; }
+      details.faq-item[open ] summary::after { content: "–"; }
+      details.faq-item .a { padding: 0 16px 16px; color: var(--muted); font-size: 15px; }
+      details.faq-item .a p { margin: 0 0 8px; }
+      details.faq-item .a p:last-child { margin-bottom: 0; }
+      footer { margin-top: 34px; color: var(--faint); font-size: 13px; border-top: 1px solid var(--line-soft); padding-top: 16px; }
+
+      /* ---------- Print: blueprint only, light & clean ---------- */
+      @media print {
+        body { background: #fff; color: #111; }
+        .wrap { max-width: none; padding: 0; }
+        header.hero, section.step, .next-grid, .cta, section.faq, footer, .print-btn { display: none !important; }
+        section.blueprint { border: 2px solid #111; background: #fff; margin: 0; }
+        .bp-head { background: #111 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .bp-body { background: #fff; }
+        .bp-net .v { color: #111; }
+        .bp-net .k, .bp-net .sub, .bp-foot, table.bp-table th, table.bp-table td.hrs small { color: #444; }
+        .bp-net, table.bp-table td, table.bp-table th { border-color: #bbb; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <h1>Overtime <span class="amp">&amp;</span> Shift-Diff<br />Wealth Maximizer</h1>
+        <p>Your overtime check is smaller than you think — taxes see to that. Run your real numbers, see the true take-home, then split every net OT dollar on purpose: kill debt, build the buffer, keep a reward so you don't burn out.</p>
+        <div class="hazard" aria-hidden="true"></div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1">Shift Pay Input</h2></div>
+        <p class="step-sub">Your base numbers for one pay period. Everything below recalculates live.</p>
+        <div class="grid">
+          <label class="field">
+            <span>Base hourly rate</span>
+            <div class="prefix"><input type="number" id="rate" inputmode="decimal" min="0" step="0.25" value="20" /></div>
+          </label>
+          <label class="field">
+            <span>Overtime hours / period</span>
+            <div class="suffix" data-suffix="hrs"><input type="number" id="otHours" inputmode="decimal" min="0" step="0.5" value="10" /></div>
+          </label>
+          <label class="field">
+            <span>Overtime multiplier</span>
+            <select id="mult">
+              <option value="1.5" selected>1.5× — time and a half</option>
+              <option value="2">2× — double time</option>
+              <option value="2.5">2.5×</option>
+              <option value="3">3× — triple time</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Shift differential / hr</span>
+            <div class="prefix"><input type="number" id="diff" inputmode="decimal" min="0" step="0.25" value="1.50" /></div>
+            <small>Optional — extra per hour for nights/weekends, paid on top of the OT rate.</small>
+          </label>
+          <label class="field full">
+            <span>Pay frequency</span>
+            <select id="freq">
+              <option value="52">Weekly — 52 periods / year</option>
+              <option value="26" selected>Biweekly — 26 periods / year</option>
+              <option value="24">Semi-monthly — 24 periods / year</option>
+              <option value="12">Monthly — 12 periods / year</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2">True Net Overtime Engine</h2></div>
+        <p class="step-sub">Gross OT pay is the sticker price. This is what actually lands in your account after withholding on those hours.</p>
+        <div class="versus">
+          <div class="vs-card">
+            <div class="k">Gross OT pay</div>
+            <div class="v" id="grossOut">$0.00</div>
+          </div>
+          <div class="vs-badge" aria-hidden="true">VS</div>
+          <div class="vs-card net">
+            <div class="k">Estimated net OT pay</div>
+            <div class="v" id="netOut">$0.00</div>
+          </div>
+        </div>
+        <table class="ledger" aria-label="Overtime pay breakdown">
+          <tr><td>Overtime premium (<span id="otRateLine">10 hrs × $30.00</span>)</td><td id="premiumOut">$0.00</td></tr>
+          <tr><td>Shift differential (<span id="diffLine">10 hrs × $1.50</span>)</td><td id="diffOut">$0.00</td></tr>
+          <tr><td>Federal withholding (<span id="fedPctLine">22%</span> marginal est.)</td><td id="fedOut">−$0.00</td></tr>
+          <tr><td>FICA — Social Security + Medicare (7.65%)</td><td id="ficaOut">−$0.00</td></tr>
+          <tr><td>State withholding (<span id="statePctLine">4%</span> est.)</td><td id="stateOut">−$0.00</td></tr>
+          <tr class="total"><td>Total withheld</td><td id="withheldOut">−$0.00</td></tr>
+        </table>
+        <div class="grid" style="margin-top:16px;">
+          <label class="field">
+            <span>Federal marginal bracket</span>
+            <select id="fedBracket">
+              <option value="10">10%</option>
+              <option value="12">12%</option>
+              <option value="22" selected>22% — most full-time shift workers</option>
+              <option value="24">24%</option>
+              <option value="32">32%</option>
+            </select>
+            <small>The bracket your next dollar of income falls into.</small>
+          </label>
+          <label class="field">
+            <span>State withholding estimate</span>
+            <div class="suffix" data-suffix="%"><input type="number" id="stateRate" inputmode="decimal" min="0" max="15" step="0.25" value="4" /></div>
+            <small>Flat estimate. Set to 0 if your state has no income tax.</small>
+          </label>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="k">Net per OT hour</div><div class="v" id="netPerHourOut">$0.00</div></div>
+          <div class="stat"><div class="k">Withholding rate on OT</div><div class="v" id="effRateOut">0%</div></div>
+          <div class="stat"><div class="k">Net OT per year</div><div class="v" id="netYearOut">$0.00</div></div>
+        </div>
+        <p class="note">Estimates only — actual withholding depends on your W-4, total income, and state. The point isn't penny-perfect math; it's killing the illusion that a $450 OT week means $450.</p>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head"><span class="step-num">STEP 3</span><h2 id="s3">Wealth Split Matrix</h2></div>
+        <p class="step-sub">Pick a game plan, or drag the sliders to build your own. Every dollar of <strong>net</strong> OT pay gets a job before the check even clears.</p>
+        <div class="presets" role="group" aria-label="Split presets">
+          <button type="button" class="preset" data-preset="debt">
+            <div class="name">Aggressive Debt Kill</div>
+            <div class="mix">60% debt · 25% buffer · 15% reward</div>
+          </button>
+          <button type="button" class="preset" data-preset="buffer">
+            <div class="name">Emergency Buffer Build</div>
+            <div class="mix">30% debt · 55% buffer · 15% reward</div>
+          </button>
+          <button type="button" class="preset" data-preset="balanced">
+            <div class="name">Balanced Growth</div>
+            <div class="mix">40% debt · 30% buffer · 30% reward</div>
+          </button>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-top">
+            <span class="bucket-name"><span class="dot debt"></span>Debt Kill</span>
+            <span><span class="amt" id="amtDebt">$0.00</span> <span class="pct" id="pctDebt">60%</span></span>
+          </div>
+          <input type="range" class="r-debt" id="slDebt" min="0" max="100" step="1" value="60" aria-label="Debt Kill percentage" />
+          <div class="bucket-desc">Extra principal on the highest-pressure balance — this is your interest-rate escape velocity.</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-top">
+            <span class="bucket-name"><span class="dot buffer"></span>Emergency Buffer</span>
+            <span><span class="amt" id="amtBuffer">$0.00</span> <span class="pct" id="pctBuffer">25%</span></span>
+          </div>
+          <input type="range" class="r-buffer" id="slBuffer" min="0" max="100" step="1" value="25" aria-label="Emergency Buffer percentage" />
+          <div class="bucket-desc">Cash cushion in a separate savings account, so the next surprise doesn't go back on a card.</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-top">
+            <span class="bucket-name"><span class="dot reward"></span>Reward</span>
+            <span><span class="amt" id="amtReward">$0.00</span> <span class="pct" id="pctReward">15%</span></span>
+          </div>
+          <input type="range" class="r-reward" id="slReward" min="0" max="100" step="1" value="15" aria-label="Reward percentage" />
+          <div class="bucket-desc">Guilt-free money for the grind — the bucket that keeps the whole plan alive past week three.</div>
+        </div>
+
+        <div class="split-bar" aria-hidden="true">
+          <div class="seg-debt" id="segDebt" style="width:60%"></div>
+          <div class="seg-buffer" id="segBuffer" style="width:25%"></div>
+          <div class="seg-reward" id="segReward" style="width:15%"></div>
+        </div>
+        <div class="total-bar">
+          <span class="total-pill ok" id="totalPill">Total: 100%</span>
+          <span class="total-msg" id="totalMsg">Every net OT dollar has an assignment.</span>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head"><span class="step-num">STEP 4</span><h2 id="s4">Burnout Safeguard</h2></div>
+        <p class="step-sub">Set a finish line for each bucket. This converts dollars into the only currency that matters — how many overtime hours stand between you and done.</p>
+
+        <div class="goal-row">
+          <label class="field">
+            <span><span class="dot debt" style="margin-right:6px;"></span>Debt Kill target</span>
+            <div class="prefix"><input type="number" id="tgtDebt" inputmode="decimal" min="0" step="50" value="1000" /></div>
+            <small>e.g. the balance you want gone.</small>
+          </label>
+          <div class="goal-out">
+            <div class="k">Hours worked to goal</div>
+            <div class="v" id="hrsDebt">—</div>
+          </div>
+        </div>
+        <div class="goal-row">
+          <label class="field">
+            <span><span class="dot buffer" style="margin-right:6px;"></span>Emergency Buffer target</span>
+            <div class="prefix"><input type="number" id="tgtBuffer" inputmode="decimal" min="0" step="50" value="1000" /></div>
+            <small>$1,000 starter cushion is the classic first milestone.</small>
+          </label>
+          <div class="goal-out">
+            <div class="k">Hours worked to goal</div>
+            <div class="v" id="hrsBuffer">—</div>
+          </div>
+        </div>
+        <div class="goal-row">
+          <label class="field">
+            <span><span class="dot reward" style="margin-right:6px;"></span>Reward target</span>
+            <div class="prefix"><input type="number" id="tgtReward" inputmode="decimal" min="0" step="25" value="250" /></div>
+            <small>The thing you're working toward — a trip, gear, a night out.</small>
+          </label>
+          <div class="goal-out">
+            <div class="k">Hours worked to goal</div>
+            <div class="v" id="hrsReward">—</div>
+          </div>
+        </div>
+        <div class="warn" id="burnoutWarn"></div>
+        <p class="note">Read the hours before you volunteer for the shift. A goal that needs 200 OT hours isn't a plan — it's a slow-motion injury. Shrink the target or stretch the timeline, not yourself.</p>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bpTitle">
+        <div class="bp-head">
+          <h2 id="bpTitle">Overtime Cash Allocation Blueprint</h2>
+          <span class="freq" id="bpFreq">Per biweekly pay period</span>
+        </div>
+        <div class="bp-body">
+          <div class="bp-net">
+            <span class="k">Net overtime pay</span>
+            <span class="v" id="bpNet">$0.00</span>
+            <span class="sub" id="bpSub">Gross $0.00 − $0.00 withheld · $0.00 net per OT hour</span>
+          </div>
+          <table class="bp-table" aria-label="Allocation blueprint">
+            <thead>
+              <tr><th>Bucket</th><th>Split</th><th>Per period</th><th style="text-align:right;">Hours to goal</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="dot debt"></span> <strong>Debt Kill</strong></td>
+                <td class="mono" id="bpPctDebt">60%</td>
+                <td class="amt" id="bpAmtDebt">$0.00</td>
+                <td class="hrs" id="bpHrsDebt">—</td>
+              </tr>
+              <tr>
+                <td><span class="dot buffer"></span> <strong>Emergency Buffer</strong></td>
+                <td class="mono" id="bpPctBuffer">25%</td>
+                <td class="amt" id="bpAmtBuffer">$0.00</td>
+                <td class="hrs" id="bpHrsBuffer">—</td>
+              </tr>
+              <tr>
+                <td><span class="dot reward"></span> <strong>Reward</strong></td>
+                <td class="mono" id="bpPctReward">15%</td>
+                <td class="amt" id="bpAmtReward">$0.00</td>
+                <td class="hrs" id="bpHrsReward">—</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="bp-foot" id="bpFoot">Targets: Debt Kill $1,000 · Emergency Buffer $1,000 · Reward $250. Estimates based on the withholding rates in Step 2 — not tax advice.</p>
+        </div>
+        <button type="button" class="print-btn" id="printBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print My Blueprint
+        </button>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/overtime-paycheck-calculator.html" target="_blank" rel="noopener">
+          <div class="tag">Run the full check</div>
+          <h3>Overtime Paycheck Calculator</h3>
+          <p>See your whole paycheck — base pay plus overtime — so you know exactly what the full deposit looks like before payday.</p>
+          <span class="go">Open the calculator →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html" target="_blank" rel="noopener">
+          <div class="tag">Put the buffer to work</div>
+          <h3>Compound Interest Velocity Calculator</h3>
+          <p>Once the buffer is built, watch what steady deposits do over time — the growth curve that makes the grind worth it.</p>
+          <span class="go">Open the calculator →</span>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
+        <div class="tag">Track it on paper</div>
+        <p>Log every overtime dollar with the Overtime &amp; Shift Worker Cash Flow Log and track the streak with the 52-Week Cash Stash Thermometer on Gumroad — grab the free Paycheck Protection Checklist too.</p>
+        <span class="go">Get them on Gumroad →</span>
+      </a>
+
+      <!-- FAQ -->
+      <section class="faq" aria-labelledby="faqTitle">
+        <h2 id="faqTitle">Straight Answers</h2>
+        <details class="faq-item">
+          <summary>Is overtime taxed more than regular pay?</summary>
+          <div class="a">
+            <p>No — overtime isn't taxed at a special higher rate. Your OT dollars are taxed at the same marginal bracket as any other income. The catch is perception: because OT stacks on top of your regular pay, those extra dollars land entirely in your highest bracket, and payroll withholding can look aggressive on a big check.</p>
+            <p>If too much gets withheld, it comes back to you as a tax refund. The money isn't gone — but budgeting off the gross number will wreck your month, which is exactly why Step 2 exists.</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary>What's the burnout trap?</summary>
+          <div class="a">
+            <p>The trap is treating overtime as infinite. You volunteer for every shift, the money quietly absorbs into lifestyle spending, and six months later you're exhausted, your base-pay budget still doesn't work, and quitting the OT feels like a pay cut you can't afford.</p>
+            <p>The safeguard is a finish line. Step 4 turns each goal into a specific number of hours — when the hours are worked and the target is hit, the extra shifts stop. Overtime is a tool with an off switch, not a second job you can never leave.</p>
+          </div>
+        </details>
+        <details class="faq-item">
+          <summary>Why does the reward bucket matter? Shouldn't it all go to debt?</summary>
+          <div class="a">
+            <p>All-debt plans fail the same way crash diets do: total deprivation, then one bad week, then the whole plan is abandoned. A small, planned reward — 15% is plenty — makes the system survivable for the months a real payoff actually takes.</p>
+            <p>It's also honest accounting. You earned that money at 3 a.m. on a warehouse floor. Sending a deliberate slice of it to something you enjoy isn't weakness; it's the maintenance cost of a plan you'll still be running in month six.</p>
+          </div>
+        </details>
+      </section>
+
+      <footer>
+        Estimates only. Withholding uses your selected federal marginal bracket plus 7.65% FICA and your state estimate — your actual paycheck will vary with your W-4, total earnings, pre-tax deductions, and state rules. This tool is for planning, not tax or financial advice.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var $ = function (id) { return document.getElementById(id); };
+        var money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+        var fmt = function (n) { return money.format(isFinite(n) ? n : 0); };
+        var num = function (id) { var v = parseFloat($(id).value); return isNaN(v) || v < 0 ? 0 : v; };
+
+        var PRESETS = {
+          debt:     { debt: 60, buffer: 25, reward: 15 },
+          buffer:   { debt: 30, buffer: 55, reward: 15 },
+          balanced: { debt: 40, buffer: 30, reward: 30 }
+        };
+        var activePreset = "debt";
+        var FREQ_LABEL = { "52": "Per weekly pay period", "26": "Per biweekly pay period", "24": "Per semi-monthly pay period", "12": "Per monthly pay period" };
+
+        function setPreset(name) {
+          activePreset = name;
+          var p = PRESETS[name];
+          $("slDebt").value = p.debt;
+          $("slBuffer").value = p.buffer;
+          $("slReward").value = p.reward;
+          markPresets();
+          recalc();
+        }
+        function markPresets() {
+          var btns = document.querySelectorAll(".preset");
+          for (var i = 0; i < btns.length; i++) {
+            btns[i].classList.toggle("active", btns[i].getAttribute("data-preset") === activePreset);
+          }
+        }
+        function goalHours(target, pct, netPerHour, otHoursPerPeriod) {
+          if (!target || target <= 0) return { text: "Set a target", sub: "" };
+          if (!pct || pct <= 0 || !netPerHour || netPerHour <= 0) return { text: "—", sub: "bucket gets 0% of net OT" };
+          var perHour = netPerHour * (pct / 100);
+          var hrs = target / perHour;
+          var periods = otHoursPerPeriod > 0 ? hrs / otHoursPerPeriod : 0;
+          return {
+            text: (Math.ceil(hrs * 2) / 2).toFixed(1).replace(/\.0$/, "") + " hrs",
+            sub: periods > 0 ? "≈ " + Math.ceil(periods) + " pay periods at this pace" : ""
+          };
+        }
+
+        function recalc() {
+          var rate = num("rate"), otHours = num("otHours"), diff = num("diff");
+          var mult = parseFloat($("mult").value) || 1.5;
+          var periods = parseInt($("freq").value, 10) || 26;
+          var fedRate = (parseFloat($("fedBracket").value) || 0) / 100;
+          var ficaRate = 0.0765;
+          var stateRate = num("stateRate") / 100;
+
+          // Step 2 — gross vs net
+          var premium = otHours * rate * mult;
+          var diffPay = otHours * diff;
+          var gross = premium + diffPay;
+          var fed = gross * fedRate, fica = gross * ficaRate, state = gross * stateRate;
+          var withheld = fed + fica + state;
+          var net = gross - withheld;
+          var totalRate = fedRate + ficaRate + stateRate;
+          var netPerHour = otHours > 0 ? net / otHours : 0;
+
+          $("grossOut").textContent = fmt(gross);
+          $("netOut").textContent = fmt(net);
+          $("otRateLine").textContent = otHours + " hrs × " + fmt(rate * mult);
+          $("diffLine").textContent = otHours + " hrs × " + fmt(diff);
+          $("premiumOut").textContent = fmt(premium);
+          $("diffOut").textContent = fmt(diffPay);
+          $("fedPctLine").textContent = (fedRate * 100).toFixed(0) + "%";
+          $("statePctLine").textContent = (stateRate * 100).toFixed(stateRate * 100 % 1 ? 2 : 0) + "%";
+          $("fedOut").textContent = "−" + fmt(fed);
+          $("ficaOut").textContent = "−" + fmt(fica);
+          $("stateOut").textContent = "−" + fmt(state);
+          $("withheldOut").textContent = "−" + fmt(withheld);
+          $("netPerHourOut").textContent = fmt(netPerHour);
+          $("effRateOut").textContent = (totalRate * 100).toFixed(2).replace(/\.?0+$/, "") + "%";
+          $("netYearOut").textContent = fmt(net * periods);
+
+          // Step 3 — split
+          var pD = parseInt($("slDebt").value, 10) || 0;
+          var pB = parseInt($("slBuffer").value, 10) || 0;
+          var pR = parseInt($("slReward").value, 10) || 0;
+          var total = pD + pB + pR;
+          var aD = net * pD / 100, aB = net * pB / 100, aR = net * pR / 100;
+
+          $("pctDebt").textContent = pD + "%";
+          $("pctBuffer").textContent = pB + "%";
+          $("pctReward").textContent = pR + "%";
+          $("amtDebt").textContent = fmt(aD);
+          $("amtBuffer").textContent = fmt(aB);
+          $("amtReward").textContent = fmt(aR);
+          $("segDebt").style.width = (total > 0 ? pD / total * 100 : 0) + "%";
+          $("segBuffer").style.width = (total > 0 ? pB / total * 100 : 0) + "%";
+          $("segReward").style.width = (total > 0 ? pR / total * 100 : 0) + "%";
+
+          var pill = $("totalPill"), msg = $("totalMsg");
+          pill.textContent = "Total: " + total + "%";
+          if (total === 100) {
+            pill.className = "total-pill ok";
+            msg.textContent = "Every net OT dollar has an assignment.";
+          } else if (total < 100) {
+            pill.className = "total-pill bad";
+            msg.textContent = (100 - total) + "% is unassigned — that's " + fmt(net * (100 - total) / 100) + " per period with no job. It will get spent by accident.";
+          } else {
+            pill.className = "total-pill bad";
+            msg.textContent = "You've assigned " + total + "% — more than the check holds. Bring the total back to 100%.";
+          }
+
+          // Step 4 — hours to goal
+          var tD = num("tgtDebt"), tB = num("tgtBuffer"), tR = num("tgtReward");
+          var gD = goalHours(tD, pD, netPerHour, otHours);
+          var gB = goalHours(tB, pB, netPerHour, otHours);
+          var gR = goalHours(tR, pR, netPerHour, otHours);
+          $("hrsDebt").innerHTML = gD.text + (gD.sub ? ' <small>' + gD.sub + "</small>" : "");
+          $("hrsBuffer").innerHTML = gB.text + (gB.sub ? ' <small>' + gB.sub + "</small>" : "");
+          $("hrsReward").innerHTML = gR.text + (gR.sub ? ' <small>' + gR.sub + "</small>" : "");
+
+          var warn = $("burnoutWarn");
+          var maxHrs = 0;
+          [ [tD, pD], [tB, pB], [tR, pR] ].forEach(function (pair) {
+            if (pair[0] > 0 && pair[1] > 0 && netPerHour > 0) {
+              var h = pair[0] / (netPerHour * pair[1] / 100);
+              if (h > maxHrs) maxHrs = h;
+            }
+          });
+          if (otHours > 0 && maxHrs > otHours * 26) {
+            warn.textContent = "Heads up: your longest goal needs about " + Math.round(maxHrs) + " overtime hours — more than six months of OT at your current pace, every period, no breaks. That's burnout territory. Consider a smaller target, a bigger split for that bucket, or a longer timeline you can actually survive.";
+            warn.classList.add("show");
+          } else {
+            warn.classList.remove("show");
+          }
+
+          // Blueprint
+          $("bpFreq").textContent = FREQ_LABEL[String(periods)] || "Per pay period";
+          $("bpNet").textContent = fmt(net);
+          $("bpSub").textContent = "Gross " + fmt(gross) + " − " + fmt(withheld) + " withheld · " + fmt(netPerHour) + " net per OT hour · " + fmt(net * periods) + " net per year at this pace";
+          $("bpPctDebt").textContent = pD + "%";
+          $("bpPctBuffer").textContent = pB + "%";
+          $("bpPctReward").textContent = pR + "%";
+          $("bpAmtDebt").textContent = fmt(aD);
+          $("bpAmtBuffer").textContent = fmt(aB);
+          $("bpAmtReward").textContent = fmt(aR);
+          $("bpHrsDebt").innerHTML = gD.text + (gD.sub ? "<small>" + gD.sub + "</small>" : "");
+          $("bpHrsBuffer").innerHTML = gB.text + (gB.sub ? "<small>" + gB.sub + "</small>" : "");
+          $("bpHrsReward").innerHTML = gR.text + (gR.sub ? "<small>" + gR.sub + "</small>" : "");
+          $("bpFoot").textContent = "Targets: Debt Kill " + fmt(tD) + " · Emergency Buffer " + fmt(tB) + " · Reward " + fmt(tR) + ". Estimates based on the withholding rates in Step 2 — not tax advice.";
+        }
+
+        var inputs = ["rate", "otHours", "diff", "stateRate", "tgtDebt", "tgtBuffer", "tgtReward"];
+        inputs.forEach(function (id) { $(id).addEventListener("input", recalc); });
+        ["mult", "freq", "fedBracket"].forEach(function (id) { $(id).addEventListener("change", recalc); });
+        ["slDebt", "slBuffer", "slReward"].forEach(function (id) {
+          $(id).addEventListener("input", function () { activePreset = null; markPresets(); recalc(); });
+        });
+        var presetBtns = document.querySelectorAll(".preset");
+        for (var i = 0; i < presetBtns.length; i++) {
+          presetBtns[i].addEventListener("click", function () { setPreset(this.getAttribute("data-preset")); });
+        }
+        $("printBtn").addEventListener("click", function () { window.print(); });
+
+        markPresets();
+        recalc();
+      })();
+    </script>
+  </body>
+</html>

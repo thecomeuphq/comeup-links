@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Paycheck Shock Defense</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #131315;
+        --bg-2: #1a1a1d;
+        --panel: #1e1e21;
+        --panel-2: #26262a;
+        --line: #3a3a40;
+        --line-soft: #2c2c30;
+        --ink: #f2ede4;
+        --ink-2: #c9c2b4;
+        --ink-3: #9a937f;
+        --amber: #f5a623;
+        --amber-hot: #ff7a1a;
+        --amber-soft: rgba(245, 166, 35, 0.14);
+        --red: #ff5d47;
+        --red-soft: rgba(255, 93, 71, 0.13);
+        --green: #7bc950;
+        --green-soft: rgba(123, 201, 80, 0.13);
+        --blue: #5aa9e6;
+        --blue-soft: rgba(90, 169, 230, 0.13);
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        --radius: 10px;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          /* The brief calls for a dark industrial theme in both modes:
+             keep the charcoal/amber palette regardless of system setting. */
+          color-scheme: dark;
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          repeating-linear-gradient(
+            -45deg,
+            transparent 0 26px,
+            rgba(128, 128, 128, 0.025) 26px 27px
+          ),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 56px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 10px 0 4px; }
+      .hazard {
+        height: 8px;
+        border-radius: 2px;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--amber) 0 14px,
+          var(--bg-2) 14px 28px
+        );
+        margin-bottom: 18px;
+      }
+      h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(38px, 9vw, 56px);
+        line-height: 0.98;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 0 0 10px;
+      }
+      h1 .accent { color: var(--amber); }
+      .hook {
+        font-size: clamp(17px, 4.6vw, 20px);
+        font-weight: 600;
+        color: var(--ink);
+        margin: 0 0 6px;
+      }
+      .sub { color: var(--ink-2); margin: 0; max-width: 56ch; }
+
+      /* ---------- SRI gauge ---------- */
+      .sri {
+        margin-top: 22px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 18px;
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 18px;
+        align-items: center;
+      }
+      .sri-gauge { position: relative; width: 150px; }
+      .sri-gauge svg { display: block; width: 150px; height: 92px; }
+      .sri-num {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        text-align: center;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 34px;
+        line-height: 1;
+      }
+      .sri-num small { font-size: 13px; color: var(--ink-3); font-weight: 500; }
+      .sri-label {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 13px;
+        color: var(--ink-3);
+        margin: 0 0 2px;
+      }
+      .sri-tier {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin: 0 0 4px;
+        color: var(--amber);
+      }
+      .sri p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+      .sri .sri-math { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--ink-3); margin-top: 8px; }
+
+      /* ---------- Steps ---------- */
+      .step {
+        margin-top: 26px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .step-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background: var(--panel-2);
+        border-bottom: 1px solid var(--line-soft);
+      }
+      .step-badge {
+        flex: none;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 13px;
+        background: var(--amber);
+        color: #191305;
+        padding: 4px 9px;
+        border-radius: 4px;
+        letter-spacing: 0.06em;
+      }
+      .step-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin: 0;
+      }
+      .step-body { padding: 18px; }
+
+      label.f-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ink-3);
+        margin: 0 0 6px;
+      }
+      .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .field { margin-bottom: 16px; }
+      .money-input {
+        display: flex;
+        align-items: center;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0 12px;
+      }
+      .money-input span { font-family: "IBM Plex Mono", monospace; color: var(--ink-3); font-weight: 600; }
+      .money-input input {
+        width: 100%;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        color: var(--ink);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 19px;
+        font-weight: 600;
+        padding: 11px 6px;
+      }
+      .money-input:focus-within { border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-soft); }
+
+      .seg {
+        display: flex;
+        background: var(--bg-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 3px;
+        gap: 3px;
+      }
+      .seg button {
+        flex: 1;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font-family: "Barlow", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 9px 4px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .seg button[aria-pressed="true"] { background: var(--amber); color: #191305; }
+      .seg button:focus-visible { outline: 2px solid var(--amber); outline-offset: 1px; }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--amber-hot);
+        height: 34px;
+        margin: 2px 0 0;
+        cursor: pointer;
+      }
+      .slider-head { display: flex; justify-content: space-between; align-items: baseline; }
+      .slider-val {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 20px;
+        color: var(--amber);
+      }
+      .slider-scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); font-family: "IBM Plex Mono", monospace; }
+
+      .hit-box {
+        margin-top: 16px;
+        background: var(--red-soft);
+        border: 1px solid var(--red);
+        border-radius: 8px;
+        padding: 14px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .hit-box .hit-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; font-size: 13px; color: var(--red); }
+      .hit-box .hit-sub { color: var(--ink-2); font-size: 14px; margin-top: 2px; }
+      .hit-amt {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: clamp(28px, 7vw, 36px);
+        color: var(--red);
+        line-height: 1;
+      }
+      .hit-box.ok { background: var(--green-soft); border-color: var(--green); }
+      .hit-box.ok .hit-label, .hit-box.ok .hit-amt { color: var(--green); }
+
+      /* ---------- Bills ---------- */
+      .bill {
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 13px 14px;
+        margin-bottom: 12px;
+        background: var(--bg-2);
+      }
+      .bill.off { opacity: 0.45; }
+      .bill-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+      .bill-name { font-weight: 700; font-size: 16.5px; flex: 1; }
+      .due-toggle {
+        flex: none;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--ink-2);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11.5px;
+        font-weight: 600;
+        padding: 5px 9px;
+        border-radius: 20px;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+      }
+      .due-toggle[aria-pressed="true"] { background: var(--amber-soft); border-color: var(--amber); color: var(--amber); }
+      .bill-controls { display: grid; grid-template-columns: 118px 1fr; gap: 10px; align-items: stretch; }
+      .bill .money-input input { font-size: 17px; padding: 9px 4px; }
+      .bill .seg button { font-size: 13.5px; padding: 8px 2px; }
+      .seg button.act-now[aria-pressed="true"] { background: var(--green); color: #0e1a06; }
+      .seg button.act-pause[aria-pressed="true"] { background: var(--red); color: #fff; }
+      .seg button.act-partial[aria-pressed="true"] { background: var(--amber); color: #191305; }
+      .bill-note { font-size: 13px; color: var(--ink-3); margin: 8px 0 0; }
+      .bills-total {
+        display: flex; justify-content: space-between; align-items: baseline;
+        border-top: 1px dashed var(--line);
+        padding-top: 12px; margin-top: 4px;
+        font-weight: 600;
+      }
+      .bills-total .amt { font-family: "IBM Plex Mono", monospace; font-size: 19px; font-weight: 700; }
+
+      /* ---------- Defense engine ---------- */
+      .deficit-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .stat {
+        background: var(--bg-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+      .stat .k { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); }
+      .stat .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: clamp(17px, 5vw, 21px); margin-top: 2px; }
+      .stat .v.neg { color: var(--red); }
+      .stat .v.pos { color: var(--green); }
+
+      .def-card { border-radius: 8px; padding: 15px 16px; margin-bottom: 12px; border: 1px solid; }
+      .def-card h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+        margin: 0 0 4px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+      }
+      .def-card h3 .amt { font-family: "IBM Plex Mono", monospace; font-size: 20px; }
+      .def-card p { margin: 0 0 6px; color: var(--ink-2); font-size: 14.5px; }
+      .def-card ul { margin: 6px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 14.5px; }
+      .def-card li { margin: 2px 0; }
+      .def-card li b { color: var(--ink); font-family: "IBM Plex Mono", monospace; font-weight: 600; }
+      .def-freeze { background: var(--red-soft); border-color: var(--red); }
+      .def-freeze h3 { color: var(--red); }
+      .def-buffer { background: var(--blue-soft); border-color: var(--blue); }
+      .def-buffer h3 { color: var(--blue); }
+      .def-shield { background: var(--green-soft); border-color: var(--green); }
+      .def-shield h3 { color: var(--green); }
+      .warn {
+        background: var(--amber-soft);
+        border: 1px solid var(--amber);
+        border-radius: 8px;
+        padding: 12px 14px;
+        font-size: 14.5px;
+        margin-bottom: 12px;
+      }
+      .warn b { color: var(--amber); }
+
+      /* ---------- Recovery ---------- */
+      .rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .rec-box {
+        background: var(--bg-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 14px 16px;
+      }
+      .rec-box .big {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: clamp(26px, 7vw, 34px);
+        color: var(--amber);
+        line-height: 1.05;
+      }
+      .rec-box .big small { font-size: 15px; color: var(--ink-3); font-weight: 500; }
+      .rec-box p { margin: 6px 0 0; color: var(--ink-2); font-size: 14px; }
+      .rec-box h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        text-transform: uppercase; letter-spacing: 0.05em;
+        font-size: 17px; margin: 0 0 6px;
+      }
+
+      /* ---------- Plan card ---------- */
+      .plan {
+        margin-top: 30px;
+        background: var(--panel);
+        border: 2px solid var(--amber);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .plan-head {
+        background: var(--amber);
+        color: #191305;
+        padding: 14px 18px;
+        display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+      }
+      .plan-head h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 26px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; margin: 0;
+      }
+      .plan-head .date { font-family: "IBM Plex Mono", monospace; font-size: 13px; font-weight: 600; }
+      .plan-body { padding: 18px; }
+      .plan-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+      .plan-col h3 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 18px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px;
+      }
+      .plan-col.pay h3 { color: var(--green); }
+      .plan-col.hold h3 { color: var(--red); }
+      .plan-col ul { list-style: none; margin: 0; padding: 0; }
+      .plan-col li {
+        display: flex; justify-content: space-between; gap: 8px;
+        padding: 5px 0; border-bottom: 1px dashed var(--line-soft);
+        font-size: 15px;
+      }
+      .plan-col li:last-child { border-bottom: 0; }
+      .plan-col li .a { font-family: "IBM Plex Mono", monospace; font-weight: 600; white-space: nowrap; }
+      .plan-col .empty { color: var(--ink-3); font-size: 14.5px; }
+      .plan-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .plan-stat {
+        background: var(--bg-2); border: 1px solid var(--line-soft); border-radius: 8px;
+        padding: 10px 12px; text-align: center;
+      }
+      .plan-stat .k { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); }
+      .plan-stat .v { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 20px; margin-top: 2px; }
+      .plan-foot { padding: 0 18px 18px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .btn-download {
+        background: var(--amber);
+        color: #191305;
+        border: 0;
+        font-family: "Barlow", sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        padding: 13px 22px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .btn-download:hover { background: var(--amber-hot); }
+      .plan-foot .hint { color: var(--ink-3); font-size: 13.5px; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 28px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+        margin: 34px 0 12px;
+      }
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      a.next-card {
+        display: block;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card h3 { font-family: "Barlow Condensed", sans-serif; font-size: 21px; margin: 0 0 4px; text-transform: uppercase; }
+      a.next-card p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+      a.next-card .go { color: var(--amber); font-weight: 700; font-size: 14px; display: inline-block; margin-top: 8px; }
+
+      .cta {
+        margin-top: 14px;
+        border-radius: var(--radius);
+        padding: 20px;
+        background:
+          repeating-linear-gradient(-45deg, rgba(0,0,0,0.16) 0 18px, transparent 18px 36px),
+          linear-gradient(120deg, var(--amber-hot), var(--amber));
+        color: #1d1200;
+      }
+      .cta h3 { font-family: "Barlow Condensed", sans-serif; font-size: 26px; text-transform: uppercase; margin: 0 0 6px; line-height: 1.05; }
+      .cta p { margin: 0 0 12px; font-weight: 500; max-width: 52ch; }
+      .cta a {
+        display: inline-block;
+        background: #191305;
+        color: var(--amber);
+        font-weight: 700;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+      }
+
+      details.faq {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        margin-bottom: 10px;
+        padding: 0 18px;
+      }
+      details.faq summary {
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 16.5px;
+        padding: 14px 0;
+        list-style: none;
+      }
+      details.faq summary::-webkit-details-marker { display: none; }
+      details.faq summary::after { content: "+"; float: right; color: var(--amber); font-family: "IBM Plex Mono", monospace; font-weight: 700; }
+      details.faq[open ] summary::after { content: "–"; }
+      details.faq p { margin: 0 0 14px; color: var(--ink-2); }
+
+      footer { margin-top: 36px; color: var(--ink-3); font-size: 13.5px; text-align: center; }
+
+      @media (max-width: 560px) {
+        .sri { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+        .field-row, .plan-cols, .next-grid, .rec-grid { grid-template-columns: 1fr; }
+        .deficit-strip, .plan-stats { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .bill-controls { grid-template-columns: 104px 1fr; }
+        .plan-stat .v { font-size: 17px; }
+        .stat .v { font-size: 16px; }
+      }
+
+      @media print {
+        body { background: #fff; }
+        .hero, .step, .section-title, .next-grid, .cta, details.faq, footer, .plan-foot { display: none !important; }
+        .sri { break-inside: avoid; }
+        .plan { border-color: #000; box-shadow: none; margin-top: 0; }
+        .wrap { max-width: none; padding: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- ===================== HERO ===================== -->
+      <header class="hero">
+        <div class="hazard" aria-hidden="true"></div>
+        <h1>Paycheck Shock <span class="accent">Defense</span></h1>
+        <p class="hook">Lost hours this pay period? Here&rsquo;s your triage plan.</p>
+        <p class="sub">
+          Hours get cut, shifts get cancelled, plants slow down. Punch in the damage,
+          triage the bills, and this builds your defense: what to pay today, what to
+          freeze, exactly how much buffer to draw, and how fast you rebuild it.
+        </p>
+      </header>
+
+      <!-- ===================== SRI ===================== -->
+      <section class="sri" aria-label="Shock Resistance Index">
+        <div class="sri-gauge">
+          <svg viewBox="0 0 150 92" role="img" aria-label="Shock Resistance Index gauge">
+            <path d="M 12 84 A 64 64 0 0 1 138 84" fill="none" stroke="var(--line)" stroke-width="11" stroke-linecap="round" />
+            <path id="sriArc" d="M 12 84 A 64 64 0 0 1 138 84" fill="none" stroke="var(--amber)" stroke-width="11" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" />
+          </svg>
+          <div class="sri-num"><span id="sriScore">0</span><small>/100</small></div>
+        </div>
+        <div>
+          <p class="sri-label">Shock Resistance Index</p>
+          <p class="sri-tier" id="sriTier">Wide Open</p>
+          <p id="sriText">Add your buffer below to see how hard a sudden hours cut would actually hit you.</p>
+          <p class="sri-math" id="sriMath"></p>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 1 ===================== -->
+      <section class="step" aria-labelledby="s1h">
+        <div class="step-head"><span class="step-badge">STEP 1</span><h2 id="s1h">The Shock</h2></div>
+        <div class="step-body">
+          <div class="field-row">
+            <div class="field">
+              <label class="f-label" for="rate">Base hourly rate</label>
+              <div class="money-input"><span>$</span><input id="rate" type="number" inputmode="decimal" min="0" step="0.25" value="20" /></div>
+            </div>
+            <div class="field">
+              <label class="f-label">Pay frequency</label>
+              <div class="seg" role="group" aria-label="Pay frequency">
+                <button type="button" id="freqWeekly" aria-pressed="false">Weekly</button>
+                <button type="button" id="freqBi" aria-pressed="true">Bi-Weekly</button>
+              </div>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:4px">
+            <div class="slider-head">
+              <label class="f-label" for="missed" style="margin:0">Hours missed this pay period</label>
+              <span class="slider-val"><span id="missedVal">8</span> hrs</span>
+            </div>
+            <input id="missed" type="range" min="0" max="40" step="1" value="8" />
+            <div class="slider-scale"><span>0</span><span>10</span><span>20</span><span>30</span><span>40</span></div>
+          </div>
+          <div class="hit-box" id="hitBox">
+            <div>
+              <div class="hit-label">The hit to this paycheck</div>
+              <div class="hit-sub" id="hitSub">Gross pay lost before taxes and deductions.</div>
+            </div>
+            <div class="hit-amt" id="hitAmt">&minus;$0</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 2 ===================== -->
+      <section class="step" aria-labelledby="s2h">
+        <div class="step-head"><span class="step-badge">STEP 2</span><h2 id="s2h">Bill Triage</h2></div>
+        <div class="step-body">
+          <p style="margin:0 0 14px;color:var(--ink-2)">
+            Every bill due before your next paycheck. Set the amount, then call it:
+            <b>Pay Now</b>, <b>Pause</b> it, or pay <b>Partial</b> (half now, half held).
+            Flip a bill off if it isn&rsquo;t due this period.
+          </p>
+          <div id="billList"></div>
+          <div class="bills-total">
+            <span>Due this period (full amounts)</span>
+            <span class="amt" id="billsTotal">$0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 3 ===================== -->
+      <section class="step" aria-labelledby="s3h">
+        <div class="step-head"><span class="step-badge">STEP 3</span><h2 id="s3h">Defense Engine</h2></div>
+        <div class="step-body">
+          <div class="field" style="max-width:340px">
+            <label class="f-label" for="buffer">Emergency buffer / savings on hand</label>
+            <div class="money-input"><span>$</span><input id="buffer" type="number" inputmode="decimal" min="0" step="10" value="500" /></div>
+          </div>
+
+          <div class="deficit-strip">
+            <div class="stat"><div class="k">Paycheck after shock</div><div class="v" id="statPay">$0</div></div>
+            <div class="stat"><div class="k">Bills you committed to</div><div class="v" id="statBills">$0</div></div>
+            <div class="stat"><div class="k">Net position</div><div class="v" id="statNet">$0</div></div>
+          </div>
+
+          <div class="warn" id="gapWarn" hidden>
+            <b>Gap alert:</b> <span id="gapWarnText"></span>
+          </div>
+
+          <div class="def-card def-freeze">
+            <h3>Hard Freeze <span class="amt" id="freezeAmt">$0 held</span></h3>
+            <p>Money you are deliberately NOT spending this period. Paused bills and the held half of partials stay in your account.</p>
+            <ul id="freezeList"></ul>
+          </div>
+
+          <div class="def-card def-buffer">
+            <h3>Buffer Draw <span class="amt" id="drawAmt">$0</span></h3>
+            <p id="drawText">The exact micro-draw from your buffer that closes the gap — no more than needed.</p>
+          </div>
+
+          <div class="def-card def-shield">
+            <h3>Essential Shield <span class="amt" id="shieldAmt">$0 protected</span></h3>
+            <p>Rent and food get paid no matter what the schedule does. These are the last dollars anyone touches — including you.</p>
+            <ul id="shieldList"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STEP 4 ===================== -->
+      <section class="step" aria-labelledby="s4h">
+        <div class="step-head"><span class="step-badge">STEP 4</span><h2 id="s4h">Recovery Plan</h2></div>
+        <div class="step-body">
+          <p style="margin:0 0 14px;color:var(--ink-2)" id="recIntro">
+            Whatever the buffer covered gets rebuilt over the next 2 pay periods — pick your weapon: extra hours or micro-cuts.
+          </p>
+          <div class="rec-grid">
+            <div class="rec-box">
+              <h3>Extra hours route</h3>
+              <div class="big"><span id="recHours">0</span> <small>hrs total</small></div>
+              <p id="recHoursText">Per period breakdown shows here.</p>
+            </div>
+            <div class="rec-box">
+              <h3>Micro-cut route</h3>
+              <div class="big"><span id="recCut">$0</span> <small>per paycheck</small></div>
+              <p id="recCutText">Trim this much from flexible spending each of the next 2 paychecks and the buffer is whole again — no extra shifts needed.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== PLAN CARD ===================== -->
+      <section class="plan" id="planCard" aria-labelledby="planh">
+        <div class="plan-head">
+          <h2 id="planh">Paycheck Shock Defense Plan</h2>
+          <span class="date" id="planDate"></span>
+        </div>
+        <div class="plan-body">
+          <div class="plan-cols">
+            <div class="plan-col pay">
+              <h3>Pay today</h3>
+              <ul id="planPay"></ul>
+            </div>
+            <div class="plan-col hold">
+              <h3>Hold / freeze</h3>
+              <ul id="planHold"></ul>
+            </div>
+          </div>
+          <div class="plan-stats">
+            <div class="plan-stat"><div class="k">Buffer draw</div><div class="v" id="planDraw">$0</div></div>
+            <div class="plan-stat"><div class="k">Recovery hours</div><div class="v" id="planHours">0</div></div>
+            <div class="plan-stat"><div class="k">Shock Index</div><div class="v" id="planSri">0</div></div>
+          </div>
+        </div>
+        <div class="plan-foot">
+          <button type="button" class="btn-download" id="btnDownload">Download my plan</button>
+          <span class="hint">Screenshot this card or save the download — one plan, no guessing.</span>
+        </div>
+      </section>
+
+      <!-- ===================== NEXT STEPS ===================== -->
+      <h2 class="section-title">Keep building the defense</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" target="_blank" rel="noopener">
+          <h3>Emergency Fund Runway</h3>
+          <p>See exactly how many weeks your buffer keeps the lights on if hours drop to zero.</p>
+          <span class="go">Run the numbers &rarr;</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" target="_blank" rel="noopener">
+          <h3>Paycheck Budget Splitter</h3>
+          <p>Split every paycheck on payday — needs, wants, buffer — so the next shock lands softer.</p>
+          <span class="go">Split my paycheck &rarr;</span>
+        </a>
+      </div>
+
+      <div class="cta">
+        <h3>Build a buffer that survives the slow weeks</h3>
+        <p>The Blue-Collar Buffer Binder and the $1,000 Emergency Fund Starter Pack turn this one-time triage into a standing system — sinking funds, buffer trackers, and paycheck routines built for shift work.</p>
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get them on Gumroad &rarr;</a>
+      </div>
+
+      <!-- ===================== FAQ ===================== -->
+      <h2 class="section-title">Straight answers</h2>
+      <details class="faq">
+        <summary>What if I have no buffer yet?</summary>
+        <p>Then the plan still works — the Buffer Draw just reads $0 and the gap has to come from the Hard Freeze and partial payments instead. Start the buffer with the recovery route in reverse: one micro-cut per paycheck, even $10–$25, into a separate savings account you don&rsquo;t look at. The first $1,000 is the milestone that changes everything, because most real-world shocks — a cut week, a car repair, a short check — land under it.</p>
+      </details>
+      <details class="faq">
+        <summary>Which bills can actually be paused?</summary>
+        <p>Subscriptions are the easy freeze: streaming, apps, memberships — cancel or pause them today, restart later, no penalty. Utilities often allow a payment extension or arrangement if you call <i>before</i> the due date. Debt minimums are the dangerous pause: a missed minimum means late fees and a credit hit after 30 days, so partial beats pause there. Rent is almost never pausable — talk to your landlord early if it&rsquo;s truly short; a partial rent payment with a written plan beats silence every time.</p>
+      </details>
+      <details class="faq">
+        <summary>How does the recovery math work?</summary>
+        <p>Simple division, no tricks. Whatever you drew from the buffer gets split evenly across the next 2 pay periods. The hours route divides that per-period amount by your base hourly rate — so a $160 draw at $20/hr is 8 hours total, 4 extra hours per period. The micro-cut route is the same dollars taken from spending instead of shifts. Either way, after 2 periods the buffer is back to full and your Shock Resistance Index returns to where it started.</p>
+      </details>
+
+      <footer>
+        Built for shift workers whose hours aren&rsquo;t guaranteed. Estimates use gross pay — your actual check varies with taxes and deductions.
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var $ = function (id) { return document.getElementById(id); };
+        var money = function (n) {
+          return "$" + Math.round(n).toLocaleString("en-US");
+        };
+        var money2 = function (n) {
+          var r = Math.round(n * 100) / 100;
+          return "$" + r.toLocaleString("en-US", { minimumFractionDigits: r % 1 ? 2 : 0, maximumFractionDigits: 2 });
+        };
+
+        /* ---------- State ---------- */
+        var state = {
+          freq: "biweekly",
+          bills: [
+            { id: "rent",   name: "Rent / Mortgage", amount: 950, due: true, action: "now",     essential: true },
+            { id: "util",   name: "Utilities",       amount: 185, due: true, action: "now",     essential: false },
+            { id: "food",   name: "Food / Gas",      amount: 320, due: true, action: "now",     essential: true },
+            { id: "debt",   name: "Debt Minimums",   amount: 130, due: true, action: "partial", essential: false },
+            { id: "subs",   name: "Subscriptions",   amount: 48,  due: true, action: "pause",   essential: false }
+          ]
+        };
+
+        /* ---------- Build bill rows ---------- */
+        var billList = $("billList");
+        state.bills.forEach(function (bill) {
+          var row = document.createElement("div");
+          row.className = "bill";
+          row.id = "bill-" + bill.id;
+
+          var top = document.createElement("div");
+          top.className = "bill-top";
+          var nm = document.createElement("span");
+          nm.className = "bill-name";
+          nm.textContent = bill.name;
+          var tog = document.createElement("button");
+          tog.type = "button";
+          tog.className = "due-toggle";
+          tog.setAttribute("aria-pressed", "true");
+          tog.textContent = "DUE THIS PERIOD";
+          tog.addEventListener("click", function () {
+            bill.due = !bill.due;
+            tog.setAttribute("aria-pressed", bill.due ? "true" : "false");
+            tog.textContent = bill.due ? "DUE THIS PERIOD" : "NOT DUE";
+            row.classList.toggle("off", !bill.due);
+            render();
+          });
+          top.appendChild(nm);
+          top.appendChild(tog);
+
+          var controls = document.createElement("div");
+          controls.className = "bill-controls";
+          var mi = document.createElement("div");
+          mi.className = "money-input";
+          var ds = document.createElement("span");
+          ds.textContent = "$";
+          var inp = document.createElement("input");
+          inp.type = "number";
+          inp.inputMode = "decimal";
+          inp.min = "0";
+          inp.step = "1";
+          inp.value = bill.amount;
+          inp.setAttribute("aria-label", bill.name + " amount");
+          inp.addEventListener("input", function () {
+            bill.amount = parseFloat(inp.value) || 0;
+            render();
+          });
+          mi.appendChild(ds);
+          mi.appendChild(inp);
+
+          var seg = document.createElement("div");
+          seg.className = "seg";
+          seg.setAttribute("role", "group");
+          seg.setAttribute("aria-label", bill.name + " action");
+          [["now", "Pay Now", "act-now"], ["pause", "Pause", "act-pause"], ["partial", "Partial", "act-partial"]].forEach(function (spec) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = spec[2];
+            b.textContent = spec[1];
+            b.setAttribute("aria-pressed", bill.action === spec[0] ? "true" : "false");
+            b.addEventListener("click", function () {
+              bill.action = spec[0];
+              var kids = seg.children;
+              for (var i = 0; i < kids.length; i++) kids[i].setAttribute("aria-pressed", "false");
+              b.setAttribute("aria-pressed", "true");
+              render();
+            });
+            seg.appendChild(b);
+          });
+          controls.appendChild(mi);
+          controls.appendChild(seg);
+
+          var note = document.createElement("p");
+          note.className = "bill-note";
+          note.id = "note-" + bill.id;
+
+          row.appendChild(top);
+          row.appendChild(controls);
+          row.appendChild(note);
+          billList.appendChild(row);
+        });
+
+        /* ---------- Frequency toggle ---------- */
+        function setFreq(f) {
+          state.freq = f;
+          $("freqWeekly").setAttribute("aria-pressed", f === "weekly" ? "true" : "false");
+          $("freqBi").setAttribute("aria-pressed", f === "biweekly" ? "true" : "false");
+          render();
+        }
+        $("freqWeekly").addEventListener("click", function () { setFreq("weekly"); });
+        $("freqBi").addEventListener("click", function () { setFreq("biweekly"); });
+        $("rate").addEventListener("input", render);
+        $("buffer").addEventListener("input", render);
+        $("missed").addEventListener("input", function () {
+          $("missedVal").textContent = $("missed").value;
+          render();
+        });
+
+        /* ---------- Core math ---------- */
+        function compute() {
+          var rate = Math.max(0, parseFloat($("rate").value) || 0);
+          var missed = parseInt($("missed").value, 10) || 0;
+          var buffer = Math.max(0, parseFloat($("buffer").value) || 0);
+          var stdHours = state.freq === "weekly" ? 40 : 80;
+          var periodsPerMonth = state.freq === "weekly" ? 52 / 12 : 26 / 12;
+
+          var normalPay = stdHours * rate;
+          var hit = missed * rate;
+          var reducedPay = Math.max(0, normalPay - hit);
+
+          var committed = 0, held = 0, shield = 0, dueTotal = 0;
+          var payList = [], holdList = [], freezeList = [], shieldList = [];
+          state.bills.forEach(function (b) {
+            if (!b.due) return;
+            dueTotal += b.amount;
+            if (b.essential) { shield += b.amount; shieldList.push(b); }
+            if (b.action === "now") {
+              committed += b.amount;
+              payList.push({ name: b.name, amt: b.amount });
+            } else if (b.action === "partial") {
+              var half = b.amount / 2;
+              committed += half; held += half;
+              payList.push({ name: b.name + " (half)", amt: half });
+              holdList.push({ name: b.name + " (held half)", amt: half });
+              freezeList.push({ name: b.name, amt: half, why: "partial — half held" });
+            } else {
+              held += b.amount;
+              holdList.push({ name: b.name, amt: b.amount });
+              freezeList.push({ name: b.name, amt: b.amount, why: "paused" });
+            }
+          });
+
+          var net = reducedPay - committed;
+          var deficit = Math.max(0, -net);
+          var draw = Math.min(deficit, buffer);
+          var uncovered = deficit - draw;
+          var bufferAfter = buffer - draw;
+
+          var monthlyEssentials = 0;
+          state.bills.forEach(function (b) {
+            if (b.id !== "subs") monthlyEssentials += b.amount;
+          });
+          monthlyEssentials *= periodsPerMonth;
+          var ratio = monthlyEssentials > 0 ? buffer / monthlyEssentials : (buffer > 0 ? 3 : 0);
+          var sri = Math.max(0, Math.min(100, Math.round(ratio * 40)));
+
+          var perPeriod = draw / 2;
+          var recHoursTotal = rate > 0 ? draw / rate : 0;
+          var recHoursPer = rate > 0 ? perPeriod / rate : 0;
+
+          return {
+            rate: rate, missed: missed, buffer: buffer, stdHours: stdHours,
+            normalPay: normalPay, hit: hit, reducedPay: reducedPay,
+            committed: committed, held: held, shield: shield, dueTotal: dueTotal,
+            net: net, deficit: deficit, draw: draw, uncovered: uncovered,
+            bufferAfter: bufferAfter, monthlyEssentials: monthlyEssentials,
+            ratio: ratio, sri: sri, perPeriod: perPeriod,
+            recHoursTotal: recHoursTotal, recHoursPer: recHoursPer,
+            payList: payList, holdList: holdList, freezeList: freezeList, shieldList: shieldList
+          };
+        }
+
+        function sriTier(score) {
+          if (score >= 90) return ["Shockproof", "var(--green)"];
+          if (score >= 70) return ["Guarded", "var(--green)"];
+          if (score >= 40) return ["Exposed", "var(--amber)"];
+          if (score > 0)  return ["Fragile", "var(--amber-hot)"];
+          return ["Wide Open", "var(--red)"];
+        }
+
+        /* ---------- Render ---------- */
+        function li(name, amt) {
+          var el = document.createElement("li");
+          var a = document.createElement("span"); a.textContent = name;
+          var b = document.createElement("span"); b.className = "a"; b.textContent = money2(amt);
+          el.appendChild(a); el.appendChild(b);
+          return el;
+        }
+
+        function render() {
+          var c = compute();
+
+          /* Step 1 — the hit */
+          $("hitAmt").textContent = c.hit > 0 ? "\u2212" + money(c.hit) : money(0);
+          $("hitBox").classList.toggle("ok", c.hit === 0);
+          $("hitSub").textContent = c.hit === 0
+            ? "No hours lost — full " + money(c.normalPay) + " gross paycheck. Run a bigger shock to stress-test your plan."
+            : money(c.hit) + " gone from a " + money(c.normalPay) + " check — you\u2019re working with " + money(c.reducedPay) + " gross this period. (Before taxes and deductions.)";
+
+          /* Bill notes */
+          state.bills.forEach(function (b) {
+            var n = $("note-" + b.id);
+            if (!n) return;
+            if (!b.due) { n.textContent = "Not due this period — excluded from the plan."; return; }
+            if (b.action === "now") n.textContent = "Paid in full: " + money2(b.amount) + " out this period.";
+            else if (b.action === "pause") n.textContent = "Fully frozen: " + money2(b.amount) + " stays in your account.";
+            else n.textContent = "Split: " + money2(b.amount / 2) + " paid now, " + money2(b.amount / 2) + " held.";
+          });
+          $("billsTotal").textContent = money(c.dueTotal);
+
+          /* SRI */
+          var tier = sriTier(c.sri);
+          $("sriScore").textContent = c.sri;
+          $("sriArc").style.strokeDashoffset = String(201 - (201 * c.sri) / 100);
+          $("sriArc").style.stroke = tier[1];
+          var tierEl = $("sriTier");
+          tierEl.textContent = tier[0];
+          tierEl.style.color = tier[1];
+          $("sriText").textContent =
+            c.buffer <= 0
+              ? "No buffer on hand — a single cut week lands straight on rent and food. The recovery plan below is your way out."
+              : "Your " + money(c.buffer) + " buffer covers " + (c.ratio).toFixed(2) + " months of core bills. A 15–30% hours drop is " +
+                (c.sri >= 70 ? "absorbable without touching essentials." : c.sri >= 40 ? "survivable, but only with the freeze moves below." : "going to hurt — the triage plan below is not optional.");
+          $("sriMath").textContent = "Buffer " + money(c.buffer) + " \u00F7 monthly essentials " + money(c.monthlyEssentials) + " = " + c.ratio.toFixed(2) + " months covered";
+
+          /* Step 3 — stats */
+          $("statPay").textContent = money(c.reducedPay);
+          $("statBills").textContent = money(c.committed);
+          var netEl = $("statNet");
+          netEl.textContent = (c.net < 0 ? "\u2212$" : "+$") + Math.round(Math.abs(c.net)).toLocaleString("en-US");
+          netEl.className = "v " + (c.net < 0 ? "neg" : "pos");
+
+          /* Gap warning */
+          var gw = $("gapWarn");
+          if (c.uncovered > 0) {
+            gw.hidden = false;
+            $("gapWarnText").textContent =
+              "Even after draining the full buffer, you\u2019re " + money(c.uncovered) + " short. Next moves: push another bill to Partial, call the utility about an extension before the due date, or pick up any shift before payday. Do not let a minimum payment silently miss — call first.";
+          } else {
+            gw.hidden = true;
+          }
+
+          /* Freeze */
+          $("freezeAmt").textContent = money(c.held) + " held";
+          var fl = $("freezeList");
+          fl.innerHTML = "";
+          if (c.freezeList.length === 0) {
+            var li0 = document.createElement("li");
+            li0.textContent = "Nothing frozen yet — mark a bill Pause or Partial in Step 2 to hold money back.";
+            fl.appendChild(li0);
+          }
+          c.freezeList.forEach(function (f) {
+            var el = document.createElement("li");
+            el.innerHTML = "";
+            var bEl = document.createElement("b"); bEl.textContent = money2(f.amt);
+            el.appendChild(bEl);
+            el.appendChild(document.createTextNode(" — " + f.name + " (" + f.why + ")"));
+            fl.appendChild(el);
+          });
+
+          /* Buffer draw */
+          $("drawAmt").textContent = money(c.draw);
+          $("drawText").textContent =
+            c.deficit === 0
+              ? "No draw needed — the reduced paycheck still covers everything you committed to. Buffer stays untouched at " + money(c.buffer) + "."
+              : "Pull exactly " + money(c.draw) + " from your buffer — that closes the " + money(c.deficit) + " gap precisely, leaving " + money(c.bufferAfter) + " in reserve. Not a dollar more: every extra dollar out is an extra hour of recovery.";
+
+          /* Shield */
+          $("shieldAmt").textContent = money(c.shield) + " protected";
+          var sl = $("shieldList");
+          sl.innerHTML = "";
+          c.shieldList.forEach(function (b) {
+            var el = document.createElement("li");
+            var bEl = document.createElement("b"); bEl.textContent = money2(b.amount);
+            el.appendChild(bEl);
+            el.appendChild(document.createTextNode(" — " + b.name));
+            sl.appendChild(el);
+          });
+          if (c.shieldList.length === 0) {
+            var liS = document.createElement("li");
+            liS.textContent = "Rent and Food/Gas are flipped off — turn them back on in Step 2 to see the shield.";
+            sl.appendChild(liS);
+          }
+
+          /* Step 4 — recovery */
+          $("recHours").textContent = c.recHoursTotal % 1 ? c.recHoursTotal.toFixed(1) : String(Math.round(c.recHoursTotal));
+          $("recHoursText").textContent =
+            c.draw === 0
+              ? "No draw to rebuild — you\u2019re already whole."
+              : "That\u2019s " + (c.recHoursPer % 1 ? c.recHoursPer.toFixed(1) : Math.round(c.recHoursPer)) + " extra standard hours per pay period for the next 2 periods at " + money2(c.rate) + "/hr, refilling " + money(c.perPeriod) + " each time.";
+          $("recCut").textContent = money(c.perPeriod);
+          $("recCutText").textContent =
+            c.draw === 0
+              ? "Nothing to cut — the buffer never got touched."
+              : "Trim " + money(c.perPeriod) + " from flexible spending on each of the next 2 paychecks and the " + money(c.draw) + " draw is fully restored — no extra shifts needed.";
+
+          /* Plan card */
+          var pp = $("planPay");
+          pp.innerHTML = "";
+          if (c.payList.length === 0) {
+            var e = document.createElement("li"); e.className = "empty"; e.textContent = "Nothing marked Pay Now yet.";
+            pp.appendChild(e);
+          }
+          c.payList.forEach(function (p) { pp.appendChild(li(p.name, p.amt)); });
+          var ph = $("planHold");
+          ph.innerHTML = "";
+          if (c.holdList.length === 0) {
+            var e2 = document.createElement("li"); e2.className = "empty"; e2.textContent = "Nothing on hold.";
+            ph.appendChild(e2);
+          }
+          c.holdList.forEach(function (p) { ph.appendChild(li(p.name, p.amt)); });
+          $("planDraw").textContent = money(c.draw);
+          $("planHours").textContent = (c.recHoursTotal % 1 ? c.recHoursTotal.toFixed(1) : String(Math.round(c.recHoursTotal))) + " hrs";
+          $("planSri").textContent = c.sri + "/100";
+        }
+
+        /* ---------- Plan date + download ---------- */
+        var now = new Date();
+        var dateStr = now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+        $("planDate").textContent = dateStr;
+
+        $("btnDownload").addEventListener("click", function () {
+          var c = compute();
+          var lines = [];
+          lines.push("PAYCHECK SHOCK DEFENSE PLAN — " + dateStr);
+          lines.push("================================================");
+          lines.push("Rate: " + money2(c.rate) + "/hr | Missed hours: " + c.missed + " | Paycheck hit: " + money(c.hit));
+          lines.push("Paycheck after shock: " + money(c.reducedPay) + " gross");
+          lines.push("Shock Resistance Index: " + c.sri + "/100");
+          lines.push("");
+          lines.push("PAY TODAY:");
+          if (c.payList.length === 0) lines.push("  (nothing marked)");
+          c.payList.forEach(function (p) { lines.push("  - " + p.name + ": " + money2(p.amt)); });
+          lines.push("");
+          lines.push("HOLD / FREEZE:");
+          if (c.holdList.length === 0) lines.push("  (nothing on hold)");
+          c.holdList.forEach(function (p) { lines.push("  - " + p.name + ": " + money2(p.amt)); });
+          lines.push("");
+          lines.push("ESSENTIAL SHIELD (protected): " + money(c.shield));
+          lines.push("BUFFER DRAW: " + money(c.draw) + " (buffer left after: " + money(c.bufferAfter) + ")");
+          if (c.uncovered > 0) lines.push("STILL SHORT: " + money(c.uncovered) + " — push another bill to Partial or call about an extension.");
+          lines.push("");
+          lines.push("RECOVERY (next 2 pay periods):");
+          lines.push("  Extra hours: " + (c.recHoursTotal % 1 ? c.recHoursTotal.toFixed(1) : Math.round(c.recHoursTotal)) + " hrs total, OR");
+          lines.push("  Micro-cuts: " + money(c.perPeriod) + " per paycheck");
+          lines.push("");
+          lines.push("Estimates use gross pay; actual checks vary with taxes and deductions.");
+
+          var blob = new Blob([lines.join("\n")], { type: "text/plain" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "paycheck-shock-defense-plan.txt";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

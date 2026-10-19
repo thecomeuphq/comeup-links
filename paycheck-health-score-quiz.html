@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Paycheck Health Score Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0c0b09;
+        --bg-raise: #151310;
+        --panel: #1a1712;
+        --panel-2: #211d16;
+        --line: #2e2a21;
+        --line-soft: #26221b;
+        --ink: #f2ede3;
+        --ink-dim: #b8b0a0;
+        --ink-faint: #7d7668;
+        --amber: #f5a524;
+        --orange: #f97316;
+        --amber-soft: rgba(245, 165, 36, 0.12);
+        --red: #ef4444;
+        --green: #4ade80;
+        --teal: #2dd4bf;
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background:
+          radial-gradient(1200px 500px at 50% -10%, rgba(245, 165, 36, 0.07), transparent 60%),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100dvh;
+      }
+      .wrap {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 20px 18px 56px;
+      }
+
+      /* ---------- hazard rule ---------- */
+      .hazard {
+        height: 8px;
+        border-radius: 2px;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--amber) 0 14px,
+          #14120e 14px 28px
+        );
+        opacity: 0.9;
+      }
+
+      /* ---------- screens ---------- */
+      .screen { display: none; }
+      .screen.active { display: block; animation: screenIn 0.38s ease both; }
+      @keyframes screenIn {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* ---------- intro ---------- */
+      .intro-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--amber);
+        background: var(--amber-soft);
+        border: 1px solid rgba(245, 165, 36, 0.35);
+        padding: 6px 12px;
+        border-radius: 999px;
+        margin-top: 26px;
+      }
+      h1.display {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(44px, 11vw, 64px);
+        line-height: 0.98;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 18px 0 6px;
+      }
+      h1.display .accent { color: var(--amber); }
+      .lede {
+        color: var(--ink-dim);
+        font-size: 18px;
+        margin: 10px 0 0;
+        max-width: 46ch;
+      }
+      .intro-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 26px 0;
+      }
+      .stat {
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        border-radius: var(--radius);
+        padding: 14px 12px;
+        text-align: center;
+      }
+      .stat .num {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 24px;
+        color: var(--ink);
+        display: block;
+      }
+      .stat .lbl {
+        font-size: 12.5px;
+        color: var(--ink-faint);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 600;
+      }
+      .checks-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0 0 10px;
+      }
+      ul.checks {
+        list-style: none;
+        margin: 0 0 28px;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+      }
+      ul.checks li {
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+        color: var(--ink-dim);
+        font-size: 16px;
+      }
+      ul.checks li::before {
+        content: "";
+        flex: 0 0 auto;
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        background: var(--amber);
+        transform: translateY(-1px) rotate(45deg);
+      }
+      .btn-primary {
+        display: block;
+        width: 100%;
+        border: 0;
+        cursor: pointer;
+        background: linear-gradient(180deg, #ffb02e, var(--orange));
+        color: #1a1206;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 16px 20px;
+        border-radius: var(--radius);
+        box-shadow: 0 10px 28px rgba(249, 115, 22, 0.28);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      }
+      .btn-primary:hover { filter: brightness(1.06); }
+      .btn-primary:active { transform: translateY(1px) scale(0.995); }
+      .fineprint {
+        text-align: center;
+        color: var(--ink-faint);
+        font-size: 14px;
+        margin: 14px 0 0;
+      }
+
+      /* ---------- quiz ---------- */
+      .progress-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin: 6px 0 10px;
+      }
+      .progress-count {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--amber);
+        letter-spacing: 0.06em;
+      }
+      .progress-cat {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+      }
+      .progress-track {
+        height: 10px;
+        background: var(--panel-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--amber) 0 12px,
+          var(--orange) 12px 24px
+        );
+        border-radius: 999px;
+        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .q-card { margin-top: 30px; }
+      .q-card.enter { animation: qIn 0.34s ease both; }
+      .q-card.leave { animation: qOut 0.22s ease both; }
+      @keyframes qIn {
+        from { opacity: 0; transform: translateX(26px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes qOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(-26px); }
+      }
+      .q-text {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: clamp(27px, 6.4vw, 34px);
+        line-height: 1.18;
+        margin: 0 0 22px;
+      }
+      .answers { display: grid; gap: 10px; }
+      .answer {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        text-align: left;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 15px 16px;
+        color: var(--ink);
+        font-family: "Barlow", sans-serif;
+        font-size: 16.5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+      }
+      .answer:hover { border-color: rgba(245, 165, 36, 0.55); background: var(--panel-2); }
+      .answer:active { transform: scale(0.99); }
+      .answer .letter {
+        flex: 0 0 auto;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--amber);
+        background: var(--amber-soft);
+        border: 1px solid rgba(245, 165, 36, 0.3);
+      }
+      .answer.selected {
+        border-color: var(--amber);
+        background: rgba(245, 165, 36, 0.14);
+      }
+      .answer.selected .letter {
+        background: var(--amber);
+        color: #1a1206;
+        border-color: var(--amber);
+      }
+      .quiz-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 24px;
+      }
+      .btn-back {
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink-dim);
+        font-family: "Barlow", sans-serif;
+        font-weight: 600;
+        font-size: 15px;
+        padding: 10px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: border-color 0.15s ease, color 0.15s ease;
+      }
+      .btn-back:hover { border-color: var(--ink-faint); color: var(--ink); }
+      .btn-back[hidden] { visibility: hidden; }
+      .quiz-hint { color: var(--ink-faint); font-size: 14px; }
+
+      /* ---------- result ---------- */
+      .result-top { text-align: center; margin-top: 22px; }
+      .gauge-wrap {
+        position: relative;
+        width: 216px;
+        height: 216px;
+        margin: 8px auto 4px;
+      }
+      .gauge-wrap svg { transform: rotate(-90deg); display: block; }
+      .gauge-bg { stroke: var(--panel-2); }
+      .gauge-fg {
+        stroke-linecap: round;
+        transition: stroke-dashoffset 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .gauge-center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .score-num {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 700;
+        font-size: 68px;
+        line-height: 1;
+      }
+      .score-of {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 14px;
+        color: var(--ink-faint);
+        letter-spacing: 0.1em;
+        margin-top: 4px;
+      }
+      .tier-badge {
+        display: inline-block;
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 7px 22px 5px;
+        border-radius: 999px;
+        border: 2px solid currentColor;
+        margin-top: 14px;
+      }
+      .diagnosis {
+        color: var(--ink-dim);
+        font-size: 18px;
+        line-height: 1.55;
+        max-width: 52ch;
+        margin: 18px auto 0;
+      }
+      .tier-critical { color: var(--red); }
+      .tier-atrisk { color: var(--orange); }
+      .tier-stable { color: var(--amber); }
+      .tier-thriving { color: var(--green); }
+
+      .section-title {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin: 38px 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+      }
+      .section-sub { color: var(--ink-faint); font-size: 15px; margin: 0 0 16px; }
+
+      .breakdown { display: grid; gap: 9px; }
+      .bd-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 4px 12px;
+        background: var(--panel);
+        border: 1px solid var(--line-soft);
+        border-radius: 10px;
+        padding: 10px 14px;
+      }
+      .bd-name { font-weight: 600; font-size: 15.5px; }
+      .bd-pts {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--ink-dim);
+      }
+      .bd-bar {
+        grid-column: 1 / -1;
+        height: 6px;
+        background: var(--panel-2);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .bd-fill {
+        height: 100%;
+        background: var(--amber);
+        border-radius: 999px;
+        transition: width 0.8s ease;
+      }
+      .bd-fill.low { background: var(--red); }
+      .bd-fill.mid { background: var(--orange); }
+
+      .cards { display: grid; gap: 12px; }
+      @media (min-width: 560px) {
+        .cards { grid-template-columns: 1fr 1fr 1fr; }
+        .cards.products { grid-template-columns: 1fr 1fr 1fr; }
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+        text-decoration: none;
+        color: var(--ink);
+        transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+      }
+      a.card:hover { border-color: rgba(245, 165, 36, 0.6); background: var(--panel-2); transform: translateY(-2px); }
+      .card .kind {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--amber);
+      }
+      .card .kind.free { color: var(--green); }
+      .card .name {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 21px;
+        line-height: 1.15;
+      }
+      .card .desc { color: var(--ink-dim); font-size: 14.5px; line-height: 1.45; flex: 1; }
+      .card .go {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--amber);
+        letter-spacing: 0.03em;
+      }
+      .retake-wrap { margin-top: 40px; }
+      .btn-ghost {
+        display: block;
+        width: 100%;
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 14px 20px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .btn-ghost:hover { border-color: var(--amber); background: var(--amber-soft); }
+
+      @media (prefers-reduced-motion: reduce) {
+        .screen.active, .q-card.enter, .q-card.leave { animation: none; }
+        .progress-fill, .gauge-fg, .bd-fill { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hazard" aria-hidden="true"></div>
+
+      <!-- ============ INTRO ============ -->
+      <section class="screen active" id="screen-intro">
+        <span class="intro-badge">Free diagnostic &middot; No sign-up</span>
+        <h1 class="display">Paycheck<br />Health <span class="accent">Score</span></h1>
+        <p class="lede">
+          Eight questions about how your money actually moves &mdash; your safety net,
+          your debt drag, your payday system. Get a score out of 100 and a straight
+          answer on what to fix first.
+        </p>
+        <div class="intro-stats">
+          <div class="stat"><span class="num">8</span><span class="lbl">Questions</span></div>
+          <div class="stat"><span class="num">60s</span><span class="lbl">To finish</span></div>
+          <div class="stat"><span class="num">/100</span><span class="lbl">Your score</span></div>
+        </div>
+        <h2 class="checks-title">What gets checked</h2>
+        <ul class="checks">
+          <li>Emergency reserve &mdash; how long you survive a stopped paycheck</li>
+          <li>BNPL &amp; installment drag on your next check</li>
+          <li>Subscription leaks and credit utilization</li>
+          <li>Payday allocation, overtime habits, and debt strategy</li>
+          <li>Whether your money is growing or sitting idle</li>
+        </ul>
+        <button class="btn-primary" id="btn-start" type="button">Start the quiz</button>
+        <p class="fineprint">Answer honestly &mdash; nobody sees this but you. Results show instantly.</p>
+      </section>
+
+      <!-- ============ QUIZ ============ -->
+      <section class="screen" id="screen-quiz" aria-live="polite">
+        <div class="progress-head">
+          <span class="progress-count" id="progress-count">1 / 8</span>
+          <span class="progress-cat" id="progress-cat"></span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+        <div class="q-card" id="q-card">
+          <h2 class="q-text" id="q-text"></h2>
+          <div class="answers" id="answers"></div>
+        </div>
+
+        <div class="quiz-nav">
+          <button class="btn-back" id="btn-back" type="button" hidden>&larr; Back</button>
+          <span class="quiz-hint">Tap an answer to continue</span>
+        </div>
+      </section>
+
+      <!-- ============ RESULT ============ -->
+      <section class="screen" id="screen-result">
+        <div class="result-top">
+          <div class="gauge-wrap">
+            <svg width="216" height="216" viewBox="0 0 216 216" aria-hidden="true">
+              <circle class="gauge-bg" cx="108" cy="108" r="96" fill="none" stroke-width="13" />
+              <circle class="gauge-fg" id="gauge-fg" cx="108" cy="108" r="96" fill="none" stroke-width="13" />
+            </svg>
+            <div class="gauge-center">
+              <span class="score-num" id="score-num">0</span>
+              <span class="score-of">OUT OF 100</span>
+            </div>
+          </div>
+          <div><span class="tier-badge" id="tier-badge"></span></div>
+          <p class="diagnosis" id="diagnosis"></p>
+        </div>
+
+        <h2 class="section-title">Where you stand</h2>
+        <p class="section-sub">Your score, area by area. The shortest bars are where the money is leaking.</p>
+        <div class="breakdown" id="breakdown"></div>
+
+        <h2 class="section-title">Run your numbers</h2>
+        <p class="section-sub">Free calculators matched to your result &mdash; start with the first one.</p>
+        <div class="cards" id="calc-cards"></div>
+
+        <h2 class="section-title">Your fix kit</h2>
+        <p class="section-sub">Printable tools matched to your tier. The checklist is free.</p>
+        <div class="cards products" id="product-cards"></div>
+
+        <div class="retake-wrap">
+          <button class="btn-ghost" id="btn-retake" type="button">Retake the quiz</button>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      var QUESTIONS = [
+        {
+          cat: "Emergency Reserve",
+          max: 15,
+          text: "If your main income suddenly stopped today, how long could you pay essential bills?",
+          answers: [
+            { label: "Less than 1 week — already relying on credit", pts: 0 },
+            { label: "2–4 weeks", pts: 5 },
+            { label: "1–3 months", pts: 10 },
+            { label: "3+ months, fully covered", pts: 15 }
+          ]
+        },
+        {
+          cat: "BNPL & Installment Drag",
+          max: 15,
+          text: "How many active Buy-Now-Pay-Later plans (Klarna, Afterpay, Affirm, PayPal Pay in 4) do you have running?",
+          answers: [
+            { label: "4 or more", pts: 0 },
+            { label: "2–3", pts: 5 },
+            { label: "Just 1", pts: 10 },
+            { label: "Zero", pts: 15 }
+          ]
+        },
+        {
+          cat: "Subscription Leaks",
+          max: 10,
+          text: "Do you know the exact monthly total of all recurring app, streaming, and membership charges?",
+          answers: [
+            { label: "No idea — random charges hit my account", pts: 0 },
+            { label: "Rough guess — paying for stuff I rarely use", pts: 3 },
+            { label: "Know most of them, haven't audited in 6+ months", pts: 7 },
+            { label: "Tracked to the dollar, no unused subs", pts: 10 }
+          ]
+        },
+        {
+          cat: "Credit Utilization",
+          max: 10,
+          text: "What percentage of your total credit limits are you carrying as a balance?",
+          answers: [
+            { label: "Maxed out — 80% or more", pts: 0 },
+            { label: "High — 30–79%", pts: 4 },
+            { label: "Low — under 30%", pts: 8 },
+            { label: "$0 — paid in full every month", pts: 10 }
+          ]
+        },
+        {
+          cat: "Paycheck Allocation",
+          max: 15,
+          text: "How do you handle your paycheck on payday?",
+          answers: [
+            { label: "Pay bills reactively, spend what's left", pts: 0 },
+            { label: "Try to save, but pull it back out", pts: 5 },
+            { label: "Rough budget split for bills vs. spending", pts: 10 },
+            { label: "Instantly split into Needs / Wants / Savings buckets on day 1", pts: 15 }
+          ]
+        },
+        {
+          cat: "Overtime & Extra Earnings",
+          max: 10,
+          text: "How do you handle overtime, shift differentials, or side-hustle cash?",
+          answers: [
+            { label: "Absorbed into daily spending", pts: 0 },
+            { label: "Pays overdue bills", pts: 4 },
+            { label: "Saved occasionally, no system", pts: 7 },
+            { label: "Directed 100% to debt or emergency targets", pts: 10 }
+          ]
+        },
+        {
+          cat: "Debt Payoff Strategy",
+          max: 15,
+          text: "What's your strategy for non-mortgage debts?",
+          answers: [
+            { label: "Minimums only", pts: 0 },
+            { label: "Random extra thrown at the biggest bill", pts: 5 },
+            { label: "Focused extra on one debt at a time", pts: 10 },
+            { label: "Debt-free, or on a structured snowball / avalanche plan", pts: 15 }
+          ]
+        },
+        {
+          cat: "Long-Term Growth",
+          max: 10,
+          text: "Are you auto-investing or earning interest every month?",
+          answers: [
+            { label: "All cash in checking, earning $0", pts: 0 },
+            { label: "Occasional deposits when there's a surplus", pts: 4 },
+            { label: "Small automated transfers every paycheck", pts: 7 },
+            { label: "Aggressive automated contributions", pts: 10 }
+          ]
+        }
+      ];
+
+      var SHOP = "https://bradley57.gumroad.com/";
+      var FREE_CHECKLIST = {
+        kind: "Free download",
+        free: true,
+        name: "Paycheck Protection Checklist",
+        desc: "The payday defense checklist — lock down your bills, buffers, and leaks before the next check lands.",
+        url: SHOP,
+        go: "Get it free"
+      };
+
+      var TIERS = [
+        {
+          min: 0, max: 39, name: "Critical", cls: "tier-critical", color: "#ef4444",
+          diagnosis: "Your cash flow is under immediate pressure from recurring leaks, debt drag, and unallocated paychecks. Let's stop the bleeding and lock in your basic defense.",
+          calcs: [
+            { name: "BNPL Trap Calculator", desc: "See how much of your next paycheck is already spoken for by installment plans.", url: "https://thecomeuphq.github.io/comeup-links/bnpl-trap-calculator.html" },
+            { name: "Subscription Drain Audit", desc: "List every recurring charge and see what it's really costing you per year.", url: "https://thecomeuphq.github.io/comeup-links/subscription-drain-audit.html" },
+            { name: "Emergency Fund Runway Calculator", desc: "Find out exactly how many days your money lasts if income stops.", url: "https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" }
+          ],
+          products: [
+            FREE_CHECKLIST,
+            { kind: "Printable pack", name: "$1,000 Emergency Fund Starter Pack", desc: "A step-by-step plan to stack your first $1,000 buffer, fast.", url: SHOP, go: "View on Gumroad" },
+            { kind: "Printable binder", name: "Blue-Collar Buffer Binder", desc: "The full defense system for variable shift income — buffers, bills, and backup plans.", url: SHOP, go: "View on Gumroad" }
+          ]
+        },
+        {
+          min: 40, max: 64, name: "At Risk", cls: "tier-atrisk", color: "#f97316",
+          diagnosis: "You're keeping your head above water, but variable income and unstructured payday splits keep you stuck in the paycheck-to-paycheck cycle.",
+          calcs: [
+            { name: "Paycheck Budget Splitter", desc: "Split every check into needs, wants, and savings — down to the dollar.", url: "https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" },
+            { name: "Overtime Paycheck Calculator", desc: "See what your OT hours and shift differentials are actually worth after tax.", url: "https://thecomeuphq.github.io/comeup-links/overtime-paycheck-calculator.html" },
+            { name: "Credit Utilization Calculator", desc: "Check your credit usage ratio and what paying it down does to your score.", url: "https://thecomeuphq.github.io/comeup-links/credit-utilization-calculator.html" }
+          ],
+          products: [
+            FREE_CHECKLIST,
+            { kind: "Printable planner", name: "Paycheck-to-Paycheck Weekly Planner", desc: "A weekly planning system built for money that arrives one check at a time.", url: SHOP, go: "View on Gumroad" },
+            { kind: "Printable binder", name: "Zero-Based Budgeting Starter Binder", desc: "Give every dollar a job before payday, so nothing drifts.", url: SHOP, go: "View on Gumroad" }
+          ]
+        },
+        {
+          min: 65, max: 84, name: "Stable", cls: "tier-stable", color: "#f5a524",
+          diagnosis: "Your foundation is solid and bills are covered, but uncoordinated debt paydowns or idle cash are slowing your wealth velocity.",
+          calcs: [
+            { name: "Snowball vs. Avalanche Calculator", desc: "Compare both payoff methods side by side and pick the faster route out.", url: "https://thecomeuphq.github.io/comeup-links/debt-snowball-vs-avalanche-calculator.html" },
+            { name: "Debt Payoff Calculator", desc: "Get your exact debt-free date and total interest on your current path.", url: "https://thecomeuphq.github.io/comeup-links/debt-payoff-calculator.html" },
+            { name: "Side-Hustle Tax Estimator", desc: "Estimate what to set aside from extra income before tax season bites.", url: "https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html" }
+          ],
+          products: [
+            FREE_CHECKLIST,
+            { kind: "Printable plan", name: "Debt Snowball vs. Avalanche Battle Plan", desc: "The full head-to-head worksheet to commit to one payoff method and finish it.", url: "https://bradley57.gumroad.com/l/fdjzdu", go: "View on Gumroad" },
+            { kind: "Printable tracker", name: "Debt Payoff Tracker", desc: "Track every balance, payment, and milestone on one printable system.", url: SHOP, go: "View on Gumroad" }
+          ]
+        },
+        {
+          min: 85, max: 100, name: "Thriving", cls: "tier-thriving", color: "#4ade80",
+          diagnosis: "Your income and cash flow are well-protected. Next focus: optimizing compound interest velocity and automating long-term wealth.",
+          calcs: [
+            { name: "Compound Interest Velocity Calculator", desc: "See how fast your money compounds at your current contribution pace.", url: "https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html" },
+            { name: "Side-Hustle Tax Estimator", desc: "Keep extra income optimized — know your set-aside before you spend it.", url: "https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html" },
+            { name: "Paycheck Budget Splitter", desc: "Fine-tune your payday split to push more toward growth automatically.", url: "https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" }
+          ],
+          products: [
+            FREE_CHECKLIST,
+            { kind: "Printable tracker", name: "52-Week Cash Stash Thermometer", desc: "A visual savings challenge that turns weekly deposits into a full-year stash.", url: SHOP, go: "View on Gumroad" },
+            { kind: "Printable tracker", name: "Sinking Funds Visual Tracker", desc: "Pre-fund the big expenses — car repairs, holidays, annual bills — before they hit.", url: SHOP, go: "View on Gumroad" }
+          ]
+        }
+      ];
+
+      var LETTERS = ["A", "B", "C", "D"];
+      var state = { idx: 0, answers: [] };
+      var advancing = false;
+
+      var els = {
+        intro: document.getElementById("screen-intro"),
+        quiz: document.getElementById("screen-quiz"),
+        result: document.getElementById("screen-result"),
+        count: document.getElementById("progress-count"),
+        cat: document.getElementById("progress-cat"),
+        fill: document.getElementById("progress-fill"),
+        card: document.getElementById("q-card"),
+        qtext: document.getElementById("q-text"),
+        answers: document.getElementById("answers"),
+        back: document.getElementById("btn-back")
+      };
+
+      function showScreen(which) {
+        [els.intro, els.quiz, els.result].forEach(function (s) { s.classList.remove("active"); });
+        which.classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function renderQuestion() {
+        var q = QUESTIONS[state.idx];
+        els.count.textContent = (state.idx + 1) + " / 8";
+        els.cat.textContent = q.cat;
+        els.fill.style.width = ((state.idx) / QUESTIONS.length * 100) + "%";
+        els.qtext.textContent = q.text;
+        els.answers.innerHTML = "";
+        q.answers.forEach(function (a, i) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "answer";
+          if (state.answers[state.idx] === a.pts && state.picked && state.picked[state.idx] === i) {
+            btn.classList.add("selected");
+          }
+          var letter = document.createElement("span");
+          letter.className = "letter";
+          letter.textContent = LETTERS[i];
+          var label = document.createElement("span");
+          label.textContent = a.label;
+          btn.appendChild(letter);
+          btn.appendChild(label);
+          btn.addEventListener("click", function () { pickAnswer(i, btn); });
+          els.answers.appendChild(btn);
+        });
+        els.back.hidden = state.idx === 0;
+        els.card.classList.remove("leave");
+        els.card.classList.remove("enter");
+        void els.card.offsetWidth;
+        els.card.classList.add("enter");
+      }
+
+      function pickAnswer(i, btn) {
+        if (advancing) return;
+        advancing = true;
+        var q = QUESTIONS[state.idx];
+        if (!state.picked) state.picked = [];
+        state.picked[state.idx] = i;
+        state.answers[state.idx] = q.answers[i].pts;
+        var all = els.answers.querySelectorAll(".answer");
+        all.forEach(function (b) { b.classList.remove("selected"); });
+        btn.classList.add("selected");
+        els.fill.style.width = ((state.idx + 1) / QUESTIONS.length * 100) + "%";
+        setTimeout(function () {
+          advancing = false;
+          if (state.idx < QUESTIONS.length - 1) {
+            state.idx++;
+            renderQuestion();
+          } else {
+            showResult();
+          }
+        }, 320);
+      }
+
+      function tierFor(score) {
+        for (var i = 0; i < TIERS.length; i++) {
+          if (score >= TIERS[i].min && score <= TIERS[i].max) return TIERS[i];
+        }
+        return TIERS[TIERS.length - 1];
+      }
+
+      function cardHTML(item, isProduct) {
+        var a = document.createElement("a");
+        a.className = "card";
+        a.href = item.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        var kind = document.createElement("span");
+        kind.className = "kind" + (item.free ? " free" : "");
+        kind.textContent = isProduct ? item.kind : "Free calculator";
+        var name = document.createElement("span");
+        name.className = "name";
+        name.textContent = item.name;
+        var desc = document.createElement("span");
+        desc.className = "desc";
+        desc.textContent = item.desc;
+        var go = document.createElement("span");
+        go.className = "go";
+        go.textContent = (isProduct ? item.go : "Open calculator") + " \u2192";
+        a.appendChild(kind);
+        a.appendChild(name);
+        a.appendChild(desc);
+        a.appendChild(go);
+        return a;
+      }
+
+      function showResult() {
+        var total = state.answers.reduce(function (s, v) { return s + (v || 0); }, 0);
+        var tier = tierFor(total);
+        showScreen(els.result);
+
+        var badge = document.getElementById("tier-badge");
+        badge.textContent = tier.name;
+        badge.className = "tier-badge " + tier.cls;
+        document.getElementById("diagnosis").textContent = tier.diagnosis;
+
+        // Breakdown
+        var bd = document.getElementById("breakdown");
+        bd.innerHTML = "";
+        QUESTIONS.forEach(function (q, i) {
+          var pts = state.answers[i] || 0;
+          var pct = Math.round(pts / q.max * 100);
+          var row = document.createElement("div");
+          row.className = "bd-row";
+          var name = document.createElement("span");
+          name.className = "bd-name";
+          name.textContent = q.cat;
+          var p = document.createElement("span");
+          p.className = "bd-pts";
+          p.textContent = pts + " / " + q.max;
+          var bar = document.createElement("div");
+          bar.className = "bd-bar";
+          var fill = document.createElement("div");
+          fill.className = "bd-fill" + (pct <= 34 ? " low" : pct <= 67 ? " mid" : "");
+          fill.style.width = "0%";
+          bar.appendChild(fill);
+          row.appendChild(name);
+          row.appendChild(p);
+          row.appendChild(bar);
+          bd.appendChild(row);
+          setTimeout(function () { fill.style.width = pct + "%"; }, 150 + i * 70);
+        });
+
+        // Cards
+        var cc = document.getElementById("calc-cards");
+        cc.innerHTML = "";
+        tier.calcs.forEach(function (c) { cc.appendChild(cardHTML(c, false)); });
+        var pc = document.getElementById("product-cards");
+        pc.innerHTML = "";
+        tier.products.forEach(function (p) { pc.appendChild(cardHTML(p, true)); });
+
+        // Gauge + count-up
+        var fg = document.getElementById("gauge-fg");
+        var C = 2 * Math.PI * 96;
+        fg.style.stroke = tier.color;
+        fg.style.strokeDasharray = C.toFixed(1);
+        fg.style.strokeDashoffset = C.toFixed(1);
+        var numEl = document.getElementById("score-num");
+        numEl.style.color = tier.color;
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            fg.style.strokeDashoffset = (C * (1 - total / 100)).toFixed(1);
+          });
+        });
+        if (reduce) {
+          numEl.textContent = total;
+        } else {
+          var start = null, dur = 1150;
+          function step(ts) {
+            if (!start) start = ts;
+            var t = Math.min((ts - start) / dur, 1);
+            var eased = 1 - Math.pow(1 - t, 3);
+            numEl.textContent = Math.round(eased * total);
+            if (t < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }
+      }
+
+      document.getElementById("btn-start").addEventListener("click", function () {
+        state.idx = 0;
+        showScreen(els.quiz);
+        renderQuestion();
+      });
+
+      els.back.addEventListener("click", function () {
+        if (advancing || state.idx === 0) return;
+        state.idx--;
+        renderQuestion();
+      });
+
+      document.getElementById("btn-retake").addEventListener("click", function () {
+        state = { idx: 0, answers: [], picked: [] };
+        showScreen(els.intro);
+      });
+    </script>
+  </body>
+</html>

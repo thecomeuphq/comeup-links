@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Payday Cash Flow Allocator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#0d0d0f;
+        --panel:#17171a;
+        --panel-2:#1e1e22;
+        --line:#2c2c31;
+        --ink:#f2ede4;
+        --ink-dim:#a8a29a;
+        --ink-faint:#6f6a61;
+        --amber:#f5a524;
+        --orange:#ff6b1a;
+        --amber-soft:rgba(245,165,36,.14);
+        --green:#3ecf7a;
+        --yellow:#f5c524;
+        --red:#ff5147;
+        --radius:10px;
+      }
+      *{ box-sizing:border-box; }
+      html{ -webkit-text-size-adjust:100%; }
+      body{
+        margin:0;
+        background:
+          repeating-linear-gradient(0deg, rgba(255,255,255,.014) 0 1px, transparent 1px 56px),
+          var(--bg);
+        color:var(--ink);
+        font-family:"Barlow", system-ui, sans-serif;
+        font-size:16px;
+        line-height:1.5;
+      }
+      .wrap{ max-width:760px; margin:0 auto; padding:20px 16px 56px; }
+
+      /* ---------- header ---------- */
+      .hazard{
+        height:8px; border-radius:4px; margin-bottom:22px;
+        background:repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141414 14px 28px);
+        opacity:.9;
+      }
+      h1{
+        font-family:"Barlow Condensed", sans-serif;
+        font-weight:700; text-transform:uppercase; letter-spacing:.02em;
+        font-size:clamp(2rem, 7vw, 3rem); line-height:1.02; margin:0 0 8px;
+      }
+      h1 . accent, h1 .accent{ color:var(--amber); }
+      .lede{ color:var(--ink-dim); margin:0 0 26px; max-width:56ch; }
+      .lede strong{ color:var(--ink); }
+
+      /* ---------- step panels ---------- */
+      .step{
+        background:var(--panel);
+        border:1px solid var(--line);
+        border-radius:var(--radius);
+        padding:20px 18px 22px;
+        margin-bottom:18px;
+      }
+      .step-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+      .step-num{
+        font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:.8rem;
+        color:#141414; background:var(--amber);
+        padding:3px 9px; border-radius:4px; letter-spacing:.06em; white-space:nowrap;
+      }
+      .step h2{
+        font-family:"Barlow Condensed", sans-serif; font-weight:600; text-transform:uppercase;
+        letter-spacing:.04em; font-size:1.45rem; margin:0; line-height:1.1;
+      }
+      .step-sub{ color:var(--ink-dim); font-size:.95rem; margin:0 0 16px; }
+      .step-sub strong{ color:var(--amber); }
+
+      label.field-label{
+        display:block; font-size:.78rem; font-weight:600; letter-spacing:.09em;
+        text-transform:uppercase; color:var(--ink-faint); margin:0 0 6px;
+      }
+      input[type="number"], input[type="text"], input[type="date"], select{
+        width:100%; background:var(--panel-2); color:var(--ink);
+        border:1px solid var(--line); border-radius:8px;
+        padding:12px 12px; font:inherit; font-size:1rem;
+        appearance:none; -webkit-appearance:none;
+      }
+      input:focus, select:focus{ outline:2px solid var(--amber); outline-offset:1px; border-color:var(--amber); }
+      input[type="date"]{ color-scheme:dark; }
+      .money-wrap{ position:relative; }
+      .money-wrap::before{
+        content:"$"; position:absolute; left:12px; top:50%; transform:translateY(-50%);
+        color:var(--amber); font-family:"IBM Plex Mono", monospace; font-weight:600;
+      }
+      .money-wrap input{ padding-left:26px; font-family:"IBM Plex Mono", monospace; font-weight:600; }
+      .grid-3{ display:grid; grid-template-columns:1fr; gap:14px; }
+      @media (min-width:640px){ .grid-3{ grid-template-columns:1.2fr 1fr 1fr; } }
+      .period-note{
+        margin-top:14px; padding:10px 12px; border:1px dashed var(--line); border-radius:8px;
+        color:var(--ink-dim); font-size:.92rem;
+      }
+      .period-note strong{ color:var(--ink); font-family:"IBM Plex Mono", monospace; font-weight:600; }
+
+      /* ---------- bills ---------- */
+      .quick-add{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+      .qa-btn{
+        background:var(--panel-2); color:var(--ink); border:1px solid var(--line);
+        border-radius:999px; padding:7px 13px; font:inherit; font-size:.88rem; font-weight:600;
+        cursor:pointer;
+      }
+      .qa-btn:hover{ border-color:var(--amber); color:var(--amber); }
+      .qa-btn::before{ content:"+ "; color:var(--amber); font-weight:700; }
+      .bill-row{ display:grid; grid-template-columns:1fr 110px 36px; gap:8px; margin-bottom:8px; align-items:center; }
+      .bill-row .amt{ font-family:"IBM Plex Mono", monospace; font-weight:600; }
+      .bill-del{
+        background:transparent; border:1px solid var(--line); color:var(--ink-faint);
+        border-radius:8px; height:44px; cursor:pointer; font-size:1.05rem; line-height:1;
+      }
+      .bill-del:hover{ color:var(--red); border-color:var(--red); }
+      .add-bill{
+        width:100%; background:transparent; border:1px dashed var(--line); color:var(--ink-dim);
+        border-radius:8px; padding:11px; font:inherit; font-weight:600; cursor:pointer; margin-top:2px;
+      }
+      .add-bill:hover{ border-color:var(--amber); color:var(--amber); }
+      .committed{
+        display:flex; justify-content:space-between; align-items:baseline;
+        margin-top:16px; padding-top:14px; border-top:1px solid var(--line);
+      }
+      .committed .lbl{ font-size:.8rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); }
+      .committed .val{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.5rem; color:var(--amber); }
+
+      /* ---------- goal chips ---------- */
+      .chips{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+      @media (max-width:420px){ .chips{ grid-template-columns:1fr; } }
+      .chip{
+        text-align:left; background:var(--panel-2); border:1px solid var(--line); border-radius:10px;
+        padding:13px 14px; cursor:pointer; color:var(--ink); font:inherit;
+      }
+      .chip .chip-name{ display:block; font-weight:700; font-size:1rem; margin-bottom:2px; }
+      .chip .chip-desc{ display:block; color:var(--ink-dim); font-size:.85rem; line-height:1.35; }
+      .chip[aria-pressed="true"]{
+        border-color:var(--amber); background:var(--amber-soft);
+        box-shadow:inset 0 0 0 1px var(--amber);
+      }
+      .chip[aria-pressed="true"] .chip-name{ color:var(--amber); }
+
+      /* ---------- buckets / sliders ---------- */
+      .bucket{
+        border:1px solid var(--line); border-radius:10px; padding:14px 14px 12px; margin-bottom:12px;
+        background:var(--panel-2);
+      }
+      .bucket.locked{ border-style:dashed; background:var(--panel); }
+      .bucket-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+      .bucket-name{ font-weight:700; font-size:1rem; }
+      .bucket-name .tag{
+        font-family:"IBM Plex Mono", monospace; font-size:.72rem; font-weight:700; color:#141414;
+        background:var(--amber); border-radius:3px; padding:2px 6px; margin-right:8px; vertical-align:2px;
+      }
+      .bucket.locked .bucket-name .tag{ background:var(--ink-faint); color:#0d0d0f; }
+      .bucket-amt{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.25rem; color:var(--amber); white-space:nowrap; }
+      .bucket.locked .bucket-amt{ color:var(--ink); }
+      .bucket-desc{ color:var(--ink-dim); font-size:.88rem; margin:3px 0 0; }
+      .slider-row{ display:flex; align-items:center; gap:12px; margin-top:10px; }
+      input[type="range"]{
+        flex:1; -webkit-appearance:none; appearance:none; height:8px; border-radius:4px;
+        background:linear-gradient(to right, var(--amber) var(--fill,50%), #333338 var(--fill,50%));
+        cursor:pointer; margin:0;
+      }
+      input[type="range"]::-webkit-slider-thumb{
+        -webkit-appearance:none; width:26px; height:26px; border-radius:50%;
+        background:#141414; border:3px solid var(--amber); box-shadow:0 2px 8px rgba(0,0,0,.6);
+      }
+      input[type="range"]::-moz-range-thumb{
+        width:20px; height:20px; border-radius:50%;
+        background:#141414; border:3px solid var(--amber);
+      }
+      .pct{
+        font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1rem; color:var(--ink);
+        min-width:52px; text-align:right;
+      }
+      .split-check{ font-size:.9rem; color:var(--ink-dim); margin:4px 0 0; }
+      .split-check strong{ font-family:"IBM Plex Mono", monospace; color:var(--green); }
+      .split-check.bad strong{ color:var(--red); }
+      .shortfall{
+        display:none; margin-top:14px; padding:12px 14px; border-radius:8px;
+        background:rgba(255,81,71,.12); border:1px solid var(--red); color:#ffb3ae; font-size:.95rem;
+      }
+      .shortfall.show{ display:block; }
+      .shortfall strong{ color:#fff; font-family:"IBM Plex Mono", monospace; }
+
+      /* ---------- output ---------- */
+      .output{
+        background:#101013; border:2px solid var(--amber); border-radius:14px;
+        padding:22px 18px; margin:26px 0 18px;
+      }
+      .output h2{
+        font-family:"Barlow Condensed", sans-serif; font-weight:700; text-transform:uppercase;
+        letter-spacing:.03em; font-size:1.7rem; margin:0 0 2px; line-height:1.1;
+      }
+      .output .out-sub{ color:var(--ink-dim); margin:0 0 18px; font-size:.95rem; }
+      .gauge-zone{ display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-bottom:20px; }
+      .gauge-svg{ flex:0 0 auto; }
+      .gauge-read .ratio-big{
+        font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:2rem; line-height:1;
+      }
+      .gauge-read .ratio-lbl{ font-size:.78rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); margin-top:4px; }
+      .gauge-read .verdict{ font-weight:700; margin-top:8px; font-size:1.02rem; }
+      .gauge-read .verdict-detail{ color:var(--ink-dim); font-size:.92rem; margin-top:2px; max-width:38ch; }
+      .exec-list{ list-style:none; margin:0; padding:0; counter-reset:exec; }
+      .exec-item{
+        display:flex; gap:12px; align-items:flex-start;
+        background:var(--panel); border:1px solid var(--line); border-radius:10px;
+        padding:13px 14px; margin-bottom:9px; cursor:pointer;
+      }
+      .exec-item .box{
+        flex:0 0 auto; width:24px; height:24px; border-radius:6px; margin-top:1px;
+        border:2px solid var(--amber); display:flex; align-items:center; justify-content:center;
+        color:transparent; font-weight:700; font-size:.95rem;
+      }
+      .exec-item.done .box{ background:var(--amber); color:#141414; }
+      .exec-item.done .exec-text{ color:var(--ink-faint); text-decoration:line-through; }
+      .exec-text{ font-size:1rem; }
+      .exec-text .amt{ font-family:"IBM Plex Mono", monospace; font-weight:700; color:var(--amber); }
+      .exec-item.done .exec-text .amt{ color:var(--ink-faint); }
+      .exec-text .why{ display:block; color:var(--ink-dim); font-size:.87rem; margin-top:1px; }
+      .exec-item.done .exec-text .why{ color:var(--ink-faint); }
+      .tally{
+        display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;
+        border-top:1px solid var(--line); padding-top:14px; margin-top:6px;
+      }
+      .tally .t-lbl{ font-size:.8rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); }
+      .tally .t-val{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.15rem; }
+      .tally .t-val.ok{ color:var(--green); }
+      .out-actions{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+      .btn{
+        font:inherit; font-weight:700; border-radius:8px; padding:12px 18px; cursor:pointer; border:1px solid var(--amber);
+      }
+      .btn-primary{ background:var(--amber); color:#141414; }
+      .btn-primary:hover{ background:var(--orange); border-color:var(--orange); color:#fff; }
+      .btn-ghost{ background:transparent; color:var(--amber); }
+      .btn-ghost:hover{ background:var(--amber-soft); }
+      .copy-note{ font-size:.88rem; color:var(--green); align-self:center; min-height:1.2em; }
+
+      /* ---------- next steps / CTA / FAQ ---------- */
+      .section-title{
+        font-family:"Barlow Condensed", sans-serif; font-weight:600; text-transform:uppercase;
+        letter-spacing:.04em; font-size:1.4rem; margin:30px 0 12px;
+      }
+      .next-grid{ display:grid; grid-template-columns:1fr; gap:12px; }
+      @media (min-width:640px){ .next-grid{ grid-template-columns:1fr 1fr; } }
+      .next-card{
+        display:block; text-decoration:none; color:var(--ink);
+        background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px;
+      }
+      .next-card:hover{ border-color:var(--amber); }
+      .next-card .nc-name{ font-weight:700; font-size:1.05rem; margin-bottom:3px; }
+      .next-card .nc-desc{ color:var(--ink-dim); font-size:.92rem; }
+      .next-card .nc-go{ color:var(--amber); font-weight:700; font-size:.9rem; margin-top:8px; display:block; }
+      .cta{
+        display:block; text-decoration:none; margin-top:14px;
+        background:linear-gradient(120deg, #2a1c05, #1c1c1f 60%);
+        border:1px solid var(--amber); border-radius:12px; padding:18px;
+        color:var(--ink);
+      }
+      .cta .cta-text{ font-size:1.05rem; line-height:1.5; }
+      .cta .cta-text strong{ color:var(--amber); }
+      .cta .cta-go{ display:inline-block; margin-top:10px; background:var(--amber); color:#141414; font-weight:700; padding:10px 16px; border-radius:8px; }
+      .cta:hover .cta-go{ background:var(--orange); color:#fff; }
+      details.faq{
+        background:var(--panel); border:1px solid var(--line); border-radius:10px;
+        padding:14px 16px; margin-bottom:10px;
+      }
+      details.faq summary{ cursor:pointer; font-weight:700; font-size:1rem; list-style:none; }
+      details.faq summary::-webkit-details-marker{ display:none; }
+      details.faq summary::after{ content:"+"; float:right; color:var(--amber); font-family:"IBM Plex Mono", monospace; font-weight:700; }
+      details.faq[open ] summary::after{ content:"–"; }
+      details.faq p{ color:var(--ink-dim); margin:10px 0 2px; }
+      details.faq p strong{ color:var(--ink); }
+      .foot{ color:var(--ink-faint); font-size:.85rem; text-align:center; margin-top:34px; }
+
+      /* ---------- print ---------- */
+      @media print{
+        body{ background:#fff; color:#111; }
+        .wrap{ max-width:none; padding:0; }
+        .hazard, .out-actions, .next-grid, .cta, .foot, .step{ display:none !important; }
+        h1{ color:#111; font-size:1.6rem; }
+        .lede{ color:#333; }
+        .output{ border:2px solid #111; background:#fff; margin-top:10px; }
+        .output h2{ color:#111; }
+        .output .out-sub, .gauge-read .verdict-detail, .exec-text .why{ color:#444; }
+        .exec-item{ background:#fff; border-color:#999; break-inside:avoid; }
+        .exec-item .box{ border-color:#111; }
+        .exec-text .amt, .bucket-amt, .gauge-read .ratio-big{ color:#111; }
+        details.faq{ display:none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <div class="hazard" aria-hidden="true"></div>
+      <h1>Shift Worker Payday<br /><span class="accent">Cash Flow Allocator</span></h1>
+      <p class="lede">Payday hits, bills are circling, and the money evaporates by Tuesday. This tool routes <strong>every dollar of this paycheck</strong> the moment it lands — bills first, goal second, guilt-free spending last — and hands you an exact transfer list you can run in about 60 seconds.</p>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step-head"><span class="step-num">STEP 1</span><h2 id="s1">The Paycheck</h2></div>
+        <p class="step-sub">Use your <strong>take-home</strong> number — what's actually hitting the account after taxes and deductions.</p>
+        <div class="grid-3">
+          <div>
+            <label class="field-label" for="pay">Take-home pay</label>
+            <div class="money-wrap"><input type="number" id="pay" inputmode="decimal" min="0" step="0.01" value="1450" /></div>
+          </div>
+          <div>
+            <label class="field-label" for="freq">Pay frequency</label>
+            <select id="freq">
+              <option value="weekly">Weekly</option>
+              <option value="biweekly" selected>Bi-Weekly</option>
+              <option value="semimonthly">Semi-Monthly</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label" for="payday">Payday date</label>
+            <input type="date" id="payday" />
+          </div>
+        </div>
+        <p class="period-note" id="periodNote"></p>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step-head"><span class="step-num">STEP 2</span><h2 id="s2">Non-Negotiables</h2></div>
+        <p class="step-sub">Every fixed bill that comes due <strong>before your next paycheck</strong>. These get paid first — no debate, no "I'll catch it later."</p>
+        <div class="quick-add" id="quickAdd" aria-label="Quick-add common bills"></div>
+        <div id="billList"></div>
+        <button class="add-bill" id="addBill" type="button">+ Add another bill</button>
+        <div class="committed">
+          <span class="lbl">Total committed</span>
+          <span class="val" id="billsTotal">$0.00</span>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step-head"><span class="step-num">STEP 3</span><h2 id="s3">Priority Goal</h2></div>
+        <p class="step-sub">What's this paycheck's mission? Your pick pre-loads the routing split in Step 4 — you can still fine-tune the sliders.</p>
+        <div class="chips" id="goalChips" role="group" aria-label="Priority goal">
+          <button type="button" class="chip" data-goal="buffer" aria-pressed="false">
+            <span class="chip-name">Emergency Buffer Surge</span>
+            <span class="chip-desc">Stack the stash first. Leftover dollars flood the emergency fund until surprises stop being emergencies.</span>
+          </button>
+          <button type="button" class="chip" data-goal="debt" aria-pressed="false">
+            <span class="chip-name">Debt Kill Mode</span>
+            <span class="chip-desc">Minimums are already in Step 2 — this throws every spare dollar at one target balance until it's dead.</span>
+          </button>
+          <button type="button" class="chip" data-goal="sinking" aria-pressed="false">
+            <span class="chip-name">Sinking Fund Catch-Up</span>
+            <span class="chip-desc">Insurance, tags, holidays, car repairs — pre-fund the big irregular bills so they never ambush a paycheck.</span>
+          </button>
+          <button type="button" class="chip" data-goal="balanced" aria-pressed="true">
+            <span class="chip-name">Balanced</span>
+            <span class="chip-desc">Steady split across reserve, variable costs, and pocket cash. The default when nothing's on fire.</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4">
+        <div class="step-head"><span class="step-num">STEP 4</span><h2 id="s4">Bucket Routing Engine</h2></div>
+        <p class="step-sub">Bucket A is locked to your bills. Drag the sliders to split <strong>what's left</strong> — the three always add up to 100% of the remainder.</p>
+
+        <div class="bucket locked">
+          <div class="bucket-top">
+            <span class="bucket-name"><span class="tag">A</span>Fixed Survival Bills</span>
+            <span class="bucket-amt" id="amtA">$0.00</span>
+          </div>
+          <p class="bucket-desc">Auto-locked to your Step 2 total. Moves to the bills account first, before anything else touches the money.</p>
+        </div>
+
+        <div class="bucket">
+          <div class="bucket-top">
+            <span class="bucket-name"><span class="tag">B</span><span id="nameB">Debt / Reserve Fund</span></span>
+            <span class="bucket-amt" id="amtB">$0.00</span>
+          </div>
+          <p class="bucket-desc" id="descB">Your goal's transfer target — the money that moves you forward this pay period.</p>
+          <div class="slider-row">
+            <input type="range" id="sliderB" min="0" max="100" step="1" value="33" aria-label="Bucket B percentage" />
+            <span class="pct" id="pctB">33%</span>
+          </div>
+        </div>
+
+        <div class="bucket">
+          <div class="bucket-top">
+            <span class="bucket-name"><span class="tag">C</span>Sinking / Variable Costs</span>
+            <span class="bucket-amt" id="amtC">$0.00</span>
+          </div>
+          <p class="bucket-desc">Fuel, groceries, and weekly flex — the spending that actually happens between now and the next payday.</p>
+          <div class="slider-row">
+            <input type="range" id="sliderC" min="0" max="100" step="1" value="42" aria-label="Bucket C percentage" />
+            <span class="pct" id="pctC">42%</span>
+          </div>
+        </div>
+
+        <div class="bucket">
+          <div class="bucket-top">
+            <span class="bucket-name"><span class="tag">D</span>Guilt-Free Safe Spend</span>
+            <span class="bucket-amt" id="amtD">$0.00</span>
+          </div>
+          <p class="bucket-desc">Pocket cash with a hard edge. When this hits zero, spending stops — everything else is already spoken for.</p>
+          <div class="slider-row">
+            <input type="range" id="sliderD" min="0" max="100" step="1" value="25" aria-label="Bucket D percentage" />
+            <span class="pct" id="pctD">25%</span>
+          </div>
+        </div>
+
+        <p class="split-check" id="splitCheck"></p>
+        <div class="shortfall" id="shortfallBox"></div>
+      </section>
+
+      <!-- OUTPUT -->
+      <section class="output" aria-labelledby="outTitle">
+        <h2 id="outTitle">Payday Transfer Execution List</h2>
+        <p class="out-sub" id="outSub">Run these transfers in order, right when the deposit lands. Check each one off as it clears.</p>
+
+        <div class="gauge-zone">
+          <svg class="gauge-svg" width="190" height="112" viewBox="0 0 190 112" role="img" aria-label="Payday clearance ratio gauge">
+            <path d="M 15 100 A 80 80 0 0 1 175 100" fill="none" stroke="#2c2c31" stroke-width="15" stroke-linecap="round"/>
+            <path id="gaugeArc" d="M 15 100 A 80 80 0 0 1 175 100" fill="none" stroke="#3ecf7a" stroke-width="15" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+            <text id="gaugePct" x="95" y="88" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="27" fill="#f2ede4">—</text>
+            <text x="95" y="106" text-anchor="middle" font-size="9.5" letter-spacing="1.5" fill="#6f6a61">OF PAY → BILLS</text>
+          </svg>
+          <div class="gauge-read">
+            <div class="ratio-big" id="ratioBig">—</div>
+            <div class="ratio-lbl">Payday Clearance Ratio</div>
+            <div class="verdict" id="verdict"></div>
+            <p class="verdict-detail" id="verdictDetail"></p>
+          </div>
+        </div>
+
+        <ol class="exec-list" id="execList"></ol>
+
+        <div class="tally">
+          <span class="t-lbl">Every dollar assigned</span>
+          <span class="t-val ok" id="tallyVal"></span>
+        </div>
+
+        <div class="out-actions">
+          <button class="btn btn-primary" id="copyBtn" type="button">Copy execution list</button>
+          <span class="copy-note" id="copyNote" role="status"></span>
+        </div>
+      </section>
+
+      <h2 class="section-title">Keep the System Running</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html">
+          <span class="nc-name">Paycheck Budget Splitter</span>
+          <span class="nc-desc">Turn this routing plan into a full paycheck budget — needs, wants, and savings split by percentage.</span>
+          <span class="nc-go">Open the splitter →</span>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html">
+          <span class="nc-name">Emergency Fund Runway Calculator</span>
+          <span class="nc-desc">See exactly how many weeks your Bucket B stash would keep you alive if the hours got cut.</span>
+          <span class="nc-go">Check your runway →</span>
+        </a>
+      </div>
+
+      <a class="cta" href="https://bradley57.gumroad.com/">
+        <span class="cta-text">Run this every payday with the <strong>Zero-Based Budgeting Binder</strong> and the <strong>Paycheck-to-Paycheck Weekly Planner</strong> on Gumroad — grab the <strong>free Paycheck Protection Checklist</strong> too.</span>
+        <span class="cta-go">Get the payday kit →</span>
+      </a>
+
+      <h2 class="section-title">Straight Answers</h2>
+      <details class="faq">
+        <summary>Why route the money on payday instead of at the start of the month?</summary>
+        <p>Because shift-worker money doesn't arrive monthly — it arrives per paycheck, and bills don't wait for the 1st. If you budget by the month, the second paycheck of the month always feels "extra" and gets spent, right before the big bills land. Routing on payday means <strong>every deposit gets its orders the moment it arrives</strong>, matched to the bills actually due before the next one. No deposit ever sits unassigned long enough to leak.</p>
+      </details>
+      <details class="faq">
+        <summary>What's the separate-accounts trick, and why does it work?</summary>
+        <p>Keep three homes for money: a <strong>bills account</strong> (Bucket A lands here, and only bills ever leave it), your <strong>main spending account</strong> (Buckets C and D), and a <strong>separate savings account — ideally at a different bank</strong> — for Bucket B. The friction is the point: money you can't see on your debit card balance doesn't get spent at the gas station. One transfer on payday replaces a month of willpower.</p>
+      </details>
+      <details class="faq">
+        <summary>What if the paycheck doesn't cover the bills?</summary>
+        <p>Then the gauge goes red and the tool tells you the exact shortfall — that's information, not failure. Work it in this order: <strong>(1)</strong> call the billers before the due date and ask for a due-date move to your other pay cycle — most utilities and lenders will do this free, once; <strong>(2)</strong> split the period's bills across both paychecks instead of loading them on one; <strong>(3)</strong> cut Bucket D to zero for this cycle only — never touch Bucket A money to cover spending. If the shortfall shows up every cycle, it's an income-or-bills problem, not a routing problem, and no split will fix it — pick up the hours or renegotiate the bill.</p>
+      </details>
+
+      <p class="foot">Built for shift workers who get paid on a cycle, not a salary. Run it every payday.</p>
+    </main>
+
+    <script>
+      (function(){
+        "use strict";
+        var $ = function(id){ return document.getElementById(id); };
+        var money = function(n){
+          return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2, maximumFractionDigits:2});
+        };
+        var round2 = function(n){ return Math.round(n*100)/100; };
+
+        /* ---------- state ---------- */
+        var bills = [
+          { name:"Electric bill", amount:128 },
+          { name:"Phone", amount:65 },
+          { name:"Car insurance", amount:142 },
+          { name:"Card minimum", amount:45 }
+        ];
+        var split = { B:33, C:42, D:25 };
+        var goal = "balanced";
+
+        var GOALS = {
+          buffer:   { split:{B:55, C:30, D:15}, bName:"Emergency Stash",        bDesc:"Straight into the separate savings account. Untouched unless it's a real emergency.",
+                      verb:"Move", target:"your emergency stash",   why:"Buffer first — this is what turns a blown tire from a crisis into an errand." },
+          debt:     { split:{B:60, C:30, D:10}, bName:"Debt Kill Fund",       bDesc:"An extra payment on top of the minimums in Step 2 — aimed at one target balance.",
+                      verb:"Send", target:"your target debt (extra payment, principal only)", why:"Minimums keep you alive; this is the payment that actually kills the balance." },
+          sinking:  { split:{B:20, C:55, D:25}, bName:"Sinking Fund Top-Up",  bDesc:"Pre-funding the irregular bills — insurance premiums, tags, holidays, repairs.",
+                      verb:"Move", target:"your sinking funds",     why:"The big bills stop being surprises when you've been paying them a little every payday." },
+          balanced: { split:{B:33, C:42, D:25}, bName:"Debt / Reserve Fund",  bDesc:"Your goal's transfer target — the money that moves you forward this pay period.",
+                      verb:"Move", target:"your reserve fund",      why:"A steady third of every leftover dollar, compounding in the background." }
+        };
+        var PRESETS = ["Rent","Electric","Water","Phone","Car note","Car insurance","Card minimum","Childcare","Internet","Loan payment"];
+
+        /* ---------- dates ---------- */
+        function fmtDate(d){
+          return d.toLocaleDateString("en-US",{ weekday:"short", month:"short", day:"numeric", year:"numeric" });
+        }
+        function nextPayday(d, freq){
+          var n = new Date(d.getTime());
+          if(freq === "weekly"){ n.setDate(n.getDate()+7); }
+          else if(freq === "biweekly"){ n.setDate(n.getDate()+14); }
+          else { /* semi-monthly: paydays on the 1st and 15th */
+            if(d.getDate() < 15){ n = new Date(d.getFullYear(), d.getMonth(), 15); }
+            else if(d.getDate() === 15){ n = new Date(d.getFullYear(), d.getMonth()+1, 1); }
+            else { n = new Date(d.getFullYear(), d.getMonth()+1, 1); }
+            if(n <= d){ n = new Date(d.getFullYear(), d.getMonth()+1, 1); }
+          }
+          return n;
+        }
+        /* default payday = today */
+        var today = new Date();
+        var iso = today.getFullYear() + "-" + String(today.getMonth()+1).padStart(2,"0") + "-" + String(today.getDate()).padStart(2,"0");
+        $("payday").value = iso;
+
+        /* ---------- bills UI ---------- */
+        var billList = $("billList");
+        function renderBills(){
+          billList.innerHTML = "";
+          bills.forEach(function(b, i){
+            var row = document.createElement("div");
+            row.className = "bill-row";
+            var nameIn = document.createElement("input");
+            nameIn.type = "text"; nameIn.value = b.name; nameIn.placeholder = "Bill name";
+            nameIn.setAttribute("aria-label","Bill name");
+            nameIn.addEventListener("input", function(){ bills[i].name = nameIn.value; render(); });
+            var amtIn = document.createElement("input");
+            amtIn.type = "number"; amtIn.className = "amt"; amtIn.min = "0"; amtIn.step = "0.01"; amtIn.inputMode = "decimal";
+            amtIn.value = b.amount === 0 ? "" : b.amount; amtIn.placeholder = "0.00";
+            amtIn.setAttribute("aria-label","Bill amount");
+            amtIn.addEventListener("input", function(){ bills[i].amount = parseFloat(amtIn.value) || 0; render(); });
+            var del = document.createElement("button");
+            del.type = "button"; del.className = "bill-del"; del.textContent = "×"; del.setAttribute("aria-label","Remove bill");
+            del.addEventListener("click", function(){ bills.splice(i,1); renderBills(); render(); });
+            row.appendChild(nameIn); row.appendChild(amtIn); row.appendChild(del);
+            billList.appendChild(row);
+          });
+        }
+        var qa = $("quickAdd");
+        PRESETS.forEach(function(p){
+          var btn = document.createElement("button");
+          btn.type = "button"; btn.className = "qa-btn"; btn.textContent = p;
+          btn.addEventListener("click", function(){
+            bills.push({ name:p, amount:0 });
+            renderBills(); render();
+            var rows = billList.querySelectorAll(".bill-row input[type='number']");
+            if(rows.length){ rows[rows.length-1].focus(); }
+          });
+          qa.appendChild(btn);
+        });
+        $("addBill").addEventListener("click", function(){
+          bills.push({ name:"", amount:0 });
+          renderBills(); render();
+          var rows = billList.querySelectorAll(".bill-row input[type='text']");
+          if(rows.length){ rows[rows.length-1].focus(); }
+        });
+
+        /* ---------- goal chips ---------- */
+        var chips = document.querySelectorAll("#goalChips .chip");
+        chips.forEach(function(chip){
+          chip.addEventListener("click", function(){
+            goal = chip.getAttribute("data-goal");
+            chips.forEach(function(c){ c.setAttribute("aria-pressed", c === chip ? "true" : "false"); });
+            var g = GOALS[goal];
+            split = { B:g.split.B, C:g.split.C, D:g.split.D };
+            render();
+          });
+        });
+
+        /* ---------- sliders ---------- */
+        function setSplit(changed, val){
+          val = Math.max(0, Math.min(100, Math.round(val)));
+          split[changed] = val;
+          var keys = ["B","C","D"].filter(function(k){ return k !== changed; });
+          var rest = 100 - val;
+          var sumOthers = split[keys[0]] + split[keys[1]];
+          if(sumOthers === 0){
+            split[keys[0]] = Math.ceil(rest/2);
+            split[keys[1]] = rest - split[keys[0]];
+          } else {
+            var a = Math.round(rest * split[keys[0]] / sumOthers);
+            split[keys[0]] = a;
+            split[keys[1]] = rest - a;
+          }
+        }
+        ["B","C","D"].forEach(function(k){
+          $("slider"+k).addEventListener("input", function(){
+            setSplit(k, parseInt(this.value,10) || 0);
+            render();
+          });
+        });
+
+        /* ---------- inputs ---------- */
+        ["pay","freq","payday"].forEach(function(id){
+          $(id).addEventListener("input", render);
+          $(id).addEventListener("change", render);
+        });
+
+        /* ---------- render ---------- */
+        function render(){
+          var pay = parseFloat($("pay").value) || 0;
+          var freq = $("freq").value;
+          var paydayVal = $("payday").value;
+          var payday = paydayVal ? new Date(paydayVal + "T12:00:00") : new Date();
+          var nxt = nextPayday(payday, freq);
+
+          var billsTotal = round2(bills.reduce(function(s,b){ return s + (parseFloat(b.amount)||0); }, 0));
+          var remainder = round2(pay - billsTotal);
+          var short = remainder < 0;
+          var routable = Math.max(0, remainder);
+
+          /* period note */
+          $("periodNote").innerHTML = "This paycheck covers bills due <strong>" + fmtDate(payday) +
+            "</strong> up to your next payday, <strong>" + fmtDate(nxt) + "</strong>.";
+
+          /* step 2 total */
+          $("billsTotal").textContent = money(billsTotal);
+
+          /* sliders + fill */
+          ["B","C","D"].forEach(function(k){
+            var sl = $("slider"+k);
+            sl.value = split[k];
+            sl.style.setProperty("--fill", split[k] + "%");
+            $("pct"+k).textContent = split[k] + "%";
+          });
+          var sum = split.B + split.C + split.D;
+          var sc = $("splitCheck");
+          sc.innerHTML = "Split check: <strong>" + sum + "%</strong> of the " + money(routable) + " remainder is routed.";
+          sc.className = "split-check" + (sum === 100 ? "" : " bad");
+
+          /* goal-driven bucket B labels */
+          var g = GOALS[goal];
+          $("nameB").textContent = g.bName === "Debt / Reserve Fund" ? "Debt / Reserve Fund" : g.bName;
+          $("descB").textContent = g.bDesc;
+
+          /* bucket dollars — B and C rounded, D takes the residue so the total is exact */
+          var amtB = round2(routable * split.B / 100);
+          var amtC = round2(routable * split.C / 100);
+          var amtD = round2(routable - amtB - amtC);
+          $("amtA").textContent = money(Math.min(billsTotal, pay));
+          $("amtB").textContent = money(amtB);
+          $("amtC").textContent = money(amtC);
+          $("amtD").textContent = money(amtD);
+
+          /* shortfall */
+          var sf = $("shortfallBox");
+          if(short){
+            sf.className = "shortfall show";
+            sf.innerHTML = "This paycheck is <strong>" + money(Math.abs(remainder)) + " short</strong> of covering the bills due this period. " +
+              "Bucket A gets everything, and the FAQ below walks the exact order to work a shortfall.";
+          } else {
+            sf.className = "shortfall";
+            sf.innerHTML = "";
+          }
+
+          /* ---------- gauge ---------- */
+          var arc = $("gaugeArc");
+          var ARC_LEN = 251.3;
+          var color, verdict, detail, ratioTxt, pctTxt;
+          if(billsTotal <= 0){
+            ratioTxt = "∞"; pctTxt = "0%";
+            arc.style.strokeDashoffset = ARC_LEN; /* nothing owed */
+            arc.setAttribute("stroke", "#3ecf7a");
+            color = "#3ecf7a";
+            verdict = "Wide open — no bills due this period.";
+            detail = "Every dollar of this paycheck is routable. A rare free shot: push Bucket B hard.";
+          } else {
+            var ratio = pay / billsTotal;
+            var pctOfPay = Math.min(100, billsTotal / Math.max(pay, 0.01) * 100);
+            ratioTxt = ratio.toFixed(2) + "×";
+            pctTxt = Math.round(pay > 0 ? (billsTotal/pay*100) : 0) + "%";
+            arc.style.strokeDashoffset = ARC_LEN * (1 - pctOfPay/100);
+            if(ratio >= 1.25){
+              arc.setAttribute("stroke", "#3ecf7a"); color = "#3ecf7a";
+              verdict = "Cleared with room to spare.";
+              detail = "Bills take " + pctTxt + " of this check, leaving " + money(remainder) + " to route to your goal, variable costs, and pocket cash.";
+            } else if(ratio >= 1.0){
+              arc.setAttribute("stroke", "#f5c524"); color = "#f5c524";
+              verdict = "Covered — but it's tight.";
+              detail = "Bills take " + pctTxt + " of this check, leaving only " + money(remainder) + ". Keep Bucket D lean this cycle and don't let Bucket C creep.";
+            } else {
+              arc.setAttribute("stroke", "#ff5147"); color = "#ff5147";
+              verdict = "Does not clear.";
+              detail = "Bills due are " + pctTxt + " of this check — you're " + money(Math.abs(remainder)) + " short before any routing happens. Work the shortfall steps in the FAQ.";
+            }
+          }
+          $("gaugePct").textContent = pctTxt;
+          $("ratioBig").textContent = ratioTxt;
+          $("ratioBig").style.color = color;
+          $("verdict").textContent = verdict;
+          $("verdict").style.color = color;
+          $("verdictDetail").textContent = detail;
+
+          /* ---------- execution list ---------- */
+          var list = $("execList");
+          list.innerHTML = "";
+          var billNames = bills.filter(function(b){ return (parseFloat(b.amount)||0) > 0; })
+                               .map(function(b){ return b.name || "bill"; });
+          var coversTxt = billNames.length
+            ? "Covers: " + billNames.join(", ") + " — everything due before " + fmtDate(nxt) + "."
+            : "No bills entered for this period.";
+
+          var steps = [];
+          if(short){
+            steps.push({ amt: pay, text: "Transfer <span class='amt'>" + money(pay) + "</span> — your entire check — to the bills account",
+                         why: coversTxt + " Pay in due-date order; you're still " + money(Math.abs(remainder)) + " short, so call the last biller before its due date." });
+            steps.push({ amt: 0, text: "Skip Buckets B, C, and D this cycle",
+                         why: "A short paycheck routes to survival only. The goal split resumes next payday — one tight cycle beats a late fee spiral." });
+          } else {
+            steps.push({ amt: Math.min(billsTotal, pay), text: "Transfer <span class='amt'>" + money(Math.min(billsTotal, pay)) + "</span> to your bills account",
+                         why: coversTxt });
+            steps.push({ amt: amtB, text: g.verb + " <span class='amt'>" + money(amtB) + "</span> to " + g.target,
+                         why: g.why });
+            steps.push({ amt: amtC, text: "Move <span class='amt'>" + money(amtC) + "</span> to your spending account for variable costs",
+                         why: "Fuel, groceries, and weekly flex until " + fmtDate(nxt) + ". This is the money you actually live on." });
+            steps.push({ amt: amtD, text: "Move <span class='amt'>" + money(amtD) + "</span> to pocket cash — guilt-free",
+                         why: "Yours, no questions asked. When it's gone, spending stops until next payday — everything else is already handled." });
+          }
+          steps.forEach(function(s){
+            var li = document.createElement("li");
+            li.className = "exec-item";
+            li.innerHTML = "<span class='box'>✓</span><span class='exec-text'>" + s.text +
+                           "<span class='why'>" + s.why + "</span></span>";
+            li.addEventListener("click", function(){ li.classList.toggle("done"); });
+            list.appendChild(li);
+          });
+
+          $("outSub").textContent = short
+            ? "Short paycheck protocol for " + fmtDate(payday) + " — survival routing only."
+            : "Run these transfers in order when the " + fmtDate(payday) + " deposit lands. Check each one off as it clears.";
+          var assigned = short ? pay : round2(Math.min(billsTotal, pay) + amtB + amtC + amtD);
+          $("tallyVal").textContent = money(assigned) + " of " + money(pay) + " assigned";
+          $("tallyVal").className = "t-val" + (Math.abs(assigned - pay) < 0.005 ? " ok" : "");
+
+          /* stash for copy */
+          window.__execSteps = steps.map(function(s){
+            var tmp = document.createElement("div");
+            tmp.innerHTML = s.text;
+            return tmp.textContent;
+          });
+          window.__execMeta = { payday: fmtDate(payday), pay: pay, ratio: ratioTxt, verdict: verdict };
+        }
+
+        /* ---------- copy ---------- */
+        $("copyBtn").addEventListener("click", function(){
+          var meta = window.__execMeta || {};
+          var lines = ["PAYDAY TRANSFER EXECUTION LIST — " + meta.payday,
+                       "Take-home pay: " + money(meta.pay || 0) + " · Clearance ratio: " + meta.ratio + " (" + meta.verdict + ")", ""];
+          (window.__execSteps || []).forEach(function(t, i){ lines.push((i+1) + ". [ ] " + t); });
+          var text = lines.join("\n");
+          function done(){ $("copyNote").textContent = "Copied — paste it in your notes and check items off as you go."; }
+          if(navigator.clipboard && navigator.clipboard.writeText){
+            navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+          } else { fallback(); }
+          function fallback(){
+            var ta = document.createElement("textarea");
+            ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand("copy"); done(); }
+            catch(e){ $("copyNote").textContent = "Copy didn't work here — the list above is your checklist."; }
+            document.body.removeChild(ta);
+          }
+        });
+
+        renderBills();
+        render();
+      })();
+    </script>
+  </body>
+</html>

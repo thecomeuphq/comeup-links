@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Payoff vs Refinance Decision Tree</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #101010;
+        --bg-2: #161616;
+        --panel: #1c1c1c;
+        --panel-2: #232323;
+        --line: #333333;
+        --line-soft: #2a2a2a;
+        --ink: #f2ede4;
+        --ink-dim: #b9b2a4;
+        --ink-faint: #8a8478;
+        --amber: #f5a623;
+        --orange: #ff6b1a;
+        --amber-deep: #2a1e05;
+        --danger: #ff5340;
+        --danger-bg: #2b0f0b;
+        --good: #7bc96f;
+        --radius: 10px;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(255,255,255,0.018) 47px, rgba(255,255,255,0.018) 48px),
+          repeating-linear-gradient(90deg, transparent, transparent 47px, rgba(255,255,255,0.018) 47px, rgba(255,255,255,0.018) 48px),
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, sans-serif;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      .wrap {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 28px 18px 64px;
+      }
+
+      /* ---------- Header ---------- */
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--amber);
+        border: 1px solid #4a3a12;
+        background: var(--amber-deep);
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin: 0 0 16px;
+      }
+      .kicker::before {
+        content: "";
+        width: 8px; height: 8px;
+        background: var(--orange);
+        display: inline-block;
+      }
+      h1 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 700;
+        font-size: clamp(38px, 9vw, 56px);
+        line-height: 0.98;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 0 0 12px;
+      }
+      h1 .accent { color: var(--amber); }
+      .lede {
+        color: var(--ink-dim);
+        font-size: 18px;
+        margin: 0 0 28px;
+        max-width: 56ch;
+      }
+      .lede strong { color: var(--ink); }
+
+      /* ---------- Quiz card ---------- */
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-top: 4px solid var(--amber);
+        border-radius: var(--radius);
+        padding: 24px 20px 22px;
+        box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+      }
+      .progress-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-faint);
+        margin-bottom: 8px;
+      }
+      .progress-meta .now { color: var(--amber); font-weight: 700; }
+      .progress-track {
+        height: 8px;
+        background: var(--bg-2);
+        border: 1px solid var(--line-soft);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-bottom: 26px;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--amber), var(--orange));
+        transition: width 0.35s ease;
+      }
+      .node-tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--orange);
+        margin: 0 0 6px;
+      }
+      .question {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(26px, 6.4vw, 34px);
+        font-weight: 600;
+        line-height: 1.12;
+        margin: 0 0 20px;
+      }
+      .options { display: grid; gap: 12px; }
+      .option {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        width: 100%;
+        text-align: left;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+        color: var(--ink);
+        font: inherit;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .option:hover { border-color: #565656; }
+      .option:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+      .option .letter {
+        flex: 0 0 auto;
+        width: 34px; height: 34px;
+        display: grid; place-items: center;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 15px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--ink-dim);
+        background: var(--bg-2);
+      }
+      .option .opt-title {
+        display: block;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 1.25;
+      }
+      .option .opt-sub {
+        display: block;
+        color: var(--ink-dim);
+        font-size: 15px;
+        margin-top: 3px;
+        line-height: 1.45;
+      }
+      .option.selected {
+        border-color: var(--amber);
+        background: #2b2110;
+      }
+      .option.selected .letter {
+        background: var(--amber);
+        border-color: var(--amber);
+        color: #171106;
+      }
+      .nav {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .btn {
+        font-family: "Barlow Condensed", sans-serif;
+        font-weight: 600;
+        font-size: 19px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border-radius: 8px;
+        padding: 13px 22px;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        transition: background 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+      .btn-back {
+        background: transparent;
+        color: var(--ink-dim);
+      }
+      .btn-back:hover:not(:disabled) { color: var(--ink); border-color: #565656; }
+      .btn-next {
+        flex: 1;
+        background: var(--amber);
+        border-color: var(--amber);
+        color: #171106;
+      }
+      .btn-next:hover:not(:disabled) { background: #ffb83d; }
+      .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+      /* ---------- Result ---------- */
+      .result-tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--amber);
+        margin: 0 0 6px;
+      }
+      .strategy-name {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(32px, 8vw, 46px);
+        font-weight: 700;
+        line-height: 1.0;
+        text-transform: uppercase;
+        margin: 0 0 14px;
+      }
+      .strategy-summary { color: var(--ink-dim); margin: 0 0 20px; }
+      .strategy-summary strong { color: var(--ink); }
+      h3.block-head {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: 21px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin: 24px 0 10px;
+        color: var(--ink);
+      }
+      ul.fit { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+      ul.fit li {
+        position: relative;
+        padding-left: 26px;
+        color: var(--ink-dim);
+      }
+      ul.fit li::before {
+        content: "";
+        position: absolute;
+        left: 2px; top: 9px;
+        width: 9px; height: 9px;
+        background: var(--amber);
+      }
+      ul.fit li strong { color: var(--ink); }
+      ol.steps { margin: 0; padding-left: 22px; color: var(--ink-dim); display: grid; gap: 7px; }
+      ol.steps li strong { color: var(--ink); }
+      .flag {
+        border: 1px solid #6e2318;
+        background: var(--danger-bg);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        margin-bottom: 10px;
+      }
+      .flag .flag-name {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--danger);
+        margin: 0 0 4px;
+      }
+      .flag p { margin: 0; color: #e8c9c2; font-size: 15.5px; }
+      .no-flag {
+        border: 1px solid #2c4a28;
+        background: #12200f;
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        color: #cfe6c8;
+        font-size: 15.5px;
+      }
+      .no-flag strong { color: var(--good); }
+
+      .link-cards { display: grid; gap: 12px; margin-top: 6px; }
+      .link-card {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+        text-decoration: none;
+        color: var(--ink);
+        transition: border-color 0.15s ease;
+      }
+      .link-card:hover { border-color: var(--amber); }
+      .link-card:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+      .link-card .lc-badge {
+        flex: 0 0 auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 6px 8px;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .badge-free { background: var(--amber-deep); color: var(--amber); border: 1px solid #4a3a12; }
+      .badge-tool { background: #0f2033; color: #7db8f0; border: 1px solid #274a6e; }
+      .link-card .lc-title { display: block; font-weight: 700; font-size: 17.5px; line-height: 1.25; }
+      .link-card .lc-sub { display: block; color: var(--ink-dim); font-size: 14.5px; margin-top: 2px; }
+      .link-card .lc-arrow { margin-left: auto; flex: 0 0 auto; color: var(--amber); font-size: 22px; font-weight: 700; }
+      .retake-row { margin-top: 26px; }
+      .btn-retake {
+        width: 100%;
+        background: transparent;
+        color: var(--amber);
+        border: 1px solid #4a3a12;
+      }
+      .btn-retake:hover { background: var(--amber-deep); }
+
+      .screen { display: none; }
+      .screen.active { display: block; }
+
+      /* ---------- FAQ ---------- */
+      .faq { margin-top: 44px; }
+      .faq h2 {
+        font-family: "Barlow Condensed", sans-serif;
+        font-size: clamp(28px, 7vw, 38px);
+        font-weight: 700;
+        text-transform: uppercase;
+        margin: 0 0 6px;
+      }
+      .faq .faq-sub { color: var(--ink-dim); margin: 0 0 20px; }
+      .faq details {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        margin-bottom: 10px;
+      }
+      .faq summary {
+        cursor: pointer;
+        padding: 16px 18px;
+        font-weight: 700;
+        font-size: 17.5px;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after {
+        content: "+";
+        font-family: "JetBrains Mono", monospace;
+        color: var(--amber);
+        font-size: 22px;
+        font-weight: 700;
+        flex: 0 0 auto;
+      }
+      .faq details[open] summary::after { content: "–"; }
+      .faq details p {
+        margin: 0;
+        padding: 0 18px 18px;
+        color: var(--ink-dim);
+      }
+      .faq details p strong { color: var(--ink); }
+      footer {
+        margin-top: 44px;
+        color: var(--ink-faint);
+        font-size: 14px;
+        border-top: 1px solid var(--line-soft);
+        padding-top: 18px;
+      }
+      @media (min-width: 560px) {
+        .card { padding: 30px 30px 26px; }
+        .link-cards { grid-template-columns: 1fr 1fr; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .progress-fill { transition: none; }
+        .option, .btn, .link-card { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="kicker">Decision Tree · 4 Questions</p>
+      <h1>Payoff <span class="accent">vs.</span> Refinance</h1>
+      <p class="lede">Refinancing credit card debt can save you thousands — or dig the hole deeper. Answer four honest questions and get the strategy that actually fits your balance, your score, and your discipline. <strong>No sign-up. No math homework.</strong></p>
+
+      <div class="card" id="quiz-card">
+        <!-- Progress -->
+        <div id="progress-zone">
+          <div class="progress-meta">
+            <span class="now" id="step-label">Question 1 of 4</span>
+            <span id="step-name">Debt &amp; APR Check</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        </div>
+
+        <!-- Question screens (rendered by JS) -->
+        <div id="question-zone"></div>
+
+        <!-- Result screen (rendered by JS) -->
+        <div id="result-zone" class="screen"></div>
+      </div>
+
+      <!-- FAQ -->
+      <section class="faq" aria-label="Frequently asked questions">
+        <h2>Before You Move Money</h2>
+        <p class="faq-sub">Three things worth understanding before you transfer, refinance, or freeze anything.</p>
+
+        <details>
+          <summary>How do balance transfers really work?</summary>
+          <p>A balance transfer moves debt from a high-APR card to a new card offering <strong>0% APR for a promotional window</strong> — usually 12 to 21 months. You pay a one-time <strong>transfer fee of 3–5%</strong> of the balance moved. The math only works if you divide the balance by the number of promo months and pay that amount every single month. Example: a $3,600 balance on an 18-month promo means $200/month, every month, no exceptions. Miss the deadline and the remaining balance jumps to the card's regular APR — often 25% or higher — which can erase everything you saved.</p>
+        </details>
+
+        <details>
+          <summary>What is the rebound trap?</summary>
+          <p>The rebound trap is the #1 way refinancing backfires. You transfer or consolidate the balance, the old cards drop to $0, and they suddenly feel like free money again. Within a few months the old cards are charged back up — and now you owe <strong>both</strong> the transfer <em>and</em> the new spending, at two different interest rates. Refinancing doesn't fix a spending leak; it just gives the leak more room. That's why the decision tree above hard-routes anyone who can't commit to frozen cards into the snowball plan first: kill the habit, then kill the balance.</p>
+        </details>
+
+        <details>
+          <summary>When does refinancing help — and when does it hurt?</summary>
+          <p>Refinancing <strong>helps</strong> when three things line up: a high-APR balance big enough that interest is eating your payments, a credit score (roughly 680+) that qualifies you for a real 0% promo or a much lower rate, and the discipline to pay the balance off inside the promo window without adding new charges. It <strong>hurts</strong> when the balance is small (the 3–5% fee costs more than the interest you'd save), when the payoff would take longer than the promo window, or when freed-up cards become a spending relapse. In those cases, attacking the debt directly — highest APR first, or smallest balance first — is cheaper, simpler, and safer.</p>
+        </details>
+      </section>
+
+      <footer>
+        <p>This tool is educational, not financial advice. Your actual rates, promo offers, and approval odds depend on your lender and credit profile — read any transfer offer's fine print, especially the fee and what happens when the promo ends.</p>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var QUESTIONS = [
+          {
+            id: "debt",
+            tag: "Node 01 — Debt & APR Check",
+            name: "Debt & APR Check",
+            question: "What is your total credit card balance and average APR?",
+            options: [
+              {
+                value: "high",
+                title: "Over $2,000 at 20%+ APR",
+                sub: "A big balance at a punishing rate. Interest is eating a real chunk of every payment — worth evaluating a refinance or transfer."
+              },
+              {
+                value: "low",
+                title: "Under $2,000, or under 15% APR",
+                sub: "A smaller balance or a manageable rate. Transfer fees would likely cost more than the interest you'd save."
+              }
+            ]
+          },
+          {
+            id: "score",
+            tag: "Node 02 — Credit Score",
+            name: "Credit Score",
+            question: "What is your estimated credit score range?",
+            options: [
+              {
+                value: "good",
+                title: "680+ — Good / Excellent",
+                sub: "You can realistically qualify for 0% balance transfer offers and lower-rate consolidation loans."
+              },
+              {
+                value: "fair",
+                title: "Under 680 — Fair / Building",
+                sub: "Transfer approvals get shaky here, and the offers you do get tend to carry shorter promos and higher fees."
+              }
+            ]
+          },
+          {
+            id: "discipline",
+            tag: "Node 03 — Discipline Check",
+            name: "Discipline Check",
+            question: "Can you commit to NOT adding new charges once the debt is transferred or refinanced?",
+            options: [
+              {
+                value: "yes",
+                title: "Yes — the cards stay frozen",
+                sub: "Literally frozen, cut up, or locked away. The freed-up credit will not get touched until the debt is gone."
+              },
+              {
+                value: "no",
+                title: "No / honestly not sure",
+                sub: "If the old cards hit $0, there's a real chance they get used again. No judgment — this answer changes the whole plan."
+              }
+            ]
+          },
+          {
+            id: "timeline",
+            tag: "Node 04 — Timeline",
+            name: "Timeline",
+            question: "What is your target payoff timeframe?",
+            options: [
+              {
+                value: "fast",
+                title: "Under 12 months",
+                sub: "Aggressive. You can throw enough at this monthly to clear it inside a typical 0% promo window."
+              },
+              {
+                value: "steady",
+                title: "12–36 months",
+                sub: "Steady and realistic. Longer than most promo windows, which matters for whether a transfer actually pays off."
+              }
+            ]
+          }
+        ];
+
+        var STRATEGIES = {
+          transfer: {
+            name: "0% APR Balance Transfer Protocol",
+            summary: "Move the balance to a 0% promo card, then treat the promo deadline like a contract. <strong>Every dollar of interest you were paying becomes principal payoff instead.</strong> Done right, this is the fastest legal way to kill high-APR card debt.",
+            steps: [
+              "<strong>Do the promo math first:</strong> monthly payment = balance ÷ promo months. $3,600 over 18 months = $200/month. If that number doesn't fit your budget, don't transfer.",
+              "<strong>Price the fee:</strong> a 3–5% transfer fee on $3,600 is $108–$180, paid once. Compare it against the interest you'd pay staying put — at 24% APR that's roughly $70+/month. The fee usually wins, but run your own numbers.",
+              "<strong>Set autopay above the minimum</strong> for the exact promo-math amount, and calendar the promo end date the day the transfer posts.",
+              "<strong>Freeze the old cards.</strong> The transfer only works if the freed-up credit stays at $0.",
+              "<strong>Beware the deferred-interest trap:</strong> some store-card promos charge interest on the <em>original</em> balance if anything remains at the deadline. True 0% bank cards just apply regular APR to what's left — either way, a leftover balance gets expensive fast."
+            ],
+            calculator: {
+              badge: "Free Tool",
+              badgeClass: "badge-free",
+              title: "Credit Utilization Calculator",
+              sub: "See how the transfer changes your utilization — and your score — before you apply.",
+              url: "https://thecomeuphq.github.io/comeup-links/credit-utilization-calculator.html"
+            },
+            product: {
+              badge: "Planner",
+              badgeClass: "badge-tool",
+              title: "Debt Refinance & Consolidation Planner",
+              sub: "The full worksheet system for comparing offers, tracking the promo deadline, and staying on schedule.",
+              url: "https://bradley57.gumroad.com/"
+            }
+          },
+          avalanche: {
+            name: "High-APR Avalanche Blitz",
+            summary: "No new cards, no fees, no applications. <strong>Pay minimums on everything, then throw every spare dollar at the highest-APR balance</strong> until it's gone, and roll that payment down to the next one. It's the mathematically cheapest way out of card debt.",
+            steps: [
+              "<strong>List every card</strong> with its balance and APR. Rank them highest APR to lowest — that's your hit list.",
+              "<strong>Minimums on all cards, always on time.</strong> Late fees and penalty APRs will wreck the plan faster than interest will.",
+              "<strong>Attack the top APR</strong> with every extra dollar — overtime money, sold items, trimmed subscriptions.",
+              "<strong>Roll payments downhill:</strong> when a card dies, its entire payment moves to the next-highest APR. The attack gets bigger every round.",
+              "<strong>Track the interest saved.</strong> Run your numbers in the calculator below — seeing the avalanche total vs. snowball total keeps motivation honest."
+            ],
+            calculator: {
+              badge: "Free Tool",
+              badgeClass: "badge-free",
+              title: "Snowball vs Avalanche Calculator",
+              sub: "Compare both payoff orders on your real balances and see exactly what the avalanche saves you.",
+              url: "https://thecomeuphq.github.io/comeup-links/debt-snowball-vs-avalanche-calculator.html"
+            },
+            product: {
+              badge: "Planner",
+              badgeClass: "badge-tool",
+              title: "Debt Snowball vs Avalanche Battle Plan",
+              sub: "The side-by-side worksheet for mapping your payoff order and tracking every round of the fight.",
+              url: "https://bradley57.gumroad.com/l/fdjzdu"
+            }
+          },
+          snowball: {
+            name: "Freeze & Snowball Shield",
+            summary: "Your answers flagged the one risk that makes refinancing dangerous, so the plan skips it entirely. <strong>Freeze every card, pay minimums across the board, and snowball the smallest balance first</strong> for fast wins that rebuild control. Behavior first — the math follows.",
+            steps: [
+              "<strong>Freeze all cards today</strong> — literally in a block of ice, or locked in your banking apps. Out of sight, out of swipe range.",
+              "<strong>Minimums on everything,</strong> on autopay, so nothing slips while you focus.",
+              "<strong>Attack the smallest balance first</strong> with every spare dollar, regardless of APR. A card at $0 is proof the system works.",
+              "<strong>Roll each dead card's payment</strong> into the next-smallest balance. The snowball grows with every win.",
+              "<strong>Revisit refinancing later</strong> — after 3–6 months of zero new charges, you'll have earned the discipline (and likely the score) to use a transfer safely."
+            ],
+            calculator: {
+              badge: "Free Tool",
+              badgeClass: "badge-free",
+              title: "Debt Payoff Calculator",
+              sub: "Plug in your balances and extra payment to see your debt-free date with the snowball order applied.",
+              url: "https://thecomeuphq.github.io/comeup-links/debt-payoff-calculator.html"
+            },
+            product: {
+              badge: "Planner",
+              badgeClass: "badge-tool",
+              title: "Debt Payoff Tracker",
+              sub: "The printable tracker for logging every balance, every win, and every card that hits $0.",
+              url: "https://bradley57.gumroad.com/"
+            }
+          }
+        };
+
+        function decide(a) {
+          var flags = [];
+
+          if (a.score === "fair") {
+            flags.push({
+              name: "Transfer Denial Risk",
+              text: "Under 680, 0% balance transfer approvals are unreliable — and the offers that do approve tend to carry shorter promo windows and higher fees. Applying and getting denied also costs you a hard inquiry. This plan doesn't depend on anyone approving you."
+            });
+          }
+          if (a.debt === "low") {
+            flags.push({
+              name: "Fee Math Doesn't Work",
+              text: "On a balance under $2,000 (or under 15% APR), a 3–5% transfer fee can cost more than the interest you'd actually save. Paying the debt directly is the cheaper move here."
+            });
+          }
+
+          // Rule 1: rebound risk overrides everything.
+          if (a.discipline === "no") {
+            flags.unshift({
+              name: "Refinance Rebound Hazard",
+              text: "You flagged that freed-up cards might get used again. Transferring or refinancing now would likely leave you owing the new balance AND re-charged old cards. The freeze-and-snowball plan is mandatory first — no exceptions until the habit is locked down."
+            });
+            return { key: "snowball", flags: flags };
+          }
+
+          // Rule 2: the full transfer setup — 680+, high APR debt, clearable inside a promo window.
+          if (a.score === "good" && a.debt === "high" && a.timeline === "fast") {
+            return { key: "transfer", flags: flags };
+          }
+
+          // Rule 3: qualifies on paper, but the horizon outruns the promo window.
+          if (a.score === "good" && a.debt === "high" && a.timeline === "steady") {
+            flags.push({
+              name: "Promo Window Mismatch",
+              text: "A 12–36 month payoff horizon is longer than most 0% promo windows (12–21 months). Whatever's left when the promo dies jumps to 25%+ APR. The avalanche kills the same debt with zero deadline risk — and if you later shrink the timeline under 12 months, retake this tree and the transfer protocol unlocks."
+            });
+            return { key: "avalanche", flags: flags };
+          }
+
+          // Default: manual avalanche (sub-680, or balance too small for fees to make sense).
+          return { key: "avalanche", flags: flags };
+        }
+
+        function fitReasons(a, key) {
+          var reasons = [];
+          if (a.debt === "high") {
+            reasons.push("<strong>Your balance and APR:</strong> over $2,000 at 20%+ means interest is a serious monthly leak — the order and method of attack genuinely change what you'll pay in total.");
+          } else {
+            reasons.push("<strong>Your balance and APR:</strong> under $2,000 or under 15% APR, your debt is small enough that direct payoff beats any refinancing product on the market.");
+          }
+          if (a.score === "good") {
+            if (key === "snowball") {
+              reasons.push("<strong>Your credit score (680+):</strong> you qualify for the best offers on the table — but this plan holds that leverage in reserve until the freeze habit sticks. A transfer you can't trust yourself with is worse than no transfer.");
+            } else {
+              reasons.push("<strong>Your credit score (680+):</strong> you qualify for the best offers on the table — the plan uses that leverage instead of wasting it.");
+            }
+          } else {
+            reasons.push("<strong>Your credit score (under 680):</strong> you're building, so the plan relies on payments you control — not on a lender saying yes.");
+          }
+          if (a.discipline === "yes") {
+            reasons.push("<strong>Your discipline check:</strong> you committed to keeping cards frozen, which is the single behavior that separates people who escape debt from people who refinance in circles.");
+          } else {
+            reasons.push("<strong>Your discipline check:</strong> you were honest about the rebound risk — that honesty is exactly why this plan removes the temptation instead of trusting willpower.");
+          }
+          if (a.timeline === "fast") {
+            reasons.push("<strong>Your timeline (under 12 months):</strong> an aggressive payoff pace fits inside a standard 0% promo window and keeps total interest near the floor.");
+          } else {
+            reasons.push("<strong>Your timeline (12–36 months):</strong> a steady horizon favors a method with no deadlines, no promo expirations, and no cliff edges — consistency does the work.");
+          }
+          return reasons;
+        }
+
+        // ---------- State & rendering ----------
+        var state = { step: 0, answers: {}, done: false };
+
+        var questionZone = document.getElementById("question-zone");
+        var resultZone = document.getElementById("result-zone");
+        var progressZone = document.getElementById("progress-zone");
+        var stepLabel = document.getElementById("step-label");
+        var stepName = document.getElementById("step-name");
+        var progressFill = document.getElementById("progress-fill");
+
+        function esc(s) {
+          return s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+        }
+
+        function renderQuestion() {
+          var q = QUESTIONS[state.step];
+          var selected = state.answers[q.id];
+          progressZone.style.display = "";
+          resultZone.classList.remove("active");
+          resultZone.innerHTML = "";
+          questionZone.style.display = "";
+          stepLabel.textContent = "Question " + (state.step + 1) + " of 4";
+          stepName.textContent = q.name;
+          progressFill.style.width = ((state.step) / QUESTIONS.length * 100) + "%";
+
+          var html = '<p class="node-tag">' + q.tag + "</p>";
+          html += '<h2 class="question">' + q.question + "</h2>";
+          html += '<div class="options" role="radiogroup" aria-label="' + esc(q.name) + '">';
+          q.options.forEach(function (opt, i) {
+            var letter = i === 0 ? "A" : "B";
+            html += '<button type="button" class="option' + (selected === opt.value ? " selected" : "") +
+              '" data-value="' + opt.value + '" role="radio" aria-checked="' + (selected === opt.value) + '">' +
+              '<span class="letter">' + letter + "</span>" +
+              '<span><span class="opt-title">' + opt.title + "</span>" +
+              '<span class="opt-sub">' + opt.sub + "</span></span></button>";
+          });
+          html += "</div>";
+          html += '<div class="nav">' +
+            '<button type="button" class="btn btn-back" id="btn-back"' + (state.step === 0 ? " disabled" : "") + ">&larr; Back</button>" +
+            '<button type="button" class="btn btn-next" id="btn-next"' + (!selected ? " disabled" : "") + ">" +
+            (state.step === QUESTIONS.length - 1 ? "See My Strategy &rarr;" : "Next &rarr;") + "</button></div>";
+          questionZone.innerHTML = html;
+
+          var opts = questionZone.querySelectorAll(".option");
+          for (var i = 0; i < opts.length; i++) {
+            opts[i].addEventListener("click", function () {
+              state.answers[q.id] = this.getAttribute("data-value");
+              renderQuestion();
+            });
+          }
+          document.getElementById("btn-back").addEventListener("click", function () {
+            if (state.step > 0) { state.step--; renderQuestion(); }
+          });
+          document.getElementById("btn-next").addEventListener("click", function () {
+            if (!state.answers[q.id]) return;
+            if (state.step < QUESTIONS.length - 1) {
+              state.step++;
+              renderQuestion();
+            } else {
+              renderResult();
+            }
+          });
+        }
+
+        function renderResult() {
+          state.done = true;
+          var result = decide(state.answers);
+          var s = STRATEGIES[result.key];
+
+          questionZone.style.display = "none";
+          stepLabel.textContent = "Your Strategy";
+          stepName.textContent = "Decision Complete";
+          progressFill.style.width = "100%";
+
+          var html = '<p class="result-tag">Your matched strategy</p>';
+          html += '<h2 class="strategy-name">' + s.name + "</h2>";
+          html += '<p class="strategy-summary">' + s.summary + "</p>";
+
+          html += '<h3 class="block-head">Why this fits your answers</h3><ul class="fit">';
+          fitReasons(state.answers, result.key).forEach(function (r) {
+            html += "<li>" + r + "</li>";
+          });
+          html += "</ul>";
+
+          html += '<h3 class="block-head">The play, step by step</h3><ol class="steps">';
+          s.steps.forEach(function (st) { html += "<li>" + st + "</li>"; });
+          html += "</ol>";
+
+          html += '<h3 class="block-head">Risk flags</h3>';
+          if (result.flags.length) {
+            result.flags.forEach(function (f) {
+              html += '<div class="flag"><p class="flag-name">Flag — ' + f.name + "</p><p>" + f.text + "</p></div>";
+            });
+          } else {
+            html += '<div class="no-flag"><strong>No risk flags.</strong> Your answers line up clean — no denial risk, no rebound hazard, no promo-window trap. Execute the plan above and the debt is on a clock.</div>';
+          }
+
+          html += '<h3 class="block-head">Your next moves</h3><div class="link-cards">';
+          html += linkCard(s.calculator);
+          html += linkCard(s.product);
+          html += "</div>";
+
+          html += '<div class="retake-row"><button type="button" class="btn btn-retake" id="btn-retake">Retake the Decision Tree</button></div>';
+
+          resultZone.innerHTML = html;
+          resultZone.classList.add("active");
+
+          document.getElementById("btn-retake").addEventListener("click", function () {
+            state = { step: 0, answers: {}, done: false };
+            renderQuestion();
+            document.getElementById("quiz-card").scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+          document.getElementById("quiz-card").scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        function linkCard(c) {
+          return '<a class="link-card" href="' + c.url + '" target="_blank" rel="noopener">' +
+            '<span class="lc-badge ' + c.badgeClass + '">' + c.badge + "</span>" +
+            '<span><span class="lc-title">' + c.title + "</span>" +
+            '<span class="lc-sub">' + c.sub + "</span></span>" +
+            '<span class="lc-arrow">&rarr;</span></a>';
+        }
+
+        renderQuestion();
+      })();
+    </script>
+  </body>
+</html>

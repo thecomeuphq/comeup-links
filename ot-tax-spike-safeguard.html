@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>OT Tax Spike Safeguard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0b0b0d;
+        --panel: #141416;
+        --panel-2: #1b1b1f;
+        --panel-3: #222227;
+        --line: #2c2c33;
+        --line-soft: #232329;
+        --ink: #f4efe3;
+        --muted: #a8a294;
+        --faint: #6f6a5e;
+        --amber: #f6a21e;
+        --amber-soft: #ffbe4d;
+        --orange: #ff6b1a;
+        --red: #ff5030;
+        --green: #93d154;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+        --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+        --body: "Barlow", system-ui, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--body);
+        font-size: 16px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .hazard {
+        height: 10px;
+        background: repeating-linear-gradient(-45deg, var(--amber) 0 16px, #0b0b0d 16px 32px);
+      }
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 0 16px 64px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 34px 0 8px; }
+      .kicker {
+        font-family: var(--cond);
+        font-weight: 600;
+        letter-spacing: .22em;
+        font-size: 13px;
+        color: var(--amber);
+        text-transform: uppercase;
+        margin: 0 0 10px;
+      }
+      .hero h1 {
+        font-family: var(--cond);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(38px, 8.4vw, 68px);
+        line-height: .98;
+        margin: 0 0 14px;
+        letter-spacing: .01em;
+      }
+      .hero h1 .hl { color: var(--amber); }
+      .hero h1 .hl2 { color: var(--orange); }
+      .hero p.lede { font-size: 18px; color: var(--muted); max-width: 640px; margin: 0 0 20px; }
+      .hero p.lede strong { color: var(--ink); }
+      .hero-stats { display: flex; flex-wrap: wrap; gap: 10px; }
+      .hstat {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-top: 3px solid var(--amber);
+        padding: 10px 14px;
+        min-width: 150px;
+        flex: 1 1 150px;
+      }
+      .hstat .v { font-family: var(--mono); font-weight: 700; font-size: 22px; color: var(--ink); }
+      .hstat .l { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+
+      /* ---------- Sections / steps ---------- */
+      section.step { margin-top: 38px; }
+      .step-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+      .step-num {
+        font-family: var(--cond);
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: .14em;
+        color: #0b0b0d;
+        background: var(--amber);
+        padding: 3px 10px 2px;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .step-head h2 {
+        font-family: var(--cond);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: clamp(26px, 5.4vw, 36px);
+        margin: 0;
+        line-height: 1;
+      }
+      .step-sub { color: var(--muted); margin: 0 0 16px; max-width: 680px; }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 20px;
+      }
+      .grid-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+      @media (min-width: 720px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+
+      /* ---------- Controls ---------- */
+      .field { margin-bottom: 20px; }
+      .field:last-child { margin-bottom: 0; }
+      .field label {
+        display: flex; justify-content: space-between; align-items: baseline;
+        font-weight: 600; font-size: 14px; margin-bottom: 8px; gap: 10px;
+      }
+      .field label .hint { font-weight: 400; color: var(--faint); font-size: 12px; text-align: right; }
+      .ctl { display: flex; align-items: center; gap: 12px; }
+      .ctl input[type="range"] { flex: 1; accent-color: var(--amber); height: 28px; }
+      .numbox {
+        display: flex; align-items: center; gap: 4px;
+        background: var(--panel-3); border: 1px solid var(--line);
+        padding: 4px 8px; min-width: 96px;
+      }
+      .numbox .pre, .numbox .suf { font-family: var(--mono); color: var(--muted); font-size: 14px; }
+      .numbox input {
+        width: 62px; background: transparent; border: 0; outline: 0;
+        color: var(--ink); font-family: var(--mono); font-weight: 700; font-size: 17px; text-align: right;
+      }
+      .numbox input:focus { color: var(--amber-soft); }
+      .seg { display: flex; border: 1px solid var(--line); background: var(--panel-2); }
+      .seg button {
+        flex: 1; appearance: none; border: 0; background: transparent; color: var(--muted);
+        font-family: var(--body); font-weight: 600; font-size: 13.5px;
+        padding: 11px 6px; cursor: pointer; border-right: 1px solid var(--line);
+      }
+      .seg button:last-child { border-right: 0; }
+      .seg button[aria-pressed="true"] { background: var(--amber); color: #141414; }
+      .seg button:focus-visible { outline: 2px solid var(--amber-soft); outline-offset: -2px; }
+
+      /* ---------- Engine results ---------- */
+      .vs-bars { margin: 6px 0 4px; }
+      .vbar { margin-bottom: 14px; }
+      .vbar .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+      .vbar .name { font-weight: 600; font-size: 14px; }
+      .vbar .amt { font-family: var(--mono); font-weight: 700; font-size: 18px; }
+      .track { height: 22px; background: var(--panel-3); border: 1px solid var(--line-soft); position: relative; overflow: hidden; }
+      .fill { height: 100%; transition: width .45s ease; }
+      .fill.gross { background: repeating-linear-gradient(-45deg, #4a4a52 0 10px, #3c3c44 10px 20px); }
+      .fill.net { background: linear-gradient(90deg, var(--orange), var(--amber)); }
+      .drag-note { font-family: var(--mono); font-size: 13px; color: var(--red); font-weight: 600; }
+      .bigfigs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+      @media (min-width: 720px) { .bigfigs { grid-template-columns: repeat(4, 1fr); } }
+      .fig {
+        background: var(--panel-2); border: 1px solid var(--line-soft);
+        border-top: 3px solid var(--line); padding: 12px 14px;
+      }
+      .fig.hot { border-top-color: var(--red); }
+      .fig.good { border-top-color: var(--amber); }
+      .fig .v { font-family: var(--mono); font-weight: 700; font-size: clamp(20px, 4.6vw, 26px); line-height: 1.15; }
+      .fig .l { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 3px; }
+      .fig .s { font-size: 12.5px; color: var(--faint); margin-top: 4px; }
+      .explain {
+        margin-top: 16px; background: #191408; border: 1px solid #4a3608;
+        padding: 14px 16px; font-size: 14.5px; color: #e8dcc0;
+      }
+      .explain strong { color: var(--amber-soft); }
+      .explain .payroll-view { font-family: var(--mono); font-size: 13.5px; display: block; margin-top: 8px; color: var(--ink); }
+      table.breakdown { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+      table.breakdown th, table.breakdown td { padding: 7px 4px; text-align: right; border-bottom: 1px solid var(--line-soft); }
+      table.breakdown th:first-child, table.breakdown td:first-child { text-align: left; }
+      table.breakdown th { color: var(--muted); font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: .05em; }
+      table.breakdown td { font-family: var(--mono); }
+      table.breakdown td:first-child { font-family: var(--body); }
+      table.breakdown tr.total td { border-bottom: 0; border-top: 2px solid var(--line); font-weight: 700; color: var(--amber-soft); }
+
+      /* ---------- Gauge ---------- */
+      .gauge-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; }
+      .gauge-wrap svg { width: min(300px, 78vw); height: auto; }
+      .gauge-cap { color: var(--muted); font-size: 14px; max-width: 420px; margin-top: 2px; }
+      .gauge-verdict { font-family: var(--cond); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: 22px; margin-top: 6px; }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        background: var(--panel); border: 1px solid var(--line);
+        padding: 18px 20px; margin-bottom: 14px; position: relative; opacity: .62;
+      }
+      .tier.active { opacity: 1; border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
+      .tier .tag {
+        position: absolute; top: -11px; right: 14px;
+        background: var(--amber); color: #141414;
+        font-family: var(--cond); font-weight: 700; font-size: 12px; letter-spacing: .12em;
+        padding: 2px 9px; text-transform: uppercase; display: none;
+      }
+      .tier.active .tag { display: block; }
+      .tier h3 {
+        font-family: var(--cond); font-weight: 700; text-transform: uppercase;
+        font-size: 22px; margin: 0 0 2px; line-height: 1.05;
+      }
+      .tier h3 .tn { color: var(--amber); margin-right: 8px; }
+      .tier .cond-line { font-family: var(--mono); font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+      .tier p { margin: 0 0 10px; color: #d9d3c4; font-size: 15px; }
+      .tier p:last-child { margin-bottom: 0; }
+      .tier .amt-inline { font-family: var(--mono); font-weight: 700; color: var(--amber-soft); }
+      .scriptbox {
+        background: #0e0e10; border: 1px dashed #55503e; padding: 12px 14px;
+        font-size: 14px; color: #e8e2d2; margin: 10px 0; white-space: pre-wrap;
+      }
+
+      /* ---------- Buttons ---------- */
+      .btn {
+        appearance: none; border: 1px solid var(--amber); background: var(--amber);
+        color: #161616; font-family: var(--body); font-weight: 700; font-size: 14.5px;
+        padding: 11px 18px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+      }
+      .btn:hover { background: var(--amber-soft); }
+      .btn.ghost { background: transparent; color: var(--amber); }
+      .btn.ghost:hover { background: rgba(246,162,30,.12); }
+      .btn:focus-visible { outline: 2px solid var(--amber-soft); outline-offset: 2px; }
+      .btn .done { display: none; }
+      .btn.copied .done { display: inline; }
+      .btn.copied .todo { display: none; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        background: linear-gradient(180deg, #17171a, #101012);
+        border: 2px solid var(--amber);
+        padding: 0; overflow: hidden;
+      }
+      .bp-head { background: var(--amber); color: #141414; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+      .bp-head .t { font-family: var(--cond); font-weight: 700; text-transform: uppercase; font-size: clamp(20px, 5vw, 27px); letter-spacing: .03em; line-height: 1; }
+      .bp-head .idx { font-family: var(--mono); font-weight: 700; font-size: 14px; border: 2px solid #141414; padding: 3px 10px; }
+      .bp-body { padding: 20px; }
+      .bp-hero { text-align: center; padding: 6px 0 16px; border-bottom: 1px dashed var(--line); margin-bottom: 16px; }
+      .bp-hero .v { font-family: var(--mono); font-weight: 700; font-size: clamp(44px, 11vw, 64px); color: var(--amber); line-height: 1; }
+      .bp-hero .l { text-transform: uppercase; letter-spacing: .1em; font-size: 13px; color: var(--muted); margin-top: 6px; }
+      .bp-hero .s { font-size: 14px; color: var(--faint); margin-top: 2px; }
+      .bp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+      @media (min-width: 640px) { .bp-grid { grid-template-columns: repeat(4, 1fr); } }
+      .bp-cell { background: var(--panel-2); border: 1px solid var(--line-soft); padding: 10px 12px; }
+      .bp-cell .v { font-family: var(--mono); font-weight: 700; font-size: 19px; }
+      .bp-cell .l { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+      .bp-script-title { font-family: var(--cond); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: 16px; color: var(--amber); margin: 0 0 6px; }
+      .bp-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .next-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+      @media (min-width: 720px) { .next-grid { grid-template-columns: 1fr 1fr; } }
+      a.next-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--panel); border: 1px solid var(--line); padding: 18px 20px;
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card .k { font-family: var(--cond); font-weight: 600; letter-spacing: .16em; font-size: 12px; color: var(--amber); text-transform: uppercase; }
+      a.next-card h3 { font-family: var(--cond); font-weight: 700; text-transform: uppercase; font-size: 24px; margin: 4px 0 6px; }
+      a.next-card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+      a.next-card .go { color: var(--amber); font-weight: 700; }
+      .cta {
+        margin-top: 14px; background: linear-gradient(90deg, #2a1a02, #1a1206);
+        border: 1px solid var(--amber); padding: 20px;
+        display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
+      }
+      .cta p { margin: 0; font-size: 17px; font-weight: 600; max-width: 640px; }
+      .cta p span { color: var(--amber-soft); }
+      .faq { margin-top: 38px; }
+      .faq details { background: var(--panel); border: 1px solid var(--line); margin-bottom: 10px; }
+      .faq summary {
+        cursor: pointer; padding: 15px 18px; font-weight: 700; font-size: 16px; list-style: none;
+        display: flex; justify-content: space-between; gap: 10px;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; color: var(--amber); font-family: var(--mono); font-weight: 700; }
+      .faq details[open ] summary::after { content: "–"; }
+      .faq .a { padding: 0 18px 16px; color: var(--muted); font-size: 15px; }
+      .faq .a strong { color: var(--ink); }
+      footer { margin-top: 34px; color: var(--faint); font-size: 13px; border-top: 1px solid var(--line-soft); padding-top: 16px; }
+      footer p { margin: 0 0 8px; }
+      .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+      @media (prefers-reduced-motion: reduce) {
+        .fill { transition: none; }
+        html { scroll-behavior: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hazard" aria-hidden="true"></div>
+    <div class="wrap">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero">
+        <p class="kicker">Overtime Defense Engine · For 50–70+ Hour Weeks</p>
+        <h1>Your <span class="hl">65-hour week</span> paid less per hour than your <span class="hl2">40-hour week.</span></h1>
+        <p class="lede">That's not a higher tax bracket — it's a <strong>withholding spike</strong>. Payroll annualizes your one big check and taxes it like you earn that much every week. Run your numbers, find the drag, and deploy the shield.</p>
+        <div class="hero-stats" aria-label="Live headline numbers">
+          <div class="hstat"><div class="v" id="hsNetRate">$—</div><div class="l">True net OT rate / hr</div></div>
+          <div class="hstat"><div class="v" id="hsDrag">—%</div><div class="l">Withholding drag on OT</div></div>
+          <div class="hstat"><div class="v" id="hsIndex">—</div><div class="l">Net Yield Efficiency Index</div></div>
+        </div>
+      </header>
+
+      <!-- ================= STEP 1 ================= -->
+      <section class="step" aria-labelledby="s1h">
+        <div class="step-head"><span class="step-num">Step 1</span><h2 id="s1h">Blitz Snapshot</h2></div>
+        <p class="step-sub">Your normal week vs. the heavy week. Overtime is modeled at time-and-a-half (1.5×) past 40 hours.</p>
+        <div class="card">
+          <div class="field">
+            <label for="wageNum">Regular hourly wage <span class="hint">straight-time rate</span></label>
+            <div class="ctl">
+              <input type="range" id="wageRange" min="10" max="60" step="0.25" value="25" aria-label="Regular hourly wage slider" />
+              <div class="numbox"><span class="pre">$</span><input type="number" id="wageNum" min="0" step="0.25" value="25" inputmode="decimal" /><span class="suf">/hr</span></div>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="baseNum">Baseline weekly hours <span class="hint">a normal week</span></label>
+              <div class="ctl">
+                <input type="range" id="baseRange" min="30" max="45" step="1" value="40" aria-label="Baseline weekly hours slider" />
+                <div class="numbox"><input type="number" id="baseNum" min="0" max="60" step="1" value="40" inputmode="numeric" /><span class="suf">hrs</span></div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="blitzNum">Heavy OT week hours <span class="hint">the blitz week</span></label>
+              <div class="ctl">
+                <input type="range" id="blitzRange" min="41" max="84" step="1" value="65" aria-label="Heavy OT week hours slider" />
+                <div class="numbox"><input type="number" id="blitzNum" min="0" max="100" step="1" value="65" inputmode="numeric" /><span class="suf">hrs</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="weeksNum">Number of blitz weeks <span class="hint">how long the heavy schedule runs</span></label>
+            <div class="ctl">
+              <input type="range" id="weeksRange" min="1" max="12" step="1" value="4" aria-label="Number of blitz weeks slider" />
+              <div class="numbox"><input type="number" id="weeksNum" min="1" max="52" step="1" value="4" inputmode="numeric" /><span class="suf">wks</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STEP 2 ================= -->
+      <section class="step" aria-labelledby="s2h">
+        <div class="step-head"><span class="step-num">Step 2</span><h2 id="s2h">Tax Scan</h2></div>
+        <p class="step-sub">Withholding is simulated with a simplified IRS percentage method on weekly paychecks, using estimated 2026 federal brackets and standard deductions, plus FICA at 7.65%.</p>
+        <div class="card">
+          <div class="field">
+            <label>Filing status</label>
+            <div class="seg" role="group" aria-label="Filing status">
+              <button type="button" data-status="single" aria-pressed="true">Single</button>
+              <button type="button" data-status="mfj" aria-pressed="false">Married Filing Jointly</button>
+              <button type="button" data-status="hoh" aria-pressed="false">Head of Household</button>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="stateNum">State + local tax rate <span class="hint">your combined rate</span></label>
+              <div class="ctl">
+                <input type="range" id="stateRange" min="0" max="13" step="0.1" value="5" aria-label="State and local tax rate slider" />
+                <div class="numbox"><input type="number" id="stateNum" min="0" max="20" step="0.1" value="5" inputmode="decimal" /><span class="suf">%</span></div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="pretaxNum">Existing pre-tax contributions <span class="hint">401(k) / HSA / FSA per paycheck</span></label>
+              <div class="ctl">
+                <input type="range" id="pretaxRange" min="0" max="1000" step="10" value="50" aria-label="Existing pre-tax contributions slider" />
+                <div class="numbox"><span class="pre">$</span><input type="number" id="pretaxNum" min="0" step="10" value="50" inputmode="decimal" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STEP 3 ================= -->
+      <section class="step" aria-labelledby="s3h">
+        <div class="step-head"><span class="step-num">Step 3</span><h2 id="s3h">Spike Engine</h2></div>
+        <p class="step-sub">What the overtime hours on one blitz check actually pay — after payroll's annualized withholding takes its cut.</p>
+        <div class="card">
+          <div class="vs-bars">
+            <div class="vbar">
+              <div class="row"><span class="name">Gross OT pay (hours past 40)</span><span class="amt" id="grossOtAmt">$0</span></div>
+              <div class="track"><div class="fill gross" id="grossBar" style="width:100%"></div></div>
+            </div>
+            <div class="vbar">
+              <div class="row"><span class="name">Actual net OT take-home</span><span class="amt" id="netOtAmt" style="color:var(--amber)">$0</span></div>
+              <div class="track"><div class="fill net" id="netBar" style="width:0%"></div></div>
+            </div>
+            <p class="drag-note" id="dragNote">—</p>
+          </div>
+
+          <div class="bigfigs">
+            <div class="fig hot">
+              <div class="v" id="netOtRate">$0.00</div>
+              <div class="l">True net OT rate / hr</div>
+              <div class="s" id="netOtRateSub">vs. $0.00 gross OT rate</div>
+            </div>
+            <div class="fig">
+              <div class="v" id="baseNetRate">$0.00</div>
+              <div class="l">Net rate on a normal week / hr</div>
+              <div class="s" id="baseNetSub">your baseline, hour for hour</div>
+            </div>
+            <div class="fig hot">
+              <div class="v" id="dragPct">0%</div>
+              <div class="l">Combined withholding drag</div>
+              <div class="s">federal + FICA + state on OT dollars</div>
+            </div>
+            <div class="fig good">
+              <div class="v" id="shieldAmt">$0</div>
+              <div class="l">Pre-tax shield target / check</div>
+              <div class="s" id="shieldSub">extra 401(k)/HSA to flatten the spike</div>
+            </div>
+          </div>
+
+          <table class="breakdown" aria-label="Withholding breakdown on overtime dollars">
+            <thead>
+              <tr><th scope="col">Withholding on OT dollars</th><th scope="col">Normal week</th><th scope="col">Blitz week</th><th scope="col">Cost of OT</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Federal income tax</td><td id="tFedBase">$0</td><td id="tFedBlitz">$0</td><td id="tFedOt">$0</td></tr>
+              <tr><td>FICA (Social Security + Medicare)</td><td id="tFicaBase">$0</td><td id="tFicaBlitz">$0</td><td id="tFicaOt">$0</td></tr>
+              <tr><td>State + local</td><td id="tStateBase">$0</td><td id="tStateBlitz">$0</td><td id="tStateOt">$0</td></tr>
+              <tr class="total"><td>Total withheld</td><td id="tTotBase">$0</td><td id="tTotBlitz">$0</td><td id="tTotOt">$0</td></tr>
+            </tbody>
+          </table>
+
+          <div class="explain">
+            <strong>Why the big check shrinks:</strong> payroll software doesn't know this is a one-off week. It multiplies your blitz check by 52 and withholds as if you earn that pace all year — pushing the OT dollars into a higher <em>marginal</em> withholding rate for that check. You didn't change tax brackets on your annual return; it's a <strong>timing spike</strong>, and the over-withheld part comes back at filing time if your real annual income lands lower.
+            <span class="payroll-view" id="payrollView">—</span>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 300 175" role="img" aria-label="Overtime Net Yield Efficiency Index gauge">
+              <path d="M 30 160 A 120 120 0 0 1 270 160" fill="none" stroke="#26262c" stroke-width="22" />
+              <path id="gaugeArc" d="M 30 160 A 120 120 0 0 1 270 160" fill="none" stroke="#f6a21e" stroke-width="22" stroke-linecap="butt" stroke-dasharray="377" stroke-dashoffset="377" />
+              <text id="gaugeVal" x="150" y="140" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="58" fill="#f4efe3">0</text>
+              <text x="150" y="166" text-anchor="middle" font-family="Barlow, sans-serif" font-size="12" fill="#a8a294" letter-spacing="2">OUT OF 100</text>
+            </svg>
+            <div class="gauge-verdict" id="gaugeVerdict">—</div>
+            <p class="gauge-cap"><strong style="color:var(--ink)">Overtime Net Yield Efficiency Index</strong> — the share of your gross overtime pay that actually reaches your pocket on the blitz check. The rest is withholding drag you can shrink, redirect, or recover.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STEP 4 ================= -->
+      <section class="step" aria-labelledby="s4h">
+        <div class="step-head"><span class="step-num">Step 4</span><h2 id="s4h">Action Strategy</h2></div>
+        <p class="step-sub">Your drag rate picks the play. The matched tier is highlighted — the other two stay visible so you can see the whole ladder.</p>
+
+        <article class="tier" id="tier1">
+          <span class="tag">Your match</span>
+          <h3><span class="tn">Tier 1</span>Temporary Pre-Tax Shield</h3>
+          <div class="cond-line">TRIGGERS WHEN COMBINED DRAG &gt; 32%</div>
+          <p>Your withholding drag is heavy enough that the fastest fix is to shrink the check payroll sees. Temporarily raise your pre-tax 401(k) or HSA contribution by <span class="amt-inline" id="t1Shield">$0</span> per paycheck for the <span class="amt-inline" id="t1Weeks">0</span> blitz weeks. That pulls taxable wages back toward a normal week, flattens the spike, and the money lands in your retirement account instead of sitting with the IRS until refund season. <strong>Set a calendar reminder to revert the contribution when the blitz ends.</strong></p>
+          <div class="scriptbox" id="t1Script">—</div>
+          <button class="btn" type="button" data-copy="t1Script"><span class="todo">Copy the payroll script</span><span class="done">Copied ✓</span></button>
+        </article>
+
+        <article class="tier" id="tier2">
+          <span class="tag">Your match</span>
+          <h3><span class="tn">Tier 2</span>Sinking-Fund Diversion</h3>
+          <div class="cond-line">TRIGGERS WHEN COMBINED DRAG IS 22–32%</div>
+          <p>The drag is moderate, so the bigger risk isn't taxes — it's lifestyle creep eating the surplus before it does any work. Set an automatic transfer for payday: move <span class="amt-inline" id="t2Amt">$0</span> — your net OT take-home per blitz check — straight into a separate emergency / relocation buffer the morning the check lands. Over <span class="amt-inline" id="t2Weeks">0</span> blitz weeks that's <span class="amt-inline" id="t2Total">$0</span> banked before the extra money ever feels "normal."</p>
+          <p>Rule of the house: the transfer fires on payday, not at month's end with whatever is left. What's left is never anything.</p>
+        </article>
+
+        <article class="tier" id="tier3">
+          <span class="tag">Your match</span>
+          <h3><span class="tn">Tier 3</span>Max-Yield Lock</h3>
+          <div class="cond-line">TRIGGERS WHEN COMBINED DRAG IS UNDER 22%</div>
+          <p>Your withholding is already efficient — don't fix what isn't leaking. Two moves: (1) verify your W-4 matches your actual filing status and dependents so the baseline stays accurate, and (2) park the net OT surplus — about <span class="amt-inline" id="t3Total">$0</span> across this blitz — in a high-yield savings account instead of your everyday checking, where it quietly earns interest while it waits for a job to do.</p>
+          <p>Re-run this engine any time your wage, hours, or filing status changes. Efficiency is a setting, not a personality trait.</p>
+        </article>
+      </section>
+
+      <!-- ================= BLUEPRINT ================= -->
+      <section class="step" aria-labelledby="bph">
+        <div class="step-head"><span class="step-num">Output</span><h2 id="bph">Your Blueprint</h2></div>
+        <div class="blueprint" id="blueprintCard">
+          <div class="bp-head">
+            <span class="t">Overtime Net-Pay Defense Blueprint</span>
+            <span class="idx">INDEX <span id="bpIndex">—</span>/100</span>
+          </div>
+          <div class="bp-body">
+            <div class="bp-hero">
+              <div class="v" id="bpNetRate">$0.00</div>
+              <div class="l">True net OT rate — per hour past 40</div>
+              <div class="s" id="bpNetRateSub">—</div>
+            </div>
+            <div class="bp-grid">
+              <div class="bp-cell"><div class="v" id="bpGross">$0</div><div class="l">Gross OT / blitz week</div></div>
+              <div class="bp-cell"><div class="v" id="bpNet">$0</div><div class="l">Net OT / blitz week</div></div>
+              <div class="bp-cell"><div class="v" id="bpDrag">$0</div><div class="l">Withheld from OT / week</div></div>
+              <div class="bp-cell"><div class="v" id="bpShield">$0</div><div class="l">Shield target / check</div></div>
+              <div class="bp-cell"><div class="v" id="bpBlitzGross">$0</div><div class="l">Gross OT — full blitz</div></div>
+              <div class="bp-cell"><div class="v" id="bpBlitzNet">$0</div><div class="l">Net OT — full blitz</div></div>
+              <div class="bp-cell"><div class="v" id="bpTier">—</div><div class="l">Active strategy</div></div>
+              <div class="bp-cell"><div class="v" id="bpWeeks">—</div><div class="l">Blitz length</div></div>
+            </div>
+            <p class="bp-script-title">Payroll script — send to HR / payroll</p>
+            <div class="scriptbox" id="bpScript">—</div>
+            <div class="bp-actions">
+              <button class="btn" type="button" data-copy="bpScript"><span class="todo">Copy payroll script</span><span class="done">Copied ✓</span></button>
+              <button class="btn ghost" type="button" id="copyBlueprintBtn"><span class="todo">Copy full blueprint</span><span class="done">Copied ✓</span></button>
+            </div>
+            <p style="color:var(--faint); font-size:12.5px; margin:14px 0 0">Screenshot this card before the blitz starts — it's your before/after receipt. Estimates only; see the disclaimer below.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= NEXT STEPS ================= -->
+      <section class="step" aria-labelledby="nxh">
+        <div class="step-head"><span class="step-num">Next</span><h2 id="nxh">Keep the Defense Going</h2></div>
+        <div class="next-grid">
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/ot-yield-maximizer.html" target="_blank" rel="noopener">
+            <span class="k">Companion tool</span>
+            <h3>OT Yield Maximizer</h3>
+            <p>Now that the spike is shielded, squeeze the gross side: which extra hours, differentials, and shift picks actually pay the most per hour of your life. <span class="go">Open it →</span></p>
+          </a>
+          <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/tax-withholding-safeguard.html" target="_blank" rel="noopener">
+            <span class="k">Companion tool</span>
+            <h3>Tax Withholding Safeguard</h3>
+            <p>Check your year-round withholding — not just blitz weeks — so you stop lending the IRS money interest-free or owing a surprise bill in April. <span class="go">Open it →</span></p>
+          </a>
+        </div>
+        <div class="cta">
+          <p>Keep more of every overtime hour — the <span>Overtime &amp; Shift Worker Cash Flow Log</span> and <span>Zero-Based Budgeting Binder</span> on Gumroad.</p>
+          <a class="btn" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get them on Gumroad</a>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section class="faq" aria-labelledby="faqh">
+        <div class="step-head"><span class="step-num">FAQ</span><h2 id="faqh">Straight Answers</h2></div>
+        <details>
+          <summary>Does overtime push me into a higher tax bracket?</summary>
+          <div class="a"><strong>No.</strong> Tax brackets are <em>marginal</em>: only the dollars above a bracket line are taxed at the higher rate — never your whole check. What actually happens on a blitz week is a <strong>withholding</strong> spike: payroll annualizes that one big check and withholds as if you earned that pace all year. Your real annual tax is figured on your real annual income when you file.</div>
+        </details>
+        <details>
+          <summary>Will I get the extra withholding back at tax time?</summary>
+          <div class="a"><strong>Yes — if you over-withheld, it comes back as part of your refund</strong> (or reduces what you owe). Withholding is a prepayment, not a final bill. The catch is timing: the IRS holds that money interest-free for months. The pre-tax shield in Tier 1 keeps more of it in your paycheck — and in your 401(k) — right now instead of next spring.</div>
+        </details>
+        <details>
+          <summary>Should I change my W-4 for one overtime blitz?</summary>
+          <div class="a"><strong>Usually no.</strong> Rewriting your W-4 for a few heavy weeks risks under-withholding the rest of the year, and many payroll departments process W-4 changes slowly. A temporary pre-tax contribution bump is the cleaner lever: it lowers the taxable wages payroll sees during the blitz, then you revert it when the schedule ends — no changes to your baseline withholding setup.</div>
+        </details>
+        <details>
+          <summary>Does a 401(k) contribution dodge FICA too?</summary>
+          <div class="a"><strong>No.</strong> 401(k) deferrals skip federal and (in most states) state income tax, but Social Security and Medicare still apply. An HSA contribution made through your employer's cafeteria plan is the exception — it skips income tax <em>and</em> FICA. Either way, this engine's shield math uses your combined federal + state marginal rate, so the estimate stays honest.</div>
+        </details>
+      </section>
+
+      <footer>
+        <p><strong style="color:var(--muted)">How the estimate works:</strong> weekly paychecks; OT at 1.5× past 40 hours; federal withholding simulated with a simplified IRS percentage method using estimated 2026 brackets and standard deductions (Single $16,100 · MFJ $32,200 · Head of Household $24,150); FICA at a flat 7.65%; state/local at the rate you enter. Real paychecks vary with pay frequency, other deductions, credits, and employer payroll settings.</p>
+        <p>Educational information only — not tax, legal, or financial advice. For decisions about your W-4, 401(k), or HSA, talk to a qualified tax professional or your payroll department.</p>
+      </footer>
+    </div>
+    <div class="hazard" aria-hidden="true"></div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        /* ---- 2026 estimated federal data ---- */
+        var TAX = {
+          single: { sd: 16100, label: "Single", brackets: [[12400, .10], [50400, .12], [105700, .22], [201775, .24], [256225, .32], [640600, .35], [Infinity, .37]] },
+          mfj:    { sd: 32200, label: "Married Filing Jointly", brackets: [[24800, .10], [100800, .12], [211400, .22], [403550, .24], [512450, .32], [768700, .35], [Infinity, .37]] },
+          hoh:    { sd: 24150, label: "Head of Household", brackets: [[17700, .10], [67450, .12], [105700, .22], [201750, .24], [256200, .32], [640600, .35], [Infinity, .37]] }
+        };
+        var FICA = 0.0765;
+        var DEFERRAL_LIMIT_2026 = 24500; /* under-50 elective deferral limit */
+
+        var state = { status: "single" };
+
+        function $(id) { return document.getElementById(id); }
+        function num(id) { var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
+        function money(v, dec) {
+          var d = (dec === undefined) ? 0 : dec;
+          return "$" + v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+        }
+
+        /* Annual federal tax on a given taxable income (after std deduction). */
+        function annualTax(taxable, brackets) {
+          var tax = 0, prev = 0;
+          for (var i = 0; i < brackets.length; i++) {
+            var cap = brackets[i][0], rate = brackets[i][1];
+            if (taxable > prev) { tax += (Math.min(taxable, cap) - prev) * rate; prev = cap; }
+            else break;
+          }
+          return tax;
+        }
+        /* Simplified IRS percentage method: annualize the weekly check. */
+        function weeklyFedWithholding(taxableWeekly, st) {
+          var t = TAX[st];
+          var annual = Math.max(0, taxableWeekly * 52 - t.sd);
+          return annualTax(annual, t.brackets) / 52;
+        }
+        /* Marginal federal rate at an annualized income level. */
+        function marginalRate(annualizedTaxable, st) {
+          var t = TAX[st], income = Math.max(0, annualizedTaxable - t.sd), prev = 0;
+          for (var i = 0; i < t.brackets.length; i++) {
+            if (income <= t.brackets[i][0]) return t.brackets[i][1];
+            prev = t.brackets[i][0];
+          }
+          return 0.37;
+        }
+
+        function bindPair(rangeId, numId) {
+          var r = $(rangeId), n = $(numId);
+          r.addEventListener("input", function () { n.value = r.value; compute(); });
+          n.addEventListener("input", function () {
+            var v = parseFloat(n.value);
+            if (!isNaN(v)) { r.value = v; }
+            compute();
+          });
+        }
+        bindPair("wageRange", "wageNum");
+        bindPair("baseRange", "baseNum");
+        bindPair("blitzRange", "blitzNum");
+        bindPair("weeksRange", "weeksNum");
+        bindPair("stateRange", "stateNum");
+        bindPair("pretaxRange", "pretaxNum");
+
+        var segBtns = document.querySelectorAll(".seg button");
+        segBtns.forEach(function (b) {
+          b.addEventListener("click", function () {
+            segBtns.forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
+            b.setAttribute("aria-pressed", "true");
+            state.status = b.getAttribute("data-status");
+            compute();
+          });
+        });
+
+        function payrollScript(shield, existing, weeks) {
+          return "Hi Payroll Team — I'm picking up heavy overtime for the next " + weeks +
+            " week" + (weeks === 1 ? "" : "s") +
+            " and I'd like to temporarily increase my pre-tax 401(k) contribution by " + money(shield) +
+            " per paycheck (on top of my current " + money(existing) + " per paycheck), starting with the next pay period. " +
+            "Once the overtime schedule ends, please return my contribution to " + money(existing) +
+            " per paycheck. Can you confirm the change and the date it takes effect? Thank you!";
+        }
+
+        function compute() {
+          var wage = Math.max(0, num("wageNum"));
+          var baseHrs = Math.max(0, num("baseNum"));
+          var blitzHrs = Math.max(0, num("blitzNum"));
+          var weeks = Math.max(1, Math.round(num("weeksNum")));
+          var stateRate = Math.min(30, Math.max(0, num("stateNum"))) / 100;
+          var pretax = Math.max(0, num("pretaxNum"));
+          var st = state.status;
+
+          var otHours = Math.max(0, blitzHrs - 40);
+          var baseGross = baseHrs * wage;
+          var blitzGross = Math.min(blitzHrs, 40) * wage + otHours * wage * 1.5;
+          var otGross = blitzGross - Math.min(blitzHrs, 40) * wage; /* premium hours only, past 40 */
+          /* OT gross = pay attributable to hours past 40 */
+          otGross = otHours * wage * 1.5;
+
+          var baseTaxable = Math.max(0, baseGross - pretax);
+          var blitzTaxable = Math.max(0, blitzGross - pretax);
+
+          var fedBase = weeklyFedWithholding(baseTaxable, st);
+          var fedBlitz = weeklyFedWithholding(blitzTaxable, st);
+          var ficaBase = baseGross * FICA, ficaBlitz = blitzGross * FICA;
+          var stBase = baseGross * stateRate, stBlitz = blitzGross * stateRate;
+
+          var totBase = fedBase + ficaBase + stBase;
+          var totBlitz = fedBlitz + ficaBlitz + stBlitz;
+
+          var fedOt = fedBlitz - fedBase;
+          var ficaOt = otGross * FICA;
+          var stOt = otGross * stateRate;
+          var totOt = fedOt + ficaOt + stOt;
+
+          var netOt = otGross - totOt;
+          var drag = otGross > 0 ? (totOt / otGross) : 0;
+          var netOtRate = otHours > 0 ? netOt / otHours : 0;
+          var grossOtRate = wage * 1.5;
+          var baseNet = baseGross - totBase;
+          var baseNetRate = baseHrs > 0 ? baseNet / baseHrs : 0;
+          var index = otGross > 0 ? Math.round(Math.max(0, Math.min(100, (netOt / otGross) * 100))) : 100;
+
+          /* Shield: extra pre-tax per check that pulls taxable wages back to a normal week,
+             capped by remaining 2026 deferral room spread across the blitz. */
+          var rawShield = Math.max(0, blitzTaxable - baseTaxable);
+          var annualExisting = pretax * 52;
+          var roomPerCheck = Math.max(0, (DEFERRAL_LIMIT_2026 - annualExisting)) / weeks;
+          var shield = Math.min(rawShield, roomPerCheck);
+          var fedMarginalOnOt = marginalRate(blitzTaxable * 52, st);
+          /* Actual withholding saved = recompute federal withholding at the shielded
+             taxable wage (the shield drops the bracket too), plus state on the shield. */
+          var shieldedTaxable = Math.max(0, blitzTaxable - shield);
+          var shieldSave = (fedBlitz - weeklyFedWithholding(shieldedTaxable, st)) + shield * stateRate;
+
+          /* ---- Hero stats ---- */
+          $("hsNetRate").textContent = otHours > 0 ? money(netOtRate, 2) : "—";
+          $("hsDrag").textContent = otHours > 0 ? Math.round(drag * 100) + "%" : "—%";
+          $("hsIndex").textContent = otHours > 0 ? index : "—";
+
+          /* ---- Step 3 bars + figures ---- */
+          $("grossOtAmt").textContent = money(otGross);
+          $("netOtAmt").textContent = money(netOt);
+          $("netBar").style.width = (otGross > 0 ? Math.max(0, (netOt / otGross) * 100) : 0) + "%";
+          $("dragNote").textContent = otHours > 0
+            ? "▼ " + money(totOt) + " withheld from the OT alone — " + Math.round(drag * 100) + "¢ of every OT dollar never reaches the check."
+            : "No overtime hours in this scenario — raise the blitz week past 40 hours to see the spike.";
+          $("netOtRate").textContent = money(netOtRate, 2);
+          $("netOtRateSub").textContent = "vs. " + money(grossOtRate, 2) + " gross OT rate · base wage " + money(wage, 2);
+          $("baseNetRate").textContent = money(baseNetRate, 2);
+          $("baseNetSub").textContent = money(baseNet) + " net on a " + baseHrs + "-hr week";
+          $("dragPct").textContent = Math.round(drag * 100) + "%";
+          $("shieldAmt").textContent = money(shield);
+          $("shieldSub").textContent = shield > 0
+            ? "saves ≈ " + money(shieldSave) + " of withholding per check, into your 401(k) instead"
+            : "no spike to shield at these numbers";
+
+          /* ---- Breakdown table ---- */
+          $("tFedBase").textContent = money(fedBase); $("tFedBlitz").textContent = money(fedBlitz); $("tFedOt").textContent = money(fedOt);
+          $("tFicaBase").textContent = money(ficaBase); $("tFicaBlitz").textContent = money(ficaBlitz); $("tFicaOt").textContent = money(ficaOt);
+          $("tStateBase").textContent = money(stBase); $("tStateBlitz").textContent = money(stBlitz); $("tStateOt").textContent = money(stOt);
+          $("tTotBase").textContent = money(totBase); $("tTotBlitz").textContent = money(totBlitz); $("tTotOt").textContent = money(totOt);
+
+          /* ---- Payroll's point of view ---- */
+          $("payrollView").textContent = otHours > 0
+            ? "Payroll's view this week: this check annualizes to " + money(blitzTaxable * 52) +
+              "/yr (vs. " + money(baseTaxable * 52) + "/yr on a normal week) — so it withholds like you're a " +
+              money(blitzTaxable * 52) + "-a-year earner, at a " + Math.round(fedMarginalOnOt * 100) + "% top federal rate."
+            : "";
+
+          /* ---- Gauge ---- */
+          var arcLen = 377; /* semicircle r=120 */
+          $("gaugeArc").style.strokeDashoffset = arcLen - (arcLen * index / 100);
+          $("gaugeArc").setAttribute("stroke", index >= 75 ? "#93d154" : (index >= 62 ? "#f6a21e" : "#ff5030"));
+          $("gaugeVal").textContent = index;
+          $("gaugeVerdict").textContent =
+            index >= 80 ? "Tight ship — most of the sweat lands." :
+            index >= 68 ? "Solid, with a leak worth plugging." :
+            index >= 55 ? "Heavy drag — the shield earns its keep." :
+                          "Severe drag — shield first, spend later.";
+          $("gaugeVerdict").style.color =
+            index >= 75 ? "var(--green)" : (index >= 62 ? "var(--amber)" : "var(--red)");
+
+          /* ---- Tiers ---- */
+          var dragPctVal = drag * 100;
+          var active = dragPctVal > 32 ? 1 : (dragPctVal >= 22 ? 2 : 3);
+          [1, 2, 3].forEach(function (n) {
+            $("tier" + n).classList.toggle("active", n === active);
+          });
+          var script = payrollScript(shield, pretax, weeks);
+          $("t1Shield").textContent = money(shield);
+          $("t1Weeks").textContent = weeks;
+          $("t1Script").textContent = script;
+          $("t2Amt").textContent = money(netOt);
+          $("t2Weeks").textContent = weeks;
+          $("t2Total").textContent = money(netOt * weeks);
+          $("t3Total").textContent = money(netOt * weeks);
+
+          /* ---- Blueprint ---- */
+          $("bpIndex").textContent = index;
+          $("bpNetRate").textContent = money(netOtRate, 2);
+          $("bpNetRateSub").textContent = otHours > 0
+            ? "Gross OT rate " + money(grossOtRate, 2) + "/hr · base wage " + money(wage, 2) + "/hr · normal-week net rate " + money(baseNetRate, 2) + "/hr"
+            : "No overtime in this scenario";
+          $("bpGross").textContent = money(otGross);
+          $("bpNet").textContent = money(netOt);
+          $("bpDrag").textContent = money(totOt) + " (" + Math.round(dragPctVal) + "%)";
+          $("bpShield").textContent = money(shield);
+          $("bpBlitzGross").textContent = money(otGross * weeks);
+          $("bpBlitzNet").textContent = money(netOt * weeks);
+          $("bpTier").textContent = "Tier " + active;
+          $("bpWeeks").textContent = weeks + (weeks === 1 ? " week" : " weeks");
+          $("bpScript").textContent = script;
+
+          /* stash for full-blueprint copy */
+          window.__blueprintText =
+            "OVERTIME NET-PAY DEFENSE BLUEPRINT\n" +
+            "True net OT rate: " + money(netOtRate, 2) + "/hr (gross OT rate " + money(grossOtRate, 2) + "/hr, base wage " + money(wage, 2) + "/hr)\n" +
+            "Gross OT per blitz week: " + money(otGross) + " → Net OT: " + money(netOt) + "\n" +
+            "Withholding drag on OT: " + Math.round(dragPctVal) + "% (" + money(totOt) + "/week)\n" +
+            "Net Yield Efficiency Index: " + index + "/100\n" +
+            "Pre-tax shield target: " + money(shield) + " extra per paycheck\n" +
+            "Full blitz (" + weeks + " weeks): " + money(otGross * weeks) + " gross OT → " + money(netOt * weeks) + " net OT\n" +
+            "Active strategy: Tier " + active + "\n\n" +
+            "PAYROLL SCRIPT:\n" + script;
+        }
+
+        /* ---- Copy buttons ---- */
+        function flashCopied(btn) {
+          btn.classList.add("copied");
+          setTimeout(function () { btn.classList.remove("copied"); }, 1800);
+        }
+        function copyText(text, btn) {
+          function done() { if (btn) flashCopied(btn); }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand("copy"); done(); } catch (e) { /* clipboard unavailable */ }
+            document.body.removeChild(ta);
+          }
+        }
+        document.querySelectorAll("[data-copy]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            copyText($(btn.getAttribute("data-copy")).textContent, btn);
+          });
+        });
+        $("copyBlueprintBtn").addEventListener("click", function () {
+          copyText(window.__blueprintText || "", this);
+        });
+
+        compute();
+      })();
+    </script>
+  </body>
+</html>

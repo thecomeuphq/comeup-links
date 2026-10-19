@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="data:," />
+    <title>Legal Fee Shield</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0c0c0e;
+        --bg-2: #131316;
+        --panel: #17171b;
+        --panel-2: #1d1d22;
+        --line: #2b2b31;
+        --line-soft: #232329;
+        --ink: #f2f0ea;
+        --ink-2: #b8b4a9;
+        --ink-3: #7d7a72;
+        --amber: #f5a623;
+        --orange: #ff6b1a;
+        --amber-dim: rgba(245, 166, 35, 0.12);
+        --red: #ff4d42;
+        --red-dim: rgba(255, 77, 66, 0.12);
+        --green: #4ade80;
+        --green-dim: rgba(74, 222, 128, 0.12);
+        --hazard: repeating-linear-gradient(
+          -45deg,
+          var(--amber) 0 14px,
+          #101010 14px 28px
+        );
+        --radius: 10px;
+        --font-body: "Barlow", system-ui, sans-serif;
+        --font-display: "Barlow Condensed", "Barlow", sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 16px 64px;
+      }
+
+      /* ---------- Hero ---------- */
+      .hero {
+        padding: 34px 0 8px;
+      }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--amber);
+        border: 1px solid var(--amber);
+        padding: 5px 10px;
+        border-radius: 4px;
+      }
+      .hero-tag::before {
+        content: "";
+        width: 7px; height: 7px;
+        background: var(--amber);
+        border-radius: 50%;
+      }
+      h1 {
+        font-family: var(--font-display);
+        font-size: clamp(40px, 9.5vw, 62px);
+        line-height: 0.98;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+        margin: 18px 0 12px;
+      }
+      h1 .hl { color: var(--amber); }
+      .hero-sub {
+        font-size: 17px;
+        color: var(--ink-2);
+        max-width: 56ch;
+        margin: 0 0 20px;
+      }
+      .hero-sub strong { color: var(--ink); }
+      .hazard-bar {
+        height: 10px;
+        background: var(--hazard);
+        border-radius: 2px;
+        margin: 22px 0 4px;
+        opacity: 0.92;
+      }
+
+      /* ---------- Steps ---------- */
+      .step {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        margin-top: 22px;
+        overflow: hidden;
+      }
+      .step-head {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        padding: 16px 18px 4px;
+      }
+      .step-num {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        color: #101010;
+        background: var(--amber);
+        padding: 3px 8px;
+        border-radius: 3px;
+        white-space: nowrap;
+      }
+      .step-title {
+        font-family: var(--font-display);
+        font-size: 26px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin: 0;
+      }
+      .step-desc {
+        color: var(--ink-2);
+        font-size: 14.5px;
+        margin: 2px 18px 14px 18px;
+      }
+      .step-body { padding: 2px 18px 20px; }
+
+      label.field-label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 16px 0 8px;
+      }
+      label.field-label:first-child { margin-top: 4px; }
+
+      /* choice chips */
+      .chips {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      @media (max-width: 480px) { .chips { grid-template-columns: 1fr; } }
+      .chip {
+        appearance: none;
+        text-align: left;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px 13px;
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        line-height: 1.3;
+      }
+      .chip small {
+        display: block;
+        font-weight: 400;
+        font-size: 12.5px;
+        color: var(--ink-2);
+        margin-top: 3px;
+      }
+      .chip[aria-pressed="true"] {
+        border-color: var(--amber);
+        background: var(--amber-dim);
+        box-shadow: inset 0 0 0 1px var(--amber);
+      }
+      .chip:focus-visible, .seg button:focus-visible, input:focus-visible,
+      .copy-btn:focus-visible, a.next-card:focus-visible {
+        outline: 2px solid var(--amber);
+        outline-offset: 2px;
+      }
+
+      /* money inputs */
+      .money {
+        display: flex;
+        align-items: center;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .money span {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--amber);
+        padding: 0 4px 0 14px;
+        font-size: 18px;
+      }
+      .money input {
+        flex: 1;
+        min-width: 0;
+        background: transparent;
+        border: 0;
+        color: var(--ink);
+        font-family: var(--font-mono);
+        font-size: 19px;
+        font-weight: 700;
+        padding: 13px 12px 13px 2px;
+      }
+      .money input::placeholder { color: var(--ink-3); font-weight: 500; }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 480px) { .grid-2 { grid-template-columns: 1fr; } }
+      .num-field input {
+        width: 100%;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        font-family: var(--font-mono);
+        font-size: 18px;
+        font-weight: 700;
+        padding: 12px;
+      }
+      .num-field .unit {
+        font-size: 12px;
+        color: var(--ink-3);
+        margin-top: 5px;
+      }
+
+      /* segmented control */
+      .seg {
+        display: flex;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 4px;
+        gap: 4px;
+      }
+      .seg button {
+        flex: 1;
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: var(--ink-2);
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 14.5px;
+        padding: 9px 6px;
+        border-radius: 6px;
+        cursor: pointer;
+        line-height: 1.25;
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--amber);
+        color: #141005;
+      }
+      .seg button small { display: block; font-size: 11.5px; font-weight: 500; opacity: 0.85; }
+      .seg.impact button[data-val="high"][aria-pressed="true"] { background: var(--red); color: #fff; }
+      .seg.impact button[data-val="moderate"][aria-pressed="true"] { background: var(--amber); color: #141005; }
+      .seg.impact button[data-val="low"][aria-pressed="true"] { background: var(--green); color: #0a1f12; }
+
+      /* ---------- Bridge results ---------- */
+      .results {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+      }
+      @media (max-width: 560px) { .results { grid-template-columns: 1fr; } }
+      .result-cell {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+      }
+      .result-cell .r-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: 6px;
+      }
+      .result-cell .r-value {
+        font-family: var(--font-mono);
+        font-size: 27px;
+        font-weight: 700;
+        line-height: 1.05;
+      }
+      .result-cell .r-note { font-size: 12.5px; color: var(--ink-2); margin-top: 6px; }
+      .r-value.danger { color: var(--red); }
+      .r-value.warn { color: var(--amber); }
+      .r-value.good { color: var(--green); }
+
+      .bridge-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      @media (max-width: 560px) { .bridge-controls { grid-template-columns: 1fr; } }
+      .bridge-controls .field-label { margin-top: 0; }
+      .payday-line {
+        margin-top: 14px;
+        font-size: 14px;
+        color: var(--ink-2);
+        background: var(--amber-dim);
+        border: 1px dashed var(--amber);
+        border-radius: 8px;
+        padding: 11px 13px;
+      }
+      .payday-line strong { color: var(--ink); }
+
+      /* ---------- Index gauge ---------- */
+      .index-block {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        margin-top: 20px;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+      }
+      @media (max-width: 480px) { .index-block { flex-direction: column; align-items: stretch; } }
+      .gauge { flex: none; text-align: center; }
+      .gauge svg { display: block; margin: 0 auto; }
+      .gauge-score {
+        font-family: var(--font-mono);
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .gauge-max { font-size: 12px; color: var(--ink-3); font-family: var(--font-mono); }
+      .index-copy h3 {
+        font-family: var(--font-display);
+        text-transform: uppercase;
+        font-size: 21px;
+        margin: 0 0 4px;
+        letter-spacing: 0.02em;
+      }
+      .index-copy p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+      .index-rating {
+        display: inline-block;
+        margin-top: 8px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 4px 9px;
+        border-radius: 4px;
+      }
+      .rating-critical { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+      .rating-risk { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+      .rating-stable { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+      .rating-protected { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+
+      /* ---------- Tiers ---------- */
+      .tier {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel-2);
+        margin-top: 10px;
+        overflow: hidden;
+      }
+      .tier.active { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
+      .tier.active.tier-1 { border-color: var(--red); box-shadow: 0 0 0 1px var(--red); }
+      .tier-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 14px;
+        flex-wrap: wrap;
+      }
+      .tier-badge {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        padding: 4px 8px;
+        border-radius: 3px;
+        background: var(--bg-2);
+        color: var(--ink-2);
+        border: 1px solid var(--line);
+        white-space: nowrap;
+      }
+      .tier-1 .tier-badge { color: var(--red); border-color: var(--red); }
+      .tier-2 .tier-badge { color: var(--amber); border-color: var(--amber); }
+      .tier-3 .tier-badge { color: var(--green); border-color: var(--green); }
+      .tier-name {
+        font-family: var(--font-display);
+        font-size: 21px;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin: 0;
+        flex: 1;
+      }
+      .tier-status {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+      }
+      .tier.active .tier-status { color: var(--amber); }
+      .tier.active.tier-1 .tier-status { color: var(--red); }
+      .tier-body { padding: 0 14px 16px; color: var(--ink-2); font-size: 14.5px; }
+      .tier-body p { margin: 0 0 10px; }
+      .tier-body p strong { color: var(--ink); }
+      .tier-body ul { margin: 0 0 10px; padding-left: 20px; }
+      .tier-body li { margin-bottom: 5px; }
+      .tier:not(.active) .tier-body { display: none; }
+
+      .script-box {
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        line-height: 1.65;
+        color: var(--ink);
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin: 10px 0;
+      }
+      .copy-btn {
+        appearance: none;
+        border: 1px solid var(--amber);
+        background: var(--amber);
+        color: #141005;
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 14px;
+        padding: 10px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+      }
+      .copy-btn.ghost { background: transparent; color: var(--amber); }
+      .copy-btn:active { transform: translateY(1px); }
+      .copy-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+      .copy-ok { font-size: 13px; color: var(--green); font-weight: 600; visibility: hidden; }
+      .copy-ok.show { visibility: visible; }
+
+      table.alloc {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin: 8px 0 4px;
+      }
+      table.alloc th, table.alloc td {
+        text-align: left;
+        padding: 7px 8px;
+        border-bottom: 1px solid var(--line-soft);
+      }
+      table.alloc th {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+      }
+      table.alloc td.amt { font-family: var(--font-mono); font-weight: 700; color: var(--ink); text-align: right; }
+      table.alloc th.amt { text-align: right; }
+
+      /* ---------- Blueprint ---------- */
+      .blueprint {
+        margin-top: 26px;
+        background: var(--panel);
+        border: 2px solid var(--amber);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .blueprint-top {
+        background: var(--hazard);
+        height: 12px;
+      }
+      .blueprint-inner { padding: 20px 20px 22px; }
+      .blueprint-kicker {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--amber);
+      }
+      .blueprint h2 {
+        font-family: var(--font-display);
+        font-size: 32px;
+        text-transform: uppercase;
+        margin: 4px 0 16px;
+        line-height: 1;
+      }
+      .bp-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      @media (max-width: 480px) { .bp-grid { grid-template-columns: 1fr; } }
+      .bp-cell {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px 13px;
+      }
+      .bp-cell .b-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+      }
+      .bp-cell .b-value { font-family: var(--font-mono); font-size: 20px; font-weight: 700; }
+      .bp-cell .b-value.small { font-size: 15px; font-family: var(--font-body); font-weight: 600; }
+      .bp-script-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 16px 0 6px;
+      }
+      .blueprint .script-box { margin: 0 0 12px; }
+      .bp-foot {
+        margin-top: 14px;
+        font-size: 12.5px;
+        color: var(--ink-3);
+      }
+
+      /* ---------- Next steps / CTA / FAQ ---------- */
+      .section-title {
+        font-family: var(--font-display);
+        font-size: 26px;
+        text-transform: uppercase;
+        margin: 34px 0 12px;
+        letter-spacing: 0.02em;
+      }
+      .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      @media (max-width: 560px) { .next-grid { grid-template-columns: 1fr; } }
+      a.next-card {
+        display: block;
+        text-decoration: none;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+        color: var(--ink);
+      }
+      a.next-card:hover { border-color: var(--amber); }
+      a.next-card .nc-kicker {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--amber);
+      }
+      a.next-card h3 {
+        font-family: var(--font-display);
+        font-size: 22px;
+        text-transform: uppercase;
+        margin: 5px 0 5px;
+      }
+      a.next-card p { margin: 0; color: var(--ink-2); font-size: 14px; }
+      a.next-card .nc-arrow { color: var(--amber); font-weight: 700; }
+
+      .cta {
+        margin-top: 22px;
+        background: var(--amber-dim);
+        border: 1px solid var(--amber);
+        border-radius: var(--radius);
+        padding: 18px;
+      }
+      .cta h3 {
+        font-family: var(--font-display);
+        font-size: 24px;
+        text-transform: uppercase;
+        margin: 0 0 6px;
+      }
+      .cta p { margin: 0 0 14px; color: var(--ink-2); font-size: 15px; }
+      .cta a {
+        display: inline-block;
+        background: var(--amber);
+        color: #141005;
+        text-decoration: none;
+        font-weight: 700;
+        padding: 11px 18px;
+        border-radius: 7px;
+        font-size: 15px;
+      }
+
+      .faq-item {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        margin-top: 10px;
+      }
+      .faq-item summary {
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 15px 16px;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+      }
+      .faq-item summary::-webkit-details-marker { display: none; }
+      .faq-item summary::after { content: "+"; color: var(--amber); font-family: var(--font-mono); font-weight: 700; font-size: 20px; }
+      .faq-item[open ] summary::after { content: "–"; }
+      .faq-item .faq-body { padding: 0 16px 16px; color: var(--ink-2); font-size: 14.5px; }
+      .faq-item .faq-body p { margin: 0 0 8px; }
+      .faq-item .faq-body p:last-child { margin-bottom: 0; }
+      .faq-item .faq-body strong { color: var(--ink); }
+
+      .disclaimer {
+        margin-top: 26px;
+        border: 1px dashed var(--line);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        color: var(--ink-3);
+        font-size: 13px;
+      }
+      .disclaimer strong { color: var(--ink-2); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <header class="hero">
+        <span class="hero-tag">Legal Triage · For Shift Workers</span>
+        <h1>A $900 ticket can cost you <span class="hl">your job.</span><br />Here's the plan before it does.</h1>
+        <p class="hero-sub">A warrant, a suspended license, or a garnishment doesn't just drain your wallet — it kills your shifts. Run the numbers below and walk away with a <strong>per-paycheck payoff plan</strong> and the exact words to say to the court clerk.</p>
+        <div class="hazard-bar" aria-hidden="true"></div>
+      </header>
+
+      <!-- STEP 1 -->
+      <section class="step" aria-labelledby="s1-title">
+        <div class="step-head">
+          <span class="step-num">STEP 1</span>
+          <h2 class="step-title" id="s1-title">Legal Snapshot</h2>
+        </div>
+        <p class="step-desc">What hit you, and what does it cost to make it go away?</p>
+        <div class="step-body">
+          <span class="field-label" id="issue-label">Type of legal issue</span>
+          <div class="chips" role="group" aria-labelledby="issue-label" id="issue-chips">
+            <button type="button" class="chip" data-issue="Traffic Warrant / License" aria-pressed="true">
+              Traffic Warrant / License
+              <small>Unpaid tickets, suspension notice, failure to appear</small>
+            </button>
+            <button type="button" class="chip" data-issue="Misdemeanor Bail / Court Fine" aria-pressed="false">
+              Misdemeanor Bail / Court Fine
+              <small>Bail money, fines, court costs, probation fees</small>
+            </button>
+            <button type="button" class="chip" data-issue="Family / Custody Retainer" aria-pressed="false">
+              Family / Custody Retainer
+              <small>Attorney retainer for custody or family court</small>
+            </button>
+            <button type="button" class="chip" data-issue="Small Claims / Garnishment" aria-pressed="false">
+              Small Claims / Garnishment
+              <small>Judgment, wage garnishment notice, settlement</small>
+            </button>
+          </div>
+
+          <label class="field-label" for="fee">Total cash required to resolve it</label>
+          <div class="money">
+            <span>$</span>
+            <input id="fee" type="number" inputmode="decimal" min="0" step="1" value="900" aria-label="Total cash required in dollars" />
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step" aria-labelledby="s2-title">
+        <div class="step-head">
+          <span class="step-num">STEP 2</span>
+          <h2 class="step-title" id="s2-title">Job Risk Scan</h2>
+        </div>
+        <p class="step-desc">The fee is only half the damage. What does this do to your income if it sits unresolved?</p>
+        <div class="step-body">
+          <span class="field-label" id="impact-label">Shift impact if this isn't resolved</span>
+          <div class="seg impact" role="group" aria-labelledby="impact-label" id="impact-seg">
+            <button type="button" data-val="high" aria-pressed="true">High<small>Job loss risk, or license required to work</small></button>
+            <button type="button" data-val="moderate" aria-pressed="false">Moderate<small>Missed shifts, court dates, schedule chaos</small></button>
+            <button type="button" data-val="low" aria-pressed="false">Low<small>Annoying, but shifts stay intact</small></button>
+          </div>
+
+          <label class="field-label" for="liquid">Liquid cash you can put on it right now</label>
+          <div class="money">
+            <span>$</span>
+            <input id="liquid" type="number" inputmode="decimal" min="0" step="1" value="250" aria-label="Liquid cash available now in dollars" />
+          </div>
+
+          <div class="grid-2">
+            <div class="num-field">
+              <label class="field-label" for="wage">Hourly wage</label>
+              <input id="wage" type="number" inputmode="decimal" min="0" step="0.25" value="19" />
+              <div class="unit">Your regular rate, before OT.</div>
+            </div>
+            <div class="num-field">
+              <label class="field-label" for="shift-hours">Hours per shift</label>
+              <input id="shift-hours" type="number" inputmode="decimal" min="0" step="0.5" value="12" />
+              <div class="unit">A 12-hour DuPont shift? Put 12.</div>
+            </div>
+          </div>
+
+          <div class="num-field">
+            <label class="field-label" for="shifts">Shifts at risk of missing</label>
+            <input id="shifts" type="number" inputmode="numeric" min="0" step="1" value="3" />
+            <div class="unit">Court dates, a suspended license, or sitting in a cell instead of on the clock — count the shifts you'd lose.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step" aria-labelledby="s3-title">
+        <div class="step-head">
+          <span class="step-num">STEP 3</span>
+          <h2 class="step-title" id="s3-title">Bridge Engine</h2>
+        </div>
+        <p class="step-desc">The gap, the real cost of waiting, and the per-paycheck number that closes it.</p>
+        <div class="step-body">
+          <div class="results">
+            <div class="result-cell">
+              <div class="r-label">Net Cash Gap</div>
+              <div class="r-value danger" id="gap-value">$650</div>
+              <div class="r-note" id="gap-note">What you still need after cash on hand.</div>
+            </div>
+            <div class="result-cell">
+              <div class="r-label">Income Loss Risk</div>
+              <div class="r-value warn" id="loss-value">$684</div>
+              <div class="r-note" id="loss-note">Wages gone if those shifts get missed.</div>
+            </div>
+            <div class="result-cell">
+              <div class="r-label">Per-Paycheck Target</div>
+              <div class="r-value" id="target-value">$163</div>
+              <div class="r-note" id="target-note">Per check to close the gap on schedule.</div>
+            </div>
+          </div>
+
+          <div class="bridge-controls">
+            <div>
+              <span class="field-label" id="freq-label">Pay schedule</span>
+              <div class="seg" role="group" aria-labelledby="freq-label" id="freq-seg">
+                <button type="button" data-val="weekly" aria-pressed="false">Weekly</button>
+                <button type="button" data-val="biweekly" aria-pressed="true">Bi-weekly</button>
+              </div>
+            </div>
+            <div>
+              <span class="field-label" id="periods-label">Pay periods to clear it</span>
+              <div class="seg" role="group" aria-labelledby="periods-label" id="periods-seg">
+                <button type="button" data-val="3" aria-pressed="false">3</button>
+                <button type="button" data-val="4" aria-pressed="true">4</button>
+                <button type="button" data-val="5" aria-pressed="false">5</button>
+                <button type="button" data-val="6" aria-pressed="false">6</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="payday-line" id="payday-line"></div>
+
+          <div class="index-block">
+            <div class="gauge">
+              <svg width="120" height="70" viewBox="0 0 120 70" role="img" aria-label="Legal Mobility Protection Index gauge">
+                <path d="M 10 62 A 52 52 0 0 1 110 62" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round" />
+                <path id="gauge-arc" d="M 10 62 A 52 52 0 0 1 110 62" fill="none" stroke="var(--amber)" stroke-width="10" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4" />
+              </svg>
+              <div class="gauge-score" id="index-score">42</div>
+              <div class="gauge-max">/ 100</div>
+            </div>
+            <div class="index-copy">
+              <h3>Legal Mobility Protection Index</h3>
+              <p id="index-text">How safely you can resolve this without losing driving privileges, missing shifts, or taking predatory bail-bond debt.</p>
+              <span class="index-rating rating-risk" id="index-rating">At Risk</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="step" aria-labelledby="s4-title">
+        <div class="step-head">
+          <span class="step-num">STEP 4</span>
+          <h2 class="step-title" id="s4-title">Execution Strategy</h2>
+        </div>
+        <p class="step-desc">Your inputs point to one active tier. The others stay in the plan — Tier 3 is where every resolved case should end up.</p>
+        <div class="step-body">
+
+          <article class="tier tier-1" id="tier-1">
+            <div class="tier-head">
+              <span class="tier-badge">TIER 1 · CRITICAL</span>
+              <h3 class="tier-name">Court Hardship Protocol</h3>
+              <span class="tier-status" data-status>Standby</span>
+            </div>
+            <div class="tier-body">
+              <p><strong>Trigger:</strong> your job or license is on the line and the gap is over $500. Do not wait for the warrant or suspension to land — courts give the most flexibility <em>before</em> the deadline, not after.</p>
+              <p><strong>1. Call the clerk this week.</strong> Use this script — read it as-is or adapt the numbers:</p>
+              <div class="script-box" id="script-tier1"></div>
+              <div class="copy-row">
+                <button type="button" class="copy-btn" data-copy="script-tier1">Copy the script</button>
+                <span class="copy-ok" data-copy-ok>Copied — paste it in your notes before you call.</span>
+              </div>
+              <p style="margin-top:14px;"><strong>2. Protect the license.</strong></p>
+              <ul>
+                <li>Ask for a <strong>compliance extension or payment plan in writing</strong> — a verbal "okay" doesn't stop an automatic suspension.</li>
+                <li>Get the clerk's name, the new due date, and a case or confirmation number. Screenshot or photograph every document.</li>
+                <li>Keep proof of the arrangement in your glovebox. If you get stopped, a paper trail beats an argument.</li>
+                <li><strong>Never drive on a suspended license</strong> to get to work — that's a new criminal charge and a longer suspension. Rideshare, carpool, or a coworker swap until it's reinstated.</li>
+                <li>After paying, confirm reinstatement with your state driver services office (DDS/DMV) and budget the reinstatement fee — it is almost never included in the fine.</li>
+              </ul>
+              <p><strong>3. Tell your supervisor before the court does.</strong> A heads-up plus a written payment plan reads as responsible. A no-call/no-show because you were in a holding cell reads as a termination.</p>
+            </div>
+          </article>
+
+          <article class="tier tier-2" id="tier-2">
+            <div class="tier-head">
+              <span class="tier-badge">TIER 2 · MODERATE</span>
+              <h3 class="tier-name">Micro-Sinking Bridge</h3>
+              <span class="tier-status" data-status>Standby</span>
+            </div>
+            <div class="tier-body">
+              <p><strong>The play:</strong> split the gap across your next paydays and clear it <em>before</em> the court's warrant or suspension threshold hits. Small automatic moves beat one desperate lump sum.</p>
+              <table class="alloc" id="alloc-table" aria-label="Per-payday allocation schedule"></table>
+              <ul>
+                <li>Move the money <strong>the morning you're paid</strong> — before gas, food runs, and apps touch the account.</li>
+                <li>Pay the court directly each period if they'll credit partial payments; get a receipt every time.</li>
+                <li>If a payday falls after a court deadline, call <em>before</em> that date and log the clerk's name — a documented good-faith effort matters.</li>
+                <li>No payday loans or title pawns to speed this up. A 300% APR "bridge" turns a <span data-gap-inline>$650</span> problem into a four-figure one.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="tier tier-3" id="tier-3">
+            <div class="tier-head">
+              <span class="tier-badge">TIER 3 · FORTIFIED</span>
+              <h3 class="tier-name">Legal Reserve Lock</h3>
+              <span class="tier-status" data-status>Standby</span>
+            </div>
+            <div class="tier-body">
+              <p><strong>The endgame:</strong> a permanent <strong>$500 traffic/legal buffer</strong> sitting inside your emergency fund, untouchable for anything else. The next ticket becomes an errand, not an emergency.</p>
+              <ul>
+                <li>Build it at <strong id="reserve-rate">$125 per paycheck</strong> — the same habit that cleared this fee, kept running until the buffer is full.</li>
+                <li>Park it in a separate savings account or a labeled sub-account so it doesn't get spent by accident.</li>
+                <li>Refill rule: any time the buffer gets used, it becomes the #1 savings priority until it's back to $500.</li>
+                <li>Once the legal buffer is locked, grow the main emergency fund behind it — that's the wall that keeps court dates from becoming job losses.</li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- BLUEPRINT -->
+      <section class="blueprint" aria-labelledby="bp-title">
+        <div class="blueprint-top" aria-hidden="true"></div>
+        <div class="blueprint-inner">
+          <div class="blueprint-kicker">Screenshot-Ready Summary</div>
+          <h2 id="bp-title">Legal Emergency Defense Blueprint</h2>
+          <div class="bp-grid">
+            <div class="bp-cell">
+              <div class="b-label">Legal Issue</div>
+              <div class="b-value small" id="bp-issue">Traffic Warrant / License</div>
+            </div>
+            <div class="bp-cell">
+              <div class="b-label">Total Cash Required</div>
+              <div class="b-value" id="bp-fee">$900</div>
+            </div>
+            <div class="bp-cell">
+              <div class="b-label">Net Cash Gap</div>
+              <div class="b-value" id="bp-gap">$650</div>
+            </div>
+            <div class="bp-cell">
+              <div class="b-label">Income Loss Risk</div>
+              <div class="b-value" id="bp-loss">$684</div>
+            </div>
+            <div class="bp-cell">
+              <div class="b-label">Job / License Risk Rating</div>
+              <div class="b-value small" id="bp-risk">High — act this week</div>
+            </div>
+            <div class="bp-cell">
+              <div class="b-label">Per-Paycheck Target</div>
+              <div class="b-value" id="bp-target">$163</div>
+            </div>
+            <div class="bp-cell">
+              <div class="b-label">Protection Index</div>
+              <div class="b-value" id="bp-index">42 / 100</div>
+            </div>
+            <div class="bp-cell">
+              <div class="b-label">Active Strategy</div>
+              <div class="b-value small" id="bp-tier">Tier 1 — Court Hardship Protocol</div>
+            </div>
+          </div>
+
+          <div class="bp-script-label">Court Clerk Hardship Script — copy &amp; use</div>
+          <div class="script-box" id="script-blueprint"></div>
+          <div class="copy-row">
+            <button type="button" class="copy-btn" data-copy="script-blueprint">Copy the script</button>
+            <span class="copy-ok" data-copy-ok>Copied.</span>
+          </div>
+          <p class="bp-foot">Generated by Legal Fee Shield. Figures are estimates from the numbers you entered — confirm amounts and deadlines with the court clerk on your case.</p>
+        </div>
+      </section>
+
+      <!-- NEXT STEPS -->
+      <h2 class="section-title">Keep Building the Wall</h2>
+      <div class="next-grid">
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" target="_blank" rel="noopener">
+          <span class="nc-kicker">Next Step · Savings</span>
+          <h3>Emergency Fund Runway Calculator</h3>
+          <p>See exactly how many weeks your savings keep the lights on if the shifts stop — and the per-check amount that extends the runway. <span class="nc-arrow">Open →</span></p>
+        </a>
+        <a class="next-card" href="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" target="_blank" rel="noopener">
+          <span class="nc-kicker">Next Step · Budgeting</span>
+          <h3>Paycheck Budget Splitter</h3>
+          <p>Give every paycheck a job before payday: bills, debt, buffer, and breathing room — split to the dollar. <span class="nc-arrow">Open →</span></p>
+        </a>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta">
+        <h3>Emergencies shouldn't mean high-APR debt</h3>
+        <p>The <strong>$1,000 Emergency Fund Starter Pack</strong> and the <strong>Blue-Collar Buffer Binder</strong> turn this one-time fix into a permanent system — printable trackers built for shift-work paydays.</p>
+        <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">Get them on Gumroad →</a>
+      </div>
+
+      <!-- FAQ -->
+      <h2 class="section-title">Straight Answers</h2>
+
+      <details class="faq-item">
+        <summary>Can you actually get on a payment plan with the court?</summary>
+        <div class="faq-body">
+          <p><strong>Usually, yes.</strong> Most traffic and misdemeanor courts offer installment plans, hardship arrangements, or deadline extensions — especially if you ask <em>before</em> you miss the due date. Some charge a small setup fee, and many require a down payment.</p>
+          <p>The catch: miss a plan payment without calling and the deal can collapse — the full balance comes due and a warrant or suspension can follow. Set the per-paycheck target from Step 3 on autopay and treat it like a bill, because legally, it is one.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What happens if your license gets suspended?</summary>
+        <div class="faq-body">
+          <p>Legally, you cannot drive — at all. Getting caught driving on a suspended license is a <strong>new criminal charge</strong> in most states, and it can mean jail time, more fines, and a longer suspension stacked on the first one.</p>
+          <p>To get it back you'll typically have to clear the original balance <em>plus</em> a reinstatement fee, and provide proof to your state driver services office. If your job requires driving — or just getting there — a suspension is an income problem, not just a legal one. That's why the plan above front-runs the deadline instead of reacting to it.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Bail bondsman or pay the cash yourself?</summary>
+        <div class="faq-body">
+          <p>A bondsman typically charges a <strong>non-refundable premium of about 10–15%</strong> of the bail amount. On $2,000 bail, that's $200–$300 gone forever, even if the case is dismissed.</p>
+          <p>Cash bail paid to the court is generally <strong>refunded</strong> (minus court costs and fines) once the case resolves and all appearances are made. If you can cover cash bail without wiping out rent and bill money — and you trust every court date will be made — cash is usually the cheaper road. If cash isn't possible, a bondsman beats sitting in jail missing shifts, but never stack a bondsman on top of a payday or title loan to pay the premium.</p>
+        </div>
+      </details>
+
+      <div class="disclaimer">
+        <strong>Educational information, not legal advice.</strong> Legal Fee Shield helps you organize the money side of a legal problem. Court rules, fees, deadlines, and payment-plan availability vary by state, county, and case. For advice about your specific situation — especially anything involving custody, criminal charges, or an active warrant — talk to a licensed attorney in your state or your local legal aid office.
+      </div>
+
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var state = {
+          issue: "Traffic Warrant / License",
+          impact: "high",
+          freq: "biweekly",
+          periods: 4
+        };
+
+        function $(id) { return document.getElementById(id); }
+        function num(id) {
+          var v = parseFloat($(id).value);
+          return isNaN(v) || v < 0 ? 0 : v;
+        }
+        function money(n) {
+          return "$" + Math.round(n).toLocaleString("en-US");
+        }
+        function moneyExact(n) {
+          var r = Math.round(n * 100) / 100;
+          return "$" + r.toLocaleString("en-US", { minimumFractionDigits: r % 1 ? 2 : 0, maximumFractionDigits: 2 });
+        }
+
+        /* ----- segmented / chip wiring ----- */
+        function wireGroup(id, attr, cb) {
+          var group = $(id);
+          group.addEventListener("click", function (e) {
+            var btn = e.target.closest("button");
+            if (!btn) return;
+            var all = group.querySelectorAll("button");
+            for (var i = 0; i < all.length; i++) all[i].setAttribute("aria-pressed", "false");
+            btn.setAttribute("aria-pressed", "true");
+            cb(btn.getAttribute(attr));
+          });
+        }
+        wireGroup("issue-chips", "data-issue", function (v) { state.issue = v; render(); });
+        wireGroup("impact-seg", "data-val", function (v) { state.impact = v; render(); });
+        wireGroup("freq-seg", "data-val", function (v) { state.freq = v; render(); });
+        wireGroup("periods-seg", "data-val", function (v) { state.periods = parseInt(v, 10); render(); });
+
+        ["fee", "liquid", "wage", "shift-hours", "shifts"].forEach(function (id) {
+          $(id).addEventListener("input", render);
+        });
+
+        /* ----- copy buttons ----- */
+        document.querySelectorAll("[data-copy]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var text = $(btn.getAttribute("data-copy")).textContent;
+            var ok = btn.parentElement.querySelector("[data-copy-ok]");
+            function done() {
+              if (ok) {
+                ok.classList.add("show");
+                setTimeout(function () { ok.classList.remove("show"); }, 2600);
+              }
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+            } else { fallback(); }
+            function fallback() {
+              var ta = document.createElement("textarea");
+              ta.value = text;
+              ta.style.position = "fixed";
+              ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand("copy"); } catch (e) {}
+              document.body.removeChild(ta);
+              done();
+            }
+          });
+        });
+
+        function round2(n) { return Math.round(n * 100) / 100; }
+
+        function buildScript(d) {
+          var freqWord = d.freq === "weekly" ? "week" : "two weeks";
+          var plan;
+          if (d.gap <= 0) {
+            plan = "I can pay the full " + moneyExact(d.fee) + " today to close this out completely.";
+          } else {
+            var per = round2(d.gap / d.periods);
+            var last = round2(d.gap - per * (d.periods - 1));
+            if (d.periods === 1) {
+              plan = "I can put " + moneyExact(d.liquid) + " down today, and the remaining " +
+                moneyExact(d.gap) + " in full on my next payday.";
+            } else if (last === per) {
+              plan = "Right now I can put " + moneyExact(d.liquid) + " down today, and I can pay " +
+                moneyExact(per) + " every " + freqWord + " on my paydays until it's cleared — that's " +
+                d.periods + " payments of " + moneyExact(per) + ", which with today's down payment totals exactly " +
+                moneyExact(d.fee) + ".";
+            } else {
+              plan = "Right now I can put " + moneyExact(d.liquid) + " down today, then " +
+                moneyExact(per) + " every " + freqWord + " on my paydays, with a final smaller payment of " +
+                moneyExact(last) + " — " + d.periods + " payments that, with today's down payment, total exactly " +
+                moneyExact(d.fee) + ".";
+            }
+          }
+          return "Hello, my name is [YOUR NAME], and I'm calling about my case — " +
+            d.issue.toLowerCase() + ", case number [CASE #].\n\n" +
+            "I owe " + moneyExact(d.fee) + " and I want to resolve it in full — I'm not trying to dodge it. " +
+            "I work shifts and my license and my job depend on keeping this in good standing. " + plan + "\n\n" +
+            "Can we set that up as a formal payment arrangement, and can I get the agreement, " +
+            "the new due dates, and your name in writing so my license stays valid while I'm paying? " +
+            "I will not miss a payment, and I'll call ahead if anything changes. Thank you for working with me.";
+        }
+
+        function render() {
+          var fee = num("fee");
+          var liquid = num("liquid");
+          var wage = num("wage");
+          var hours = num("shift-hours");
+          var shifts = Math.floor(num("shifts"));
+
+          var gap = Math.max(0, fee - liquid);
+          var incomeLoss = shifts * hours * wage;
+          var periods = state.periods;
+          var target = gap > 0 ? gap / periods : 0;
+          var reserveRate = 500 / periods;
+
+          /* ---- Step 3 cells ---- */
+          var gapEl = $("gap-value");
+          gapEl.textContent = money(gap);
+          gapEl.className = "r-value " + (gap === 0 ? "good" : gap > 500 ? "danger" : "warn");
+          $("gap-note").textContent = gap === 0
+            ? "Covered — your cash on hand handles the full amount."
+            : "Still owed after putting " + money(liquid) + " down today.";
+
+          var lossEl = $("loss-value");
+          lossEl.textContent = money(incomeLoss);
+          lossEl.className = "r-value " + (incomeLoss === 0 ? "good" : incomeLoss >= fee && fee > 0 ? "danger" : "warn");
+          $("loss-note").textContent = shifts === 0
+            ? "No shifts at risk — the fee is the whole problem."
+            : shifts + " shift" + (shifts === 1 ? "" : "s") + " × " + hours + " hrs × " + moneyExact(wage) + "/hr if this goes sideways.";
+
+          var targetEl = $("target-value");
+          targetEl.textContent = gap > 0 ? moneyExact(target) : moneyExact(reserveRate);
+          targetEl.className = "r-value " + (gap > 0 ? "warn" : "good");
+          $("target-note").textContent = gap > 0
+            ? "Per " + (state.freq === "weekly" ? "weekly" : "bi-weekly") + " paycheck × " + periods + " to close the gap — final payment adjusts to the exact cent."
+            : "Gap is covered — redirect this to build the $500 reserve instead.";
+
+          /* payday comparison line */
+          var totalCostWaiting = gap + incomeLoss;
+          $("payday-line").innerHTML = gap > 0
+            ? "Resolving it on the plan costs <strong>" + moneyExact(target) + " per paycheck</strong>. Letting it ride risks <strong>" +
+              money(totalCostWaiting) + "</strong> — the " + money(gap) + " you still owe plus " + money(incomeLoss) +
+              " in lost wages. The plan is cheaper than the problem."
+            : "Your cash covers the full <strong>" + money(fee) + "</strong> today. Pay it, get the receipt, and confirm your record is clear — then put <strong>" +
+              moneyExact(reserveRate) + " per paycheck</strong> toward the $500 reserve so the next one never reaches this page.";
+
+          /* ---- Protection Index ---- */
+          var coverage = fee > 0 ? Math.min(1, liquid / fee) : 1;
+          var score = 100;
+          score -= (1 - coverage) * 40;                       // uncovered share of the fee
+          if (state.impact === "high") score -= 25;
+          else if (state.impact === "moderate") score -= 12;
+          score -= Math.min(20, shifts * 4);                  // shifts exposed
+          if (gap > 0 && gap <= 500) score -= 5;              // manageable but open gap
+          if (gap > 1000) score -= 8;                         // deep gap invites predatory debt
+          score = Math.max(2, Math.min(100, Math.round(score)));
+
+          var rating, ratingClass, indexText;
+          if (score >= 80) {
+            rating = "Protected"; ratingClass = "rating-protected";
+            indexText = "You can clear this without touching your shifts, your license, or a lender. Pay it, document it, then lock the $500 reserve so it stays that way.";
+          } else if (score >= 55) {
+            rating = "Stable, Exposed"; ratingClass = "rating-stable";
+            indexText = "The plan works, but there's no slack in it. One missed paycheck or one extra fee puts this back in the danger zone — execution matters.";
+          } else if (score >= 30) {
+            rating = "At Risk"; ratingClass = "rating-risk";
+            indexText = "The gap and the shift exposure are working against you. The per-paycheck plan holds only if you call the court before the deadline and protect the license first.";
+          } else {
+            rating = "Critical"; ratingClass = "rating-critical";
+            indexText = "Right now this can cost you the license, the shifts, and possibly the job. Tier 1 is not optional: call the clerk this week and get an arrangement in writing.";
+          }
+          $("index-score").textContent = score;
+          $("index-text").textContent = indexText;
+          var ratingEl = $("index-rating");
+          ratingEl.textContent = rating;
+          ratingEl.className = "index-rating " + ratingClass;
+          var arc = $("gauge-arc");
+          arc.style.strokeDashoffset = (163.4 * (1 - score / 100)).toFixed(1);
+          arc.style.stroke = score >= 80 ? "var(--green)" : score >= 30 ? "var(--amber)" : "var(--red)";
+
+          /* ---- Tier activation ---- */
+          var activeTier;
+          if (state.impact === "high" && gap > 500) activeTier = 1;
+          else if (gap > 0 || state.impact !== "low") activeTier = 2;
+          else activeTier = 3;
+
+          [1, 2, 3].forEach(function (n) {
+            var t = $("tier-" + n);
+            var isActive = n === activeTier;
+            t.classList.toggle("active", isActive);
+            t.querySelector("[data-status]").textContent =
+              isActive ? "● Your Move" : n < activeTier ? "Phase Complete" : "Next Phase";
+          });
+
+          /* ---- Tier 2 allocation table (exact-cent schedule) ---- */
+          function scheduleRows(total, perRaw, noun, balLabel) {
+            var per = round2(total / periods);
+            var rows = "";
+            var done = 0;
+            for (var i = 1; i <= periods; i++) {
+              var pay = i === periods ? round2(total - done) : per;
+              done = round2(done + pay);
+              rows += "<tr><td>Paycheck " + i + " of " + periods + "</td><td>" + moneyExact(pay) +
+                "</td><td class=\"amt\">" + moneyExact(balLabel === "reserve" ? done : round2(total - done)) + "</td></tr>";
+            }
+            return rows;
+          }
+          var rows;
+          if (gap > 0) {
+            rows = "<tr><th>Payday</th><th>Goes to the court</th><th class=\"amt\">Remaining gap</th></tr>" +
+              scheduleRows(gap, target, "court", "gap");
+          } else {
+            rows = "<tr><th>Payday</th><th>Goes to the reserve</th><th class=\"amt\">Reserve balance</th></tr>" +
+              scheduleRows(500, reserveRate, "reserve", "reserve");
+          }
+          $("alloc-table").innerHTML = rows;
+          document.querySelectorAll("[data-gap-inline]").forEach(function (el) { el.textContent = money(gap); });
+          $("reserve-rate").textContent = moneyExact(reserveRate) + " per paycheck over " + periods + " paychecks";
+
+          /* ---- Script + Blueprint ---- */
+          var d = { issue: state.issue, fee: fee, liquid: liquid, gap: gap, freq: state.freq, periods: periods };
+          var script = buildScript(d);
+          $("script-tier1").textContent = script;
+          $("script-blueprint").textContent = script;
+
+          $("bp-issue").textContent = state.issue;
+          $("bp-fee").textContent = money(fee);
+          var bpGap = $("bp-gap");
+          bpGap.textContent = money(gap);
+          bpGap.style.color = gap === 0 ? "var(--green)" : gap > 500 ? "var(--red)" : "var(--amber)";
+          $("bp-loss").textContent = money(incomeLoss);
+          $("bp-risk").textContent =
+            state.impact === "high" ? "High — act this week" :
+            state.impact === "moderate" ? "Moderate — stay on the plan" : "Low — resolve and fortify";
+          $("bp-target").textContent = moneyExact(gap > 0 ? target : reserveRate) +
+            (state.freq === "weekly" ? " / wk" : " / 2 wks");
+          $("bp-index").textContent = score + " / 100 — " + rating;
+          $("bp-tier").textContent =
+            activeTier === 1 ? "Tier 1 — Court Hardship Protocol" :
+            activeTier === 2 ? "Tier 2 — Micro-Sinking Bridge" : "Tier 3 — Legal Reserve Lock";
+        }
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

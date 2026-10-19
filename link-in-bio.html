@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="Practical, no-nonsense tools and honest advice to help blue-collar workers crush debt, build real wealth, and take control of their money." />
+    <link rel="icon" href="data:," />
+    <title>Stop Living Paycheck to Paycheck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #101012;
+        --bg-2: #17171a;
+        --steel: #1e1e22;
+        --steel-edge: #333338;
+        --ink: #f5f3ee;
+        --ink-dim: #b9b6ae;
+        --yellow: #ffc400;
+        --yellow-deep: #f5b800;
+        --radius: 14px;
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(120% 60% at 50% -10%, #232328 0%, var(--bg) 55%) no-repeat,
+          var(--bg);
+        color: var(--ink);
+        font-family: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+        min-height: 100dvh;
+      }
+
+      .wrap {
+        max-width: 480px;
+        margin: 0 auto;
+        padding:
+          calc(2.75rem + env(safe-area-inset-top))
+          1.25rem
+          calc(2.5rem + env(safe-area-inset-bottom));
+      }
+
+      /* ---------- Header ---------- */
+      header { text-align: center; }
+
+      .plate {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 84px;
+        height: 84px;
+        border-radius: 20px;
+        background: linear-gradient(160deg, #26262b, #17171a);
+        border: 1px solid var(--steel-edge);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(0,0,0,.45);
+        margin-bottom: 1.4rem;
+      }
+      .plate svg { width: 44px; height: 44px; }
+
+      h1 {
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-weight: 700;
+        font-size: clamp(2.5rem, 11vw, 3.4rem);
+        line-height: 0.98;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        margin: 0 0 0.9rem;
+      }
+      h1 .accent { color: var(--yellow); }
+
+      .hazard {
+        height: 8px;
+        width: 132px;
+        margin: 0 auto 1.15rem;
+        border-radius: 2px;
+        background: repeating-linear-gradient(
+          -45deg,
+          var(--yellow) 0 12px,
+          #0c0c0d 12px 24px
+        );
+      }
+
+      .bio {
+        margin: 0 auto;
+        max-width: 36ch;
+        font-size: 1.06rem;
+        line-height: 1.55;
+        color: var(--ink-dim);
+        font-weight: 500;
+      }
+
+      /* ---------- Links ---------- */
+      nav {
+        margin-top: 2.1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+
+      .link-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        min-height: 84px;
+        padding: 1rem 1.1rem;
+        border-radius: var(--radius);
+        background: var(--steel);
+        border: 1px solid var(--steel-edge);
+        color: var(--ink);
+        text-decoration: none;
+        text-align: left;
+        box-shadow: 0 6px 18px rgba(0,0,0,.35);
+        -webkit-tap-highlight-color: transparent;
+        transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      }
+      .link-card:active { transform: scale(.985); }
+      @media (hover: hover) {
+        .link-card:hover { border-color: #4a4a51; background: #232329; }
+      }
+
+      .icon-chip {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        background: #121214;
+        border: 1px solid var(--steel-edge);
+        color: var(--yellow);
+      }
+      .icon-chip svg { width: 27px; height: 27px; }
+
+      .link-text { flex: 1 1 auto; min-width: 0; }
+      .link-title {
+        display: block;
+        font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+        font-weight: 700;
+        font-size: 1.45rem;
+        line-height: 1.05;
+        letter-spacing: 0.015em;
+        text-transform: uppercase;
+      }
+      .link-sub {
+        display: block;
+        margin-top: 0.3rem;
+        font-size: 0.92rem;
+        line-height: 1.4;
+        color: var(--ink-dim);
+        font-weight: 500;
+      }
+
+      .arrow {
+        flex: 0 0 auto;
+        color: var(--ink-dim);
+        display: flex;
+      }
+      .arrow svg { width: 22px; height: 22px; }
+
+      /* Primary card — the shop */
+      .link-card.primary {
+        background: linear-gradient(160deg, var(--yellow) 0%, var(--yellow-deep) 100%);
+        border-color: #ffd34d;
+        color: #141310;
+      }
+      .link-card.primary .icon-chip {
+        background: rgba(0,0,0,.14);
+        border-color: rgba(0,0,0,.22);
+        color: #141310;
+      }
+      .link-card.primary .link-sub { color: #3d380a; }
+      .link-card.primary .arrow { color: #141310; }
+      @media (hover: hover) {
+        .link-card.primary:hover { background: linear-gradient(160deg, #ffcf1f 0%, #ffc400 100%); }
+      }
+
+      /* Highlighted card — free printable, sits right under the featured card */
+      .link-card.highlight {
+        background: linear-gradient(160deg, #2a2608 0%, #1e1e22 78%);
+        border: 2px solid var(--yellow);
+        box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(255,196,0,.18), 0 8px 28px rgba(255,196,0,.12);
+      }
+      .link-card.highlight .icon-chip {
+        background: var(--yellow);
+        border-color: var(--yellow-deep);
+        color: #141310;
+      }
+      .link-card.highlight .arrow { color: var(--yellow); }
+      @media (hover: hover) {
+        .link-card.highlight:hover { border-color: #ffd34d; background: linear-gradient(160deg, #332e0a 0%, #232329 78%); }
+      }
+      .free-tag {
+        display: inline-block;
+        margin-bottom: 0.45rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: var(--yellow);
+        color: #141310;
+        border-radius: 999px;
+        padding: 0.32rem 0.65rem;
+        white-space: nowrap;
+      }
+
+      /* Section labels between link groups */
+      .sec-label {
+        margin: 0.35rem 0.1rem -0.4rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink-dim);
+      }
+
+      /* Start-here tag on the featured card */
+      .start-tag {
+        display: inline-block;
+        margin-bottom: 0.45rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: #141310;
+        color: var(--yellow);
+        border-radius: 999px;
+        padding: 0.32rem 0.65rem;
+        white-space: nowrap;
+      }
+
+      /* Pending cards */
+      .link-card.pending { opacity: .78; }
+      .soon {
+        display: inline-block;
+        margin-top: 0.6rem;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--yellow);
+        border: 1px solid rgba(255,196,0,.45);
+        border-radius: 999px;
+        padding: 0.32rem 0.6rem;
+        white-space: nowrap;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="plate" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#ffc400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 17.5 9.5 11a4.6 4.6 0 0 1 6.2-6.2L13 7.5l3.5 3.5 2.7-2.7a4.6 4.6 0 0 1-6.2 6.2L6.5 21 3 17.5Z"/>
+          </svg>
+        </div>
+        <h1>Stop Living <span class="accent">Paycheck</span> to <span class="accent">Paycheck.</span></h1>
+        <div class="hazard" aria-hidden="true"></div>
+        <p class="bio">Practical, no-nonsense tools and honest advice to help blue-collar workers crush debt, build real wealth, and take control of their money.</p>
+      </header>
+
+      <nav aria-label="Links">
+        <a class="link-card primary" href="https://thecomeuphq.github.io/comeup-links/paycheck-health-score-quiz.html">
+          <span class="icon-chip" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>
+            </svg>
+          </span>
+          <span class="link-text">
+            <span class="start-tag">Start Here</span>
+            <span class="link-title">Take the 60-Second Paycheck Health Quiz</span>
+            <span class="link-sub">A few quick questions, one honest score — and the exact move to make next.</span>
+          </span>
+          <span class="arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <p class="sec-label">More Quizzes</p>
+
+        <a class="link-card" href="https://thecomeuphq.github.io/comeup-links/hustle-profitability-quiz.html">
+          <span class="icon-chip" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </span>
+          <span class="link-text">
+            <span class="link-title">Is Your Side Hustle Actually Profitable?</span>
+            <span class="link-sub">Count the hours and the hidden costs — find out what your hustle really pays.</span>
+          </span>
+          <span class="arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <p class="sec-label">Free Tools</p>
+
+        <a class="link-card" href="https://thecomeuphq.github.io/comeup-links/free-financial-calculators.html">
+          <span class="icon-chip" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8"/><path d="M8 11h.01"/><path d="M12 11h.01"/><path d="M16 11h.01"/><path d="M8 15h.01"/><path d="M12 15h.01"/><path d="M16 15h.01"/><path d="M8 19h.01"/><path d="M12 19h.01"/><path d="M16 19h.01"/>
+            </svg>
+          </span>
+          <span class="link-text">
+            <span class="link-title">Free Calculator Hub (10 Tools)</span>
+            <span class="link-sub">Debt payoff, overtime pay, savings goals — run your numbers free, no sign-up.</span>
+          </span>
+          <span class="arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <a class="link-card" href="https://thecomeuphq.github.io/comeup-links/debt-strategy-selector.html">
+          <span class="icon-chip" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+            </svg>
+          </span>
+          <span class="link-text">
+            <span class="link-title">Debt Strategy Finder</span>
+            <span class="link-sub">Snowball or avalanche? Answer a few questions and get the payoff plan that fits you.</span>
+          </span>
+          <span class="arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <a class="link-card" href="https://bradley57.gumroad.com/">
+          <span class="icon-chip" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7"/><path d="M9 11h5"/>
+            </svg>
+          </span>
+          <span class="link-text">
+            <span class="link-title">Shop Printables &amp; Planners</span>
+            <span class="link-sub">Simple, printable planners and trackers ($4.95–$12.95) built to get you out of the red.</span>
+          </span>
+          <span class="arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <a class="link-card" href="https://www.tiktok.com/@bgcollections2k24">
+          <span class="icon-chip" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+            </svg>
+          </span>
+          <span class="link-text">
+            <span class="link-title">Follow on TikTok</span>
+            <span class="link-sub">Daily quick-hit tips to reach financial freedom faster.</span>
+          </span>
+          <span class="arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </span>
+        </a>
+
+        <a class="link-card pending" href="#" data-pending aria-disabled="true">
+          <span class="icon-chip" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>
+            </svg>
+          </span>
+          <span class="link-text">
+            <span class="link-title">The Come Up Podcast</span>
+            <span class="link-sub">Raw, straight-talking episodes on men's wealth, mindset, and self-improvement.</span>
+            <span class="soon">Link coming soon</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+
+    <script>
+      // Placeholder link (podcast URL not supplied yet):
+      // tapping it shouldn't jump the page to the top.
+      document.querySelectorAll('[data-pending]').forEach(function (el) {
+        el.addEventListener('click', function (e) { e.preventDefault(); });
+      });
+    </script>
+  </body>
+</html>
