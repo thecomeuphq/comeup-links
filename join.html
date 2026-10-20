@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Join The Come Up | Free Paycheck Protection Checklist</title>
-  <meta name="description" content="Join The Come Up for free money tools, quick wins, and practical paycheck protection advice for hourly and shift workers.">
+  <title>Free Paycheck Protection Checklist | The Come Up</title>
+  <meta name="description" content="Open the free printable paycheck protection checklist for hourly and shift workers. No signup or checkout required.">
   <link rel="canonical" href="https://thecomeuphq.github.io/comeup-links/join.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="The Come Up">
-  <meta property="og:title" content="Join The Come Up | Free Paycheck Protection Checklist">
-  <meta property="og:description" content="Get the free checklist, practical money moves, and fresh tools built for blue-collar workers.">
+  <meta property="og:title" content="Free Paycheck Protection Checklist">
+  <meta property="og:description" content="A practical paycheck review and next-step worksheet. No signup or checkout required.">
   <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/join.html">
   <meta name="twitter:card" content="summary">
   <style>
@@ -71,47 +71,6 @@
       font-size:14px;
     }
     .mini .dot { width:8px; height:8px; border-radius:50%; background:#f5a623; margin-top:8px; flex-shrink:0; }
-    form {
-      background:#1f1f1f;
-      border:1px solid #2d2d2d;
-      border-radius:16px;
-      margin-top: 16px;
-      padding: 18px;
-    }
-    label { display:block; font-size:13px; color:#d8d8d8; margin-bottom: 8px; }
-    input {
-      width:100%;
-      border:1px solid #474747;
-      background:#101010;
-      color:#f5f5f5;
-      border-radius:10px;
-      padding: 12px 12px;
-      font-size:15px;
-      margin-bottom:12px;
-    }
-    button {
-      width:100%;
-      border:none;
-      border-radius:10px;
-      background: #f5a623;
-      color:#141414;
-      font-weight:800;
-      font-size:15px;
-      padding: 12px 14px;
-      cursor:pointer;
-    }
-    .note { color:#bdbdbd; font-size:12px; margin-top:10px; line-height:1.5; }
-    .success {
-      display:none;
-      background:#142a1d;
-      border:1px solid #2ecb77;
-      color:#dff8ea;
-      border-radius:12px;
-      padding: 12px 14px;
-      margin-top:12px;
-      font-size:14px;
-    }
-    .success.show { display:block; }
     .foot { color:#7d7d7d; font-size:12px; line-height:1.7; margin-top:18px; text-align:center; }
   </style>
 </head>
@@ -121,29 +80,17 @@
 
     <div class="hero">
       <div class="eyebrow">The Come Up</div>
-      <h1>Get the paycheck protection checklist.</h1>
-      <div class="sub">Blue-collar workers don’t need fluff. They need a simple system to protect their paycheck before overtime cuts hit.</div>
-      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noreferrer">Grab the free checklist</a>
+      <h1>Start with a paycheck plan.</h1>
+      <div class="sub">Use a practical checklist to review your pay, protect the next check, and choose one manageable move. It opens right here—no checkout or email signup required.</div>
+      <a class="cta" href="paycheck-protection-checklist.html">Open the free checklist</a>
     </div>
 
     <div class="section">
-      <h2>What you get</h2>
-      <div class="mini"><span class="dot"></span><span>5 steps to spot paycheck pressure before it turns into a money emergency.</span></div>
-      <div class="mini"><span class="dot"></span><span>Practical cash-flow moves for overtime, bills, and shift work.</span></div>
-      <div class="mini"><span class="dot"></span><span>Simple ways to protect your income without fancy financial jargon.</span></div>
+      <h2>Inside the checklist</h2>
+      <div class="mini"><span class="dot"></span><span>Check hours, rate, overtime, and deductions against your pay statement.</span></div>
+      <div class="mini"><span class="dot"></span><span>Map essential bills and deadlines before your next payday.</span></div>
+      <div class="mini"><span class="dot"></span><span>Write down one specific next step and print or save the worksheet as a PDF.</span></div>
     </div>
-
-    <form id="joinForm">
-      <label for="name">First name</label>
-      <input id="name" name="name" type="text" placeholder="Your name" autocomplete="given-name">
-
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
-
-      <button type="submit">Save my spot</button>
-      <div class="note">No spam. Just practical money guidance and the next tool when it drops.</div>
-      <div id="success" class="success">Saved. Your join request is ready locally, and this page is ready for your email service when you connect it.</div>
-    </form>
 
     <div class="section">
       <h2>Why This Matters</h2>
@@ -154,27 +101,7 @@
       </ul>
     </div>
 
-    <div class="foot">Educational use only. Not financial advice. For real email capture, connect your ESP and replace the local save behavior when ready.</div>
+    <div class="foot">The site does not currently collect email signups. Your checklist entries stay in your browser and are not submitted. Educational use only; not financial, legal, or tax advice.</div>
   </div>
-
-  <script>
-    (function () {
-      const form = document.getElementById('joinForm');
-      const success = document.getElementById('success');
-      const KEY = 'comeup-join-leads';
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        if (!email) return;
-
-        const leads = JSON.parse(localStorage.getItem(KEY) || '[]');
-        leads.push({ name, email, savedAt: new Date().toISOString() });
-        localStorage.setItem(KEY, JSON.stringify(leads));
-        success.classList.add('show');
-        form.reset();
-      });
-    })();
-  </script>
 </body>
 </html>
