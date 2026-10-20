@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Turn a raise or extra shift income into a paycheck-by-paycheck buffer, debt, and planned-spending strategy.">
+  <title>Raise Lock-In &amp; Buffer Engine — The Come Up</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #141414;
+      --panel: #1f1f1f;
+      --panel-alt: #262626;
+      --line: #393939;
+      --ink: #f5f5f5;
+      --muted: #bdbdbd;
+      --faint: #858585;
+      --amber: #f5a623;
+      --green: #66d69a;
+      --red: #ff8977;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(700px 320px at 88% -80px, rgba(245,166,35,.12), transparent 60%), var(--bg);
+      color: var(--ink);
+      font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .wrap { max-width: 940px; margin: 0 auto; padding: 20px 18px 64px; }
+    .hazard { height: 9px; border-radius: 3px; background: repeating-linear-gradient(-45deg, var(--amber) 0 14px, #171717 14px 28px); }
+    .hero { padding: 32px 0 12px; }
+    .eyebrow {
+      display: inline-block; padding: 6px 10px; border: 1px solid rgba(245,166,35,.35);
+      border-radius: 5px; color: var(--amber); background: rgba(245,166,35,.08);
+      font: 700 11px/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase;
+    }
+    h1, h2, h3 { line-height: 1.1; }
+    h1 { max-width: 760px; margin: 14px 0 10px; font-size: clamp(38px, 8vw, 68px); letter-spacing: -.035em; text-transform: uppercase; }
+    h1 span { color: var(--amber); }
+    .lead { max-width: 700px; margin: 0; color: var(--muted); font-size: clamp(18px, 4vw, 22px); }
+    .lead strong { color: var(--ink); }
+    .banner { margin-top: 20px; padding: 14px 16px; border: 1px solid rgba(245,166,35,.35); border-radius: 10px; background: rgba(245,166,35,.08); color: var(--muted); }
+    .banner strong { color: var(--ink); }
+    .layout { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 18px; }
+    .card, .metric, .summary, details, .cta { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+    .card { padding: 20px; }
+    .section-title { display: flex; align-items: center; gap: 11px; margin: 0 0 17px; }
+    .step { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 auto; border-radius: 8px; color: #18130a; background: var(--amber); font: 700 15px var(--mono); }
+    .section-title h2 { margin: 0; font-size: clamp(21px, 5vw, 28px); text-transform: uppercase; }
+    .field { margin: 0 0 15px; }
+    .field:last-child { margin-bottom: 0; }
+    label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .hint { display: block; margin-top: 5px; color: var(--faint); font-size: 12px; }
+    .money { position: relative; }
+    .money > span { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: var(--amber); font: 700 16px var(--mono); }
+    input, select {
+      width: 100%; border: 1px solid var(--line); border-radius: 9px;
+      background: #171717; color: var(--ink); font: inherit; font-size: 16px; padding: 11px 12px;
+    }
+    .money input { padding-left: 29px; }
+    input:focus, select:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+    .fields-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .allocation { padding: 13px; margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; background: #181818; }
+    .allocation-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+    .allocation-top label { margin: 0; }
+    .allocation-top output { color: var(--amber); font: 600 18px var(--mono); white-space: nowrap; }
+    input[type="range"] { height: 24px; padding: 0; accent-color: var(--amber); border: 0; background: transparent; }
+    .allocation-amount { margin-top: 3px; color: var(--muted); font: 600 14px var(--mono); }
+    .allocation-error { min-height: 20px; margin: 7px 0 0; color: var(--red); font-size: 13px; }
+    .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .metric { min-width: 0; padding: 13px; background: #181818; }
+    .metric-label { color: var(--faint); font: 700 10px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .metric-value { margin-top: 6px; font: 600 clamp(20px, 5vw, 27px)/1.15 var(--mono); overflow-wrap: anywhere; }
+    .metric-value.amber { color: var(--amber); }
+    .metric-value.green { color: var(--green); }
+    .metric-detail { margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .summary { margin-top: 11px; padding: 16px; border-color: rgba(245,166,35,.4); background: linear-gradient(135deg, rgba(245,166,35,.12), #1f1f1f 70%); }
+    .summary-label { color: var(--amber); font: 700 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .summary h3 { margin: 7px 0 5px; font-size: clamp(21px, 5vw, 27px); }
+    .summary p { margin: 0; color: var(--muted); }
+    .script { margin-top: 12px; padding: 14px; border-left: 4px solid var(--amber); border-radius: 8px; background: #171717; color: var(--muted); white-space: pre-wrap; }
+    .actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+    button, .cta a {
+      display: inline-block; border: 0; border-radius: 9px; padding: 11px 15px;
+      background: var(--amber); color: #17120a; font: inherit; font-weight: 800; text-decoration: none; cursor: pointer;
+    }
+    button.secondary { border: 1px solid var(--line); background: transparent; color: var(--ink); }
+    .status { min-height: 21px; margin-top: 7px; color: var(--muted); font-size: 13px; }
+    .note { margin: 12px 0 0; color: var(--faint); font-size: 12px; }
+    .faq { margin-top: 26px; }
+    .faq > h2 { margin: 0 0 12px; font-size: 22px; text-transform: uppercase; }
+    details { margin: 8px 0; padding: 0 14px; }
+    summary { padding: 13px 0; cursor: pointer; font-weight: 700; }
+    details p { margin: 0 0 13px; color: var(--muted); }
+    .cta { margin-top: 22px; padding: 18px; border-color: rgba(245,166,35,.35); background: linear-gradient(135deg, rgba(245,166,35,.1), #1f1f1f); }
+    .cta h2 { margin: 0 0 7px; font-size: 23px; text-transform: uppercase; }
+    .cta p { margin: 0 0 13px; color: var(--muted); }
+    .next { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .next a { flex: 1 1 220px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--panel); text-decoration: none; }
+    .next strong { display: block; color: var(--amber); }
+    .next span { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; }
+    .footer-note { color: var(--faint); font-size: 12px; margin-top: 12px; }
+    @media (min-width: 760px) { .layout { grid-template-columns: 1fr 1fr; align-items: start; } }
+    @media (max-width: 480px) { .fields-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="hazard" aria-hidden="true"></div>
+    <header class="hero">
+      <span class="eyebrow">Raise Lock-In &amp; Buffer Engine</span>
+      <h1>Keep the raise. <span>Build the buffer.</span></h1>
+      <p class="lead">Before the bigger check gets swallowed by new spending, give the extra take-home a job. Build breathing room, make a debt payment, and plan for one real expense.</p>
+      <div class="banner"><strong>Simple rule:</strong> Start with money that actually lands in your account after deductions. If the extra pay changes, update the plan—don’t budget on an estimate you can’t count on.</div>
+    </header>
+
+    <div class="layout">
+      <section class="card" aria-labelledby="inputsTitle">
+        <div class="section-title"><span class="step">1</span><h2>Your extra money</h2></div>
+        <div class="field">
+          <label for="extraNet">Extra take-home per paycheck</label>
+          <div class="money"><span>$</span><input id="extraNet" type="number" min="0" step="5" value="100" inputmode="decimal"></div>
+          <span class="hint">Use the actual added amount after taxes and deductions—not your gross raise.</span>
+        </div>
+        <div class="fields-2">
+          <div class="field">
+            <label for="frequency">Pay schedule</label>
+            <select id="frequency">
+              <option value="52">Weekly</option>
+              <option value="26" selected>Every 2 weeks</option>
+              <option value="24">Twice a month</option>
+              <option value="12">Monthly</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="currentBuffer">Current buffer savings</label>
+            <div class="money"><span>$</span><input id="currentBuffer" type="number" min="0" step="25" value="250" inputmode="decimal"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="bufferGoal">First buffer goal</label>
+          <div class="money"><span>$</span><input id="bufferGoal" type="number" min="0" step="100" value="1000" inputmode="decimal"></div>
+          <span class="hint">Choose a starter target you can reach, then raise it when you’re ready.</span>
+        </div>
+        <div class="section-title" style="margin-top:22px;margin-bottom:4px"><span class="step">2</span><h2>Split each check</h2></div>
+        <p class="hint">Set the percentages so the whole extra amount has a job. The total must equal 100%.</p>
+
+        <div class="allocation">
+          <div class="allocation-top"><label for="bufferPct">Emergency buffer</label><output id="bufferPctOut" for="bufferPct">50%</output></div>
+          <input id="bufferPct" type="range" min="0" max="100" step="5" value="50">
+          <div class="allocation-amount" id="bufferAmount">$50.00 / paycheck</div>
+        </div>
+        <div class="allocation">
+          <div class="allocation-top"><label for="debtPct">Extra debt payment</label><output id="debtPctOut" for="debtPct">30%</output></div>
+          <input id="debtPct" type="range" min="0" max="100" step="5" value="30">
+          <div class="allocation-amount" id="debtAmount">$30.00 / paycheck</div>
+        </div>
+        <div class="allocation">
+          <div class="allocation-top"><label for="plannedPct">Planned expense / breathing room</label><output id="plannedPctOut" for="plannedPct">20%</output></div>
+          <input id="plannedPct" type="range" min="0" max="100" step="5" value="20">
+          <div class="allocation-amount" id="plannedAmount">$20.00 / paycheck</div>
+        </div>
+        <p class="allocation-error" id="allocationError" role="alert" aria-live="polite"></p>
+      </section>
+
+      <section class="card" aria-labelledby="resultsTitle">
+        <div class="section-title"><span class="step">3</span><h2>Your lock-in plan</h2></div>
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><div class="metric-label">Buffer per check</div><div class="metric-value green" id="bufferPerCheck">$0</div><div class="metric-detail">Move it on payday</div></div>
+          <div class="metric"><div class="metric-label">Debt per check</div><div class="metric-value amber" id="debtPerCheck">$0</div><div class="metric-detail">Above the required minimum</div></div>
+          <div class="metric"><div class="metric-label">Planned per check</div><div class="metric-value" id="plannedPerCheck">$0</div><div class="metric-detail">For a known cost or some breathing room</div></div>
+          <div class="metric"><div class="metric-label">Buffer goal timeline</div><div class="metric-value green" id="goalTimeline">—</div><div class="metric-detail" id="goalTimelineDetail">At this savings amount</div></div>
+          <div class="metric"><div class="metric-label">Buffer added / year</div><div class="metric-value" id="annualBuffer">$0</div><div class="metric-detail">If every paycheck follows the plan</div></div>
+          <div class="metric"><div class="metric-label">Extra money assigned</div><div class="metric-value amber" id="assignedPerCheck">$0</div><div class="metric-detail" id="unassignedDetail">$0 unassigned each paycheck</div></div>
+        </div>
+        <div class="summary">
+          <div class="summary-label">The plan</div>
+          <h3 id="verdictTitle">Put the raise on rails.</h3>
+          <p id="verdictText">Your per-paycheck split and buffer timeline will show here.</p>
+        </div>
+        <div class="script" id="planScript">Your paycheck plan will appear here.</div>
+        <div class="actions">
+          <button id="copyPlan" type="button">Copy paycheck plan</button>
+          <button class="secondary" id="sharePlan" type="button">Share plan</button>
+        </div>
+        <div class="status" id="copyStatus" role="status" aria-live="polite"></div>
+        <p class="note">Keep required bills current and debt minimums paid before sending extra money anywhere. This plan is a guide; change it when your checks or priorities change.</p>
+      </section>
+    </div>
+
+    <section class="faq" aria-labelledby="faqTitle">
+      <h2 id="faqTitle">Straight answers</h2>
+      <details>
+        <summary>What should count as extra take-home?</summary>
+        <p>Use the difference that actually reaches you after deductions, or the net amount from a dependable recurring shift. Don’t count a one-time bonus or uncertain overtime as permanent income; you can still use a one-time amount for a one-time goal.</p>
+      </details>
+      <details>
+        <summary>Should I save or pay debt first?</summary>
+        <p>There isn’t one answer for every household. A starter cash buffer can keep a small emergency from going onto a card, while high-interest debt costs money every month. Keep required bills and minimum payments current, then choose a split you can sustain.</p>
+      </details>
+      <details>
+        <summary>How reliable is the timeline?</summary>
+        <p>It assumes the same added take-home and savings allocation arrive every payday. Missed shifts, deductions, emergencies, and changing costs can move the date. Treat it as a planning estimate, not a guarantee.</p>
+      </details>
+      <details>
+        <summary>Does this store my numbers?</summary>
+        <p>No. The calculator runs in this page and does not ask for an account or personal identifiers. Copy or share only what you’re comfortable sending.</p>
+      </details>
+    </section>
+
+    <section class="cta" aria-labelledby="ctaTitle">
+      <h2 id="ctaTitle">Keep the whole paycheck protected</h2>
+      <p>The Blue-Collar Paycheck Protection &amp; Buffer Binder helps you track the buffer, bills, and paycheck decisions on paper so the plan survives a rough week.</p>
+      <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener noreferrer">Browse The Come Up planners →</a>
+    </section>
+    <nav class="next" aria-label="Related tools">
+      <a href="pay-raise-negotiation-engine.html"><strong>Pay Raise Negotiation Engine</strong><span>Set a pay target and prepare your case.</span></a>
+      <a href="paycheck-budget-splitter.html"><strong>Paycheck Budget Splitter</strong><span>Give your full paycheck a job.</span></a>
+    </nav>
+    <p class="footer-note">Built for hourly and shift workers. No account or personal information required.</p>
+  </main>
+  <script>
+    (function () {
+      "use strict";
+      var ids = ["extraNet", "frequency", "currentBuffer", "bufferGoal", "bufferPct", "debtPct", "plannedPct"];
+      var fields = {};
+      ids.forEach(function (id) { fields[id] = document.getElementById(id); });
+      var outputIds = ["bufferPctOut", "debtPctOut", "plannedPctOut", "bufferAmount", "debtAmount",
+        "plannedAmount", "allocationError", "bufferPerCheck", "debtPerCheck", "plannedPerCheck",
+        "goalTimeline", "goalTimelineDetail", "annualBuffer", "assignedPerCheck", "unassignedDetail",
+        "verdictTitle", "verdictText", "planScript", "copyStatus"];
+      var output = {};
+      outputIds.forEach(function (id) { output[id] = document.getElementById(id); });
+
+      function value(id) {
+        var number = Number(fields[id].value);
+        return Number.isFinite(number) ? Math.max(0, number) : 0;
+      }
+
+      function money(amount, decimals) {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: decimals ? 2 : 0,
+          maximumFractionDigits: decimals ? 2 : 0
+        }).format(Number.isFinite(amount) ? amount : 0);
+      }
+
+      function calculate() {
+        var extraNet = value("extraNet");
+        var checksPerYear = Number(fields.frequency.value);
+        var currentBuffer = value("currentBuffer");
+        var goal = value("bufferGoal");
+        var bufferPct = value("bufferPct");
+        var debtPct = value("debtPct");
+        var plannedPct = value("plannedPct");
+        var percentTotal = bufferPct + debtPct + plannedPct;
+        var validSplit = percentTotal === 100;
+        var bufferAmount = extraNet * bufferPct / 100;
+        var debtAmount = extraNet * debtPct / 100;
+        var plannedAmount = extraNet * plannedPct / 100;
+        var checksNeeded = goal > currentBuffer && bufferAmount > 0
+          ? Math.ceil((goal - currentBuffer) / bufferAmount)
+          : 0;
+        var weeksNeeded = checksPerYear > 0 ? checksNeeded * 52 / checksPerYear : 0;
+
+        output.bufferPctOut.textContent = bufferPct + "%";
+        output.debtPctOut.textContent = debtPct + "%";
+        output.plannedPctOut.textContent = plannedPct + "%";
+        output.bufferAmount.textContent = money(bufferAmount, true) + " / paycheck";
+        output.debtAmount.textContent = money(debtAmount, true) + " / paycheck";
+        output.plannedAmount.textContent = money(plannedAmount, true) + " / paycheck";
+        output.bufferPerCheck.textContent = money(bufferAmount, false);
+        output.debtPerCheck.textContent = money(debtAmount, false);
+        output.plannedPerCheck.textContent = money(plannedAmount, false);
+        output.assignedPerCheck.textContent = money(bufferAmount + debtAmount + plannedAmount, false);
+        output.unassignedDetail.textContent = validSplit
+          ? "Every dollar assigned each paycheck"
+          : "Split must total 100% (" + percentTotal + "% now)";
+        output.allocationError.textContent = validSplit
+          ? ""
+          : "Your split is " + percentTotal + "%. Adjust the sliders until they total exactly 100%.";
+
+        if (goal <= currentBuffer) {
+          output.goalTimeline.textContent = "Goal reached";
+          output.goalTimelineDetail.textContent = "Your current buffer meets or exceeds the target";
+        } else if (bufferAmount <= 0) {
+          output.goalTimeline.textContent = "No timeline";
+          output.goalTimelineDetail.textContent = "Assign some extra money to the buffer";
+        } else {
+          output.goalTimeline.textContent = checksNeeded.toLocaleString("en-US") + " checks";
+          output.goalTimelineDetail.textContent = weeksNeeded < 8
+            ? "About " + Math.ceil(weeksNeeded) + " weeks at this pay schedule"
+            : "About " + (weeksNeeded / 4.345).toFixed(1) + " months at this pay schedule";
+        }
+        output.annualBuffer.textContent = money(bufferAmount * checksPerYear, false);
+
+        if (!validSplit) {
+          output.verdictTitle.textContent = "Finish the split before using this plan.";
+          output.verdictText.textContent = "The allocations currently add up to " + percentTotal + "%. Set them to 100% so the full extra paycheck amount has a clear job.";
+        } else if (extraNet <= 0) {
+          output.verdictTitle.textContent = "Enter dependable extra take-home.";
+          output.verdictText.textContent = "Use the added amount that actually lands in your account each payday.";
+        } else if (goal > currentBuffer && bufferAmount === 0) {
+          output.verdictTitle.textContent = "Give the buffer a slice.";
+          output.verdictText.textContent = "With no money assigned to savings, this paycheck plan cannot move you toward the buffer goal.";
+        } else {
+          output.verdictTitle.textContent = "Put the raise on rails.";
+          output.verdictText.textContent = "On every paycheck, move " + money(bufferAmount, true) + " to the buffer, send " + money(debtAmount, true) + " above debt minimums, and reserve " + money(plannedAmount, true) + " for planned costs or breathing room.";
+        }
+
+        output.planScript.textContent =
+          "PAYCHECK LOCK-IN PLAN\n" +
+          "Added take-home: " + money(extraNet, true) + " per paycheck (" + checksPerYear + " checks/year)\n" +
+          "Buffer: " + bufferPct + "% = " + money(bufferAmount, true) + " each check\n" +
+          "Extra debt: " + debtPct + "% = " + money(debtAmount, true) + " each check\n" +
+          "Planned expense / breathing room: " + plannedPct + "% = " + money(plannedAmount, true) + " each check\n" +
+          "Current buffer: " + money(currentBuffer, true) + " / goal: " + money(goal, true) + "\n" +
+          "Buffer timeline: " + (goal <= currentBuffer ? "goal already reached" : bufferAmount > 0 ? checksNeeded + " paychecks (estimate)" : "not set: assign money to buffer") +
+          (validSplit ? "" : "\nACTION REQUIRED: allocations total " + percentTotal + "%; adjust to 100% before relying on this plan.");
+      }
+
+      function fallbackCopy(text) {
+        var area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        var copied = false;
+        try { copied = document.execCommand("copy"); } finally { document.body.removeChild(area); }
+        return copied;
+      }
+
+      function copyText(text, label) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            output.copyStatus.textContent = label + " copied.";
+          }).catch(function () {
+            output.copyStatus.textContent = fallbackCopy(text)
+              ? label + " copied."
+              : "Copy failed. Select and copy the plan manually.";
+          });
+          return;
+        }
+        output.copyStatus.textContent = fallbackCopy(text)
+          ? label + " copied."
+          : "Copy failed. Select and copy the plan manually.";
+      }
+
+      ids.forEach(function (id) {
+        fields[id].addEventListener("input", calculate);
+        fields[id].addEventListener("change", calculate);
+      });
+      document.getElementById("copyPlan").addEventListener("click", function () {
+        copyText(output.planScript.textContent, "Paycheck plan");
+      });
+      document.getElementById("sharePlan").addEventListener("click", function () {
+        var shareData = {
+          title: "My Paycheck Lock-In Plan",
+          text: output.planScript.textContent,
+          url: window.location.href
+        };
+        if (navigator.share) {
+          navigator.share(shareData).then(function () {
+            output.copyStatus.textContent = "Plan shared.";
+          }).catch(function (error) {
+            if (error && error.name !== "AbortError") {
+              output.copyStatus.textContent = "Share failed. Try copying the plan instead.";
+            }
+          });
+        } else {
+          copyText(shareData.text + "\n" + shareData.url, "Share details");
+        }
+      });
+      calculate();
+    })();
+  </script>
+</body>
+</html>
