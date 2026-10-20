@@ -391,7 +391,7 @@
       <div class="stat">
         <div class="k">Annual gross lift</div>
         <div class="v num" id="stAnnual">$16,640</div>
-        <div class="d">increase × 2,080 hrs / yr</div>
+        <div class="d">increase × weekly hours × 52 weeks</div>
       </div>
       <div class="stat">
         <div class="k">Out-of-pocket cost</div>
@@ -535,7 +535,7 @@
         <button class="copy-btn" type="button" id="copyBp">Copy</button>
       </div>
       <div class="bp-foot">
-        <span>Career Lift Engine · estimates at 2,080 hrs/yr, gross before taxes</span>
+        <span>Career Lift Engine · estimates from weekly hours × 52 weeks, gross before taxes</span>
         <span id="bpDate"></span>
       </div>
     </div>
@@ -607,7 +607,7 @@
   </section>
 
   <footer>
-    Estimates only — not financial advice. Annual lift uses 2,080 full-time hours (40 hrs × 52 weeks) and gross pay before taxes and deductions. Certification costs and post-cert wages vary by state, employer, and experience; verify your local numbers before you commit. Your weekly hours and study time shape the funding plan, but the payback clock runs on calendar days of higher pay once you're certified.
+    Estimates only — not financial advice. Annual lift uses the weekly hours entered × 52 weeks and is gross before taxes and deductions; it assumes those hours stay consistent all year. Certification costs and post-cert wages vary by state, employer, and experience; verify your local numbers before you commit. Your study time shapes the funding plan, but the payback clock runs on calendar days of higher pay once you're certified.
   </footer>
 </div>
 
@@ -712,7 +712,8 @@
     else if (state.reimb === "partial") reimbFrac = clamp(num(els.partialPct, 50), 0, 100) / 100;
 
     var increase = target - cur;
-    var annualLift = increase * 2080;
+    var annualHours = hours * 52;
+    var annualLift = increase * annualHours;
     var oop = cost * (1 - reimbFrac);
     var dailyLift = annualLift / 365;
     var paybackDays = null; // null = never
@@ -725,7 +726,7 @@
     // Wage Acceleration Index (0–100)
     var wai = 0;
     if (increase > 0){
-      var liftFactor = clamp(annualLift / Math.max(cur * 2080, 1), 0, 1); // raise as % of current annual
+      var liftFactor = clamp(annualLift / Math.max(cur * annualHours, 1), 0, 1);
       var speedFactor = paybackDays === null ? 0 : clamp(60 / Math.max(paybackDays, 1), 0, 1);
       if (paybackDays === 0) speedFactor = 1;
       var fundFactor = 1 - clamp(studyWeeks / 26, 0, 1);
@@ -741,7 +742,7 @@
 
     return {
       cur:cur, target:target, cost:cost, hours:hours, studyWeeks:studyWeeks, periods:periods,
-      reimbFrac:reimbFrac, increase:increase, annualLift:annualLift, oop:oop,
+      reimbFrac:reimbFrac, increase:increase, annualHours:annualHours, annualLift:annualLift, oop:oop,
       dailyLift:dailyLift, paybackDays:paybackDays, perCheck:perCheck, weeksToFund:weeksToFund,
       wai:wai, tier:tier, certName:PRESETS[els.certSelect.value].name
     };
@@ -918,7 +919,7 @@
     var s = "TRADE CREDENTIAL PAY-GRADE LIFT BLUEPRINT\n" +
       "Certification: " + d.certName + "\n" +
       "Pay jump: " + money2(d.cur) + "/hr → " + money2(d.target) + "/hr (+" + "$" + Math.abs(d.increase).toFixed(2) + ")\n" +
-      "Annual gross lift: " + money(d.annualLift) + "\n" +
+      "Annual gross lift (" + d.hours + " hrs/week): " + money(d.annualLift) + "\n" +
       "Pays for itself in: " + (d.paybackDays === 0 ? "Day 1 (employer covered)" : d.paybackDays === null ? "—" : d.paybackDays + " days") + "\n" +
       "Sinking target: " + (d.oop <= 0 ? "$0 — covered" : money2(d.perCheck) + " per paycheck × " + d.periods) + "\n" +
       "Wage Acceleration Index: " + d.wai + "/100\n" +
