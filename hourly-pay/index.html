@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Hourly pay breakdowns for $15, $18, $20, $25, and $30 an hour, with overtime, taxes, and paycheck math for hourly workers." />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Hourly Pay Hub | The Come Up" />
+    <meta property="og:description" content="Compare hourly pay, overtime, and annual take-home numbers — built for shift workers and hourly wage earners." />
+    <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/hourly-pay/" />
+    <meta name="twitter:card" content="summary" />
+    <title>Hourly Pay Hub | The Come Up</title>
+    <style>
+      :root {
+        --bg: #141414;
+        --panel: #1f1f1f;
+        --panel-2: #262626;
+        --line: #343434;
+        --text: #f5f5f5;
+        --muted: #bdbdbd;
+        --amber: #f5a623;
+        --amber-soft: rgba(245,166,35,0.12);
+        --green: #6ee7a8;
+        --shadow: 0 10px 30px rgba(0,0,0,0.28);
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 28px 18px 48px;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 700;
+      }
+      .brand .mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--amber-soft);
+        color: var(--amber);
+      }
+      .back {
+        color: var(--amber);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .hero {
+        background: linear-gradient(135deg, rgba(245,166,35,0.14), rgba(31,31,31,0.95));
+        border: 1px solid rgba(245,166,35,0.5);
+        border-radius: 18px;
+        padding: 26px 20px;
+        box-shadow: var(--shadow);
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(32px, 7vw, 52px);
+        line-height: 1.05;
+      }
+      .lead {
+        margin: 0;
+        font-size: 17px;
+        color: var(--muted);
+        max-width: 60ch;
+      }
+      .cta-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .btn {
+        display: inline-block;
+        border-radius: 10px;
+        padding: 12px 16px;
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+      .btn.primary {
+        background: var(--amber);
+        color: #141414;
+      }
+      .btn.secondary {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--line);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin-top: 26px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px 16px;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: var(--shadow);
+      }
+      .card h2 {
+        margin: 0 0 6px;
+        font-size: 18px;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--amber);
+        margin-bottom: 12px;
+      }
+      .big {
+        font-size: 30px;
+        font-weight: 800;
+        margin: 0 0 10px;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 14px;
+        margin: 0;
+      }
+      .section {
+        margin-top: 34px;
+      }
+      h3 {
+        margin: 0 0 14px;
+        font-size: 20px;
+      }
+      .tips {
+        display: grid;
+        gap: 12px;
+      }
+      .tip {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px 18px;
+      }
+      .tip strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .foot {
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      @media (max-width: 640px) {
+        .topbar { align-items: flex-start; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="brand" href="../index.html"><span class="mark">$</span> The Come Up</a>
+        <a class="back" href="../tools.html">← All tools</a>
+      </div>
+
+      <header class="hero">
+        <h1>Hourly Pay, Overtime, and What the Shift Really Pays.</h1>
+        <p class="lead">If your income is tied to the clock, the real question is not just what you make per hour — it is what lands in your pocket after taxes, deductions, and extra hours.</p>
+        <div class="cta-wrap">
+          <a class="btn primary" href="../shift-paycheck-calculator.html">Check the next shift</a>
+          <a class="btn secondary" href="../overtime-paycheck-calculator.html">Run overtime math</a>
+        </div>
+      </header>
+
+      <section class="section">
+        <div class="grid">
+          <a class="card" href="15-an-hour/">
+            <div class="tag">$15/hr</div>
+            <div class="big">$31,200</div>
+            <p class="muted">Gross annual pay at 40 hrs/week. Useful for budgeting, emergency fund targets, and deciding if a second job is worth it.</p>
+          </a>
+          <a class="card" href="20-an-hour/">
+            <div class="tag">$20/hr</div>
+            <div class="big">$41,600</div>
+            <p class="muted">A common middle-ground wage for warehouse, service, and production work. Extra OT hours matter fast here.</p>
+          </a>
+          <a class="card" href="25-an-hour/">
+            <div class="tag">$25/hr</div>
+            <div class="big">$52,000</div>
+            <p class="muted">This is the kind of wage that can break the paycheck-to-paycheck cycle — if the schedule is stable.</p>
+          </a>
+          <a class="card" href="30-an-hour/">
+            <div class="tag">$30/hr</div>
+            <div class="big">$62,400</div>
+            <p class="muted">Strong income for a single worker, but higher taxes and less flexibility if overtime becomes the norm.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section">
+        <h3>What to watch before saying yes to more hours</h3>
+        <div class="tips">
+          <div class="tip">
+            <strong>Taxes are not flat.</strong>
+            Extra overtime raises your gross pay, but your tax burden also climbs. The real win is the take-home after FICA, federal tax, and state tax.
+          </div>
+          <div class="tip">
+            <strong>Night and weekend premiums matter.</strong>
+            A $2 premium late at night or on the weekend changes your effective pay rate, and some workers forget to count the difference.
+          </div>
+          <div class="tip">
+            <strong>Time is part of the equation.</strong>
+            A good shift is not always one with the highest sticker rate. Sometimes a lower hourly rate with predictable hours keeps the paycheck steadier.
+          </div>
+        </div>
+      </section>
+
+      <p class="foot">Educational use only. These estimates are for planning, not individualized financial advice.</p>
+    </div>
+  </body>
+</html>
