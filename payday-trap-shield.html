@@ -516,6 +516,7 @@
             </div>
           </div>
           <p class="bp-line" id="bpLine"></p>
+          <button type="button" class="copy-btn" id="copyBlueprint">Copy Action Plan</button>
           <button type="button" class="copy-btn" id="shareBlueprint">Share this blueprint</button>
           <p class="share-status" id="shareStatus" role="status" aria-live="polite"></p>
         </div>
@@ -721,6 +722,37 @@
           }
         });
 
+        $("copyBlueprint").addEventListener("click", function () {
+          var status = $("shareStatus");
+          var blueprint = $("blueprint").cloneNode(true);
+          blueprint.querySelectorAll("button,[role='status']").forEach(function (element) { element.remove(); });
+          var text = blueprint.innerText.replace(/[ \t]*\n[ \t]*/g, "\n").replace(/\n{3,}/g, "\n\n").trim() +
+            "\n\nCreated with The Come Up: " +
+            window.location.origin + window.location.pathname;
+
+          function report(message) { status.textContent = message; }
+          function fallback() {
+            var textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.select();
+            var copied = false;
+            try { copied = document.execCommand("copy"); } catch (error) { copied = false; } finally { document.body.removeChild(textarea); }
+            report(copied ? "Action plan copied." : "Could not copy. Select the blueprint and copy it manually.");
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(
+              function () { report("Action plan copied."); },
+              fallback
+            );
+          } else {
+            fallback();
+          }
+        });
+
         $("shareBlueprint").addEventListener("click", function () {
           var button = this;
           var status = $("shareStatus");
@@ -728,7 +760,7 @@
           blueprint.querySelectorAll("button,[role='status']").forEach(function (element) { element.remove(); });
           var title = $("bpTitle").textContent.trim();
           var text = blueprint.innerText.trim();
-          var url = window.location.href;
+          var url = window.location.origin + window.location.pathname;
 
           function report(message) { status.textContent = message; }
           function copyFallback() {

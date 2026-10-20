@@ -525,7 +525,7 @@
           <div class="bfoot">
             <button class="copybtn" id="copyBlueprint" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-              <span>Copy the full blueprint</span>
+              <span>Copy Action Plan</span>
             </button>
             <button class="copybtn" id="shareBlueprint" type="button"><span>Share this blueprint</span></button>
             <span class="share-status" id="shareStatus" role="status" aria-live="polite"></span>
@@ -1000,23 +1000,31 @@
         }
 
         function copyText(text, btn){
-          function done(){
-            if(!btn) return;
-            var span = btn.querySelector("span");
-            var old = span ? span.textContent : "";
-            btn.classList.add("copied");
-            if(span) span.textContent = "Copied ✓";
-            setTimeout(function(){ btn.classList.remove("copied"); if(span) span.textContent = old; }, 2200);
+          var status = $("shareStatus");
+          function done(copied){
+            if(!copied){
+              status.textContent = "Could not copy. Select the plan and copy it manually.";
+              return;
+            }
+            status.textContent = "Action plan copied.";
+            if(btn){
+              var span = btn.querySelector("span");
+              var old = span ? span.textContent : "";
+              btn.classList.add("copied");
+              if(span) span.textContent = "Copied ✓";
+              setTimeout(function(){ btn.classList.remove("copied"); if(span) span.textContent = old; }, 2200);
+            }
           }
           if(navigator.clipboard && navigator.clipboard.writeText){
-            navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+            navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(); });
           } else { fallback(); }
           function fallback(){
             var ta = document.createElement("textarea");
             ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
             document.body.appendChild(ta); ta.select();
-            try { document.execCommand("copy"); } catch(e){}
-            document.body.removeChild(ta); done();
+            var copied = false;
+            try { copied = document.execCommand("copy"); } catch(e) { copied = false; }
+            document.body.removeChild(ta); done(copied);
           }
         }
 
@@ -1034,7 +1042,8 @@
             + "Over-deduction / check: " + money(R.over) + " (" + money(R.overYearly) + " / year)\n"
             + "Guaranteed net pay / check: " + money(R.guaranteedNet) + " (" + money(R.monthlyGuaranteed) + " / month)\n"
             + "Paycheck Protection Index: " + p.score + " / 100\n\n"
-            + "FIRST MOVE:\n" + (scripts.bp || "");
+            + "FIRST MOVE:\n" + (scripts.bp || "")
+            + "\n\nCreated with The Come Up: " + window.location.origin + window.location.pathname;
           copyText(text, $("copyBlueprint"));
         });
 
@@ -1044,7 +1053,7 @@
           blueprint.querySelectorAll("button,[role='status']").forEach(function(element){ element.remove(); });
           var title = document.title;
           var text = blueprint.innerText.trim();
-          var url = window.location.href;
+          var url = window.location.origin + window.location.pathname;
 
           function report(message){ status.textContent = message; }
           function copyFallback(){

@@ -528,6 +528,7 @@ Thank you for working with me.
             <div class="script-box" id="bpScriptText">Hi, my name is [YOUR NAME] and my account number is [ACCOUNT #]. I'm calling about my auto loan — I know I'm behind, and I want to fix it before this goes any further. Can you tell me the exact amount I need to pay to bring the account current today, and the deadline to pay it? I'd also like to ask about a payment plan or a deferment so I can catch up and stay current. Please note this call in my file — and can I get your name and a confirmation number for this conversation?</div>
           </div>
           <div class="bp-actions">
+            <button class="copy-btn" type="button" id="copyBlueprint" style="margin-top:0">Copy Action Plan</button>
             <button class="copy-btn" type="button" data-copy="bpScriptText" style="margin-top:0">Copy the script</button>
             <button class="copy-btn" type="button" id="shareBlueprint">Share this blueprint</button>
             <span class="share-status" id="shareStatus" role="status" aria-live="polite"></span>
@@ -768,13 +769,42 @@ Thank you for working with me.
         });
       });
 
+      $('copyBlueprint').addEventListener('click', function(){
+        var status = $('shareStatus');
+        var blueprint = $('blueprint').cloneNode(true);
+        blueprint.querySelectorAll('button,[role="status"]').forEach(function(element){ element.remove(); });
+        var text = blueprint.innerText.replace(/[ \t]*\n[ \t]*/g, '\n').replace(/\n{3,}/g, '\n\n').trim() +
+          '\n\nCreated with The Come Up: ' +
+          window.location.origin + window.location.pathname;
+
+        function report(message){ status.textContent = message; }
+        function fallback(){
+          var textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          var copied = false;
+          try { copied = document.execCommand('copy'); } catch(error) { copied = false; } finally { document.body.removeChild(textarea); }
+          report(copied ? 'Action plan copied.' : 'Could not copy. Select the blueprint and copy it manually.');
+        }
+
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(
+            function(){ report('Action plan copied.'); },
+            fallback
+          );
+        } else { fallback(); }
+      });
+
       $('shareBlueprint').addEventListener('click', function(){
         var status = $('shareStatus');
         var blueprint = $('blueprint').cloneNode(true);
         blueprint.querySelectorAll('button,[role="status"]').forEach(function(element){ element.remove(); });
         var title = document.title;
         var text = blueprint.innerText.trim();
-        var url = window.location.href;
+        var url = window.location.origin + window.location.pathname;
 
         function report(message){ status.textContent = message; }
         function copyFallback(){
