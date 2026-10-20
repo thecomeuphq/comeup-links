@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thecomeuphq.github.io/comeup-links/sitemap.xml
