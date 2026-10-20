@@ -53,10 +53,11 @@
 
   <h2>Start here</h2>
   <a class="card" href="paycheck-health-score-quiz.html"><div class="t">Paycheck Health Score Quiz</div><div class="d">Your 0–100 money health score and your exact next move.</div></a>
+  <a class="card" href="paycheck-bill-calendar.html"><div class="t">Paycheck &amp; Bill Calendar</div><div class="d">Forecast 45 days of paydays and monthly bills to spot a possible cash gap.</div></a>
   <a class="card" href="missions.html"><div class="t">Mission Board</div><div class="d">Track your next money mission and build momentum without overthinking.</div></a>
   <a class="card" href="paycheck-protection-checklist.html"><div class="t">Free Paycheck Protection Checklist</div><div class="d">Print or save a paycheck review worksheet—no signup or checkout required.</div></a>
   <a class="card" href="30-day-paycheck-reset.html"><div class="t">30-Day Paycheck Reset</div><div class="d">One small money move a day for 30 days. Track your streak.</div></a>
-  <a class="card" href="free-financial-calculators.html"><div class="t">Free Financial Calculators</div><div class="d">All 10 core calculators in one hub.</div></a>
+  <a class="card" href="free-financial-calculators.html"><div class="t">Free Financial Calculators</div><div class="d">All 11 core calculators in one hub.</div></a>
   <a class="card shop" href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=tools_directory">
     <div class="t">Put Your Paycheck Plan on Paper — $6.95</div>
     <div class="d">The Paycheck-to-Paycheck Weekly Planner turns each payday into a plan you can follow.</div>
@@ -125,7 +126,7 @@
   <a class="card" href="tax-withholding-safeguard.html"><div class="t">Tax Withholding Safeguard</div><div class="d">Stop overpaying the IRS every check.</div></a>
   <a class="card" href="housing-affordability-engine.html"><div class="t">Housing Affordability Engine</div><div class="d">What rent can you really afford?</div></a>
   <a class="card" href="credit-repair-engine.html"><div class="t">Credit Repair Engine</div><div class="d">Your 30–60 day score comeback plan.</div></a>
-  <a class="card" href="free-reset-tracker-funnel.html"><div class="t">Free Reset Tracker</div><div class="d">The free 30-day companion download.</div></a>
+  <a class="card" href="free-reset-tracker-funnel.html"><div class="t">Free Reset Tracker</div><div class="d">See how the free browser-based 30-day tracker works—no signup required.</div></a>
 
   <h2>Phone apps</h2>
   <a class="card" href="debt-free.html"><div class="t">Debt Free App</div><div class="d">Track every debt payoff from your phone.</div></a>
@@ -146,11 +147,17 @@
     const cards = Array.from(document.querySelectorAll('.card'));
     const headings = Array.from(document.querySelectorAll('h2'));
 
+    function normalize(value) {
+      return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+    }
+
     function filterDirectory() {
-      const query = input.value.trim().toLocaleLowerCase();
+      const query = normalize(input.value.trim());
+      const terms = query ? query.split(/\s+/) : [];
       let visible = 0;
       cards.forEach(function (card) {
-        const matched = !query || (card.textContent + ' ' + card.getAttribute('href')).toLocaleLowerCase().includes(query);
+        const text = normalize(card.textContent + ' ' + card.getAttribute('href'));
+        const matched = terms.every(function (term) { return text.includes(term); });
         card.hidden = !matched;
         if (matched) visible++;
       });
@@ -165,8 +172,13 @@
       });
       empty.classList.toggle('show', Boolean(query) && visible === 0);
       status.textContent = query ? visible + ' matching ' + (visible === 1 ? 'tool' : 'tools') + '.' : cards.length + ' tools and resources.';
+      const url = new URL(window.location.href);
+      if (input.value.trim()) url.searchParams.set('q', input.value.trim());
+      else url.searchParams.delete('q');
+      window.history.replaceState(null, '', url);
     }
 
+    input.value = new URLSearchParams(window.location.search).get('q') || '';
     input.addEventListener('input', filterDirectory);
     filterDirectory();
   })();

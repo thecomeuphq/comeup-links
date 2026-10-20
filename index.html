@@ -40,6 +40,8 @@
   h1 { font-size:clamp(30px,8vw,42px); line-height:1.05; letter-spacing:-.035em; }
   .tag { max-width:540px; margin:12px auto 0; color:#d1d1d1; font-size:15px; line-height:1.55; }
   .hero-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:19px; }
+  .hero-offer { margin:0 auto 12px; max-width:560px; color:var(--muted); font-size:13px; line-height:1.5; }
+  .hero-offer a { color:var(--amber); font-weight:750; text-underline-offset:3px; }
   .button { display:inline-flex; align-items:center; justify-content:center; min-height:46px; border:1px solid var(--line); border-radius:12px; padding:11px 16px; background:var(--surface); color:var(--text); font-size:14px; font-weight:750; text-decoration:none; }
   .button.primary { background:var(--amber); border-color:var(--amber); color:#17130c; }
   .button:focus-visible, .card:focus-visible, .tool:focus-visible, summary:focus-visible, input:focus-visible { outline:3px solid #fff; outline-offset:3px; }
@@ -99,6 +101,7 @@
     <div class="logo" aria-hidden="true">💰</div>
     <h1>The Come Up</h1>
     <p class="tag">Practical money defense for hourly and shift workers. Pick what you’re dealing with and get a clear next move—without finance jargon.</p>
+    <p class="hero-offer">Want a paper plan for payday? <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=homepage_hero">Get the Paycheck-to-Paycheck Weekly Planner for $6.95</a>.</p>
     <div class="hero-actions">
       <a class="button primary" href="paycheck-health-score-quiz.html">Find my next move <span aria-hidden="true">&nbsp;→</span></a>
       <a class="button" href="tools.html">Browse all tools</a>
@@ -140,6 +143,7 @@
       <a class="tool searchable" data-search="variable pay irregular hours feast famine income shift" href="variable-pay-shield.html"><div class="title">Variable Pay Shield</div><div class="desc">Build a steadier plan around changing hours, tips, and income.</div></a>
       <a class="tool searchable" data-search="short check paycheck shock emergency triage" href="paycheck-shock-defense.html"><div class="title">Paycheck Shock Defense</div><div class="desc">Prioritize the essentials when this check comes up short.</div></a>
       <a class="tool searchable" data-search="tax withholding w4 refund owing irs" href="tax-withholding-safeguard.html"><div class="title">Tax Withholding Safeguard</div><div class="desc">Review your withholding before a tax bill or oversized refund.</div></a>
+      <a class="tool featured-tool searchable" data-search="paycheck bill calendar cash flow payday due date forecast" href="paycheck-bill-calendar.html"><div class="title">Paycheck &amp; Bill Calendar</div><div class="desc">Map upcoming paydays and recurring bills to spot a possible cash gap.</div></a>
       <a class="tool searchable" data-search="payday cash flow budget split bills paycheck" href="payday-cash-flow-allocator.html"><div class="title">Payday Cash Flow Allocator</div><div class="desc">Give each payday a plan for bills, needs, and priorities.</div></a>
     </div>
   </details>
@@ -195,7 +199,7 @@
     <a href="paycheck-protection-checklist.html">Open the free checklist →</a>
   </section>
 
-  <a class="card searchable" data-search="paycheck plan weekly planner paper workbook shop" href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=homepage" target="_blank" rel="noopener noreferrer">
+  <a class="card searchable" data-search="paycheck plan weekly planner paper workbook shop" href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=homepage_featured" target="_blank" rel="noopener noreferrer">
     <div class="title">📝 Put your paycheck plan on paper — $6.95</div>
     <div class="desc">The Paycheck-to-Paycheck Weekly Planner gives each payday a plan you can follow.</div>
   </a>
@@ -218,33 +222,47 @@
     const empty = document.getElementById('empty-state');
     const hubs = Array.from(document.querySelectorAll('[data-hub]'));
     const searchable = Array.from(document.querySelectorAll('.searchable'));
+    let savedOpenStates = null;
+
+    function normalize(value) {
+      return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
+    }
 
     function filterTools() {
-      const query = input.value.trim().toLocaleLowerCase();
+      const query = normalize(input.value.trim());
+      const terms = query ? query.split(/\s+/) : [];
+      if (query && savedOpenStates === null) savedOpenStates = hubs.map(function (hub) { return hub.open; });
       let matches = 0;
       searchable.forEach(function (item) {
-        const text = (item.textContent + ' ' + (item.getAttribute('data-search') || '')).toLocaleLowerCase();
-        const matched = !query || text.includes(query);
+        const text = normalize(item.textContent + ' ' + (item.getAttribute('data-search') || ''));
+        const matched = terms.every(function (term) { return text.includes(term); });
         item.hidden = !matched;
         if (matched) matches++;
       });
-      hubs.forEach(function (hub) {
+      hubs.forEach(function (hub, index) {
         const hasMatch = hub.querySelector('.searchable:not([hidden])') !== null;
         hub.hidden = Boolean(query) && !hasMatch;
         if (query && hasMatch) hub.open = true;
-        if (!query) hub.open = false;
+        if (!query && savedOpenStates !== null) hub.open = savedOpenStates[index];
       });
+      if (!query) savedOpenStates = null;
       clear.hidden = !query;
       empty.classList.toggle('show', Boolean(query) && matches === 0);
       status.textContent = query ? matches + ' matching quick-start ' + (matches === 1 ? 'result' : 'results') + '.' : '';
+      const url = new URL(window.location.href);
+      if (input.value.trim()) url.searchParams.set('q', input.value.trim());
+      else url.searchParams.delete('q');
+      window.history.replaceState(null, '', url);
     }
 
+    input.value = new URLSearchParams(window.location.search).get('q') || '';
     input.addEventListener('input', filterTools);
     clear.addEventListener('click', function () {
       input.value = '';
       filterTools();
       input.focus();
     });
+    filterTools();
   })();
 </script>
 </body>

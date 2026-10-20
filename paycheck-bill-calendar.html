@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#141414">
+  <title>Free Paycheck Bill Calendar | The Come Up</title>
+  <meta name="description" content="Map upcoming paydays and monthly bills on a private, browser-based cash-flow calendar. Free paycheck bill planner for hourly and shift workers; no account required.">
+  <link rel="canonical" href="https://thecomeuphq.github.io/comeup-links/paycheck-bill-calendar.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Come Up">
+  <meta property="og:title" content="Free Paycheck Bill Calendar">
+  <meta property="og:description" content="See how upcoming paydays and monthly bills may affect your cash balance. Free, private, and no account required.">
+  <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/paycheck-bill-calendar.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Free Paycheck Bill Calendar | The Come Up">
+  <meta name="twitter:description" content="Map paydays and monthly bills in a private cash-flow forecast. No account required.">
+  <style>
+    :root { color-scheme:dark; --bg:#141414; --panel:#1f1f1f; --panel-2:#262626; --line:#3a3a3a; --text:#f5f5f5; --muted:#bdbdbd; --amber:#f5a623; --green:#a8e6bd; --red:#ff9186; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.55; }
+    .wrap { width:min(100% - 32px,760px); margin:0 auto; padding:24px 0 56px; }
+    .back { display:inline-block; margin-bottom:18px; color:var(--amber); text-underline-offset:3px; }
+    .hero, .panel { margin-bottom:14px; padding:20px; border:1px solid var(--line); border-radius:15px; background:var(--panel); }
+    .hero { border-color:#715321; background:linear-gradient(135deg,#30230f,#1f1f1f 72%); }
+    .eyebrow { color:var(--amber); font-size:11px; font-weight:850; letter-spacing:.14em; text-transform:uppercase; }
+    h1 { margin:8px 0; font-size:clamp(28px,7vw,40px); line-height:1.08; }
+    h2 { margin:0 0 12px; font-size:18px; }
+    p { margin:8px 0; }
+    .intro, .muted { color:var(--muted); }
+    .privacy { font-size:13px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:13px; }
+    label { display:block; margin-bottom:5px; font-size:13px; font-weight:750; }
+    input, select { width:100%; min-height:45px; border:1px solid #555; border-radius:9px; padding:10px 11px; background:#111; color:var(--text); font:inherit; }
+    input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline:3px solid #fff; outline-offset:2px; }
+    .field-note { margin-top:5px; color:#999; font-size:12px; line-height:1.4; }
+    .bill-list { display:grid; gap:10px; }
+    .bill-row { display:grid; grid-template-columns:minmax(110px,1.4fr) minmax(90px,1fr) minmax(76px,.65fr) auto; gap:9px; align-items:end; padding:12px; border:1px solid #393939; border-radius:11px; background:#191919; }
+    .remove { min-height:43px; border:1px solid #555; border-radius:9px; padding:8px 10px; background:#292929; color:var(--text); cursor:pointer; }
+    .actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:15px; }
+    .button { min-height:45px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:10px; padding:10px 15px; background:#292929; color:var(--text); font:inherit; font-weight:750; text-decoration:none; cursor:pointer; }
+    .button.primary { border-color:var(--amber); background:var(--amber); color:#17130c; }
+    .result { padding:16px; border:1px solid #3c5943; border-radius:12px; background:#17221a; }
+    .result.warning { border-color:#77423d; background:#291a19; }
+    .result h2 { margin-bottom:4px; }
+    .result p { margin:4px 0; }
+    .positive { color:var(--green); font-weight:800; }
+    .negative { color:var(--red); font-weight:800; }
+    .table-wrap { overflow-x:auto; margin-top:14px; }
+    table { width:100%; border-collapse:collapse; min-width:480px; font-size:14px; }
+    th, td { padding:10px 8px; border-bottom:1px solid var(--line); text-align:left; }
+    th { color:var(--muted); font-size:12px; }
+    td:last-child, th:last-child { text-align:right; }
+    .related { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:10px; }
+    .related a { color:var(--amber); text-underline-offset:3px; }
+    .offer { margin-top:16px; padding:14px; border:1px solid #715321; border-radius:11px; background:#211b10; font-size:14px; }
+    .offer a { color:var(--amber); font-weight:800; text-underline-offset:3px; }
+    .disclaimer { color:#999; font-size:12px; line-height:1.55; }
+    [hidden] { display:none !important; }
+    @media (max-width:560px) { .bill-row { grid-template-columns:1fr 1fr; } .bill-row .bill-name { grid-column:1 / -1; } .remove { grid-column:2; } }
+    @media print { body { background:#fff; color:#111; } .wrap { width:100%; padding:0; } .back, .actions, .offer { display:none; } .hero, .panel { break-inside:avoid; border-color:#aaa; background:#fff; } input, select { border-color:#888; background:#fff; color:#111; } }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="index.html">← Back to The Come Up</a>
+  <header class="hero">
+    <div class="eyebrow">Free cash-flow planner</div>
+    <h1>Paycheck &amp; Bill Calendar</h1>
+    <p class="intro">Map the paydays and recurring bills ahead so you can spot a tight stretch before it arrives. Enter estimates—this is a planning forecast, not a bank balance.</p>
+    <p class="privacy">No signup. Your entries stay in this page and are not saved or sent anywhere.</p>
+  </header>
+
+  <form id="planner-form">
+    <section class="panel" aria-labelledby="income-title">
+      <h2 id="income-title">Starting point &amp; pay schedule</h2>
+      <div class="grid">
+        <div><label for="as-of">Starting date</label><input id="as-of" type="date" required><p class="field-note">Forecast starts before any listed transactions on this date.</p></div>
+        <div><label for="balance">Available balance before starting-date transactions</label><input id="balance" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required></div>
+        <div><label for="pay-amount">Estimated take-home pay per check</label><input id="pay-amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required></div>
+        <div><label for="frequency">Pay frequency</label><select id="frequency"><option value="weekly">Weekly</option><option value="biweekly" selected>Every 2 weeks</option><option value="semimonthly">Twice monthly (15th / month-end)</option><option value="monthly">Monthly</option></select></div>
+        <div><label for="next-payday">Next payday</label><input id="next-payday" type="date" required><p class="field-note">For twice-monthly pay, enter either payday; the forecast alternates the 15th and month-end.</p></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="bills-title">
+      <h2 id="bills-title">Recurring monthly bills</h2>
+      <p class="muted">Add bills due in the next 45 days. A due day of 29–31 falls on the last day in shorter months.</p>
+      <div class="bill-list" id="bill-list"></div>
+      <div class="actions"><button class="button" id="add-bill" type="button">＋ Add a bill</button></div>
+      <div class="actions"><button class="button primary" type="submit">Build my 45-day forecast</button><button class="button" id="print-plan" type="button">Print / save as PDF</button></div>
+    </section>
+  </form>
+
+  <section class="panel" id="forecast" aria-labelledby="forecast-title" hidden>
+    <div class="result" id="result-summary" role="status" aria-live="polite"></div>
+    <div class="table-wrap">
+      <table>
+        <caption class="muted" style="text-align:left;padding:10px 0">Estimated transactions, with bills counted before pay on the same date.</caption>
+        <thead><tr><th scope="col">Date</th><th scope="col">Item</th><th scope="col">Change</th><th scope="col">Est. balance</th></tr></thead>
+        <tbody id="forecast-rows"></tbody>
+      </table>
+    </div>
+    <p class="disclaimer">Timing, pending transactions, fees, taxes, and variable future checks can change the actual balance. Confirm due dates and available funds with your billers and financial institution.</p>
+    <div class="related"><a href="paycheck-budget-splitter.html">Split a paycheck into a budget</a><a href="paycheck-protection-checklist.html">Use the free paycheck checklist</a><a href="30-day-paycheck-reset.html">Start the 30-day paycheck reset</a></div>
+    <div class="offer">Want a paper payday routine too? <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=paycheck_bill_calendar">Get the Paycheck-to-Paycheck Weekly Planner for $6.95</a>. The calendar and other tools here stay free.</div>
+  </section>
+
+  <template id="bill-template">
+    <div class="bill-row">
+      <div class="bill-name"><label>Bill name<input class="bill-label" type="text" maxlength="50" placeholder="Rent" autocomplete="off"></label></div>
+      <div><label>Amount<input class="bill-amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></label></div>
+      <div><label>Due day<input class="bill-day" type="number" min="1" max="31" step="1" inputmode="numeric" placeholder="1–31"></label></div>
+      <button class="remove" type="button" aria-label="Remove this bill">Remove</button>
+    </div>
+  </template>
+
+<script>
+  (function () {
+    const form = document.getElementById('planner-form');
+    const billList = document.getElementById('bill-list');
+    const template = document.getElementById('bill-template');
+    const forecast = document.getElementById('forecast');
+    const summary = document.getElementById('result-summary');
+    const rows = document.getElementById('forecast-rows');
+    const dayMs = 86400000;
+
+    function utcDate(value) {
+      const parts = value.split('-').map(Number);
+      return new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+    }
+    function dateValue(date) {
+      return date.getUTCFullYear() + '-' + String(date.getUTCMonth() + 1).padStart(2, '0') + '-' + String(date.getUTCDate()).padStart(2, '0');
+    }
+    function formatDate(date) {
+      return new Intl.DateTimeFormat('en-US', { month:'short', day:'numeric', year:'numeric', timeZone:'UTC' }).format(date);
+    }
+    function monthEnd(year, month) {
+      return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+    }
+    function monthlyDate(year, month, day) {
+      return new Date(Date.UTC(year, month, Math.min(day, monthEnd(year, month))));
+    }
+    function nextSemimonthly(date) {
+      const year = date.getUTCFullYear();
+      const month = date.getUTCMonth();
+      if (date.getUTCDate() === monthEnd(year, month)) return new Date(Date.UTC(year, month + 1, 15));
+      if (date.getUTCDate() < 15) return new Date(Date.UTC(year, month, 15));
+      return new Date(Date.UTC(year, month + 1, 0));
+    }
+    function money(value) {
+      return new Intl.NumberFormat('en-US', { style:'currency', currency:'USD' }).format(value);
+    }
+    function addBill() {
+      billList.appendChild(template.content.cloneNode(true));
+      forecast.hidden = true;
+    }
+
+    const today = new Date();
+    const todayUtc = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+    document.getElementById('as-of').value = dateValue(todayUtc);
+    document.getElementById('next-payday').value = dateValue(new Date(todayUtc.getTime() + 14 * dayMs));
+    addBill();
+    addBill();
+
+    document.getElementById('add-bill').addEventListener('click', addBill);
+    document.getElementById('print-plan').addEventListener('click', function () { window.print(); });
+    billList.addEventListener('click', function (event) {
+      const button = event.target.closest('.remove');
+      if (!button) return;
+      button.closest('.bill-row').remove();
+      forecast.hidden = true;
+    });
+    form.addEventListener('input', function (event) {
+      const billRow = event.target.closest('.bill-row');
+      if (billRow) {
+        const fields = Array.from(billRow.querySelectorAll('input'));
+        const isStarted = fields.some(function (field) { return field.value.trim() !== ''; });
+        fields.forEach(function (field) { field.required = isStarted; });
+      }
+      if (event.target.matches('input')) forecast.hidden = true;
+    });
+    form.addEventListener('change', function () { forecast.hidden = true; });
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      Array.from(billList.querySelectorAll('.bill-row')).forEach(function (row) {
+        const fields = Array.from(row.querySelectorAll('input'));
+        const isStarted = fields.some(function (field) { return field.value.trim() !== ''; });
+        fields.forEach(function (field) { field.required = isStarted; });
+      });
+      if (!form.reportValidity()) return;
+
+      const asOf = utcDate(document.getElementById('as-of').value);
+      const nextPaydayValue = utcDate(document.getElementById('next-payday').value);
+      const balance = Number(document.getElementById('balance').value);
+      const payAmount = Number(document.getElementById('pay-amount').value);
+      const frequency = document.getElementById('frequency').value;
+      const horizon = new Date(asOf.getTime() + 44 * dayMs);
+      const bills = Array.from(billList.querySelectorAll('.bill-row')).map(function (row) {
+        return {
+          name: row.querySelector('.bill-label').value.trim() || 'Monthly bill',
+          amount: Number(row.querySelector('.bill-amount').value),
+          day: Number(row.querySelector('.bill-day').value)
+        };
+      }).filter(function (bill) {
+        return bill.amount > 0 && Number.isInteger(bill.day) && bill.day >= 1 && bill.day <= 31;
+      });
+
+      if (nextPaydayValue < asOf) {
+        document.getElementById('next-payday').setCustomValidity('Next payday must be on or after the starting date.');
+        document.getElementById('next-payday').reportValidity();
+        document.getElementById('next-payday').setCustomValidity('');
+        return;
+      }
+
+      const events = [];
+      bills.forEach(function (bill) {
+        let month = new Date(Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth(), 1));
+        while (month <= horizon) {
+          const due = monthlyDate(month.getUTCFullYear(), month.getUTCMonth(), bill.day);
+          if (due >= asOf && due <= horizon) events.push({ date:due, type:'bill', name:bill.name, amount:bill.amount });
+          month = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth() + 1, 1));
+        }
+      });
+
+      let payday = nextPaydayValue;
+      const monthlyAnchor = payday.getUTCDate();
+      for (let count = 0; payday <= horizon && count < 50; count++) {
+        events.push({ date:payday, type:'pay', name:'Estimated paycheck', amount:payAmount });
+        if (frequency === 'weekly') payday = new Date(payday.getTime() + 7 * dayMs);
+        else if (frequency === 'biweekly') payday = new Date(payday.getTime() + 14 * dayMs);
+        else if (frequency === 'semimonthly') payday = nextSemimonthly(payday);
+        else payday = monthlyDate(payday.getUTCFullYear(), payday.getUTCMonth() + 1, monthlyAnchor);
+      }
+
+      events.sort(function (a, b) {
+        if (a.date.getTime() !== b.date.getTime()) return a.date - b.date;
+        if (a.type !== b.type) return a.type === 'bill' ? -1 : 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      let projected = balance;
+      let lowest = balance;
+      let lowestDate = asOf;
+      rows.replaceChildren();
+      const openingRow = document.createElement('tr');
+      [formatDate(asOf), 'Starting balance', '—', money(balance)].forEach(function (value, index) {
+        const cell = document.createElement(index === 0 ? 'th' : 'td');
+        if (index === 0) cell.scope = 'row';
+        cell.textContent = value;
+        openingRow.appendChild(cell);
+      });
+      rows.appendChild(openingRow);
+      events.forEach(function (item) {
+        projected += item.type === 'bill' ? -item.amount : item.amount;
+        if (projected < lowest) {
+          lowest = projected;
+          lowestDate = item.date;
+        }
+        const tr = document.createElement('tr');
+        const values = [formatDate(item.date), item.name, (item.type === 'bill' ? '−' : '+') + money(item.amount), money(projected)];
+        values.forEach(function (value, index) {
+          const cell = document.createElement(index === 0 ? 'th' : 'td');
+          if (index === 0) cell.scope = 'row';
+          cell.textContent = value;
+          tr.appendChild(cell);
+        });
+        rows.appendChild(tr);
+      });
+
+      summary.classList.toggle('warning', lowest < 0);
+      summary.replaceChildren();
+      const heading = document.createElement('h2');
+      heading.id = 'forecast-title';
+      heading.textContent = lowest < 0 ? 'A cash gap may appear' : 'Your 45-day estimate is ready';
+      const paragraph = document.createElement('p');
+      paragraph.textContent = events.length ? 'Estimated balance after 45 days: ' + money(projected) + '.' : 'No bill or payday events fell in this 45-day window. Check your dates and add recurring bills.';
+      const low = document.createElement('p');
+      low.textContent = 'Lowest projected balance: ' + money(lowest) + (events.length ? ' on ' + formatDate(lowestDate) + '.' : '.');
+      low.className = lowest < 0 ? 'negative' : 'positive';
+      summary.append(heading, paragraph, low);
+      forecast.hidden = false;
+      forecast.scrollIntoView({ block:'start' });
+    });
+  })();
+</script>
+</main>
+</body>
+</html>

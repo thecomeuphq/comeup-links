@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>The 30-Day Paycheck Reset</title>
+    <title>Free 30-Day Paycheck Reset Tracker for Hourly Workers | The Come Up</title>
+    <meta name="description" content="Track 30 practical paycheck moves for free. Built for hourly and shift workers, with progress saved in your browser—no account required." />
+    <link rel="canonical" href="https://thecomeuphq.github.io/comeup-links/30-day-paycheck-reset.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="The Come Up" />
+    <meta property="og:title" content="Free 30-Day Paycheck Reset Tracker" />
+    <meta property="og:description" content="Track practical paycheck moves for free. No account required." />
+    <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/30-day-paycheck-reset.html" />
+    <meta name="twitter:card" content="summary" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
@@ -329,13 +337,13 @@
         <div class="hazard" aria-hidden="true"></div>
       </header>
 
-      <!-- Free tracker banner -->
-      <section class="tracker-banner" aria-label="Free printable Reset Tracker">
+      <!-- Free payday worksheet -->
+      <section class="tracker-banner" aria-label="Free Paycheck Protection Checklist">
         <div class="tracker-banner-text">
-          <span class="tracker-banner-tag">Free printable</span>
-          <p>Want the printable version? Grab the <strong>FREE Reset Tracker</strong> &mdash; print it, tick the boxes, keep your streak alive.</p>
+          <span class="tracker-banner-tag">Free printable worksheet</span>
+          <p>Want a paper companion for this reset? Use the <strong>Paycheck Protection Checklist</strong> to review your pay and plan the next check.</p>
         </div>
-        <a class="btn-tracker" href="https://thecomeuphq.github.io/comeup-links/free-reset-tracker-funnel.html" target="_blank" rel="noopener">Get the Free Tracker</a>
+        <a class="btn-tracker" href="paycheck-protection-checklist.html">Get the Free Checklist</a>
       </section>
 
       <!-- Progress -->
@@ -360,8 +368,16 @@
       <!-- Finale -->
       <section class="finale locked" id="finale">
         <span class="status" id="finaleStatus">Finish line &middot; Day 30</span>
-        <p class="big">Reset complete. You did what 90% of people never start.</p>
+        <p class="big">Reset complete. One move at a time, all 30 done.</p>
         <p id="finaleText">This banner lights up when all 30 moves are checked off. Retake your Paycheck Health Score on Day 30 and compare it to Day 1 &mdash; that jump is the proof.</p>
+      </section>
+
+      <section class="tracker-banner" aria-label="Optional Paycheck-to-Paycheck Weekly Planner">
+        <div class="tracker-banner-text">
+          <span class="tracker-banner-tag">Optional paper planner · $6.95</span>
+          <p>Prefer to write out your payday plan? The <strong>Paycheck-to-Paycheck Weekly Planner</strong> is an optional printable companion. The 30-day reset remains free.</p>
+        </div>
+        <a class="btn-tracker" href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=reset_tracker">See the Planner</a>
       </section>
 
       <!-- FAQ -->
@@ -377,21 +393,20 @@
         </details>
         <details>
           <summary>Is it really only 3 minutes?</summary>
-          <p>Yes. Every move is one small, specific action inside a free tool &mdash; add up a number, get a score, set one dollar amount. No spreadsheets to build, no accounts to connect. If you want to go further, each day links to a printable planner that walks the same move in more depth, but that's optional. The 3-minute version is the whole challenge.</p>
+          <p>Yes. Every move is one small, specific action inside a free tool &mdash; add up a number, get a score, set one dollar amount. No spreadsheets to build, no accounts to connect. The optional weekly planner is a separate purchase; you can complete the full reset without it.</p>
         </details>
         <details>
           <summary>Does it cost anything?</summary>
-          <p>The reset itself is free &mdash; all 30 daily tools are free to use. The &ldquo;Go deeper&rdquo; links point to printable workbooks in the shop if you want the paper version of a move. Skip them and you still get the full 30 days.</p>
+          <p>The reset and all 30 daily tools are free. The optional Paycheck-to-Paycheck Weekly Planner is $6.95; buying it is not required to complete the reset.</p>
         </details>
       </section>
 
       <footer>
-        <p>Built for hourly and shift workers. Printables and workbooks: <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">bradley57.gumroad.com</a></p>
+        <p>Built for hourly and shift workers. The reset is free; optional printables are available from <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=reset_footer" target="_blank" rel="noopener noreferrer">The Come Up shop</a>.</p>
       </footer>
     </div>
 
     <script>
-      var GUMROAD = "https://bradley57.gumroad.com/";
       var STORE_KEY = "paycheck-reset-done-v1";
 
       var WEEKS = [
@@ -470,12 +485,15 @@
           html += '<p class="week-sub">' + w.sub + '</p>';
           html += '<div class="cards">';
           w.days.forEach(function (day) {
+            var plannerOffer = day.prod === "Paycheck-to-Paycheck Weekly Planner"
+              ? '<p class="deeper">Optional: <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=reset_day_' + day.d + '" target="_blank" rel="noopener noreferrer">Paycheck-to-Paycheck Weekly Planner — $6.95</a></p>'
+              : '';
             html += '<article class="card" id="card-' + day.d + '" data-day="' + day.d + '">';
             html += '<div class="card-top"><span class="day-badge">DAY ' + pad(day.d) + '</span><span class="next-tag" id="nextTag-' + day.d + '" hidden>Up next</span></div>';
             html += '<h3>' + day.t + '</h3>';
             html += '<p class="action">' + day.a + '</p>';
             html += '<a class="btn-move" href="' + day.tool + '" target="_blank" rel="noopener">Do today&rsquo;s move &rarr;</a>';
-            html += '<div class="card-foot"><p class="deeper">Go deeper: <a href="' + GUMROAD + '" target="_blank" rel="noopener">' + day.prod + '</a></p>';
+            html += '<div class="card-foot">' + plannerOffer;
             html += '<button class="btn-done" type="button" data-toggle="' + day.d + '" aria-pressed="false">Mark done</button></div>';
             html += '</article>';
           });
