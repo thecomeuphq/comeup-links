@@ -14,6 +14,17 @@
 <meta property="og:description" content="Practical money tools for hourly and shift workers. Pick your situation and get a clear next move.">
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="The Come Up | Money Defense Tools for Hourly &amp; Shift Workers">
+<meta name="twitter:description" content="Practical money tools for hourly and shift workers. Pick your situation and get a clear next move.">
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "The Come Up",
+    "url": "https://thecomeuphq.github.io/comeup-links/",
+    "description": "Practical paycheck, debt, emergency, and savings tools for hourly and shift workers."
+  }
+</script>
 <style>
   :root { color-scheme:dark; --bg:#141414; --surface:#1f1f1f; --surface-raised:#262626; --line:#383838; --text:#f5f5f5; --muted:#bdbdbd; --amber:#f5a623; --green:#a8e6bd; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -21,7 +32,7 @@
   html { scroll-behavior:smooth; }
   body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; min-height:100vh; }
   a { color:inherit; }
-  .wrap { width:min(100% - 32px, 720px); margin:0 auto; padding:24px 0 42px; }
+  .wrap { width:min(100% - 32px, 720px); margin:0 auto; padding:calc(24px + env(safe-area-inset-top)) 0 calc(42px + env(safe-area-inset-bottom)); }
   .topline { display:flex; justify-content:center; align-items:center; gap:8px; color:var(--muted); font-size:12px; letter-spacing:.06em; text-transform:uppercase; }
   .topline span { color:var(--amber); font-size:16px; }
   .hero { text-align:center; padding:23px 8px 20px; }
@@ -32,11 +43,13 @@
   .button { display:inline-flex; align-items:center; justify-content:center; min-height:46px; border:1px solid var(--line); border-radius:12px; padding:11px 16px; background:var(--surface); color:var(--text); font-size:14px; font-weight:750; text-decoration:none; }
   .button.primary { background:var(--amber); border-color:var(--amber); color:#17130c; }
   .button:focus-visible, .card:focus-visible, .tool:focus-visible, summary:focus-visible, input:focus-visible { outline:3px solid #fff; outline-offset:3px; }
+  .skip-link { position:fixed; z-index:10; top:8px; left:8px; transform:translateY(-160%); padding:12px 16px; border-radius:10px; background:var(--amber); color:#17130c; font-weight:750; }
+  .skip-link:focus { transform:translateY(0); }
   .search-panel { margin:10px 0 23px; padding:16px; border:1px solid var(--line); border-radius:16px; background:#1a1a1a; }
   .search-panel label { display:block; font-size:14px; font-weight:750; margin-bottom:9px; }
   .search-row { display:flex; gap:9px; }
-  .search-row input { min-width:0; flex:1; border:1px solid #4b4b4b; border-radius:10px; background:#101010; color:var(--text); padding:12px 13px; font-size:15px; }
-  .search-row button { border:1px solid var(--line); border-radius:10px; padding:0 14px; background:var(--surface-raised); color:var(--text); font-size:14px; font-weight:700; cursor:pointer; }
+  .search-row input { min-width:0; flex:1; border:1px solid #4b4b4b; border-radius:10px; background:#101010; color:var(--text); padding:12px 13px; font-size:16px; }
+  .search-row button { min-height:44px; border:1px solid var(--line); border-radius:10px; padding:0 14px; background:var(--surface-raised); color:var(--text); font-size:14px; font-weight:700; cursor:pointer; }
   .search-hint, .search-status { margin-top:8px; color:var(--muted); font-size:12px; line-height:1.45; }
   .search-status:empty { display:none; }
   .section-heading { margin:24px 3px 10px; color:var(--amber); font-size:12px; font-weight:850; letter-spacing:.14em; text-transform:uppercase; }
@@ -74,12 +87,13 @@
   .after-crisis p { margin-top:5px; color:var(--muted); font-size:13px; line-height:1.5; }
   .after-crisis a { display:inline-block; margin-top:10px; color:var(--green); font-size:13px; font-weight:750; text-underline-offset:3px; }
   .foot { margin-top:25px; color:#858585; text-align:center; font-size:12px; line-height:1.7; }
-  @media (max-width:420px) { .wrap { width:min(100% - 24px,720px); padding-top:17px; } .search-row button { padding:0 11px; } .hub summary { padding:13px 12px; } }
+  @media (max-width:420px) { .wrap { width:min(100% - 24px,720px); padding-top:calc(17px + env(safe-area-inset-top)); } .search-row button { padding:0 11px; } .hub summary { padding:13px 12px; } }
   @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
 </style>
 </head>
 <body>
-<main class="wrap">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<main class="wrap" id="main-content" tabindex="-1">
   <div class="topline"><span>●</span> Built for hourly work. Made for real life.</div>
   <header class="hero">
     <div class="logo" aria-hidden="true">💰</div>
@@ -88,6 +102,7 @@
     <div class="hero-actions">
       <a class="button primary" href="paycheck-health-score-quiz.html">Find my next move <span aria-hidden="true">&nbsp;→</span></a>
       <a class="button" href="tools.html">Browse all tools</a>
+      <a class="button" href="paycheck-protection-checklist.html">Free paycheck checklist</a>
     </div>
   </header>
 
@@ -110,7 +125,7 @@
     <div class="desc">Choose one small money mission and build momentum with a practical action.</div>
   </a>
 
-  <p class="section-heading">Pick your situation</p>
+  <h2 class="section-heading">Pick your situation</h2>
 
   <details class="hub" data-hub>
     <summary><span class="hub-icon" aria-hidden="true">💵</span><span class="hub-copy"><span class="hub-title">Paycheck &amp; Cash-Flow Shields</span><br><span class="hub-subtitle">Overtime, short checks, taxes, missing wages, and irregular hours.</span></span><span class="chevron" aria-hidden="true">▶</span></summary>
