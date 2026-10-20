@@ -34,6 +34,8 @@
     .button { min-height:44px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:10px; padding:10px 15px; background:#252525; color:var(--text); font-size:14px; font-weight:750; text-decoration:none; cursor:pointer; }
     .button.primary { border-color:var(--amber); background:var(--amber); color:#15120c; }
     .note { margin-top:14px; color:#929292; font-size:12px; line-height:1.55; }
+    .share-status { margin-top:10px; color:#d7d7d7; font-size:13px; line-height:1.5; }
+    .share-status[hidden] { display:none; }
     :focus-visible { outline:3px solid #fff; outline-offset:2px; }
     @media print {
       :root { color-scheme:light; }
@@ -58,8 +60,10 @@
     <p class="intro">Use this quick review before or after payday. Check what you’ve handled, write down one next move, and keep a copy for your next shift or check.</p>
     <div class="actions">
       <button class="button primary" type="button" onclick="window.print()">Print or save as PDF</button>
+      <button class="button" id="share-checklist" type="button">Share checklist</button>
       <a class="button" href="paycheck-health-score-quiz.html">Get my paycheck score</a>
     </div>
+    <p class="share-status" id="share-status" role="status" aria-live="polite" hidden></p>
   </header>
 
   <section class="section">
@@ -98,9 +102,38 @@
     <h2>4. Make the plan easier next payday</h2>
     <label class="check"><input type="checkbox"><span>I saved a copy of this plan or put a reminder on my calendar.</span></label>
     <label class="check"><input type="checkbox"><span>I know which tool I’ll use next if the situation changes.</span></label>
-    <p class="note">Your entries stay in this browser page and are not submitted or saved to an account. Use your browser’s print dialog to print this page or choose “Save as PDF.” This worksheet is educational and is not financial, legal, or tax advice.</p>
+    <p class="note">Your entries stay in this browser page and are not submitted or saved to an account. Use your browser’s print dialog to print this page or choose “Save as PDF.” Share only the worksheet link, not a copy containing personal details. The Come Up · thecomeuphq.github.io/comeup-links/ · Educational use only; not financial, legal, or tax advice.</p>
     <div class="actions"><a class="button" href="tools.html">Browse all money tools</a><a class="button" href="missions.html">Choose a money mission</a></div>
   </section>
 </main>
+<script>
+  (function () {
+    const button = document.getElementById('share-checklist');
+    const status = document.getElementById('share-status');
+    button.addEventListener('click', async function () {
+      const shareData = {
+        title: 'Free Paycheck Protection Checklist | The Come Up',
+        text: 'A free printable paycheck checklist for hourly and shift workers.',
+        url: window.location.href
+      };
+      status.hidden = false;
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+          status.textContent = 'Checklist shared.';
+        } else {
+          await navigator.clipboard.writeText(shareData.url);
+          status.textContent = 'Checklist link copied. Paste it into a text or message.';
+        }
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          status.hidden = true;
+          return;
+        }
+        status.textContent = 'Sharing is unavailable here. You can copy the page address from your browser.';
+      }
+    });
+  })();
+</script>
 </body>
 </html>
