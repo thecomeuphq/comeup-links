@@ -24,8 +24,12 @@ const BUNDLE_PRICE = null;
 // is never silently lost.
 const WAITLIST_ENDPOINT = '';
 
-// The address the waitlist mailto: fallback points at. Replace with the real
-// list address once the provider is set up.
-const WAITLIST_ADDRESS = 'list@thecomeuphq.com';
+// The address the waitlist mailto: fallback points at.
+//
+// It is a real, working address so a signup is never lost while the
+// list provider is being set up. The domain-based list address is a
+// placeholder until thecomeuphq.com exists - a mailto: to a domain with
+// no MX record silently bounces, so the real address is used instead.
+const WAITLIST_ADDRESS = 'leroybradley7@gmail.com';
 
 module.exports = { SITE, BUNDLE_SLUG, BUNDLE_PRICE, WAITLIST_ENDPOINT, WAITLIST_ADDRESS };
