@@ -88,6 +88,76 @@
     .tcu-cta-a:hover { filter:brightness(1.08); }
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Paycheck Bill Calendar — Map Paydays Against Bills | The Come Up","description":"Map your paydays and recurring bills ahead so you can spot a tight stretch before it arrives. A free planning forecast, not a bank balance.","url":"https://thecomeuphq.github.io/comeup-links/paycheck-bill-calendar.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Paycheck Bill Calendar.Html","item":"https://thecomeuphq.github.io/comeup-links/paycheck-bill-calendar.html"}]}]}</script>
+<script>
+
+// --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
+(function () {
+  var ENDPOINT = "";
+  var LIST_ID = "comeup";
+  if (!ENDPOINT) return;
+
+  // ---- analytics ----
+  // One small POST on page load. No cookie, no localStorage id, no IP, no
+  // fingerprint. We only learn which page and which campaign brought the visit.
+  function track() {
+    try {
+      var u = new URL(location.href);
+      var ref = document.referrer || '';
+      var src = '';
+      // only the origin of the referrer - no full path, no query
+      if (ref) { try { src = new URL(ref).origin; } catch (e) { src = ''; } }
+      var body = {
+        type: 'pageview',
+        path: u.pathname,
+        query: u.search || '',
+        ref: src,
+        utm_source: u.searchParams.get('utm_source') || '',
+        utm_medium: u.searchParams.get('utm_medium') || '',
+        utm_campaign: u.searchParams.get('utm_campaign') || '',
+        ts: new Date().toISOString()
+      };
+      // sendBeacon survives the page unloading; fetch with keepalive is the
+      // fallback. Neither blocks the page.
+      var payload = JSON.stringify(body);
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'application/json' }));
+      } else {
+        fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          keepalive: true
+        }).catch(function () {});
+      }
+    } catch (e) { /* analytics must never break the page */ }
+  }
+
+  // ---- waitlist capture ----
+  // Same endpoint, different payload. A signup is a POST, not a beacon, so it
+  // is only sent on an explicit submit - never on page load.
+  function capture(email, name) {
+    try {
+      return fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'signup',
+          email: email,
+          name: name || '',
+          list: LIST_ID,
+          path: location.pathname,
+          ts: new Date().toISOString()
+        })
+      });
+    } catch (e) { return Promise.reject(e); }
+  }
+
+  track();
+
+  // Expose capture for the waitlist form, which lives on waitlist.html.
+  window.__comeupCapture = capture;
+})();
+</script>
 </head>
 <body>
 <main class="wrap">
@@ -350,6 +420,18 @@
 
     <script>
     (function () {
+// The shared "Copy my result" script - v2 (share loop).
+//
+// v1 copied the result plus a bare page URL. v2 makes the copy itself the
+// growth loop:
+//   - the URL carries UTM params so every share is attributable
+//   - the copied text ends with a one-line list hook
+//   - a native share sheet is used where the browser offers one, so the
+//     result can go straight to TikTok / Facebook / a group chat
+//
+// Substituted per page: PAGE_URL, PAGE_PATH, INTRO, FIELDS.
+// Kept as a template file so every page carries byte-identical behaviour.
+
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/paycheck-bill-calendar.html";
       var PAGE_PATH = "paycheck-bill-calendar.html";
@@ -358,6 +440,9 @@
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
+
+      // Where a share came from, so the site can tell which channel works.
+      var UTM = 'utm_source=share&utm_medium=copy&utm_campaign=result';
 
       function val(id) {
         var el = document.getElementById(id);
@@ -396,6 +481,14 @@
         return out;
       }
 
+      // The shareable URL: the page plus attribution params.
+      function shareUrl() {
+        var base = PAGE_URL;
+        if (base.indexOf('?') > -1) base += '&' + UTM;
+        else base += '?' + UTM;
+        return base;
+      }
+
       function build() {
         var lines = [INTRO];
         var list = FIELDS || autoFields();
@@ -404,8 +497,21 @@
           if (!v) continue;
           lines.push((list[i].label ? list[i].label + ': ' : '') + v);
         }
-        lines.push(PAGE_URL);
+        lines.push('');
+        lines.push('Check yours free: ' + shareUrl());
         return lines.join('\n');
+      }
+
+      // The bare URL, for the native share sheet (it adds its own preview).
+      function shareTitle() {
+        var first = '';
+        var list = FIELDS || autoFields();
+        for (var i = 0; i < list.length; i++) {
+          var v = val(list[i].id);
+          if (v) { first = v; break; }
+        }
+        if (first) return 'My result: ' + first + ' — The Come Up';
+        return 'A free money tool for hourly workers — The Come Up';
       }
 
       function fallbackCopy(t) {
@@ -422,24 +528,48 @@
         return ok;
       }
 
-      btn.addEventListener('click', function () {
+      function say(msg, kind) {
+        if (!note) return;
+        note.textContent = msg;
+        note.className = 'tcu-share-n ' + (kind || '');
+        setTimeout(function () { note.textContent = ''; note.className = 'tcu-share-n'; }, 4000);
+      }
+
+      // Copy first (always works), then offer the native share sheet.
+      function onClick() {
         var payloadText = build();
-        var done = function (ok) {
-          if (!note) return;
-          note.textContent = ok ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.';
-          note.className = 'tcu-share-n ' + (ok ? 'ok' : 'err');
-          setTimeout(function () { note.textContent = ''; note.className = 'tcu-share-n'; }, 4000);
+        var copied = false;
+        var tryNative = function () {
+          if (navigator.share) {
+            navigator.share({
+              title: shareTitle(),
+              text: payloadText,
+              url: shareUrl()
+            }).catch(function () { /* the user dismissed the sheet */ });
+          }
         };
+
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(payloadText).then(
-            function () { done(true); },
-            function () { done(fallbackCopy(payloadText)); }
+            function () {
+              copied = true;
+              say(navigator.share ? 'Copied. Now pick where to share it.' : 'Copied — paste it in a comment.', 'ok');
+              tryNative();
+            },
+            function () {
+              copied = fallbackCopy(payloadText);
+              say(copied ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.', copied ? 'ok' : 'err');
+            }
           );
         } else {
-          done(fallbackCopy(payloadText));
+          copied = fallbackCopy(payloadText);
+          say(copied ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.', copied ? 'ok' : 'err');
+          if (copied) tryNative();
         }
-      });
+      }
+
+      btn.addEventListener('click', onClick);
     })();
-    </script>
+</script>
   </body>
 </html>

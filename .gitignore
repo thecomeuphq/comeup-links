@@ -54,6 +54,7 @@ node_modules/
 /audit/hero-new.jpg
 /dev/alt-probe.js
 /dev/blank-lines.js
+/dev/_probe-*.ps1
 /dev/compare-share.js
 /dev/debtfree-h1-probe.js
 /dev/df-bytes.js

@@ -12,7 +12,9 @@ const path = require('path');
 
 const TEMPLATE = fs.readFileSync(path.join(__dirname, 'share-script.txt'), 'utf8');
 
-// The template must never leak the reference page's values.
+// The template must never leak the reference page's values. These are checked
+// against the TEMPLATE, not the output: a page whose own path IS
+// 'debt-free.html' legitimately contains that string in its output.
 const FORBIDDEN = ['debt-free.html', 'I checked my debt-free date', 'heroDate', 'heroMonthly'];
 
 function build(opts) {
@@ -36,9 +38,20 @@ function build(opts) {
     .replace(/^[ \t]*var FIELDS[ \t]*=.*$/m,
       '      var FIELDS = ' + fields + ';');
 
-  // Guard: the reference page's values must be fully replaced.
+  // Guard: the reference page's values must be fully replaced. The check is
+  // per-value: a value that IS this page's own (its own path, its own intro,
+  // its own field ids) is expected and must not trip the guard. We compare
+  // by substring because a page's own intro may be a longer form of the
+  // reference one (e.g. 'I checked my debt-free date:').
+  const own = [
+    pagePath,
+    opts.intro || '',
+    ...(opts.fields || []).map((f) => f.id),
+  ];
   for (const bad of FORBIDDEN) {
-    if (out.includes(bad)) {
+    if (!out.includes(bad)) continue;
+    const legitimately_ours = own.some((v) => v && v.includes(bad));
+    if (!legitimately_ours) {
       throw new Error('share script still contains reference value: ' + bad);
     }
   }
