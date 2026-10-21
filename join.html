@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Free Paycheck Protection Checklist | The Come Up" />
 <meta name="twitter:description" content="A free 5-step paycheck protection checklist you can finish before your next shift. Know what to cover, what to cut, and what to do first." />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Free Paycheck Protection Checklist | The Come Up</title>
   
@@ -137,6 +138,7 @@
     <div class="foot">The site does not currently collect email signups. Your checklist entries stay in your browser and are not submitted. Educational use only; not financial, legal, or tax advice.</div>
   </div>
 
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -169,7 +171,6 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html">Start Day 1 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
@@ -184,6 +185,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

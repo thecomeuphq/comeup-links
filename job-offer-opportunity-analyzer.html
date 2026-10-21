@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Job Offer Analyzer — Compare Two Jobs by Real Take-Home | The Come Up" />
+<meta property="og:title" content="Job Offer Analyzer — Compare Two Real Paychecks | The Come Up" />
 <meta property="og:description" content="Compare your current job and a new offer with taxes, benefits, commute, childcare, and hidden work costs included. This is the real take-home math." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/job-offer-opportunity-analyzer.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Job Offer Analyzer — Compare Two Jobs by Real Take-Home | The Come Up" />
+<meta name="twitter:title" content="Job Offer Analyzer — Compare Two Real Paychecks | The Come Up" />
 <meta name="twitter:description" content="Compare your current job and a new offer with taxes, benefits, commute, childcare, and hidden work costs included. This is the real take-home math." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Job Offer Analyzer — Compare Two Jobs by Real Take-Home | The Come Up</title>
+    <title>Job Offer Analyzer — Compare Two Real Paychecks | The Come Up</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -847,7 +848,8 @@
         render();
       })();
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -880,7 +882,6 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-8" target="_blank" rel="noopener">Start Day 8 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
@@ -895,6 +896,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

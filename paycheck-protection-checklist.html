@@ -7,15 +7,16 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Free Paycheck Protection Checklist — 5 Steps Before Payday | The Come Up" />
+<meta property="og:title" content="Free Paycheck Protection Checklist — 5 Steps | The Come Up" />
 <meta property="og:description" content="A free 5-step paycheck protection checklist. Review before or after payday, write one next move, and keep a copy for your next shift." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/paycheck-protection-checklist.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Free Paycheck Protection Checklist — 5 Steps Before Payday | The Come Up" />
+<meta name="twitter:title" content="Free Paycheck Protection Checklist — 5 Steps | The Come Up" />
 <meta name="twitter:description" content="A free 5-step paycheck protection checklist. Review before or after payday, write one next move, and keep a copy for your next shift." />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#141414">
-  <title>Free Paycheck Protection Checklist — 5 Steps Before Payday | The Come Up</title>
+  <title>Free Paycheck Protection Checklist — 5 Steps | The Come Up</title>
   
   
   
@@ -207,8 +208,8 @@
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/paycheck-protection-checklist.html";
       var PAGE_PATH = "paycheck-protection-checklist.html";
-      var INTRO = "I ran the Free Paycheck Protection Checklist:";
-      var FIELDS = null;
+      var INTRO = "I ran the Paycheck Protection Checklist:";
+      var FIELDS = [];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -216,6 +217,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

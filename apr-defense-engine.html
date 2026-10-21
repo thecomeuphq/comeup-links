@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="APR Calculator for Credit Card Debt — See What 29% Costs | The Come Up" />
+<meta property="og:title" content="APR Defense Engine — What 29% APR Really Costs | The Come Up" />
 <meta property="og:description" content="See what high APR credit card debt really costs you and how much interest you can kill. Enter your balance and rate for the exact numbers." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/apr-defense-engine.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="APR Calculator for Credit Card Debt — See What 29% Costs | The Come Up" />
+<meta name="twitter:title" content="APR Defense Engine — What 29% APR Really Costs | The Come Up" />
 <meta name="twitter:description" content="See what high APR credit card debt really costs you and how much interest you can kill. Enter your balance and rate for the exact numbers." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>APR Calculator for Credit Card Debt — See What 29% Costs | The Come Up</title>
+    <title>APR Defense Engine — What 29% APR Really Costs | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -1285,7 +1286,8 @@
         render();
       })();
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -1318,7 +1320,6 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-21" target="_blank" rel="noopener">Start Day 21 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
@@ -1333,6 +1334,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

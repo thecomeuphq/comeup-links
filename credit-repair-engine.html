@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Credit Repair — How to Fix Your Credit Score Fast | The Come Up" />
 <meta name="twitter:description" content="Get the exact dollars needed to break each credit utilization threshold, find which dispute moves apply to you, and a 30-60 day recovery plan." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -910,7 +911,8 @@
         render();
       })();
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -943,14 +945,13 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-19" target="_blank" rel="noopener">Start Day 19 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/credit-repair-engine.html";
       var PAGE_PATH = "credit-repair-engine.html";
-      var INTRO = "I ran the Credit Repair:";
-      var FIELDS = null;
+      var INTRO = "I ran the Credit Repair Engine:";
+      var FIELDS = [{"id":"gaugeText","label":"Current utilization"},{"id":"bpText","label":"Target utilization"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -958,6 +959,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

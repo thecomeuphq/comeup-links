@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Windfall Stash Calculator — Plan a Tax Refund or Bonus | The Come Up" />
 <meta name="twitter:description" content="A tax refund, bonus, or retro check hits and without a plan it&#39;s gone in two weeks. Get an exact-dollar split for debt, buffer, and savings." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -700,7 +701,8 @@
         render();
       })();
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -733,7 +735,6 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-24" target="_blank" rel="noopener">Start Day 24 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
@@ -748,6 +749,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Overtime Yield Calculator — Are Your OT Hours Worth It? | The Come Up" />
 <meta name="twitter:description" content="Are your overtime hours actually worth it? See what OT really pays per hour after taxes, and how it stacks up against a second job or a raise." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -545,7 +546,7 @@
       </details>
 
       <p class="disclaimer">Tax figures on this page are estimates built from 2025 federal brackets, the standard deduction, FICA at 7.65%, and a typical effective state rate. They do not account for pre-tax deductions (401(k), health premiums), local taxes, garnishments, or your exact W-4 elections, and they are not tax advice. For decisions that matter, compare against your real pay stub or talk to a tax professional.</p>
-    
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -828,8 +829,8 @@
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/ot-yield-maximizer.html";
       var PAGE_PATH = "ot-yield-maximizer.html";
-      var INTRO = "I ran the Overtime Yield Calculator:";
-      var FIELDS = null;
+      var INTRO = "I ran the OT Yield Maximizer:";
+      var FIELDS = [{"id":"otGrossAmt","label":"Gross OT"},{"id":"otNetAmt","label":"Net OT"},{"id":"lnNetTotal","label":"Net per hour"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -837,6 +838,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

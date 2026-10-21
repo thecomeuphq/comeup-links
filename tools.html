@@ -13,17 +13,9 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Free Paycheck &amp; Debt Calculators for Hourly Workers | The Come Up" />
 <meta name="twitter:description" content="Browse every free calculator on The Come Up. Search paycheck, debt, credit, tax, and emergency-fund tools by name or by the problem you need solved." />
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Free Paycheck &amp; Debt Calculators for Hourly Workers | The Come Up</title>
-
-
-
-
-
-
-
-
-
 
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -185,7 +177,7 @@
             <span class="tcu-rel-d">Free overtime paycheck calculator.</span>
           </a>
           <a class="tcu-rel" href="free-financial-calculators.html">
-            <span class="tcu-rel-t">Free Financial Calculators for Debt, Credit &amp; Paychecks</span>
+            <span class="tcu-rel-t">Free Financial Calculators for Debt &amp; Paychecks</span>
             <span class="tcu-rel-d">Free calculators for debt payoff, credit utilization, and paycheck planning.</span>
           </a>
           <a class="tcu-rel tcu-rel-hub" href="30-day-paycheck-reset.html">
@@ -264,6 +256,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

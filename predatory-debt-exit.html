@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Predatory Debt Exit — Payday Loan Buyout Plan | The Come Up" />
 <meta name="twitter:description" content="Payday loan rollovers never shrink what you owe. Get a buyout date, a fee-kill plan, and the exact words to say to get a settlement." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -547,7 +548,7 @@
         </details>
       </section>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -561,7 +562,7 @@
             <span class="tcu-rel-d">Free debt payoff calculator.</span>
           </a>
           <a class="tcu-rel" href="apr-defense-engine.html">
-            <span class="tcu-rel-t">APR Calculator for Credit Card Debt</span>
+            <span class="tcu-rel-t">APR Defense Engine</span>
             <span class="tcu-rel-d">See what high APR credit card debt really costs you and how much interest you can kill.</span>
           </a>
           <a class="tcu-rel tcu-rel-hub" href="30-day-paycheck-reset.html">
@@ -793,6 +794,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

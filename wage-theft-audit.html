@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Wage Theft Audit — Find What Your Paycheck Is Missing | The Come Up" />
 <meta name="twitter:description" content="Line your paystub against the hours you actually worked. Unpaid prep time, missing shift differentials, and worked-through breaks add up fast." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -600,7 +601,7 @@
         <p class="disclaimer">This tool is an educational estimator, not legal advice and not an official wage claim. It calculates from the numbers you enter and standard assumptions (overtime after 40 hours in a workweek, prep and worked-through breaks valued at your base rate). Your actual rights depend on federal, state, and local law and your employer's policies. If you believe wages were withheld, your state labor department or an employment attorney can review your specific situation.</p>
       </section>
 
-    
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -895,6 +896,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

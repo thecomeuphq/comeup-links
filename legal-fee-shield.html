@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Legal Fee Calculator — Plan a Payoff Plan You Can Afford | The Come Up" />
 <meta name="twitter:description" content="A warrant, a suspended license, or a garnishment doesn&#39;t just drain your wallet — it kills your shifts. Get a per-paycheck payoff plan." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -1258,7 +1259,8 @@
         render();
       })();
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -1291,7 +1293,6 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-8" target="_blank" rel="noopener">Start Day 8 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
@@ -1306,6 +1307,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

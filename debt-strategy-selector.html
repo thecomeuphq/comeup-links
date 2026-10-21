@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Debt Payoff Strategy Selector — Find Your Best Plan | The Come Up" />
+<meta property="og:title" content="Debt Payoff Strategy Selector — Find Your Plan | The Come Up" />
 <meta property="og:description" content="Answer four questions and get the debt payoff strategy built for your money, your motivation, and your schedule. Takes about 30 seconds." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/debt-strategy-selector.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Debt Payoff Strategy Selector — Find Your Best Plan | The Come Up" />
+<meta name="twitter:title" content="Debt Payoff Strategy Selector — Find Your Plan | The Come Up" />
 <meta name="twitter:description" content="Answer four questions and get the debt payoff strategy built for your money, your motivation, and your schedule. Takes about 30 seconds." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Debt Payoff Strategy Selector — Find Your Best Plan | The Come Up</title>
+    <title>Debt Payoff Strategy Selector — Find Your Plan | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet" />
@@ -698,7 +699,7 @@
             </button>
           </div>
         </section>
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -1040,8 +1041,8 @@
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/debt-strategy-selector.html";
       var PAGE_PATH = "debt-strategy-selector.html";
-      var INTRO = "I ran the Debt Payoff Strategy Selector:";
-      var FIELDS = null;
+      var INTRO = "I used the Debt Payoff Strategy Selector:";
+      var FIELDS = [];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -1049,6 +1050,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

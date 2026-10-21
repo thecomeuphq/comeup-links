@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Tax Withholding Calculator for Gig &amp; Shift Workers | The Come Up" />
+<meta property="og:title" content="Tax Withholding Calculator for Gig &amp; Shift | The Come Up" />
 <meta property="og:description" content="Nobody withholds tax from a gig payout, an overtime spike, or an invoice — that&#39;s on you. Work out exactly what to set aside per payout." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/tax-withholding-safeguard.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Tax Withholding Calculator for Gig &amp; Shift Workers | The Come Up" />
+<meta name="twitter:title" content="Tax Withholding Calculator for Gig &amp; Shift | The Come Up" />
 <meta name="twitter:description" content="Nobody withholds tax from a gig payout, an overtime spike, or an invoice — that&#39;s on you. Work out exactly what to set aside per payout." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Tax Withholding Calculator for Gig &amp; Shift Workers | The Come Up</title>
+    <title>Tax Withholding Calculator for Gig &amp; Shift | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
@@ -759,7 +760,7 @@
         </details>
       </div>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -1036,6 +1037,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

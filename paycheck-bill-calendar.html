@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Paycheck Bill Calendar — Map Paydays Against Bills | The Come Up" />
 <meta name="twitter:description" content="Map your paydays and recurring bills ahead so you can spot a tight stretch before it arrives. A free planning forecast, not a bank balance." />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#141414">
   <title>Paycheck Bill Calendar — Map Paydays Against Bills | The Come Up</title>
@@ -358,8 +359,8 @@
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/paycheck-bill-calendar.html";
       var PAGE_PATH = "paycheck-bill-calendar.html";
-      var INTRO = "I ran the Paycheck Bill Calendar:";
-      var FIELDS = null;
+      var INTRO = "I planned my paychecks with the Paycheck Bill Calendar:";
+      var FIELDS = [];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -367,6 +368,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

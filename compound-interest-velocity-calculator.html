@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Compound Interest Calculator — Watch Your Money Speed Up | The Come Up" />
+<meta property="og:title" content="Compound Interest Calculator — 5-Year Growth | The Come Up" />
 <meta property="og:description" content="See how small steady deposits plus time build a 5-year and 10-year balance. Set your start, your monthly contribution, and your rate." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Compound Interest Calculator — Watch Your Money Speed Up | The Come Up" />
+<meta name="twitter:title" content="Compound Interest Calculator — 5-Year Growth | The Come Up" />
 <meta name="twitter:description" content="See how small steady deposits plus time build a 5-year and 10-year balance. Set your start, your monthly contribution, and your rate." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Compound Interest Calculator — Watch Your Money Speed Up | The Come Up</title>
+    <title>Compound Interest Calculator — 5-Year Growth | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -910,7 +911,8 @@
         render();
       })();
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -943,14 +945,13 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-26" target="_blank" rel="noopener">Start Day 26 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html";
       var PAGE_PATH = "compound-interest-velocity-calculator.html";
-      var INTRO = "I ran the Compound Interest Calculator:";
-      var FIELDS = null;
+      var INTRO = "I ran the Compound Interest Velocity Calculator:";
+      var FIELDS = [{"id":"totalValue","label":"Total value"},{"id":"interestValue","label":"Interest earned"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -958,6 +959,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

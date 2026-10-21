@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Viral AI Business Playbooks — Seven Revenue-Backed Models | The Come Up" />
+<meta property="og:title" content="Viral AI Business Playbooks — 7 Proven Models | The Come Up" />
 <meta property="og:description" content="Seven AI business models backed by real revenue, with the specific mechanism each one uses to make money. Includes what to copy and what to avoid." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/viral-ai-business-playbooks.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Viral AI Business Playbooks — Seven Revenue-Backed Models | The Come Up" />
+<meta name="twitter:title" content="Viral AI Business Playbooks — 7 Proven Models | The Come Up" />
 <meta name="twitter:description" content="Seven AI business models backed by real revenue, with the specific mechanism each one uses to make money. Includes what to copy and what to avoid." />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
   <link rel="icon" href="data:," />
-  <title>Viral AI Business Playbooks — Seven Revenue-Backed Models | The Come Up</title>
+  <title>Viral AI Business Playbooks — 7 Proven Models | The Come Up</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -593,7 +594,7 @@
         <p class="source-note">Open questions retained: exact RizzGPT tiers; Cal AI retention and paywall metrics; independently verified HeadshotPro revenue; independently verified 2026 Arcads revenue; and current Photo AI revenue after late 2025.</p>
       </div>
     </section>
-  
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -693,6 +694,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

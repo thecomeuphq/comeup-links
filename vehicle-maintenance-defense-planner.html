@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Vehicle Maintenance Planner — Set Aside for Breakdowns | The Come Up" />
 <meta name="twitter:description" content="Your vehicle is your paycheck&#39;s lifeline. Scan what&#39;s likely to break in 12 months and get the exact per-paycheck set-aside to cover it." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -655,7 +656,7 @@
           </details>
         </div>
 
-        
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -669,7 +670,7 @@
             <span class="tcu-rel-d">Gas, parking, gear, laundry, break-room food — the job quietly bills you before you earn a dime.</span>
           </a>
           <a class="tcu-rel" href="auto-debt-shield.html">
-            <span class="tcu-rel-t">Auto Loan Payoff Calculator</span>
+            <span class="tcu-rel-t">Auto Debt Shield</span>
             <span class="tcu-rel-d">Underwater on your car loan? See your equity gap, the interest you're bleeding, and a step-by-step plan to get back above water without refinancing into more debt..</span>
           </a>
           <a class="tcu-rel tcu-rel-hub" href="30-day-paycheck-reset.html">
@@ -937,6 +938,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Paycheck Shock Defense — Lost Hours This Pay Period | The Come Up" />
 <meta name="twitter:description" content="Lost hours this pay period? Get your triage plan: what&#39;s covered, what to freeze, how much to draw, and how many hours it takes to get back even." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="data:," />
@@ -759,7 +760,7 @@
         <p>Simple division, no tricks. Whatever you drew from the buffer gets split evenly across the next 2 pay periods. The hours route divides that per-period amount by your base hourly rate — so a $160 draw at $20/hr is 8 hours total, 4 extra hours per period. The micro-cut route is the same dollars taken from spending instead of shifts. Either way, after 2 periods the buffer is back to full and your Shock Resistance Index returns to where it started.</p>
       </details>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -1178,7 +1179,7 @@
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/paycheck-shock-defense.html";
       var PAGE_PATH = "paycheck-shock-defense.html";
       var INTRO = "I ran the Paycheck Shock Defense:";
-      var FIELDS = null;
+      var FIELDS = [{"id":"statPay","label":"Pay this period"},{"id":"statBills","label":"Bills due"},{"id":"statNet","label":"Left over"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -1186,6 +1187,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

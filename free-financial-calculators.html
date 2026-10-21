@@ -7,17 +7,18 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Free Financial Calculators for Debt, Credit &amp; Paychecks | The Come Up" />
+<meta property="og:title" content="Free Financial Calculators for Debt &amp; Paychecks | The Come Up" />
 <meta property="og:description" content="Free calculators for debt payoff, credit utilization, and paycheck planning. Enter your numbers, get a straight answer, keep every dollar free." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/free-financial-calculators.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Free Financial Calculators for Debt, Credit &amp; Paychecks | The Come Up" />
+<meta name="twitter:title" content="Free Financial Calculators for Debt &amp; Paychecks | The Come Up" />
 <meta name="twitter:description" content="Free calculators for debt payoff, credit utilization, and paycheck planning. Enter your numbers, get a straight answer, keep every dollar free." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     
     <link rel="icon" href="data:," />
-    <title>Free Financial Calculators for Debt, Credit &amp; Paychecks | The Come Up</title>
+    <title>Free Financial Calculators for Debt &amp; Paychecks | The Come Up</title>
     <style>
       :root {
         color-scheme: light dark;
@@ -345,7 +346,7 @@
         <span><strong>More on the way.</strong> New calculators are added regularly — check back for fresh tools on pay, debt, credit, and everyday money math.</span>
       </div>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -388,7 +389,7 @@
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/free-financial-calculators.html";
       var PAGE_PATH = "free-financial-calculators.html";
-      var INTRO = "I ran the Free Financial Calculators for Debt, Credit & Paychecks:";
+      var INTRO = "I ran the Free Financial Calculators for Debt & Paychecks:";
       var FIELDS = null;
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
@@ -397,6 +398,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Subscription Drain Audit — What Recurring Charges Really Cost | The Come Up" />
+<meta property="og:title" content="Subscription Drain Audit — What Recurring Costs | The Come Up" />
 <meta property="og:description" content="List every recurring charge hitting your account and see the real damage per month, per year, and over five years. Tag what you actually use." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/subscription-drain-audit.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Subscription Drain Audit — What Recurring Charges Really Cost | The Come Up" />
+<meta name="twitter:title" content="Subscription Drain Audit — What Recurring Costs | The Come Up" />
 <meta name="twitter:description" content="List every recurring charge hitting your account and see the real damage per month, per year, and over five years. Tag what you actually use." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Subscription Drain Audit — What Recurring Charges Really Cost | The Come Up</title>
+    <title>Subscription Drain Audit — What Recurring Costs | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -654,7 +655,7 @@
         </details>
       </div>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -1088,6 +1089,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

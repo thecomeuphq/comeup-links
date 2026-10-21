@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Raise Lock-In Buffer Engine — Plan Your Extra Take-Home | The Come Up" />
 <meta name="twitter:description" content="Before the bigger check gets swallowed by new spending, give the extra take-home a job: breathing room, a debt payment, and one real expense." />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
   
@@ -253,7 +254,7 @@
       <a href="paycheck-budget-splitter.html"><strong>Paycheck Budget Splitter</strong><span>Give your full paycheck a job.</span></a>
     </nav>
     <p class="footer-note">Built for hourly and shift workers. No account or personal information required.</p>
-  
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -460,6 +461,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

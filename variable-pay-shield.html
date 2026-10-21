@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Variable Pay Shield — Smooth Out Inconsistent Shift Pay | The Come Up" />
 <meta name="twitter:description" content="$1,200 one week, $400 the next? Build a floor, a holdback, and a target so income swings stop deciding your rent. Income smoothing for shift workers." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -488,7 +489,7 @@
       </details>
 
       <p class="foot-note">Estimates only — your actual pay, tips, and bills will vary. Recheck your numbers whenever your schedule, route, or rent changes.</p>
-    
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -660,7 +661,7 @@
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/variable-pay-shield.html";
       var PAGE_PATH = "variable-pay-shield.html";
       var INTRO = "I ran the Variable Pay Shield:";
-      var FIELDS = null;
+      var FIELDS = [{"id":"lowPay","label":"Low week"},{"id":"highPay","label":"High week"},{"id":"coverageOut","label":"Coverage"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -668,6 +669,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

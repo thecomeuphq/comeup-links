@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Overtime Wealth Maximizer — What Your OT Check Really Pays | The Come Up" />
+<meta property="og:title" content="Overtime Wealth Maximizer — What OT Really Pays | The Come Up" />
 <meta property="og:description" content="Your overtime check is smaller than you think. See the true take-home, then split every net OT dollar on purpose between debt, buffer, and reward." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/overtime-wealth-maximizer.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Overtime Wealth Maximizer — What Your OT Check Really Pays | The Come Up" />
+<meta name="twitter:title" content="Overtime Wealth Maximizer — What OT Really Pays | The Come Up" />
 <meta name="twitter:description" content="Your overtime check is smaller than you think. See the true take-home, then split every net OT dollar on purpose between debt, buffer, and reward." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Overtime Wealth Maximizer — What Your OT Check Really Pays | The Come Up</title>
+    <title>Overtime Wealth Maximizer — What OT Really Pays | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -612,7 +613,7 @@
         </details>
       </section>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -827,6 +828,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Paycheck Health Score Quiz — Rate Your Money in 8 Questions | The Come Up" />
+<meta property="og:title" content="Paycheck Health Score Quiz — Rate Your Money | The Come Up" />
 <meta property="og:description" content="Eight questions about how your money actually moves — your safety net, your debt drag, your payday system. Get a 0-100 score and your first fix." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/paycheck-health-score-quiz.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Paycheck Health Score Quiz — Rate Your Money in 8 Questions | The Come Up" />
+<meta name="twitter:title" content="Paycheck Health Score Quiz — Rate Your Money | The Come Up" />
 <meta name="twitter:description" content="Eight questions about how your money actually moves — your safety net, your debt drag, your payday system. Get a 0-100 score and your first fix." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Paycheck Health Score Quiz — Rate Your Money in 8 Questions | The Come Up</title>
+    <title>Paycheck Health Score Quiz — Rate Your Money | The Come Up</title>
     
     
     
@@ -973,7 +974,8 @@
         showScreen(els.intro);
       });
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -1006,7 +1008,6 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-1" target="_blank" rel="noopener">Start Day 1 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
@@ -1021,6 +1022,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

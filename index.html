@@ -13,19 +13,10 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Free Money Tools for Hourly Workers — Paycheck &amp; Debt | The Come Up" />
 <meta name="twitter:description" content="Free paycheck, debt, credit, and savings tools built for hourly and shift workers. Pick your situation, get a clear next move, and keep every dollar." />
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#141414">
 <title>Free Money Tools for Hourly Workers — Paycheck &amp; Debt | The Come Up</title>
-
-
-
-
-
-
-
-
-
-
 
 <script type="application/ld+json">
   {
@@ -346,6 +337,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

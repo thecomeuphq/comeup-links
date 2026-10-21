@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Savings Challenge — 52-Week Cash Stash Tracker | The Come Up" />
 <meta name="twitter:description" content="Save $52 a week and finish with $1,378. Watch your savings grow week by week with a simple high-visibility visual milestone tracker." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f1e8" />
@@ -906,7 +907,8 @@
         render();
       })();
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -939,14 +941,13 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-24" target="_blank" rel="noopener">Start Day 24 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/savings-challenge.html";
       var PAGE_PATH = "savings-challenge.html";
       var INTRO = "I ran the Savings Challenge:";
-      var FIELDS = null;
+      var FIELDS = [{"id":"hero-total","label":"Saved so far"},{"id":"stat-total-days","label":"Days in"},{"id":"w-left","label":"Weeks left"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -954,6 +955,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

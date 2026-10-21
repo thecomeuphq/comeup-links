@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Paycheck Budget Splitter — Split Every Dollar of Your Check | The Come Up" />
+<meta property="og:title" content="Paycheck Budget Splitter — Split Every Dollar | The Come Up" />
 <meta property="og:description" content="Give every dollar a job the second it lands. Enter your take-home pay, pick a split, and see exactly where each dollar goes per check and per month." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Paycheck Budget Splitter — Split Every Dollar of Your Check | The Come Up" />
+<meta name="twitter:title" content="Paycheck Budget Splitter — Split Every Dollar | The Come Up" />
 <meta name="twitter:description" content="Give every dollar a job the second it lands. Enter your take-home pay, pick a split, and see exactly where each dollar goes per check and per month." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Paycheck Budget Splitter — Split Every Dollar of Your Check | The Come Up</title>
+    <title>Paycheck Budget Splitter — Split Every Dollar | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -652,7 +653,7 @@
         </details>
       </section>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -823,7 +824,7 @@
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html";
       var PAGE_PATH = "paycheck-budget-splitter.html";
       var INTRO = "I ran the Paycheck Budget Splitter:";
-      var FIELDS = null;
+      var FIELDS = [{"id":"total-val","label":"Take-home pay"},{"id":"amt-needs","label":"Needs"},{"id":"amt-save","label":"Savings"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -831,6 +832,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

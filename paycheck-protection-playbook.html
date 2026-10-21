@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Paycheck Protection Playbook — 5 Steps to Protect Your Check | The Come Up" />
+<meta property="og:title" content="Paycheck Protection Playbook — 5 Steps | The Come Up" />
 <meta property="og:description" content="Five steps, about three minutes. Lock down what your paycheck must cover before overtime, impulse buys, and sneaky billing dates get a vote." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/paycheck-protection-playbook.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Paycheck Protection Playbook — 5 Steps to Protect Your Check | The Come Up" />
+<meta name="twitter:title" content="Paycheck Protection Playbook — 5 Steps | The Come Up" />
 <meta name="twitter:description" content="Five steps, about three minutes. Lock down what your paycheck must cover before overtime, impulse buys, and sneaky billing dates get a vote." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Paycheck Protection Playbook — 5 Steps to Protect Your Check | The Come Up</title>
+    <title>Paycheck Protection Playbook — 5 Steps | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -694,7 +695,7 @@
         </details>
       </section>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -979,7 +980,7 @@
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/paycheck-protection-playbook.html";
       var PAGE_PATH = "paycheck-protection-playbook.html";
       var INTRO = "I ran the Paycheck Protection Playbook:";
-      var FIELDS = null;
+      var FIELDS = [{"id":"outSurvival","label":"Survival buffer"},{"id":"outCommitted","label":"Committed"},{"id":"outLeaks","label":"Leaks found"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -987,6 +988,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

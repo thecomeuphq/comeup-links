@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Trade Tooling Cost Calculator — What Gear Costs | The Come Up" />
+<meta property="og:title" content="Trade Tooling Cost Calculator — Gear Exposure | The Come Up" />
 <meta property="og:description" content="What happens when your tools break? Price the replacement, see what it takes per paycheck, and know your exposure before the job does." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/trade-tooling-defense.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Trade Tooling Cost Calculator — What Gear Costs | The Come Up" />
+<meta name="twitter:title" content="Trade Tooling Cost Calculator — Gear Exposure | The Come Up" />
 <meta name="twitter:description" content="What happens when your tools break? Price the replacement, see what it takes per paycheck, and know your exposure before the job does." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Trade Tooling Cost Calculator — What Gear Costs | The Come Up</title>
+    <title>Trade Tooling Cost Calculator — Gear Exposure | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -648,7 +649,7 @@
         <p>Run this check every 6 months, and immediately after three events: a job or trade change (new required kit), a theft or major breakage (your risk flags just changed), and any raise or schedule change (your per-paycheck number can move). Boots and PPE deserve a hard look at the 6-month mark regardless — they're the gear most likely to fail mid-shift and the cheapest to keep ahead of.</p>
       </details>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -950,6 +951,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Payoff vs Refinance — Which Lowers Your Debt Cost? | The Come Up" />
 <meta name="twitter:description" content="Should you pay off debt or refinance it? Answer four questions and get the strategy that fits your balance, your score, and your real monthly payment." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -477,7 +478,7 @@
         </details>
       </section>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -876,8 +877,8 @@
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/payoff-vs-refinance-decision-tree.html";
       var PAGE_PATH = "payoff-vs-refinance-decision-tree.html";
-      var INTRO = "I ran the Payoff vs Refinance:";
-      var FIELDS = null;
+      var INTRO = "I used the Payoff vs Refinance Decision Tree:";
+      var FIELDS = [];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -885,6 +886,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

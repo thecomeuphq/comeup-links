@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Holiday Expense Calculator — Cap Your Seasonal Spending | The Come Up" />
 <meta name="twitter:description" content="Christmas, birthdays, vacations, back-to-school — the events are predictable, so the debt is optional. Set a hard cap per person and defend it." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -851,7 +852,8 @@
         recalc();
       })();
     </script>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -884,14 +886,13 @@
           <a class="tcu-cta-a" href="30-day-paycheck-reset.html#card-11" target="_blank" rel="noopener">Start Day 11 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/holiday-expense-defense-engine.html";
       var PAGE_PATH = "holiday-expense-defense-engine.html";
-      var INTRO = "I ran the Holiday Expense Calculator:";
-      var FIELDS = null;
+      var INTRO = "I ran the Holiday Expense Defense Engine:";
+      var FIELDS = [{"id":"allocTotal","label":"Holiday budget"},{"id":"netPay","label":"Net pay"},{"id":"bpTotal","label":"Per paycheck"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -899,6 +900,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

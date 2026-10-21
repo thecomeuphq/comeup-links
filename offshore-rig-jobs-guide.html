@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Offshore Rig Jobs Guide — How to Get On a Rig | The Come Up" />
 <meta name="twitter:description" content="How to break into offshore rig work: which certifications help, how to use land-rig experience, and what the pay and rotation actually look like." />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
   <link rel="icon" href="data:," />
@@ -439,7 +440,7 @@
         <a class="btn" href="https://www.tsa.gov/twic" target="_blank" rel="noopener noreferrer">Go to official TWIC</a>
       </div>
     </section>
-  
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -532,6 +533,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

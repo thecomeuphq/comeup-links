@@ -13,6 +13,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Relocation Cost Calculator — Move Without a Cash Crisis | The Come Up" />
 <meta name="twitter:description" content="A non-renewal, an eviction filing, a job across town — a sudden move costs thousands before your deposit comes back. Plan it precisely." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -664,7 +665,7 @@
         </details>
       </div>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -989,8 +990,8 @@
       var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/relocation-cash-shield.html";
       var PAGE_PATH = "relocation-cash-shield.html";
-      var INTRO = "I ran the Relocation Cost Calculator:";
-      var FIELDS = null;
+      var INTRO = "I ran the Relocation Cash Shield:";
+      var FIELDS = [{"id":"statBarrier","label":"Upfront cost"},{"id":"statGap","label":"Cash gap"},{"id":"statChecks","label":"Paychecks needed"}];
       var btn = document.querySelector('.tcu-share-b');
       if (!btn) return;
       var note = document.querySelector('.tcu-share-n');
@@ -998,6 +999,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

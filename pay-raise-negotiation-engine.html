@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Pay Raise Calculator — What a Raise Actually Adds to Your Pay | The Come Up" />
+<meta property="og:title" content="Pay Raise Calculator — What a Raise Adds | The Come Up" />
 <meta property="og:description" content="Turn your pay target into a clear ask. See what a raise adds per check and per year, and compare it against the overtime it would take to earn the same." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/pay-raise-negotiation-engine.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Pay Raise Calculator — What a Raise Actually Adds to Your Pay | The Come Up" />
+<meta name="twitter:title" content="Pay Raise Calculator — What a Raise Adds | The Come Up" />
 <meta name="twitter:description" content="Turn your pay target into a clear ask. See what a raise adds per check and per year, and compare it against the overtime it would take to earn the same." />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
   
-  <title>Pay Raise Calculator — What a Raise Actually Adds to Your Pay | The Come Up</title>
+  <title>Pay Raise Calculator — What a Raise Adds | The Come Up</title>
   <style>
     :root {
       color-scheme: dark;
@@ -238,7 +239,7 @@
       <a href="https://bradley57.gumroad.com/" target="_blank" rel="noopener noreferrer">Browse The Come Up planners →</a>
     </section>
     <p class="footer-note">Built for hourly and shift workers. No account or personal information required.</p>
-  
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -421,6 +422,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

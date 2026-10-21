@@ -7,16 +7,17 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Bereavement Cost Calculator — Plan for Losing Someone | The Come Up" />
+<meta property="og:title" content="Bereavement Cash Shield — Plan for Losing Someone | The Come Up" />
 <meta property="og:description" content="Map the costs and protect the paycheck. A quiet planner that walks through unpaid days, travel, and the service — one calm step at a time." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/bereavement-cash-shield.html" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Bereavement Cost Calculator — Plan for Losing Someone | The Come Up" />
+<meta name="twitter:title" content="Bereavement Cash Shield — Plan for Losing Someone | The Come Up" />
 <meta name="twitter:description" content="Map the costs and protect the paycheck. A quiet planner that walks through unpaid days, travel, and the service — one calm step at a time." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>Bereavement Cost Calculator — Plan for Losing Someone | The Come Up</title>
+    <title>Bereavement Cash Shield — Plan for Losing Someone | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -566,7 +567,7 @@
         <p><strong>Don't take a payday loan or title loan for funeral costs.</strong> Their fees routinely equal 300%+ APR, and the balance will still be there long after the grief is fresh. Also avoid putting the full funeral bill on a high-interest card in your name alone before family cost-sharing is settled, and don't sign a funeral contract under pressure the same day — prices and packages can almost always wait 24 hours while you compare.</p>
       </details>
 
-      
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -850,6 +851,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 

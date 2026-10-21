@@ -7,12 +7,13 @@
 <meta property="og:type" content="article" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Hourly Pay Calculator — What $15 to $30 an Hour Really Pays | The Come Up" />
+<meta property="og:title" content="Hourly Pay Calculator — What $15-$30/HR Pays | The Come Up" />
 <meta property="og:description" content="Compare what $15, $18, $20, $25, and $30 an hour really pays after taxes and overtime. Full pay breakdowns for hourly and shift workers." />
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/hourly-pay/" />
 <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Hourly Pay Calculator — What $15 to $30 an Hour Really Pays | The Come Up" />
+<meta name="twitter:title" content="Hourly Pay Calculator — What $15-$30/HR Pays | The Come Up" />
 <meta name="twitter:description" content="Compare what $15, $18, $20, $25, and $30 an hour really pays after taxes and overtime. Full pay breakdowns for hourly and shift workers." />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     
     
@@ -20,7 +21,7 @@
     
     
     
-    <title>Hourly Pay Calculator — What $15 to $30 an Hour Really Pays | The Come Up</title>
+    <title>Hourly Pay Calculator — What $15-$30/HR Pays | The Come Up</title>
     <style>
       :root {
         --bg: #141414;
@@ -274,7 +275,8 @@
 
       <p class="foot">Educational use only. These estimates are for planning, not individualized financial advice.</p>
     </div>
-  
+
+
       <!-- ===== The Come Up: related tools + share + next step ===== -->
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
@@ -307,7 +309,6 @@
           <a class="tcu-cta-a" href="../30-day-paycheck-reset.html">Start Day 1 of the 30-Day Paycheck Reset &rarr;</a>
         </div>
       </section>
-
     <script>
     (function () {
       var SITE = "https://thecomeuphq.github.io/comeup-links";
@@ -322,6 +323,10 @@
       function val(id) {
         var el = document.getElementById(id);
         if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
         return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
       }
 
