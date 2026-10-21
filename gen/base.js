@@ -10,6 +10,7 @@ const CSS = `
     --bg: #141414; --surface: #1f1f1f; --surface-raised: #262626; --line: #383838;
     --text: #f5f5f5; --muted: #bdbdbd; --amber: #f5a623; --green: #a8e6bd; --danger: #f08a7e;
     --amber-soft: rgba(245,166,35,0.12);
+    --accent: var(--amber); --accent-ink: #17130c;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   [hidden] { display:none !important; }
@@ -82,25 +83,70 @@ const CSS = `
   .status.ok { color:var(--green); }
   .big-num { font-size:clamp(30px,8vw,44px); font-weight:800; color:var(--amber); line-height:1.1; }
   .muted { color:var(--muted); font-size:13px; }
-  @media (max-width:520px) { .field-row { grid-template-columns:1fr; } .wrap { width:min(100% - 24px,760px); } }
-  @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
+  .split { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .searchbox { position:relative; margin-top:16px; }
+  .searchbox input { padding-left:38px; }
+  .searchbox .icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:15px; pointer-events:none; }
+  .empty { margin-top:14px; padding:16px; border:1px dashed var(--line); border-radius:14px; color:var(--muted); font-size:14px; }
+  .list { margin-top:14px; border:1px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden; }
+  .list .row { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:13px 15px; border-bottom:1px solid var(--line); font-size:14px; }
+  .list .row:last-child { border-bottom:0; }
+  .list .row .k { color:var(--muted); }
+  .list .row .v { font-weight:750; text-align:right; }
+  .list .row .v small { display:block; color:var(--muted); font-weight:400; font-size:12px; margin-top:2px; }
+  .tag { display:inline-block; border:1px solid var(--line); border-radius:999px; padding:2px 9px; color:var(--muted); font-size:11px; font-weight:700; }
+  .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .pro { color:var(--green); }
+  .con { color:var(--danger); }
+
+  /* ===== shared "Keep going" block (matches every existing page) ===== */
+  .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
+  .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--accent, var(--amber, #f5a623)); margin:0 0 12px; }
+  .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+  .tcu-rel { display:block; text-decoration:none; background:var(--surface, #1f1f1f); border:1px solid var(--line, #383838); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
+  .tcu-rel:hover { border-color:var(--accent, var(--amber, #f5a623)); transform:translateY(-1px); }
+  .tcu-rel:focus-visible { outline:3px solid var(--accent, var(--amber, #f5a623)); outline-offset:2px; }
+  .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--text, #f5f5f5); line-height:1.3; }
+  .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--muted, #bdbdbd); }
+  .tcu-rel-hub { border-color:var(--accent, var(--amber, #f5a623)); background:color-mix(in srgb, var(--accent, #f5a623) 13%, transparent); }
+  .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+  .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--accent, var(--amber, #f5a623)); background:color-mix(in srgb, var(--accent, #f5a623) 13%, transparent); color:var(--accent, var(--amber, #f5a623)); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
+  .tcu-share-b:hover { background:var(--accent, var(--amber, #f5a623)); color:var(--accent-ink, #17130c); }
+  .tcu-share-b:focus-visible { outline:3px solid var(--accent, var(--amber, #f5a623)); outline-offset:2px; }
+  .tcu-share-b svg { width:15px; height:15px; }
+  .tcu-share-n { font-size:12.5px; color:var(--muted, #bdbdbd); }
+  .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
+  .tcu-share-n.err { color:#c8553d; font-weight:700; }
+  .tcu-cta { margin-top:16px; }
+  .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--accent, var(--amber, #f5a623)); color:var(--accent-ink, #17130c); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
+  .tcu-cta-a:hover { filter:brightness(1.08); }
+  .tcu-cta-a:focus-visible { outline:3px solid var(--accent, var(--amber, #f5a623)); outline-offset:3px; }
+
+  @media (max-width:520px) { .field-row { grid-template-columns:1fr; } .wrap { width:min(100% - 24px,760px); } .split { grid-template-columns:1fr; } }
+  @media (prefers-reduced-motion:reduce) { *,*before,*after { scroll-behavior:auto !important; transition:none !important; } }
   @media print {
     body { background:#fff; color:#000; }
     .wrap { width:100%; max-width:none; padding:0; }
     .topbar, .btnrow, .skip-link, .foot a, .no-print { display:none !important; }
     .hero, .card, .note, .table, .faq, .printable { background:#fff !important; color:#000 !important; border:1px solid #999 !important; box-shadow:none !important; }
     h1, h2, h3, strong, .tr .v { color:#000 !important; }
-    p, .card .d, .muted, .tr .k, .faq .answer p { color:#333 !important; }
+    p, .card .d, .muted, .tr .k, .faq .answer p, .list .row .k { color:#333 !important; }
     a { color:#000 !important; text-decoration:underline; }
     .faq .answer { display:block !important; }
     .faq details { break-inside:avoid; }
     .print-only { display:block !important; }
+    .printable { border:1px solid #999 !important; border-radius:0 !important; padding:14px !important; margin-bottom:10px !important; }
+    .printable h2, .printable h3 { break-after:avoid; }
+    .print-grid { display:grid !important; grid-template-columns:1fr 1fr !important; gap:8px !important; }
+    .print-grid .ruled { border-bottom:1px solid #bbb !important; min-height:26px; }
   }
   .print-only { display:none; }
 `;
 
 function head(o) {
   const url = o.path === '/' ? SITE + '/' : SITE + '/' + o.path;
+  const manifest = o.noManifest ? '' : `<link rel="manifest" href="${o.depth === 1 ? '../' : './'}manifest.webmanifest">`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,6 +166,7 @@ function head(o) {
 <meta name="twitter:title" content="${o.ogTitle || o.title}">
 <meta name="twitter:description" content="${o.description}">
 <link rel="icon" href="data:,">
+${manifest}
 ${o.headExtra || ''}
 <style>${CSS}</style>
 </head>
@@ -147,4 +194,39 @@ function jsonld(obj) {
   return '<script type="application/ld+json">\n' + JSON.stringify(obj, null, 2) + '\n</script>';
 }
 
-module.exports = { SITE, CSS, head, foot, jsonld };
+// ---- shared "Keep going" block -------------------------------------------
+// Mirrors the block that already appears on every existing page so new pages
+// feel native. `share` renders the copy-my-result button; `cta` renders the
+// single amber next-step link.
+function tcuBlock(o) {
+  const rels = (o.rels || []).map((r) => {
+    const hub = r.hub ? ' tcu-rel-hub' : '';
+    return `        <a class="tcu-rel${hub}" href="${r.href}">
+          <span class="tcu-rel-t">${r.t}</span>
+          <span class="tcu-rel-d">${r.d}</span>
+        </a>`;
+  }).join('\n');
+
+  const share = o.share === false ? '' : `        <div class="tcu-share">
+          <button class="tcu-share-b" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 0 0 1-2-2V4a2 0 0 1 2-2h9a2 0 0 1 2 2v1"/></svg>
+            ${o.shareLabel || 'Copy my result'}
+          </button>
+          <span class="tcu-share-n" role="status" aria-live="polite"></span>
+        </div>`;
+
+  const cta = o.cta ? `        <div class="tcu-cta">
+          <a class="tcu-cta-a" href="${o.cta.href}" target="_blank" rel="noopener">${o.cta.label}</a>
+        </div>` : '';
+
+  return `<section class="tcu" aria-labelledby="tcu-h">
+        <h2 class="tcu-h" id="tcu-h">Keep going</h2>
+        <div class="tcu-rels">
+${rels}
+        </div>
+${share}
+${cta}
+      </section>`;
+}
+
+module.exports = { SITE, CSS, head, foot, jsonld, tcuBlock };
