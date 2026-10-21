@@ -12,6 +12,28 @@
 
 export default {
   async fetch(request, env) {
+    // GET /status - a health check the setup page uses to confirm the worker
+    // is live before the site is pointed at it. It also returns the first
+    // real numbers, so the first thing Leroy sees is not a guess.
+    if (request.method === 'GET') {
+      const url = new URL(request.url);
+      if (url.pathname === '/status') {
+        const day = new Date().toISOString().slice(0, 10);
+        const pv = Number((await env.LIST.get('pv:' + day)) || 0);
+        const signups = Number((await env.LIST.get('count:signups')) || 0);
+        return new Response(JSON.stringify({
+          ok: true,
+          service: 'comeup',
+          pageviewsToday: pv,
+          signupsTotal: signups,
+          ts: new Date().toISOString()
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+      return new Response('ok', { status: 200 });
+    }
     if (request.method !== 'POST') {
       return new Response('ok', { status: 200 });
     }
@@ -45,6 +67,8 @@ export default {
           ts: payload.ts || new Date().toISOString(),
         };
         await env.LIST.put('signup:' + email, JSON.stringify(record));
+        const total = Number((await env.LIST.get('count:signups')) || 0);
+        await env.LIST.put('count:signups', String(total + 1));
         // notify the owner so a signup is never only in a KV namespace
         if (env.LIST_EMAIL) {
           await env.SIGNUP_EMAIL.send({
