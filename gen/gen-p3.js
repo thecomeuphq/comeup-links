@@ -431,6 +431,22 @@ const WAITLIST_SCRIPT = `(function () {
       ts: new Date().toISOString()
     };
 
+    // If the shared analytics script is live it owns the capture path, so a
+    // signup is recorded in the same place as the pageviews.
+    if (!ENDPOINT && window.__comeupCapture) {
+      var btn2 = form.querySelector('button[type="submit"]');
+      if (btn2) { btn2.disabled = true; btn2.textContent = 'Signing you up...'; }
+      window.__comeupCapture(payload.email, payload.name).then(function () {
+        form.reset();
+        say('You are on the list. Next money move is coming your way.', true);
+      }).catch(function () {
+        say('Something went wrong. Try again, or email ' + WAITLIST_ADDRESS + ' and we will add you by hand.', false);
+      }).then(function () {
+        if (btn2) { btn2.disabled = false; btn2.textContent = 'Join the list'; }
+      });
+      return;
+    }
+
     if (!ENDPOINT) {
       // No endpoint configured yet: hand off to the visitor's email client so
       // the signup is not silently lost. The address is a placeholder that

@@ -372,7 +372,77 @@
     .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:var(--amber-ink); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
     .tcu-cta-a:hover { filter:brightness(1.08); }
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
-  </head>
+  <script>
+
+// --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
+(function () {
+  var ENDPOINT = "";
+  var LIST_ID = "comeup";
+  if (!ENDPOINT) return;
+
+  // ---- analytics ----
+  // One small POST on page load. No cookie, no localStorage id, no IP, no
+  // fingerprint. We only learn which page and which campaign brought the visit.
+  function track() {
+    try {
+      var u = new URL(location.href);
+      var ref = document.referrer || '';
+      var src = '';
+      // only the origin of the referrer - no full path, no query
+      if (ref) { try { src = new URL(ref).origin; } catch (e) { src = ''; } }
+      var body = {
+        type: 'pageview',
+        path: u.pathname,
+        query: u.search || '',
+        ref: src,
+        utm_source: u.searchParams.get('utm_source') || '',
+        utm_medium: u.searchParams.get('utm_medium') || '',
+        utm_campaign: u.searchParams.get('utm_campaign') || '',
+        ts: new Date().toISOString()
+      };
+      // sendBeacon survives the page unloading; fetch with keepalive is the
+      // fallback. Neither blocks the page.
+      var payload = JSON.stringify(body);
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'application/json' }));
+      } else {
+        fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          keepalive: true
+        }).catch(function () {});
+      }
+    } catch (e) { /* analytics must never break the page */ }
+  }
+
+  // ---- waitlist capture ----
+  // Same endpoint, different payload. A signup is a POST, not a beacon, so it
+  // is only sent on an explicit submit - never on page load.
+  function capture(email, name) {
+    try {
+      return fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'signup',
+          email: email,
+          name: name || '',
+          list: LIST_ID,
+          path: location.pathname,
+          ts: new Date().toISOString()
+        })
+      });
+    } catch (e) { return Promise.reject(e); }
+  }
+
+  track();
+
+  // Expose capture for the waitlist form, which lives on waitlist.html.
+  window.__comeupCapture = capture;
+})();
+</script>
+</head>
   <body>
     <div class="hazard" aria-hidden="true"></div>
 
