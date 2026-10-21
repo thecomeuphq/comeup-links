@@ -29,6 +29,7 @@ New pages are generated from `gen/` so they stay consistent and the build is ide
 | File | Purpose |
 |------|---------|
 | `gen/base.js` | Shared design system (CSS), `head`/`foot`, JSON-LD helpers, the shared "Keep going" block |
+| `gen/config.js` | Central config: `BUNDLE_SLUG`, `BUNDLE_PRICE`, `WAITLIST_ENDPOINT`, `WAITLIST_ADDRESS` |
 | `gen/pages.js` | Page composer: `page({path,title,description,body,rels,cta,share,script})` |
 | `gen/share.js` | The shared "Copy my result" script, lifted from the existing pages and re-parameterised |
 | `gen/products.js` | The 13 paid products. The two free products are excluded on purpose |
@@ -84,6 +85,8 @@ node gen/gen-p1.js && node gen/gen-p2.js && node gen/gen-p3.js \
 | 18 | Bundle / value-stack framing on the catalog page | done | Value-stack section on `catalog.html` (13 products, $86.40 total) |
 | 19 | Order bump / "add the tracker" cross-sell page | done | `bundle.html` (Starter 3-Pack) |
 
+**Phase 19 note (2026-10-21).** `bundle.html` originally linked a `bundle3` Gumroad slug that does not exist, and advertised a $9.95 pack price with a stated saving — a dead checkout button plus an invented discount. The page now sells the three real products separately at their real prices, with no bundle price and no claimed saving. The combined SKU can be switched on by setting `BUNDLE_SLUG` and `BUNDLE_PRICE` in `gen/config.js` once the product exists on Gumroad. `dev/gumroad-check.js` now resolves every Gumroad slug the site links to and fails the build on a dead one.
+
 ## P5 — Optimization
 
 | # | Phase | Status | Shipped as |
@@ -105,7 +108,7 @@ Everything else in the 25 phases is built, verified, and shipped.
 | Waitlist email capture | 13 | An email service endpoint (Formspree / Buttondown / Netlify Forms / Cloudflare Worker) and the real destination address | The form is built, styled, and validates the address. With no endpoint set it falls back to a `mailto:` so a signup is never silently lost. Set `WAITLIST_ENDPOINT` in `gen/gen-p3.js` to switch it to a real POST. The `list@thecomeuphq.com` address in the page is a placeholder. |
 | Analytics | — (P5 add-on) | A Google Analytics / Plausible / Umami account | Not added. No analytics script on the site, so no cookie banner is needed either. |
 | Affiliate programs | — (P4 add-on) | Affiliate account signups | Not added. Nothing on the site is affiliate-linked. |
-| Gumroad bundle SKU | 19 | A "Starter 3-Pack" product on the Gumroad account | `bundle.html` links to a `bundle3` slug. If that product does not exist yet on Gumroad, create it at $9.95 and the link works as-is. |
+| Gumroad bundle SKU | 19 | A "Starter 3-Pack" product on the Gumroad account | `bundle.html` sells the three real products individually at their real prices. Create the product on Gumroad, set `BUNDLE_SLUG` and `BUNDLE_PRICE` in `gen/config.js`, and the page switches itself to the combined bundle. |
 | Newsletter sending | 13 | A sending schedule once the list has a provider | Not started. The list capture is ready to receive signups. |
 
 ## Verification performed
@@ -116,7 +119,8 @@ Everything else in the 25 phases is built, verified, and shipped.
 | Site-wide link audit | `node dev/linkaudit.js` | 97 HTML files, **0 broken internal links** |
 | Inline JS parse check | `node dev/jscheck.js` | All scripts parse clean; every `getElementById` target exists |
 | Functional behaviour (real DOM) | `node dev/functional2.js` | 11/11 PASS — search filtering, storage persistence, plan-link roundtrip, favorites removal, dashboard clear, waitlist validation, saved-tools render |
-| Free-product rule | grep across all HTML | 0 references to `wupxq` / `oaqjpg`; only the 13 paid slugs (+ `bundle3`) appear |
+| Free-product rule | grep across all HTML | 0 references to `wupxq` / `oaqjpg`; only the 13 paid slugs appear |
+| Gumroad link health | `node dev/gumroad-check.js` | All 13 slugs resolve to a live checkout (follows 301s for renamed products); no free product linked |
 | Regressions on legacy pages | `node dev/regress.js` | No change to any pre-existing page's structure |
 | Live deploy | `node gen/livecheck.js <paths>` | See the deploy log in the final summary |
 
