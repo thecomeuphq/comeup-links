@@ -1,0 +1,150 @@
+// Shared design system + helpers for all new The Come Up pages.
+// Every generated page is a single self-contained HTML file, matching the
+// existing charcoal/amber design system used across the repo.
+
+const SITE = 'https://thecomeuphq.github.io/comeup-links';
+
+const CSS = `
+  :root {
+    color-scheme: dark;
+    --bg: #141414; --surface: #1f1f1f; --surface-raised: #262626; --line: #383838;
+    --text: #f5f5f5; --muted: #bdbdbd; --amber: #f5a623; --green: #a8e6bd; --danger: #f08a7e;
+    --amber-soft: rgba(245,166,35,0.12);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; min-height:100vh; line-height:1.5; }
+  a { color:var(--amber); }
+  .wrap { width:min(100% - 32px, 760px); margin:0 auto; padding:calc(22px + env(safe-area-inset-top)) 0 calc(44px + env(safe-area-inset-bottom)); }
+  .skip-link { position:fixed; z-index:20; top:8px; left:8px; transform:translateY(-160%); padding:12px 16px; border-radius:10px; background:var(--amber); color:#17130c; font-weight:750; }
+  .skip-link:focus { transform:translateY(0); }
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+  .brand { display:inline-flex; align-items:center; gap:8px; color:var(--text); text-decoration:none; font-weight:750; }
+  .brand .mark { width:28px; height:28px; border-radius:50%; display:grid; place-items:center; background:var(--amber-soft); color:var(--amber); font-weight:800; }
+  .back { color:var(--amber); text-decoration:none; font-size:14px; font-weight:650; }
+  .hero { background:linear-gradient(135deg, var(--amber-soft), rgba(31,31,31,0.95)); border:1px solid rgba(245,166,35,0.45); border-radius:18px; padding:24px 20px; box-shadow:0 10px 30px rgba(0,0,0,0.25); }
+  h1 { font-size:clamp(28px,7vw,44px); line-height:1.06; letter-spacing:-.03em; }
+  .lead { margin-top:12px; color:#d1d1d1; font-size:16px; line-height:1.55; }
+  .eyebrow { display:inline-block; margin-bottom:10px; color:var(--amber); font-size:11px; font-weight:850; letter-spacing:.14em; text-transform:uppercase; }
+  h2 { font-size:clamp(20px,4.4vw,26px); line-height:1.2; margin:34px 0 12px; }
+  h3 { font-size:16px; margin:20px 0 8px; }
+  p { color:var(--muted); font-size:15px; line-height:1.6; }
+  p + p { margin-top:10px; }
+  strong { color:var(--text); }
+  .section { margin-top:30px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:16px; }
+  .card { display:block; text-decoration:none; color:var(--text); background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:15px 16px; transition:border-color .15s,transform .15s; }
+  .card:hover { border-color:var(--amber); transform:translateY(-1px); }
+  .card .t { font-size:15px; font-weight:750; }
+  .card .d { margin-top:5px; color:var(--muted); font-size:13px; line-height:1.5; }
+  .card.amber { border-color:var(--amber); background:linear-gradient(125deg,#32240e,var(--surface)); }
+  .btn { display:inline-flex; align-items:center; justify-content:center; min-height:44px; border:1px solid var(--line); border-radius:12px; padding:11px 16px; background:var(--surface); color:var(--text); font-size:14px; font-weight:750; text-decoration:none; }
+  .btn.primary { background:var(--amber); border-color:var(--amber); color:#17130c; }
+  .btn.ghost { background:transparent; }
+  .btnrow { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+  .note { margin-top:16px; padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--surface); }
+  .note.green { border-color:#344b3a; background:linear-gradient(125deg,#14231a,#1d1d1d); }
+  .note.amber { border-color:#75531c; background:linear-gradient(125deg,#2a1e08,#1f1f1d); }
+  .note p { font-size:14px; }
+  .note h3 { margin-top:0; }
+  ul.tips { margin:12px 0 0 18px; color:var(--muted); font-size:14px; line-height:1.7; }
+  ul.tips li { margin-bottom:6px; }
+  ul.tips li::marker { color:var(--amber); }
+  .faq { margin-top:14px; border:1px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden; }
+  .faq details + details { border-top:1px solid var(--line); }
+  .faq summary { padding:14px 16px; cursor:pointer; font-weight:700; font-size:15px; list-style:none; display:flex; gap:10px; align-items:flex-start; }
+  .faq summary::-webkit-details-marker { display:none; }
+  .faq summary::before { content:"+"; color:var(--amber); font-weight:800; flex:0 0 12px; }
+  .faq details[open] summary::before { content:"–"; }
+  .faq .answer { padding:0 16px 16px 38px; }
+  .faq .answer p { font-size:14px; }
+  .table { margin-top:14px; border:1px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden; }
+  .tr { display:flex; justify-content:space-between; gap:14px; padding:12px 15px; border-bottom:1px solid var(--line); font-size:14px; }
+  .tr:last-child { border-bottom:0; }
+  .tr.head { color:var(--amber); font-size:12px; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+  .tr .k { color:var(--muted); }
+  .tr .v { font-weight:750; text-align:right; }
+  .foot { margin-top:30px; padding-top:16px; border-top:1px solid var(--line); color:#858585; text-align:center; font-size:12px; line-height:1.7; }
+  .foot a { color:var(--muted); }
+  .pill { display:inline-block; border-radius:20px; padding:3px 9px; background:var(--amber); color:#17130c; font-size:10px; font-weight:850; letter-spacing:.08em; }
+  .pill.free { background:var(--green); color:#10231a; }
+  label { display:block; font-size:13px; font-weight:700; margin:14px 0 6px; }
+  input[type=text], input[type=number], input[type=date], input[type=email], select, textarea {
+    width:100%; border:1px solid #4b4b4b; border-radius:10px; background:#101010; color:var(--text); padding:12px 13px; font-size:16px; font-family:inherit;
+  }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, .btn:focus-visible, .card:focus-visible, summary:focus-visible, a:focus-visible {
+    outline:3px solid #fff; outline-offset:2px;
+  }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .btn:focus-visible { outline:3px solid #fff; outline-offset:2px; }
+  .status { margin-top:10px; color:var(--muted); font-size:12px; min-height:18px; }
+  .status.ok { color:var(--green); }
+  .big-num { font-size:clamp(30px,8vw,44px); font-weight:800; color:var(--amber); line-height:1.1; }
+  .muted { color:var(--muted); font-size:13px; }
+  @media (max-width:520px) { .field-row { grid-template-columns:1fr; } .wrap { width:min(100% - 24px,760px); } }
+  @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition:none !important; } }
+  @media print {
+    body { background:#fff; color:#000; }
+    .wrap { width:100%; max-width:none; padding:0; }
+    .topbar, .btnrow, .skip-link, .foot a, .no-print { display:none !important; }
+    .hero, .card, .note, .table, .faq, .printable { background:#fff !important; color:#000 !important; border:1px solid #999 !important; box-shadow:none !important; }
+    h1, h2, h3, strong, .tr .v { color:#000 !important; }
+    p, .card .d, .muted, .tr .k, .faq .answer p { color:#333 !important; }
+    a { color:#000 !important; text-decoration:underline; }
+    .faq .answer { display:block !important; }
+    .faq details { break-inside:avoid; }
+    .print-only { display:block !important; }
+  }
+  .print-only { display:none; }
+`;
+
+function head(o) {
+  const url = o.path === '/' ? SITE + '/' : SITE + '/' + o.path;
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#141414">
+<title>${o.title}</title>
+<meta name="description" content="${o.description}">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="The Come Up">
+<meta property="og:title" content="${o.ogTitle || o.title}">
+<meta property="og:description" content="${o.description}">
+<meta property="og:url" content="${url}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${o.ogTitle || o.title}">
+<meta name="twitter:description" content="${o.description}">
+<link rel="icon" href="data:,">
+${o.headExtra || ''}
+<style>${CSS}</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<main class="wrap" id="main-content" tabindex="-1">
+<div class="topbar">
+  <a class="brand" href="${o.depth === 1 ? '../' : './'}index.html"><span class="mark">$</span> The Come Up</a>
+  <a class="back" href="${o.backHref || (o.depth === 1 ? '../' : './') + 'index.html'}">${o.backText || '← Back to home'}</a>
+</div>
+`;
+}
+
+function foot(o) {
+  return `
+<p class="foot">Built for the ones who earn it hourly.<br>Educational tools only; not financial, legal, or tax advice.<br>B&amp;GCollections © 2026 · <a href="${o.depth === 1 ? '../' : './'}index.html">The Come Up</a></p>
+</main>
+${o.script ? '<script>\n' + o.script + '\n</script>' : ''}
+</body>
+</html>
+`;
+}
+
+function jsonld(obj) {
+  return '<script type="application/ld+json">\n' + JSON.stringify(obj, null, 2) + '\n</script>';
+}
+
+module.exports = { SITE, CSS, head, foot, jsonld };

@@ -1,0 +1,76 @@
+COUNT 15
+---
+name: The 30-Day Paycheck Reset Companion Worksheet
+price: 0.00 (pay what you want)
+url: https://bradley57.gumroad.com/l/wupxq
+desc: FREE download: the official companion tracker for the 30-Day Paycheck Reset. What's inside this 1...
+---
+name: The Blue-Collar Paycheck Protection Checklist
+price: 0.00 (pay what you want)
+url: https://bradley57.gumroad.com/l/oaqjpg
+desc: FREE download: 5 steps to protect your paycheck before overtime cuts hit. What's inside this 1-pa...
+---
+name: Blue-Collar Paycheck Protection & Buffer Binder
+price: 9.95
+url: https://bradley57.gumroad.com/l/xyytlg
+desc: Guard your family against bad weather lay-offs, light shift weeks, and seasonal income dips. What...
+---
+name: Auto Loan Payoff & Equity Tracker
+price: 5.95
+url: https://bradley57.gumroad.com/l/kiqga
+desc: Break free from high monthly truck payments and track your climb back into positive equity. What...
+---
+name: 52-Week Cash Stash Visual Thermometer
+price: 4.95
+url: https://bradley57.gumroad.com/l/cuowev
+desc: Watch your savings grow week by week with a simple, high-visibility visual milestone tracker. Wha...
+---
+name: Debt Refinance & Consolidation Planner
+price: 6.95
+url: https://bradley57.gumroad.com/l/ibdair
+desc: Slash predatory interest rates and turn chaos into a single, straightforward payoff plan. What's...
+---
+name: Truck & Equipment Maintenance Fund Log
+price: 5.95
+url: https://bradley57.gumroad.com/l/xyxyhx
+desc: Stop letting sudden breakdowns, tire blowouts, and shop bills crush your hard-earned paycheck. Wh...
+---
+name: The No-BS Subscription & Bill Cut Audit
+price: 4.95
+url: https://bradley57.gumroad.com/l/rdiqav
+desc: You're bleeding money on autopilot. Streaming services you forgot you had. The app trial that con...
+---
+name: High-Yield Sinking Funds Visual Tracker
+price: 6.95
+url: https://bradley57.gumroad.com/l/ggvgmc
+desc: The truck doesn't care that it's not in your budget. Every year the same ambushes: the transmissi...
+---
+name: Ultimate Zero-Based Budgeting Starter Binder
+price: 12.95
+url: https://bradley57.gumroad.com/l/fafiob
+desc: Every dollar gets a job — or it quits on you. Zero-based budgeting is simple: income minus everyt...
+---
+name: Overtime & Shift Worker Cash Flow Log
+price: 5.95
+url: https://bradley57.gumroad.com/l/mvbvhh
+desc: Your overtime is disappearing. Here's where it goes. You worked the extra hours. The check was bi...
+---
+name: $1,000 Emergency Fund Starter Pack
+price: 4.95
+url: https://bradley57.gumroad.com/l/turfm
+desc: $1,000 is the wall between you and the next emergency. Car breaks down. Hours get cut. Phone dies...
+---
+name: The Debt Snowball vs. Avalanche Battle Plan
+price: 7.95
+url: https://bradley57.gumroad.com/l/fdjzdu
+desc: Stop debating. Start killing debt. Snowball or avalanche? Here's the truth: the best strategy is...
+---
+name: The Paycheck-to-Paycheck Weekly Planner
+price: 6.95
+url: https://bradley57.gumroad.com/l/qechcz
+desc: Monthly budgets weren't built for shift work. If your paycheck's different every week, you alread...
+---
+name: Debt Payoff Tracker Printable
+price: 4.95
+url: https://bradley57.gumroad.com/l/kvztuf
+desc: Take control of your debt with this printable Debt Payoff Tracker! List every debt, choose your p...
