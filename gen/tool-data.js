@@ -39,6 +39,18 @@ const TOOLS = [
     "shop": false
   },
   {
+    "href": "problems.html",
+    "title": "Problems Hub",
+    "desc": "Start from the problem you actually have, not the tool name.",
+    "shop": false
+  },
+  {
+    "href": "dashboard.html",
+    "title": "Money Dashboard",
+    "desc": "Every number you have saved across the site, in one place.",
+    "shop": false
+  },
+  {
     "href": "debt-payoff-calculator.html",
     "title": "Debt Payoff Calculator",
     "desc": "Your debt-free date and true interest cost.",
@@ -408,6 +420,72 @@ const TOOLS = [
     "href": "viral-ai-business-playbooks.html",
     "title": "Viral AI Business Playbooks",
     "desc": "Content playbooks that drive traffic.",
+    "shop": false
+  },
+  {
+    "href": "compare.html",
+    "title": "Compare Tools Side by Side",
+    "desc": "Two tools, one choice — with the verdict.",
+    "shop": false
+  },
+  {
+    "href": "faq.html",
+    "title": "Money FAQ",
+    "desc": "24 straight answers to the questions people actually ask.",
+    "shop": false
+  },
+  {
+    "href": "guides.html",
+    "title": "Guides & Playbooks",
+    "desc": "The deeper explainers behind the calculators.",
+    "shop": false
+  },
+  {
+    "href": "payday-ritual.html",
+    "title": "The Payday Ritual",
+    "desc": "A repeatable 20-minute routine for payday week.",
+    "shop": false
+  },
+  {
+    "href": "printables.html",
+    "title": "Printable Worksheets",
+    "desc": "Five print-and-go sheets, one page each.",
+    "shop": false
+  },
+  {
+    "href": "plan-link.html",
+    "title": "Share a Plan as a Link",
+    "desc": "Send your money plan to someone without a signup.",
+    "shop": false
+  },
+  {
+    "href": "favorites.html",
+    "title": "My Saved Tools",
+    "desc": "The tools you keep coming back to, in one list.",
+    "shop": false
+  },
+  {
+    "href": "waitlist.html",
+    "title": "Join the List",
+    "desc": "One free money move at a time, in your inbox.",
+    "shop": false
+  },
+  {
+    "href": "catalog.html",
+    "title": "Paid Trackers & Planners",
+    "desc": "All 13 printable trackers, with real prices.",
+    "shop": false
+  },
+  {
+    "href": "bundle.html",
+    "title": "The Starter 3-Pack",
+    "desc": "The three trackers that cover your first 90 days.",
+    "shop": false
+  },
+  {
+    "href": "free-vs-paid.html",
+    "title": "Free vs Paid",
+    "desc": "Exactly what stays free forever.",
     "shop": false
   }
 ];
