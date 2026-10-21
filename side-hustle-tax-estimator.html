@@ -9,11 +9,15 @@
 <meta property="og:site_name" content="The Come Up" />
 <meta property="og:title" content="Side Hustle Tax Calculator — Real Net Profit | The Come Up" />
 <meta property="og:description" content="Punch in what your hustle brings in. See your real take-home profit after self-employment tax, federal, state, and business expenses." />
+<meta property="og:image" content="https://thecomeuphq.github.io/comeup-links/og/side-hustle-tax-estimator.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Side Hustle Tax Calculator — Real Net Profit — The Come Up">
+<meta name="twitter:image" content="https://thecomeuphq.github.io/comeup-links/og/side-hustle-tax-estimator.png">
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html" />
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Side Hustle Tax Calculator — Real Net Profit | The Come Up" />
 <meta name="twitter:description" content="Punch in what your hustle brings in. See your real take-home profit after self-employment tax, federal, state, and business expenses." />
-
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -51,7 +55,6 @@
         --cta-bg: linear-gradient(135deg, #f5a524 0%, #ff6b1a 100%);
         --cta-ink: #1a1206;
       }
-
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; }
       body {
@@ -69,7 +72,6 @@
         margin: 0 auto;
         padding: 28px 18px 64px;
       }
-
       /* ---------- Header ---------- */
       header.page-head { margin-bottom: 22px; }
       .kicker {
@@ -107,7 +109,6 @@
         margin: 0;
         font-size: 17px;
       }
-
       /* ---------- Layout ---------- */
       .grid {
         display: grid;
@@ -120,7 +121,6 @@
         .grid { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); align-items: start; }
         .results-col { position: sticky; top: 18px; }
       }
-
       .panel {
         background: var(--panel);
         border: 1px solid var(--line);
@@ -148,7 +148,6 @@
         background: var(--line);
       }
       .panel-sub { color: var(--ink-faint); font-size: 14px; margin: 0 0 18px; }
-
       /* ---------- Form controls ---------- */
       .field { margin-bottom: 20px; }
       .field:last-child { margin-bottom: 0; }
@@ -195,7 +194,6 @@
       }
       .money-input input:focus { outline: none; }
       .money-input.small input { font-size: 16px; padding: 9px 10px; }
-
       .period-toggle {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -223,7 +221,6 @@
         color: #1a1206;
       }
       .period-toggle button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
-
       select {
         width: 100%;
         min-width: 0;
@@ -237,7 +234,6 @@
         padding: 11px 12px;
       }
       select:focus { outline: 2px solid var(--amber); outline-offset: 1px; border-color: var(--amber); }
-
       .slider-row { display: flex; align-items: center; gap: 14px; }
       input[type="range"] {
         flex: 1;
@@ -277,7 +273,6 @@
         font-variant-numeric: tabular-nums;
       }
       .slider-scale { display: flex; justify-content: space-between; color: var(--ink-faint); font-size: 12.5px; margin-top: 6px; }
-
       .expense-group { border-top: 1px dashed var(--line); padding-top: 16px; margin-top: 4px; }
       .expense-total {
         display: flex;
@@ -291,7 +286,6 @@
       }
       .expense-total .t-label { font-weight: 600; font-size: 14px; color: var(--ink-dim); }
       .expense-total .t-value { font-family: "Barlow Condensed", sans-serif; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
-
       /* ---------- Tooltips ---------- */
       .tip { position: relative; display: inline-flex; }
       .tip-btn {
@@ -348,7 +342,6 @@
         .tip:focus-within .tip-bubble,
         .tip.open .tip-bubble { transform: translateY(0); }
       }
-
       /* ---------- Results ---------- */
       .takehome-card {
         min-width: 0;
@@ -392,7 +385,6 @@
         color: var(--ink-dim);
       }
       .takehome-keep b { color: var(--ink); font-variant-numeric: tabular-nums; }
-
       .setaside-card {
         min-width: 0;
         margin-top: 20px;
@@ -428,7 +420,6 @@
       }
       .mini-stat .ms-label { font-size: 12.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
       .mini-stat .ms-value { font-family: "Barlow Condensed", sans-serif; font-size: 25px; font-weight: 700; margin-top: 2px; font-variant-numeric: tabular-nums; }
-
       /* ---------- Breakdown ---------- */
       .bar-wrap { margin-top: 6px; }
       .bar {
@@ -448,7 +439,6 @@
       .seg-profit { background: var(--profit); }
       .bar-caption { display: flex; justify-content: space-between; color: var(--ink-faint); font-size: 13px; margin-top: 8px; }
       .bar-caption strong { color: var(--ink); font-variant-numeric: tabular-nums; }
-
       .ledger { margin-top: 18px; border-top: 1px solid var(--line); }
       .ledger-row {
         display: grid;
@@ -473,7 +463,6 @@
       .ledger-row .lr-amt { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 92px; text-align: right; }
       .ledger-row.total { font-size: 16px; }
       .ledger-row.total .lr-amt { color: var(--amber); }
-
       .disclaimer {
         margin-top: 20px;
         border: 1px solid var(--line-strong);
@@ -485,7 +474,6 @@
         color: var(--ink-dim);
       }
       .disclaimer strong { color: var(--ink); }
-
       /* ---------- CTA ---------- */
       .cta-banner {
         margin-top: 20px;
@@ -528,7 +516,6 @@
       }
       .cta-banner .cta-go svg { transition: transform 0.15s ease; }
       .cta-banner:hover .cta-go svg { transform: translateX(3px); }
-
       /* ---------- FAQ ---------- */
       .faq { margin-top: 34px; }
       .faq h2 {
@@ -573,7 +560,6 @@
       .faq-item .faq-body p { margin: 0 0 10px; }
       .faq-item .faq-body p:last-child { margin-bottom: 0; }
       .faq-item .faq-body strong { color: var(--ink); }
-
       footer.page-foot {
         margin-top: 30px;
         color: var(--ink-faint);
@@ -584,7 +570,6 @@
       @media (prefers-reduced-motion: reduce) {
         .bar .seg, .cta-banner .cta-go svg { transition: none; }
       }
-    
     /* ===== The Come Up: related tools + share + next step ===== */
     .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
     .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px; }
@@ -607,7 +592,8 @@
     .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:var(--cta-ink); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
     .tcu-cta-a:hover { filter:brightness(1.08); }
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
-  </head>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Side Hustle Tax Calculator — Real Net Profit | The Come Up","description":"Punch in what your hustle brings in. See your real take-home profit after self-employment tax, federal, state, and business expenses.","url":"https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Side Hustle Tax Estimator.Html","item":"https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html"}]}]}</script>
+</head>
   <body>
     <div class="wrap">
       <header class="page-head">

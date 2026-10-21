@@ -9,11 +9,15 @@
 <meta property="og:site_name" content="The Come Up" />
 <meta property="og:title" content="Emergency Fund Calculator — Months of Runway | The Come Up" />
 <meta property="og:description" content="How long could you last if your hours got cut? Enter your monthly costs and savings to see your runway in months and weeks, plus the number to hit next." />
+<meta property="og:image" content="https://thecomeuphq.github.io/comeup-links/og/emergency-fund-runway-calculator.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Emergency Fund Calculator — Months of Runway — The Come Up">
+<meta name="twitter:image" content="https://thecomeuphq.github.io/comeup-links/og/emergency-fund-runway-calculator.png">
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html" />
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Emergency Fund Calculator — Months of Runway | The Come Up" />
 <meta name="twitter:description" content="How long could you last if your hours got cut? Enter your monthly costs and savings to see your runway in months and weeks, plus the number to hit next." />
-
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -53,7 +57,6 @@
         line-height: 1.5;
       }
       .wrap { max-width: 1080px; margin: 0 auto; padding: 20px 16px 48px; }
-
       /* ---------- Header ---------- */
       header.top { padding: 14px 0 6px; border-bottom: 3px solid var(--accent); margin-bottom: 22px; }
       .kicker {
@@ -68,14 +71,12 @@
         text-transform: uppercase;
       }
       .lede { margin: 0 0 14px; color: var(--ink-dim); font-size: 17px; max-width: 62ch; }
-
       /* ---------- Layout ---------- */
       .layout { display: grid; grid-template-columns: 1fr; gap: 20px; }
       @media (min-width: 880px) {
         .layout { grid-template-columns: 5fr 6fr; align-items: start; }
         .results-col { position: sticky; top: 16px; }
       }
-
       .panel {
         background: var(--panel); border: 1px solid var(--line);
         border-radius: 10px; box-shadow: var(--shadow); padding: 20px;
@@ -87,7 +88,6 @@
         margin: 0 0 4px;
       }
       .panel .sub { color: var(--ink-dim); font-size: 14px; margin: 0 0 16px; }
-
       /* ---------- Inputs ---------- */
       .field-row {
         display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -116,7 +116,6 @@
       }
       .total-row .t-label { font-weight: 700; text-transform: uppercase; font-size: 13px; letter-spacing: 0.06em; }
       .total-row .t-value { font-family: "IBM Plex Mono", monospace; font-size: 22px; font-weight: 700; color: var(--accent-strong); }
-
       .seg-label { font-weight: 600; margin: 18px 0 8px; font-size: 15px; }
       .seg {
         display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
@@ -134,7 +133,6 @@
       .custom-row.show { display: flex; }
       .custom-row label { font-size: 14px; color: var(--ink-dim); }
       .custom-row .money input { width: 64px; text-align: center; }
-
       /* ---------- Results ---------- */
       .status-banner {
         border-radius: 10px; padding: 16px 18px; margin-bottom: 18px;
@@ -152,7 +150,6 @@
       .status-banner.thin .tier { color: var(--warn); }
       .status-banner.secure { background: var(--good-soft); border-color: var(--good); }
       .status-banner.secure .tier { color: var(--good); }
-
       .runway-big { display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: baseline; margin-bottom: 6px; }
       .runway-big .num {
         font-family: "IBM Plex Mono", monospace; font-weight: 700;
@@ -160,7 +157,6 @@
       }
       .runway-big .unit { font-size: 17px; color: var(--ink-dim); font-weight: 500; }
       .runway-big .weeks { font-family: "IBM Plex Mono", monospace; font-size: 19px; font-weight: 600; color: var(--accent-strong); }
-
       /* Meter */
       .meter-wrap { margin: 18px 0 6px; }
       .meter {
@@ -193,7 +189,6 @@
       .meter-legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; }
       .sw.d { background: var(--danger); } .sw.w { background: var(--warn); } .sw.g { background: var(--good); }
       .sw.t { background: var(--accent); }
-
       /* Breakdown table */
       .breakdown { margin-top: 18px; border-top: 1px solid var(--line); }
       .b-row {
@@ -207,7 +202,6 @@
       .b-row .b-value.accent { color: var(--accent-strong); }
       .b-row .b-value.good { color: var(--good); }
       .empty-note { color: var(--ink-dim); font-size: 15px; padding: 10px 0; }
-
       /* ---------- CTA ---------- */
       .cta {
         margin-top: 20px; border-radius: 10px; padding: 22px;
@@ -222,7 +216,6 @@
         border: 2px solid #16130c;
       }
       .cta a:hover, .cta a:focus-visible { background: transparent; color: #16130c; }
-
       /* ---------- FAQ ---------- */
       .faq { margin-top: 34px; }
       .faq h2 {
@@ -239,13 +232,10 @@
       .faq details[open ] summary::after { content: "–"; }
       .faq details p { margin: 10px 0 2px; color: var(--ink-dim); font-size: 15.5px; }
       .faq details p strong { color: var(--ink); }
-
       footer.note { margin-top: 30px; color: var(--ink-dim); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; }
-
       @media (prefers-reduced-motion: reduce) {
         .meter .fill-mask, .meter .marker, .meter .goal-tick { transition: none; }
       }
-    
     /* ===== The Come Up: related tools + share + next step ===== */
     .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
     .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 12px; }
@@ -268,7 +258,8 @@
     .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--accent); color:#17130c; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
     .tcu-cta-a:hover { filter:brightness(1.08); }
     .tcu-cta-a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }</style>
-  </head>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Emergency Fund Calculator — Months of Runway | The Come Up","description":"How long could you last if your hours got cut? Enter your monthly costs and savings to see your runway in months and weeks, plus the number to hit next.","url":"https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Emergency Fund Runway Calculator.Html","item":"https://thecomeuphq.github.io/comeup-links/emergency-fund-runway-calculator.html"}]}]}</script>
+</head>
   <body>
     <div class="wrap">
       <header class="top">

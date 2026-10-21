@@ -21,7 +21,12 @@ function build(opts) {
   const intro = opts.intro || 'My results:';
   const fields = JSON.stringify(opts.fields || []);
 
+  // The template is the WHOLE <script> block (dev/extract-fields.js slices
+  // from the opening tag so the IIFE opener is kept). Strip the tags here:
+  // the caller wraps the result in its own <script> element.
   let out = TEMPLATE
+    .replace(/^\s*<script[^>]*>\s*/i, '')
+    .replace(/\s*<\/script>\s*$/i, '')
     .replace(/^[ \t]*var PAGE_URL[ \t]*=.*$/m,
       '      var PAGE_URL = ' + JSON.stringify(pageUrl) + ';')
     .replace(/^[ \t]*var PAGE_PATH[ \t]*=.*$/m,
@@ -46,7 +51,19 @@ function build(opts) {
   if (/\bvar\s+var\b/.test(out)) {
     throw new Error('share script substitution produced a duplicate var keyword');
   }
-  // Guard: the page must still parse as a single script body.
+  // Guard: the result must be a BALANCED IIFE. An unbalanced template
+  // (opener or closer missing) produces a top-level "return", which is a
+  // hard syntax error - "Illegal return statement" - on every page that
+  // uses this script. Refuse to build rather than ship a broken page.
+  if (!/\(function\s*\(\)\s*\{/.test(out)) {
+    throw new Error('share script is missing its IIFE opener');
+  }
+  if (!/\}\)\(\);/.test(out)) {
+    throw new Error('share script is missing its IIFE closer');
+  }
+  if (/<\/?script/i.test(out)) {
+    throw new Error('share script must not contain a script tag');
+  }  // Guard: the page must still parse as a single script body.
   if (out.includes('</script>')) {
     throw new Error('share script must not contain a closing script tag');
   }

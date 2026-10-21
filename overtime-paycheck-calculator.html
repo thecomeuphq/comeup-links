@@ -9,14 +9,17 @@
 <meta property="og:site_name" content="The Come Up" />
 <meta property="og:title" content="Overtime Paycheck Calculator — Free OT Pay Tool | The Come Up" />
 <meta property="og:description" content="Free overtime paycheck calculator. Enter your hourly rate and hours to see gross pay, your overtime rate, and the regular vs. overtime breakdown instantly." />
+<meta property="og:image" content="https://thecomeuphq.github.io/comeup-links/og/overtime-paycheck-calculator.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Overtime Paycheck Calculator — Free OT Pay Tool — The Come Up">
+<meta name="twitter:image" content="https://thecomeuphq.github.io/comeup-links/og/overtime-paycheck-calculator.png">
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/overtime-paycheck-calculator.html" />
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Overtime Paycheck Calculator — Free OT Pay Tool | The Come Up" />
 <meta name="twitter:description" content="Free overtime paycheck calculator. Enter your hourly rate and hours to see gross pay, your overtime rate, and the regular vs. overtime breakdown instantly." />
-
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    
     <link rel="icon" href="data:," />
     <title>Overtime Paycheck Calculator — Free OT Pay Tool | The Come Up</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -76,7 +79,6 @@
         line-height: 1.5;
       }
       .wrap { max-width: 1060px; margin: 0 auto; padding: 28px 18px 56px; }
-
       header.page-head { margin-bottom: 22px; }
       header.page-head h1 {
         font-size: clamp(30px, 6vw, 42px);
@@ -86,13 +88,11 @@
         margin: 0 0 8px;
       }
       header.page-head p { margin: 0; color: var(--muted); font-size: 18px; max-width: 620px; }
-
       .layout { display: grid; gap: 20px; align-items: start; grid-template-columns: minmax(0, 1fr); }
       @media (min-width: 880px) {
         .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
         .results { position: sticky; top: 20px; }
       }
-
       .card {
         background: var(--surface);
         border: 1px solid var(--line);
@@ -102,7 +102,6 @@
         min-width: 0;
       }
       .card h2 { font-size: 19px; font-weight: 700; margin: 0 0 16px; letter-spacing: -0.01em; }
-
       .field { margin-bottom: 18px; }
       .field:last-child { margin-bottom: 0; }
       label.field-label {
@@ -141,7 +140,6 @@
         outline-offset: 1px;
         border-color: var(--focus);
       }
-
       /* Segmented mode toggle */
       .segmented {
         display: grid; grid-template-columns: 1fr 1fr;
@@ -163,7 +161,6 @@
         box-shadow: 0 1px 3px rgba(18, 32, 24, .18);
       }
       .segmented button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-
       .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 9px; }
       .chip {
         font: inherit; font-size: 14.5px; font-weight: 600;
@@ -178,7 +175,6 @@
         border-color: var(--accent);
       }
       .chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-
       /* Switch row for double time */
       .switch-row {
         display: flex; align-items: center; justify-content: space-between; gap: 14px;
@@ -209,7 +205,6 @@
       @media (prefers-reduced-motion: reduce) { .switch::after { transition: none; } }
       .dt-fields { margin-top: 16px; }
       [hidden] { display: none !important; }
-
       /* Results */
       .quick-answer {
         display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
@@ -222,7 +217,6 @@
       .quick-answer .qa-label { font-weight: 600; font-size: 15px; color: var(--accent-strong); }
       .quick-answer .qa-value { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--accent-strong); white-space: nowrap; }
       .quick-answer .qa-value small { font-size: 14px; font-weight: 600; }
-
       .gross-label { font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
       .gross-value {
         font-size: clamp(40px, 9vw, 52px);
@@ -232,7 +226,6 @@
       }
       .gross-sub { color: var(--muted); font-size: 15px; margin-bottom: 18px; }
       .gross-sub strong { color: var(--ink); font-variant-numeric: tabular-nums; }
-
       .bar {
         display: flex; height: 14px; border-radius: 7px; overflow: hidden;
         background: var(--surface-2);
@@ -251,7 +244,6 @@
       .bar-legend .lg-reg::before { background: var(--regular-seg); }
       .bar-legend .lg-ot::before { background: var(--ot-seg); }
       .bar-legend .lg-dt::before { background: var(--dt-seg); }
-
       table.breakdown { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
       table.breakdown th, table.breakdown td { padding: 10px 0; text-align: left; vertical-align: top; }
       table.breakdown thead th { font-size: 13px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--line); }
@@ -261,7 +253,6 @@
       table.breakdown .row-math { display: block; font-size: 13.5px; color: var(--muted); font-weight: 400; }
       table.breakdown tfoot td { font-weight: 800; font-size: 18px; padding-top: 12px; }
       table.breakdown tfoot td.amount { text-align: right; }
-
       .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
       .stat {
         background: var(--surface-2);
@@ -271,7 +262,6 @@
       .stat .stat-label { font-size: 13px; font-weight: 600; color: var(--muted); }
       .stat .stat-value { font-size: 21px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 2px; }
       .stat .stat-sub { font-size: 13px; color: var(--muted); }
-
       .formula {
         margin-top: 18px; padding: 13px 15px;
         border: 1px dashed var(--line); border-radius: 12px;
@@ -280,7 +270,6 @@
         word-break: break-word;
       }
       .formula strong { color: var(--ink); }
-
       /* FAQ */
       .faq { margin-top: 34px; max-width: 780px; }
       .faq h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px; }
@@ -303,12 +292,10 @@
       .faq details[open ] summary::after { content: "–"; }
       .faq details p { margin: 0 0 16px; color: var(--muted); }
       .faq details p strong { color: var(--ink); }
-
       footer.page-foot {
         margin-top: 30px; max-width: 780px;
         font-size: 14px; color: var(--muted);
       }
-    
     /* ===== The Come Up: related tools + share + next step ===== */
     .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
     .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 12px; }

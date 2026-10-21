@@ -1,4 +1,6 @@
-var SITE = "https://thecomeuphq.github.io/comeup-links";
+<script>
+    (function () {
+      var SITE = "https://thecomeuphq.github.io/comeup-links";
       var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/debt-free.html";
       var PAGE_PATH = "debt-free.html";
       var INTRO = "I checked my debt-free date:";

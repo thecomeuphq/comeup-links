@@ -18,11 +18,22 @@ const files = walk('.');
 
 // ---- (a) the share script ----
 const debtFree = fs.readFileSync('debt-free.html', 'utf8');
-const sIdx = debtFree.indexOf('var SITE = "https://thecomeuphq.github.io/comeup-links";');
-const eIdx = debtFree.indexOf('</script>', sIdx);
+// Slice the WHOLE <script> block, not just the part that starts at
+// "var SITE =". The share script is a self-contained IIFE whose
+// "(function () {" opener sits on the line ABOVE "var SITE ="; slicing
+// from "var SITE" dropped the opener but kept the "})();" closer, which
+// produced an unbalanced IIFE and a top-level "return" - a syntax error
+// ("Illegal return statement") on every page built from this template.
+const sTag = debtFree.lastIndexOf('<script', debtFree.indexOf('var SITE ='));
+const sEnd = debtFree.indexOf('</script>', debtFree.indexOf('var SITE ='));
 let shareScript = '';
-if (sIdx > 0 && eIdx > 0) shareScript = debtFree.slice(sIdx, eIdx);
+if (sTag !== -1 && sEnd !== -1) shareScript = debtFree.slice(sTag, sEnd);
 fs.writeFileSync('gen/share-script.txt', shareScript);
+// Guard: the template must be a balanced, parseable IIFE. An unbalanced
+// template is what broke 14 pages with "Illegal return statement".
+if (!/\(function\s*\(\)\s*\{/.test(shareScript) || !/\}\)\(\);/.test(shareScript)) {
+  throw new Error('share script template is not a balanced IIFE - refusing to write it');
+}
 console.log('share script: ' + shareScript.length + ' bytes -> gen/share-script.txt');
 console.log(shareScript.slice(0, 400));
 console.log('...');

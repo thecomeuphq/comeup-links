@@ -12,8 +12,13 @@
 <meta property="og:site_name" content="The Come Up">
 <meta property="og:title" content="Compare Money Tools Side by Side — Which One Do You Need? | The Come Up">
 <meta property="og:description" content="Side-by-side comparisons of the most confused-about money tools: snowball vs avalanche, debt tracker vs debt calculator, emergency fund quiz vs runway calculator, and more. Pick the right one, then run it free.">
+<meta property="og:image" content="https://thecomeuphq.github.io/comeup-links/og/compare.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Compare Money Tools Side by Side — Which One Do You Need? — The Come Up">
+<meta name="twitter:image" content="https://thecomeuphq.github.io/comeup-links/og/compare.png">
 <meta property="og:url" content="https://thecomeuphq.github.io/comeup-links/compare.html">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Compare Money Tools Side by Side — Which One Do You Need? | The Come Up">
 <meta name="twitter:description" content="Side-by-side comparisons of the most confused-about money tools: snowball vs avalanche, debt tracker vs debt calculator, emergency fund quiz vs runway calculator, and more. Pick the right one, then run it free.">
 <link rel="icon" href="data:,">
@@ -154,7 +159,6 @@
   .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
   .pro { color:var(--green); }
   .con { color:var(--danger); }
-
   /* ===== shared "Keep going" block (matches every existing page) ===== */
   .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
   .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--accent, var(--amber, #f5a623)); margin:0 0 12px; }
@@ -177,7 +181,6 @@
   .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--accent, var(--amber, #f5a623)); color:var(--accent-ink, #17130c); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
   .tcu-cta-a:hover { filter:brightness(1.08); }
   .tcu-cta-a:focus-visible { outline:3px solid var(--accent, var(--amber, #f5a623)); outline-offset:3px; }
-
   @media (max-width:520px) { .field-row { grid-template-columns:1fr; } .wrap { width:min(100% - 24px,760px); } .split { grid-template-columns:1fr; } }
   @media (prefers-reduced-motion:reduce) { *,*before,*after { scroll-behavior:auto !important; transition:none !important; } }
   @media print {
@@ -366,6 +369,14 @@
         </a>
         </div>
 
+        <div class="tcu-share">
+        <button class="tcu-share-b" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 0 0 1-2-2V4a2 0 0 1 2-2h9a2 0 0 1 2 2v1"/></svg>
+        Copy my result
+        </button>
+        <span class="tcu-share-n" role="status" aria-live="polite"></span>
+        </div>
+
         <div class="tcu-cta">
           <a class="tcu-cta-a" href="paycheck-health-score-quiz.html" target="_blank" rel="noopener">Find my one next move</a>
         </div>
@@ -374,5 +385,97 @@
 <p class="foot">Built for the ones who earn it hourly.<br>Educational tools only; not financial, legal, or tax advice.<br>B&amp;GCollections © 2026 · <a href="./index.html">The Come Up</a></p>
 </main>
 
+
+    <script>    (function () {
+          var SITE = "https://thecomeuphq.github.io/comeup-links";
+          var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/compare.html";
+          var PAGE_PATH = "compare.html";
+          var INTRO = "I compared The Come Up tools:";
+          var FIELDS = [];
+          var btn = document.querySelector('.tcu-share-b');
+          if (!btn) return;
+          var note = document.querySelector('.tcu-share-n');
+    
+          function val(id) {
+            var el = document.getElementById(id);
+            if (!el) return '';
+            // inputs carry their value in the property, not in text
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+              return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+            }
+            return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
+          }
+    
+          // Fallback when a page has no curated field list: find the most
+          // result-like values on the page automatically.
+          function autoFields() {
+            var out = [];
+            var els = document.querySelectorAll('[id]');
+            for (var i = 0; i < els.length && out.length < 4; i++) {
+              var el = els[i];
+              var id = el.id || '';
+              if (!id) continue;
+              if (!/(gross|net|total|monthly|weekly|daily|score|verdict|amount|balance|save|interest|weeks|months|days|pay|remaining|left|coverage|target|deficit|profit|apr|rate|need|bleed|shortfall)/i.test(id)) continue;
+              var v = val(id);
+              if (!v || v.length > 60) continue;
+              var lab = '';
+              var prev = el.previousElementSibling;
+              if (prev) lab = (prev.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+              if (!lab) {
+                var holder = el.closest('.k, .stat, .row, .m, .bp-meta, .quick-answer, .card, .q, .line');
+                if (holder) {
+                  var k = holder.querySelector('.k, .stat-label, .row-name, .qa-label, .label, .key');
+                  if (k) lab = (k.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+                }
+              }
+              out.push({ id: id, label: lab });
+            }
+            return out;
+          }
+    
+          function build() {
+            var lines = [INTRO];
+            var list = FIELDS || autoFields();
+            for (var i = 0; i < list.length; i++) {
+              var v = val(list[i].id);
+              if (!v) continue;
+              lines.push((list[i].label ? list[i].label + ': ' : '') + v);
+            }
+            lines.push(PAGE_URL);
+            return lines.join('\n');
+          }
+    
+          function fallbackCopy(t) {
+            var ta = document.createElement('textarea');
+            ta.value = t;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.top = '-1000px';
+            document.body.appendChild(ta);
+            ta.select();
+            var ok = false;
+            try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+            document.body.removeChild(ta);
+            return ok;
+          }
+    
+          btn.addEventListener('click', function () {
+            var payloadText = build();
+            var done = function (ok) {
+              if (!note) return;
+              note.textContent = ok ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.';
+              note.className = 'tcu-share-n ' + (ok ? 'ok' : 'err');
+              setTimeout(function () { note.textContent = ''; note.className = 'tcu-share-n'; }, 4000);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(payloadText).then(
+                function () { done(true); },
+                function () { done(fallbackCopy(payloadText)); }
+              );
+            } else {
+              done(fallbackCopy(payloadText));
+            }
+          });
+        })();</script>
 </body>
 </html>

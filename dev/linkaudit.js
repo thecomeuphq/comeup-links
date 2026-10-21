@@ -1,17 +1,20 @@
 const fs = require('fs'), path = require('path');
 
-function walk(dir, acc) {
+function walk(dir, acc, allFiles) {
   acc = acc || [];
+  allFiles = allFiles || [];
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     if (e.name === '.git' || e.name === 'node_modules' || e.name === 'tools' || e.name === 'dev' || e.name === 'gen') continue;
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) walk(p, acc);
+    if (e.isDirectory()) walk(p, acc, allFiles);
     else if (e.name.endsWith('.html')) acc.push(p);
+    else allFiles.push(p);
   }
   return acc;
 }
 
-const files = walk('.');
+const otherFiles = [];
+const files = walk('.', [], otherFiles);
 const all = new Set();
 for (const f of files) {
   const d = path.dirname(f).replace(/^\./, '').replace(/\\/g, '/');
@@ -19,10 +22,14 @@ for (const f of files) {
   all.add(rel);
   all.add(rel.replace(/index\.html$/, ''));
 }
-// Non-HTML files that pages link to (manifest, sitemap, robots).
-for (const e of fs.readdirSync('.')) {
-  const stat = fs.statSync(e);
-  if (stat.isFile() && !e.endsWith('.html')) all.add(e);
+// Every NON-HTML file is a valid link target, wherever it lives. The old
+// version only added ROOT-level files (manifest, sitemap, robots), so a page
+// linking to assets/foo.png was reported BROKEN even though the file was
+// on disk and deploying fine.
+for (const f of otherFiles) {
+  const d = path.dirname(f).replace(/^\./, '').replace(/\\/g, '/');
+  const rel = (d === '' ? '' : d + '/') + path.basename(f);
+  all.add(rel);
 }
 
 function resolve(from, href) {
