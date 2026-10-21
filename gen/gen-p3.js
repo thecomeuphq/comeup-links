@@ -11,6 +11,7 @@
 const fs = require('fs');
 const P = require('./pages');
 const { page, faqBlock, faqJsonLd, breadcrumbJsonLd, webSiteJsonLd, jsonld } = P;
+const config = require('./config');
 const { SNIPPET } = require('./shared-store');
 
 // ---------------------------------------------------------------------------
@@ -397,10 +398,12 @@ console.log('wrote printables.html');
 // Netlify Forms, etc.). While empty, the form falls back to a mailto: so a
 // visitor can still sign up. Set WAITLIST_ENDPOINT in gen/config.js to switch
 // it to a real POST.
-const WAITLIST_ENDPOINT = '';
+const WAITLIST_ENDPOINT = config.WAITLIST_ENDPOINT;
+const WAITLIST_ADDRESS = config.WAITLIST_ADDRESS;
 
 const WAITLIST_SCRIPT = `(function () {
   var ENDPOINT = ${JSON.stringify(WAITLIST_ENDPOINT)};
+  var WAITLIST_ADDRESS = ${JSON.stringify(WAITLIST_ADDRESS)};
   var form = document.getElementById('waitlist-form');
   var status = document.getElementById('waitlist-status');
   var email = document.getElementById('waitlist-email');
@@ -434,9 +437,9 @@ const WAITLIST_SCRIPT = `(function () {
       // Leroy replaces when he wires up the list provider.
       var subject = 'Add me to The Come Up list';
       var body = 'Email: ' + payload.email + '\\nName: ' + (payload.name || '(not given)') + '\\n';
-      var href = 'mailto:list@thecomeuphq.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      var href = 'mailto:' + WAITLIST_ADDRESS + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
       window.location.href = href;
-      say('Opening your email app so you can send the signup. If nothing happens, email list@thecomeuphq.com directly.', true);
+      say('Opening your email app so you can send the signup. If nothing happens, email ' + WAITLIST_ADDRESS + ' directly.', true);
       return;
     }
 
@@ -451,7 +454,7 @@ const WAITLIST_SCRIPT = `(function () {
       form.reset();
       say('You are on the list. Next money move is coming your way.', true);
     }).catch(function () {
-      say('Something went wrong. Try again, or email list@thecomeuphq.com and we will add you by hand.', false);
+      say('Something went wrong. Try again, or email ' + WAITLIST_ADDRESS + ' and we will add you by hand.', false);
     }).then(function () {
       if (btn) { btn.disabled = false; btn.textContent = 'Join the list'; }
     });

@@ -13,6 +13,7 @@ const fs = require('fs');
 const P = require('./pages');
 const { page, faqBlock, faqJsonLd, breadcrumbJsonLd, webSiteJsonLd, jsonld } = P;
 const { PAID, GUMROAD, UTM } = require('./products');
+const config = require('./config');
 
 // Forbidden slugs — a build-time guard so this rule can never be broken by
 // accident.
@@ -239,58 +240,103 @@ console.log('wrote free-vs-paid.html');
 // ---------------------------------------------------------------------------
 // Phase 19 — bundle / order bump page
 // ---------------------------------------------------------------------------
+// The three trackers that make up the pack. Each is a REAL Gumroad product.
 const BUNDLE = ['turfm', 'qechcz', 'fafiob'];
 const bundleItems = BUNDLE.map(s => bySlug[s]);
 const bundleTotal = bundleItems.reduce((s, p) => s + p.price, 0);
-const bundleSave = bundleTotal - 9.95;
-const BUNDLE_PRICE = 9.95;
+
+// A combined "Starter 3-Pack" SKU only exists if Leroy has created it on
+// Gumroad. Until then we must NOT advertise a bundle price or a discount for
+// a product that does not exist — that would be a dead checkout link and an
+// invented saving. Without the SKU, the page sells the three real products
+// at their real prices and links each one.
+const HAS_BUNDLE_SKU = Boolean(config.BUNDLE_SLUG);
+const BUNDLE_PRICE = HAS_BUNDLE_SKU ? Number(config.BUNDLE_PRICE) : null;
+
+const bundlePrimary = bundleItems[0];
+
+const bundleJsonLd = HAS_BUNDLE_SKU
+  ? jsonld({
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: 'The Come Up Starter 3-Pack',
+      description: 'Three printable money trackers: emergency fund starter, weekly paycheck planner, and zero-based budget binder.',
+      brand: { '@type': 'Brand', name: 'The Come Up' },
+      offers: {
+        '@type': 'Offer',
+        price: BUNDLE_PRICE.toFixed(2),
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock'
+      }
+    })
+  : jsonld({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'The Come Up Starter 3-Pack',
+      description: 'Three printable money trackers: emergency fund starter, weekly paycheck planner, and zero-based budget binder.',
+      numberOfItems: bundleItems.length,
+      itemListElement: bundleItems.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: p.name,
+        url: link(p.slug, 'bundle')
+      }))
+    });
+
+// The price row differs depending on whether a real bundle SKU exists.
+const bundlePriceRow = HAS_BUNDLE_SKU
+  ? `  <div class="tr" style="background:rgba(245,166,35,0.08)">
+    <span class="k"><strong>Bundle price</strong><br><span class="muted" style="font-size:12px">You save ${money(bundleTotal - BUNDLE_PRICE)} versus buying separately</span></span>
+    <span class="v" style="color:var(--amber); font-size:18px;">${money(BUNDLE_PRICE)}</span>
+  </div>`
+  : `  <div class="tr" style="background:rgba(245,166,35,0.08)">
+    <span class="k"><strong>All three</strong><br><span class="muted" style="font-size:12px">Buy them one at a time &mdash; every one is a separate download</span></span>
+    <span class="v" style="color:var(--amber); font-size:18px;">${money(bundleTotal)}</span>
+  </div>`;
+
+const bundleHeroCta = HAS_BUNDLE_SKU
+  ? `    <a class="btn primary" href="${link(config.BUNDLE_SLUG, 'bundle')}">Get the 3-pack &mdash; ${money(BUNDLE_PRICE)}</a>`
+  : `    <a class="btn primary" href="${link(bundlePrimary.slug, 'bundle')}">Start with ${bundlePrimary.name}</a>`;
+
+const bundleLead = HAS_BUNDLE_SKU
+  ? `Three trackers that cover the first ninety days of getting your money straight. Bought separately they come to ${money(bundleTotal)}. Together they are ${money(BUNDLE_PRICE)}.`
+  : `Three trackers that cover the first ninety days of getting your money straight. Right now they are three separate downloads, so you can pick the one you need first and add the others later.`;
+
+const bundleFooterNote = HAS_BUNDLE_SKU
+  ? `  <p>${money(BUNDLE_PRICE)} once. No renewal, no account, no subscription. You can reprint the files as many times as you need &mdash; for you, for your partner, for a second copy on the fridge.</p>`
+  : `  <p>Every one is a one-time purchase with no renewal, no account, and no subscription. You can reprint each file as many times as you need &mdash; for you, for your partner, for a second copy on the fridge. If you want all three, buy all three; the combined pack is not published yet.</p>`;
 
 const bundleHtml = page({
   path: 'bundle.html',
-  title: 'The Starter 3-Pack — Three Trackers, One Price | The Come Up',
-  description: 'The three trackers that cover the first ninety days of getting your money straight: a $1,000 emergency fund plan, a weekly paycheck planner, and a full zero-based budget binder. Normally priced higher, sold together for one low price.',
+  title: 'The Starter 3-Pack — Three Trackers for Your First 90 Days | The Come Up',
+  description: 'The three trackers that cover the first ninety days of getting your money straight: a $1,000 emergency fund plan, a weekly paycheck planner, and a full zero-based budget binder. Pick one or take all three.',
   backHref: 'catalog.html',
   backText: '← Shop',
-  headExtra: webSiteJsonLd() + jsonld({
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: 'The Come Up Starter 3-Pack',
-    description: 'Three printable money trackers: emergency fund starter, weekly paycheck planner, and zero-based budget binder.',
-    brand: { '@type': 'Brand', name: 'The Come Up' },
-    offers: {
-      '@type': 'Offer',
-      price: BUNDLE_PRICE.toFixed(2),
-      priceCurrency: 'USD',
-      availability: 'https://schema.org/InStock'
-    }
-  }) + breadcrumbJsonLd([{ name: 'The Come Up', href: '' }, { name: 'Shop', href: 'catalog.html' }], 'Starter 3-Pack'),
+  headExtra: webSiteJsonLd() + bundleJsonLd + breadcrumbJsonLd([{ name: 'The Come Up', href: '' }, { name: 'Shop', href: 'catalog.html' }], 'Starter 3-Pack'),
   body: `<header class="hero">
   <span class="eyebrow">Best value</span>
   <h1>The Starter 3-Pack</h1>
-  <p class="lead">Three trackers that cover the first ninety days of getting your money straight. Bought separately they come to ${money(bundleTotal)}. Together they are ${money(BUNDLE_PRICE)}.</p>
+  <p class="lead">${bundleLead}</p>
   <div class="btnrow">
-    <a class="btn primary" href="${link('bundle3', 'bundle')}">Get the 3-pack — ${money(BUNDLE_PRICE)}</a>
+${bundleHeroCta}
     <a class="btn ghost" href="catalog.html">See all 13 products</a>
   </div>
 </header>
 
 <div class="table" style="margin-top:22px">
-  <div class="tr head"><span class="k">What is in the pack</span><span class="v">Value</span></div>
+  <div class="tr head"><span class="k">What is in the pack</span><span class="v">Price</span></div>
 ${bundleItems.map(p => `  <div class="tr">
     <span class="k"><a href="${link(p.slug, 'bundle')}">${p.name}</a><br><span class="muted" style="font-size:12px">${p.pitch}</span></span>
     <span class="v">${money(p.price)}</span>
   </div>`).join('\n')}
-  <div class="tr" style="background:rgba(245,166,35,0.08)">
-    <span class="k"><strong>Bundle price</strong><br><span class="muted" style="font-size:12px">You save ${money(bundleSave)} versus buying separately</span></span>
-    <span class="v" style="color:var(--amber); font-size:18px;">${money(BUNDLE_PRICE)}</span>
-  </div>
+${bundlePriceRow}
 </div>
 
 <section class="section">
   <h2>Who this is for</h2>
   <p>This pack is for someone who has looked at the free tools, likes what they see, and knows they will do better with something to write on. It assumes you are starting from a tight month, not a comfortable one.</p>
   <ul class="tips">
-    <li><strong>You have no emergency buffer.</strong> The <a href="${link('turfm', 'bundle')}">$1,000 Emergency Fund Starter Pack</a> is the first $1,000 — the wall before the next emergency.</li>
+    <li><strong>You have no emergency buffer.</strong> The <a href="${link('turfm', 'bundle')}">$1,000 Emergency Fund Starter Pack</a> is the first $1,000 &mdash; the wall before the next emergency.</li>
     <li><strong>Your paycheck is different every week.</strong> The <a href="${link('qechcz', 'bundle')}">Paycheck-to-Paycheck Weekly Planner</a> is built around shift work, not a monthly grid.</li>
     <li><strong>Money leaves before you plan it.</strong> The <a href="${link('fafiob', 'bundle')}">Zero-Based Budgeting Starter Binder</a> gives every dollar a job before it lands.</li>
   </ul>
@@ -303,7 +349,7 @@ ${bundleItems.map(p => `  <div class="tr">
 
 <div class="note green">
   <h3>One-time price, no subscription</h3>
-  <p>${money(BUNDLE_PRICE)} once. No renewal, no account, no subscription. You can reprint the files as many times as you need — for you, for your partner, for a second copy on the fridge.</p>
+${bundleFooterNote}
 </div>`,
   rels: [
     { href: 'catalog.html', t: 'The shop', d: 'All 13 paid trackers and planners.' },
@@ -311,7 +357,9 @@ ${bundleItems.map(p => `  <div class="tr">
     { href: 'problems.html', t: 'Problems hub', d: 'Start from the problem, not the tool name.' },
     { href: '30-day-paycheck-reset.html', t: 'The 30-Day Paycheck Reset', d: 'One 3-minute money move a day. Free, and it saves your progress in this browser.', hub: true }
   ],
-  cta: { href: link('bundle3', 'bundle_cta'), label: `Get the 3-pack — ${money(BUNDLE_PRICE)}` },
+  cta: HAS_BUNDLE_SKU
+    ? { href: link(config.BUNDLE_SLUG, 'bundle_cta'), label: `Get the 3-pack — ${money(BUNDLE_PRICE)}` }
+    : { href: link(bundlePrimary.slug, 'bundle_cta'), label: `Start with ${bundlePrimary.name}` },
   share: false
 });
 
