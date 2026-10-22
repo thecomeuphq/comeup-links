@@ -16,6 +16,27 @@ can tell which of the 97 pages earns money. The next hour of the
 Commander's time is worth more spent deploying that Worker than on
 anything else in this repo.
 
+MEGAQUAN's independent asset audit (`audit/ASSET-AUDIT.md`) and
+opportunity ranking (`audit/OPPORTUNITY-RANKING.md`) reach the same
+conclusion from a different direction, and their #1 is the same #1.
+That convergence is worth more than either document alone.
+
+### The three things that are true and not obvious
+
+1. **The asset is finished; the wiring is not.** 97 live pages, 13 live
+    products, 97 OG cards, a working content engine, an upsell engine
+    mapping 11 products onto 11 tools, a share loop, and a build that
+    self-heals. MEGAQUAN's assessment: "this is a *finished asset*, not a
+    plan… the problem is not what exists — it is that none of it is
+    connected to a measurement or a distribution channel."
+2. **`thecomeuphq.com` does not exist.** Verified: `nslookup` returns
+    `Non-existent domain`. The site lives on a `github.io` subdomain,
+    which reads as temporary and hurts trust on a paid product.
+3. **One page is a liability.** `rivetdue.html` — construction
+    receivables — is in the live sitemap. It serves a different audience
+    than the other 96 pages and dilutes the topical signal. Decide now
+    whether it earns its place; build it later or not at all.
+
 ---
 
 ## The one thing that changes everything
@@ -50,6 +71,7 @@ endpoint shares the same Worker, so it rides along free.
 | 3 | **Create the Starter 3-Pack on Gumroad**, set `BUNDLE_SLUG` + `BUNDLE_PRICE`, prove a $0 checkout | High | 15 min | `bundle.html` is the comparison page and currently has no upsell. All 13 individual checkouts are alive — this adds the basket, it does not risk the revenue. |
 | 4 | **Register `thecomeuphq.com` + branded sending** | Medium | Hours, and it costs money | Do it at ~500 signups, or when the first weekly newsletter lands badly. Not before. |
 | 5 | **Read the first week of traffic data** and act on it | High | 20 min | This is only possible after #1. The output is one decision: which page deserves the next build hour. |
+| 6 | **Start a niche content account and publish the 11 staged pieces** | High | Ongoing | The content engine already wrote a week of ready-to-record scripts (5 video, 3 Reddit, 3 Facebook — verified in `content/queue/2026-W43.md`). Publishing is the human bottleneck, and it is the only path to enough traffic to make #1 measurable. **Do this after #1, not before** — before, you are flying blind. Note the existing TikTok is a *gaming* account whose audience does not overlap the buyers; it is not a distribution asset here. |
 
 Full step-by-step for all of it, with copy-pasteable commands, is in
 **`audit/OWNER-SETUP.md`**. The order there is the leverage order.
@@ -102,6 +124,7 @@ self-heals.
 | **The 3-Pack will actually sell.** A bundle price set by gut feel can be wrong in either direction. | A discount too small is no reason to buy; too large cannibalises the individual sales that currently work. | After launch, compare the bundle's click-through and its price against the top individual product's price. The bundle should be the *cheapest* way to get the same three things — that is the whole offer. |
 | **The site is stable enough to measure.** If a build regresses the site while data is being read, the data describes a broken site. | The build was exactly the kind of silent regressor that hid the three bugs above. | The build is now idempotent and the gate has 29 checks. `npm run precommit` before every commit. If a page loses `og:image` or its share button, the gate fails. |
 | **Unconfigured analytics is the binding constraint on growth.** | The site may already have traffic and the constraint is that it earns nothing — a conversion problem, not a traffic problem. | Item 1 plus item 2 together answer this: a signup that lands in KV is a conversion. If signups stay at zero while pageviews climb, the problem is the offer or the traffic source, and this plan's ordering is still right because you learned which one. |
+| **Deploying analytics before publishing is the right order.** | If the site currently gets almost no traffic, the first week's analytics will read near-zero and prove nothing. | The Worker has a `/status` endpoint. Deploy it, then read `pageviewsToday` immediately — before publishing anything. If it is already non-trivial, traffic is not the constraint and the ranking is confirmed. If it is zero, publishing becomes move #1 instead of #6, and the funnel work moves down. This costs one `curl` and decides the whole sequence. |
 
 ---
 
