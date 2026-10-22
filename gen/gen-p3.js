@@ -464,8 +464,8 @@ const WAITLIST_SCRIPT = `(function () {
     if (btn) { btn.disabled = true; btn.textContent = 'Signing you up...'; }
     fetch(ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
     }).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       form.reset();
