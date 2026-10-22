@@ -34,6 +34,21 @@ export default {
       }
       return new Response('ok', { status: 200 });
     }
+    const cors = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    };
+
+    // The CORS preflight must be answered BEFORE the method check. The old
+    // order rejected every OPTIONS request with a plain 200, so a browser
+    // preflight failed and the signup fetch was blocked before it left the
+    // page. The preflight never carried a body, so it must also not be
+    // parsed as one.
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: cors });
+    }
+
     if (request.method !== 'POST') {
       return new Response('ok', { status: 200 });
     }
@@ -43,15 +58,6 @@ export default {
       payload = await request.json();
     } catch (e) {
       return new Response('bad request', { status: 400 });
-    }
-
-    const cors = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    };
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: cors });
     }
 
     try {
@@ -70,7 +76,7 @@ export default {
         const total = Number((await env.LIST.get('count:signups')) || 0);
         await env.LIST.put('count:signups', String(total + 1));
         // notify the owner so a signup is never only in a KV namespace
-        if (env.LIST_EMAIL) {
+        if (env.LIST_EMAIL && env.SIGNUP_EMAIL) {
           await env.SIGNUP_EMAIL.send({
             to: env.LIST_EMAIL,
             from: env.LIST_EMAIL,

@@ -107,5 +107,41 @@ check('no node_modules tracked', tracked.filter((f) => f.startsWith('node_module
 check('no stray share.html tracked', !tracked.includes('share.html'));
 check('node_modules is gitignored', fs.readFileSync(path.join(ROOT, '.gitignore'), 'utf8').includes('node_modules'));
 
+console.log('\n=== WORKER + BEACON ===');
+// The analytics beacon is injected into every page. If it uses a content
+// type the browser refuses, the pageview is silently lost and the site
+// looks healthy while sending nothing. This gate catches that.
+const workerSrc = fs.readFileSync(path.join(ROOT, 'gen', 'worker', 'worker.js'), 'utf8');
+check('worker answers the OPTIONS preflight', /request\.method === 'OPTIONS'[\s\S]{0,400}request\.method !== 'POST'/.test(workerSrc),
+  'OPTIONS must be handled BEFORE the method check, or the browser blocks the request');
+check('worker guards the email binding', /env\.SIGNUP_EMAIL\)/.test(workerSrc),
+  'env.SIGNUP_EMAIL must be guarded or a signup 500s when the secret is missing');
+check('worker binds the LIST namespace', /env\.LIST\.get/.test(workerSrc) && /env\.LIST\.put/.test(workerSrc));
+
+const beaconBad = [];
+for (const p of pages) {
+  const h = fs.readFileSync(path.join(ROOT, p), 'utf8');
+  if (!/privacy-first analytics \+ waitlist capture/.test(h)) continue;
+  // sendBeacon only accepts a CORS-safelisted content type. application/json
+  // is NOT one of them, so the beacon is refused and no pageview is sent.
+  if (/new Blob\(\[payload\],\s*\{\s*type:\s*'application\/json'/.test(h)) beaconBad.push(p);
+}
+check('no page sends the beacon with a refused content type', beaconBad.length === 0,
+  beaconBad.length + ' page(s) still use application/json in sendBeacon');
+
+// The worker test proves the routing, the CORS preflight, the KV writes and
+// the signup path actually behave. It is the cheapest proof the owner's
+// deploy will work.
+try {
+  const { execSync } = require('child_process');
+  const out = execSync('node dev/worker-test.js', { cwd: ROOT, encoding: 'utf8' });
+  const m = out.match(/(\d+) passed, (\d+) failed/);
+  check('worker behaviour test passes', !!m && m[2] === '0', m ? m[0] : out.slice(-200));
+} catch (e) {
+  const out = (e.stdout || '') + (e.stderr || '');
+  const m = out.match(/(\d+) passed, (\d+) failed/);
+  check('worker behaviour test passes', false, m ? m[0] : out.slice(-300));
+}
+
 console.log('\n' + (failures === 0 ? 'ALL CHECKS PASSED' : failures + ' CHECK(S) FAILED'));
 process.exit(failures === 0 ? 0 : 1);

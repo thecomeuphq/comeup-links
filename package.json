@@ -10,6 +10,7 @@
     "check": "node dev/audit.js",
     "check:live": "node dev/audit.js --live",
     "checklinks": "node dev/gumroad-check.js --all",
+    "test:worker": "node dev/worker-test.js",
     "precommit": "node dev/precommit-gate.js",
     "content": "node gen/gen-content.js",
     "newsletter": "node gen/gen-newsletter.js",

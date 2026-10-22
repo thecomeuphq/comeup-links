@@ -209,11 +209,13 @@
   .print-only { display:none; }
 </style>
 <script>
+
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
 (function () {
   var ENDPOINT = "";
   var LIST_ID = "comeup";
   if (!ENDPOINT) return;
+
   // ---- analytics ----
   // One small POST on page load. No cookie, no localStorage id, no IP, no
   // fingerprint. We only learn which page and which campaign brought the visit.
@@ -236,9 +238,26 @@
       };
       // sendBeacon survives the page unloading; fetch with keepalive is the
       // fallback. Neither blocks the page.
+      //
+      // IMPORTANT: sendBeacon only accepts a CORS-safelisted content type
+      // (text/plain, application/x-www-form-urlencoded, multipart/form-data).
+      // A Blob of type application/json is REFUSED by the browser, so the
+      // beacon never fired and the pageview was silently lost. Use
+      // text/plain (the body is still JSON) so the beacon is actually sent.
       var payload = JSON.stringify(body);
       if (navigator.sendBeacon) {
-        navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'application/json' }));
+        var sent = false;
+        try {
+          sent = navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }));
+        } catch (e) { sent = false; }
+        if (!sent) {
+          fetch(ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true
+          }).catch(function () {});
+        }
       } else {
         fetch(ENDPOINT, {
           method: 'POST',
@@ -249,6 +268,7 @@
       }
     } catch (e) { /* analytics must never break the page */ }
   }
+
   // ---- waitlist capture ----
   // Same endpoint, different payload. A signup is a POST, not a beacon, so it
   // is only sent on an explicit submit - never on page load.
@@ -268,7 +288,9 @@
       });
     } catch (e) { return Promise.reject(e); }
   }
+
   track();
+
   // Expose capture for the waitlist form, which lives on waitlist.html.
   window.__comeupCapture = capture;
 })();

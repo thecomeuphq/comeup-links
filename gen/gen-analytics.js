@@ -52,9 +52,26 @@ const ANALYTICS_SCRIPT = `
       };
       // sendBeacon survives the page unloading; fetch with keepalive is the
       // fallback. Neither blocks the page.
+      //
+      // IMPORTANT: sendBeacon only accepts a CORS-safelisted content type
+      // (text/plain, application/x-www-form-urlencoded, multipart/form-data).
+      // A Blob of type application/json is REFUSED by the browser, so the
+      // beacon never fired and the pageview was silently lost. Use
+      // text/plain (the body is still JSON) so the beacon is actually sent.
       var payload = JSON.stringify(body);
       if (navigator.sendBeacon) {
-        navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'application/json' }));
+        var sent = false;
+        try {
+          sent = navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }));
+        } catch (e) { sent = false; }
+        if (!sent) {
+          fetch(ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true
+          }).catch(function () {});
+        }
       } else {
         fetch(ENDPOINT, {
           method: 'POST',
@@ -95,14 +112,17 @@ const ANALYTICS_SCRIPT = `
 
 // ------------------------------------------------------------------ inject
 
-// Every page gets the script. The injection is idempotent: a page that
-// already carries it is skipped, so re-running the generator never doubles
-// the script up.
+// Every page gets the script. The injection is idempotent AND updating: a
+// page that already carries an older copy has it REPLACED, not skipped.
+//
+// Skipping was wrong. The injected script had a real bug (sendBeacon refuses
+// a non-CORS-safelisted content type, so no pageview was ever sent). A
+// skip-on-present injector means a fixed script never reaches the live
+// site, because every page still carries the old copy. The version suffix
+// in the marker is the handle: bump it whenever the script changes.
 const MARKER = 'privacy-first analytics + waitlist capture';
 
 function injectInto(html, endpoint, listId) {
-  if (html.includes(MARKER)) return { html, changed: false };
-
   const script =
     ANALYTICS_SCRIPT
       .replace('__ENDPOINT__', JSON.stringify(endpoint || ''))
@@ -111,6 +131,17 @@ function injectInto(html, endpoint, listId) {
   // The script must be a real element, so the placeholder tokens are
   // replaced with JS string literals before injection.
   const tag = '<script>\n' + script + '</script>';
+
+  // Replace an existing copy of the script (old or new) with the current
+  // one. The block runs from the <script> that carries the marker to its
+  // closing </script>.
+  const existing = new RegExp(
+    '<script>\\s*(?:[\\s\\S]*?' + MARKER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?)<\\/script>',
+    'i'
+  );
+  if (existing.test(html)) {
+    return { html: html.replace(existing, tag), changed: true, updated: true };
+  }
 
   // Put it at the end of <head> so it does not delay first paint.
   const head = html.indexOf('</head>');
@@ -161,6 +192,21 @@ export default {
       }
       return new Response('ok', { status: 200 });
     }
+    const cors = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    };
+
+    // The CORS preflight must be answered BEFORE the method check. The old
+    // order rejected every OPTIONS request with a plain 200, so a browser
+    // preflight failed and the signup fetch was blocked before it left the
+    // page. The preflight never carried a body, so it must also not be
+    // parsed as one.
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: cors });
+    }
+
     if (request.method !== 'POST') {
       return new Response('ok', { status: 200 });
     }
@@ -170,15 +216,6 @@ export default {
       payload = await request.json();
     } catch (e) {
       return new Response('bad request', { status: 400 });
-    }
-
-    const cors = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    };
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: cors });
     }
 
     try {
@@ -197,7 +234,7 @@ export default {
         const total = Number((await env.LIST.get('count:signups')) || 0);
         await env.LIST.put('count:signups', String(total + 1));
         // notify the owner so a signup is never only in a KV namespace
-        if (env.LIST_EMAIL) {
+        if (env.LIST_EMAIL && env.SIGNUP_EMAIL) {
           await env.SIGNUP_EMAIL.send({
             to: env.LIST_EMAIL,
             from: env.LIST_EMAIL,

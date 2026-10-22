@@ -1,0 +1,42 @@
+# Cloudflare Worker config for The Come Up analytics + waitlist.
+#
+# Deploy with the Wrangler CLI:
+#   1. npx wrangler login
+#   2. npx wrangler kv namespace create LIST
+#      -> it prints a namespace id like {"binding":"LIST","id":"abc123..."}
+#      -> put that id in the kv_namespaces block below
+#   3. npx wrangler secret put SIGNUP_EMAIL
+#      -> the address that receives "New The Come Up signup" emails
+#   4. npx wrangler deploy
+#
+# After it deploys, the Worker URL looks like:
+#   https://comeup-analytics.<your-subdomain>.workers.dev
+#
+# Put that URL in gen/config.js:
+#   ANALYTICS_ENDPOINT = 'https://comeup-analytics.<your-subdomain>.workers.dev'
+#   WAITLIST_ENDPOINT  = 'https://comeup-analytics.<your-subdomain>.workers.dev'
+# then run: node gen/gen-analytics.js
+#
+# Confirm it works BEFORE pointing the site at it:
+#   curl https://comeup-analytics.<your-subdomain>.workers.dev/status
+# -> {"ok":true,"service":"comeup","pageviewsToday":0,"signupsTotal":0,...}
+
+name = "comeup-analytics"
+main = "gen/worker/worker.js"
+compatibility_date = "2024-11-06"
+
+# The site is served from https://thecomeuphq.github.io, so the Worker is
+# called cross-origin. The Worker already answers with
+# Access-Control-Allow-Origin: * and handles the OPTIONS preflight, so no
+# routes are needed here.
+
+[observability]
+enabled = true
+
+# --- KV ---
+# The namespace the owner creates in step 2 above. Replace the id with the
+# one wrangler prints. Until then this binding is empty and the Worker
+# returns 500 on any write, so fill it in before deploying.
+[[kv_namespaces]]
+binding = "LIST"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
