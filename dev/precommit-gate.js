@@ -16,6 +16,12 @@ function walk(dir, acc) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     if (['.git', 'node_modules', '.output', 'dev', 'gen', 'audit', 'og', 'assets'].includes(e.name)) continue;
     if (e.name.startsWith('_')) continue;
+    // content/ holds STAGED DRAFTS (weekly content queue + the newsletter
+    // email body). An email body fragment is not a site page: it has no
+    // <head>, no og:image and no canonical, and it must never be published
+    // on a public URL. Excluding it here stops the gate demanding that a
+    // draft be a full page.
+    if (e.name === 'content') continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, acc);
     else if (e.name.endsWith('.html')) acc.push(path.relative(ROOT, p).replace(/\\/g, '/'));

@@ -23,6 +23,17 @@ const STEPS = [
   ['gen-analytics.js', 'analytics instrumentation'],
   ['gen-content.js', 'content queue'],
   ['gen-newsletter.js', 'newsletter'],
+  // --- POST-PROCESSING: must run AFTER every page generator ---
+  //
+  // The page generators write whole files from scratch. A regenerated page
+  // arrives with NO og:image, NO twitter card, NO JSON-LD and NO share
+  // button, because those layers were injected into the OLD file. If these
+  // two steps are missing from the build, running it silently strips the
+  // social and share layer off 14 pages (bundle, catalog, compare, faq,
+  // guides, waitlist, problems, 404, ...) and every share of them renders
+  // as a grey box. That is exactly what happened before this was fixed.
+  ['../dev/meta-inject.js', 'social + SEO head layer'],
+  ['../dev/share-inject.js', 'share control on every page'],
 ];
 
 let failed = 0;

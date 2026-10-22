@@ -22,12 +22,19 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const SITE = 'https://thecomeuphq.github.io/comeup-links';
 const ROOT = path.resolve(__dirname, '..');
 const LIVE = process.argv.includes('--live');
 const AS_JSON = process.argv.includes('--json');
 const ONLY = (process.argv.find((a) => a.startsWith('--only=')) || '').split('=')[1] || '';
+
+// Priority 3 is reserved for WIRE: things that are blocked on the owner
+// (an account, an endpoint, a domain) rather than broken code. They are
+// reported loudly but they do NOT fail the gate - a build cannot fix them,
+// and a gate that always fails is a gate nobody runs.
+const WIRE = 3;
 
 // ---------------------------------------------------------------------------
 // helpers
@@ -39,6 +46,10 @@ function walk(dir, acc) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     if (['.git', 'node_modules', '.output', 'dev', 'gen', 'audit', 'og'].includes(e.name)) continue;
     if (e.name.startsWith('_')) continue;           // scratch probes, never shipped
+    // content/ holds EMAIL EDITIONS, not web pages. An email body fragment
+    // legitimately has no <head>, no canonical and no JSON-LD, so auditing
+    // it as a site page produced five false findings.
+    if (e.name === 'content') continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, acc);
     else if (e.name.endsWith('.html')) acc.push(path.relative(ROOT, p).replace(/\\/g, '/'));
@@ -55,7 +66,7 @@ function finding(priority, code, scope, detail, fix) {
 }
 
 const P = { P0: 0, P1: 1, P2: 2 };
-const PRIORITY_NAME = { 0: 'P0', 1: 'P1', 2: 'P2' };
+const PRIORITY_NAME = { 0: 'P0', 1: 'P1', 2: 'P2', 3: 'WIRE' };
 
 // ---------------------------------------------------------------------------
 // 1. read every page
@@ -79,7 +90,11 @@ for (const f of files) {
   const rels = (h.match(/class=["']tcu-rel(?![-\w])/g) || []).length;
   const hasCta = /class=["']tcu-cta-a["']/.test(h);
   const hasShare = /class=["']tcu-share-b["']/.test(h);
-  const h1s = (h.match(/<h1\b/gi) || []).length;
+  // Count only REAL markup h1s. A tool page that builds a printable
+  // blueprint in JavaScript contains "<h1>My Blueprint</h1>" inside a string;
+  // counting that as a second h1 was a false positive.
+  const markupOnly = h.replace(/<script\b[\s\S]*?<\/script>/gi, '').replace(/<style\b[\s\S]*?<\/style>/gi, '');
+  const h1s = (markupOnly.match(/<h1\b/gi) || []).length;
 
   const internalHrefs = [...body.matchAll(/href=["']([^"']+)["']/gi)]
     .map((m) => m[1])
@@ -248,15 +263,206 @@ async function liveCheck() {
 }
 
 // ---------------------------------------------------------------------------
-// run
+// 11. P0 - dead checkout links (the documented check that was never built)
+//
+// A dead Gumroad link is WORSE than no link: it looks like a working buy
+// button. This is the single check that most directly protects revenue, so
+// it belongs in the one-command audit rather than in a separate script.
 // ---------------------------------------------------------------------------
+const GUMROAD_BASE = 'https://bradley57.gumroad.com/l/';
+const FORBIDDEN_FREE = ['wupxq', 'oaqjpg']; // the two FREE products - never link
+
+function headStatus(url, redirects = 0) {
+  return new Promise((resolve) => {
+    const req = require('https').request(url, {
+      method: 'GET', timeout: 20000, headers: { 'User-Agent': 'comeup-link-check' },
+    }, (res) => {
+      res.resume();
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location && redirects < 5) {
+        const next = new URL(res.headers.location, url).toString();
+        return resolve(headStatus(next, redirects + 1));
+      }
+      resolve({ status: res.statusCode });
+    });
+    req.on('error', (e) => resolve({ status: 'ERR', error: e.message }));
+    req.on('timeout', () => { req.destroy(); resolve({ status: 'TIMEOUT' }); });
+    req.end();
+  });
+}
+
+async function checkoutCheck() {
+  // Collect every slug the SHIPPED html links to.
+  const slugs = new Map();
+  for (const p of pages.values()) {
+    for (const m of p.body.matchAll(/gumroad\.com\/l\/([a-z0-9]+)/gi)) {
+      const s = m[1].toLowerCase();
+      if (!slugs.has(s)) slugs.set(s, []);
+      slugs.get(s).push(p.f);
+    }
+  }
+  if (!slugs.size) return;
+
+  const dead = [];
+  const free = [];
+  const list = [...slugs.keys()];
+  const CONC = 5;
+  let i = 0;
+  async function worker() {
+    while (i < list.length) {
+      const slug = list[i++];
+      if (FORBIDDEN_FREE.includes(slug)) { free.push(slug); continue; }
+      const r = await headStatus(GUMROAD_BASE + slug);
+      if (r.status !== 200) dead.push(`${slug} -> HTTP ${r.status}`);
+    }
+  }
+  await Promise.all(Array.from({ length: CONC }, worker));
+
+  if (dead.length) {
+    finding(P.P0, 'dead-checkout', 'site',
+      `${dead.length} Gumroad checkout link(s) do not resolve: ${dead.join(' | ')}`,
+      'A dead buy button is a lost sale. Fix the slug in gen/products.js, or unlink the product until it exists.');
+  }
+  if (free.length) {
+    finding(P.P0, 'free-product-linked', 'site',
+      `${free.length} FREE product slug(s) are linked from the site: ${free.join(', ')}`,
+      'The two $0+ products must never be linked - the free on-site tools serve that job.');
+  }
+  console.log(`  checkout links  : ${slugs.size} slugs checked, ${dead.length} dead`);
+}
+
+// ---------------------------------------------------------------------------
+// 12. WIRE - the money path: is anything actually connected?
+//
+// This is the check that says "the site is a donation". It reads the
+// generator config, so it never guesses - it reports what is actually set.
+// ---------------------------------------------------------------------------
+function wireCheck() {
+  let config = null;
+  try { config = require(path.join(ROOT, 'gen', 'config.js')); } catch (e) { /* no config */ }
+
+  if (!config) {
+    finding(WIRE, 'no-config', 'gen/config.js', 'no generator config found',
+      'Restore gen/config.js so the site knows its own endpoints.');
+    return;
+  }
+
+  // --- analytics ---
+  if (!config.ANALYTICS_ENDPOINT) {
+    finding(WIRE, 'analytics-off', 'gen/config.js',
+      'ANALYTICS_ENDPOINT is empty - the pageview beacon is injected into every page but sends nowhere',
+      'Deploy gen/worker/worker.js to Cloudflare, set ANALYTICS_ENDPOINT, run node gen/gen-analytics.js. Until then there is no traffic data and no way to know which page earns.');
+  }
+
+  // --- waitlist capture ---
+  if (!config.WAITLIST_ENDPOINT) {
+    finding(WIRE, 'waitlist-no-endpoint', 'gen/config.js',
+      'WAITLIST_ENDPOINT is empty - signups fall back to a mailto: and leave the site',
+      'Set WAITLIST_ENDPOINT to the same Worker URL so a signup lands in the list instead of a mail client.');
+  }
+
+  // --- the list address ---
+  const addr = (config.WAITLIST_ADDRESS || '').toLowerCase();
+  if (addr.endsWith('@gmail.com')) {
+    finding(WIRE, 'list-on-gmail', 'gen/config.js',
+      `the waitlist address is a personal Gmail (${config.WAITLIST_ADDRESS}) - sending branded mail from a gmail origin hurts deliverability`,
+      'Register thecomeuphq.com and move the list to a branded sending domain.');
+  }
+
+  // --- bundle SKU ---
+  if (!config.BUNDLE_SLUG) {
+    finding(WIRE, 'no-bundle-sku', 'gen/config.js',
+      'BUNDLE_SLUG is empty - bundle.html has no combined checkout, so the 3-pack is not sold',
+      'Create the Starter 3-Pack on Gumroad, set BUNDLE_SLUG and BUNDLE_PRICE.');
+  }
+
+  // --- is the share loop wired? ---
+  const shareScript = path.join(ROOT, 'gen', 'share-script.txt');
+  if (!fs.existsSync(shareScript)) {
+    finding(WIRE, 'no-share-script', 'gen/share-script.txt',
+      'the share script template is missing',
+      'Restore it so the copy-my-result control can be injected.');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 13. WIRE - ship drift: is what is in the repo actually what is live?
+//
+// The repo can be perfect while the site is stale. This compares the
+// committed tree against the deployed site using a file the generator
+// stamps, so the check is evidence rather than a timestamp guess.
+// ---------------------------------------------------------------------------
+function driftCheck() {
+  let head = null;
+  try {
+    head = execSync('git rev-parse HEAD', { cwd: ROOT, encoding: 'utf8' }).trim();
+  } catch (e) { return; } // not a git repo - skip silently
+
+  // Files that exist on disk but are not tracked are work that never shipped.
+  let untracked = [];
+  try {
+    const out = execSync('git status --porcelain --untracked-files=all', { cwd: ROOT, encoding: 'utf8' });
+    untracked = out.split(/\r?\n/)
+      .filter((l) => l.startsWith('?? '))
+      .map((l) => l.slice(3).trim().replace(/\\/g, '/'))
+      .filter((p) => p && !/^node_modules\//.test(p) && !/^\.output\//.test(p));
+  } catch (e) { return; }
+
+  // A tracked-file that differs from HEAD is also unshipped work.
+  let modified = [];
+  try {
+    const out = execSync('git status --porcelain', { cwd: ROOT, encoding: 'utf8' });
+    modified = out.split(/\r?\n/)
+      .filter((l) => /^[ MARC][MDARC] /.test(l))
+      .map((l) => l.slice(3).trim().replace(/\\/g, '/'))
+      .filter((p) => p && !/^\.output\//.test(p));
+  } catch (e) { /* ignore */ }
+
+  // Only SHIPPABLE drift matters: an html page, a sitemap, a content file.
+  // content/ holds STAGED DRAFTS (a weekly content queue and a newsletter
+  // email body). They are working material, not site pages, so they are
+  // deliberately not tracked and must not count as unshipped work.
+  const shippable = (p) => /\.(html|xml|txt|json)$/i.test(p)
+    && !/^audit\//.test(p) && !/^dev\//.test(p) && !/^gen\//.test(p)
+    && !/^content\//.test(p);
+  const drift = [...untracked, ...modified].filter(shippable);
+
+  if (drift.length) {
+    finding(P.P0, 'ship-drift', 'git', 
+      `${drift.length} shipped file(s) exist in the repo but are NOT on the live site: ${drift.slice(0, 10).join(', ')}`,
+      'Commit and push these. Work that never ships is work that never earns.');
+  }
+  return head;
+}
+
+// ---------------------------------------------------------------------------
+// 14. P1 - sitemap <lastmod> and a weekly content beat
+//
+// A site with no new content does not rank and does not give a visitor a
+// reason to come back. This measures the beat, not just the pages.
+// ---------------------------------------------------------------------------
+function contentBeatCheck() {
+  const queueDir = path.join(ROOT, 'content', 'queue');
+  if (!fs.existsSync(queueDir)) return;
+  const items = fs.readdirSync(queueDir).filter((f) => f.endsWith('.md'));
+  if (!items.length) {
+    finding(P.P1, 'empty-queue', 'content/queue',
+      'the content queue is empty - there is nothing scheduled to bring traffic back',
+      'Run node gen/gen-content.js to generate this week\'s pieces.');
+  }
+}
+
 (async () => {
+  // Offline checks that need no network.
+  contentBeatCheck();
+  wireCheck();
+  driftCheck();
+
   if (LIVE) {
     process.stdout.write('Checking the live site...\n');
     await liveCheck();
     if (live.bad.length) {
       finding(P.P0, 'live-status', 'live site', `${live.bad.length} URLs did not return 200: ${live.bad.slice(0, 10).join(' | ')}`,
-        'Fix the live 404s — the repo being correct does not help if the site is down.');
+        'Fix the live 404s - the repo being correct does not help if the site is down.');
     }
     if (liveHeaders.missingOgImage.length) {
       finding(P.P0, 'live-og-image', 'live site', `${liveHeaders.missingOgImage.length} live pages render without an og:image`,
@@ -264,14 +470,22 @@ async function liveCheck() {
     }
     if (liveHeaders.missingTitle.length || liveHeaders.missingDesc.length || liveHeaders.missingCanonical.length) {
       finding(P.P1, 'live-head-missing', 'live site',
-        `live pages missing head tags — title:${liveHeaders.missingTitle.length} desc:${liveHeaders.missingDesc.length} canonical:${liveHeaders.missingCanonical.length}`,
+        `live pages missing head tags - title:${liveHeaders.missingTitle.length} desc:${liveHeaders.missingDesc.length} canonical:${liveHeaders.missingCanonical.length}`,
         'Push the head fix; the live site is the one that gets indexed.');
     }
   }
 
+  // Checkout health is the revenue check - it always runs, because a dead
+  // buy button costs a sale whether or not anyone asked for --live.
+  await checkoutCheck();
+
+  if (LIVE) {
+    // (live checks already run above)
+  }
+
   findings.sort((a, b) => a.priority - b.priority || a.code.localeCompare(b.code));
 
-  const counts = { P0: 0, P1: 0, P2: 0 };
+  const counts = { P0: 0, P1: 0, P2: 0, WIRE: 0 };
   for (const f of findings) counts[PRIORITY_NAME[f.priority]]++;
 
   if (AS_JSON) {
@@ -291,13 +505,17 @@ async function liveCheck() {
   console.log(`  pages audited : ${pages.size}`);
   console.log(`  sitemap urls  : ${sitemapUrls.length}`);
   if (LIVE) console.log(`  live checked  : ${live.ok}/${live.checked} returned 200`);
-  console.log(`  findings      : ${counts.P0} P0 · ${counts.P1} P1 · ${counts.P2} P2`);
+  console.log(`  findings      : ${counts.P0} P0 · ${counts.P1} P1 · ${counts.P2} P2 · ${counts.WIRE} wire`);
   console.log('');
 
-  for (const pr of [0, 1, 2]) {
+  for (const pr of [0, 1, 2, 3]) {
     const group = findings.filter((f) => f.priority === pr);
     if (!group.length) continue;
-    console.log(`--- ${PRIORITY_NAME[pr]} ${pr === 0 ? '(blocks revenue)' : pr === 1 ? '(blocks ranking)' : '(polish)'} ---`);
+    const label = pr === 0 ? '(blocks revenue)'
+      : pr === 1 ? '(blocks ranking)'
+      : pr === 2 ? '(polish)'
+      : '(needs the owner - a build cannot fix these)';
+    console.log(`--- ${PRIORITY_NAME[pr]} ${label} ---`);
     for (const f of group) {
       console.log(`  [${f.code}] ${f.scope}`);
       console.log(`      ${f.detail}`);
@@ -306,7 +524,12 @@ async function liveCheck() {
     console.log('');
   }
 
-  if (!findings.length) console.log('  CLEAN — nothing to fix.\n');
+  if (!findings.length) console.log('  CLEAN - nothing to fix.\n');
+
+  if (counts.WIRE) {
+    console.log(`  ${counts.WIRE} item(s) need the owner (endpoint / account / domain).`);
+    console.log('  They are reported, not failed: a build cannot fix them.\n');
+  }
 
   // machine-readable copy for the worklist
   const outDir = path.join(ROOT, 'audit', 'out');

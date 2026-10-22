@@ -1,4 +1,21 @@
 {
+  "name": "comeup-links",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Come Up - free money-defense tools for hourly workers.",
+  "scripts": {
+    "audit": "node dev/audit.js",
+    "audit:live": "node dev/audit.js --live",
+    "audit:json": "node dev/audit.js --json",
+    "check": "node dev/audit.js",
+    "check:live": "node dev/audit.js --live",
+    "checklinks": "node dev/gumroad-check.js --all",
+    "precommit": "node dev/precommit-gate.js",
+    "content": "node gen/gen-content.js",
+    "newsletter": "node gen/gen-newsletter.js",
+    "build:og": "node dev/og-image.js",
+    "build:all": "node gen/build-all.js"
+  },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2"
   }

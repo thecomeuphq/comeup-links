@@ -6,6 +6,13 @@
 # Dependencies
 node_modules/
 
+# Staged working material, not site content.
+# content/queue holds this week's staged posts and content/newsletter holds
+# the email body for the week. Both are drafts waiting for the Commander to
+# publish them, so they stay out of git. Putting them in the repo would put
+# an email fragment on a public URL and make the site look like a dump.
+content/
+
 # Scratch probe files from audits (leading underscore = throwaway)
 /_probe*.js
 /_inspect*.js

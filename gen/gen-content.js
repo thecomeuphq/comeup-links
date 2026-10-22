@@ -81,14 +81,27 @@ const HERO_TOOLS = [
 // Every script is built from the tool, the number, and the next move. The
 // number is never invented - it is a PLACEHOLDER the creator fills from the
 // live tool, because a fabricated number is the fastest way to lose trust.
+// Copy-safe plain text: keep dashes as hyphens, straighten quotes, drop the
+// rest. The old version deleted every non-ASCII character, which turned a
+// range like "0-100" into "0 100" and shipped that typo in captions.
+function cleanDesc(s) {
+  return String(s)
+    .replace(/[\u2010-\u2015\u2212]/g, '-')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201c\u201d]/g, '"')
+    .replace(/[^\x20-\x7E]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function scriptFor(tool, n) {
   const t = tool.title;
-  const d = tool.desc.replace(/[^\x20-\x7E]/g, ' ').trim();
+  const d = cleanDesc(tool.desc);
   const url = 'https://thecomeuphq.github.io/comeup-links/' + tool.href;
 
   const hooks = [
     `${t}: the number nobody warns you about.`,
-    `I ran the ${t} and did not expect ${d.toLowerCase().replace(/\.$/, '')}.`,
+    `I ran the ${t} and the result was more useful than I expected.`,
     `Most people check this once a year. Wrong.`,
   ];
 
@@ -115,7 +128,7 @@ function scriptFor(tool, n) {
 
 // Reddit and Facebook adaptations of the same piece.
 function redditPost(tool, url) {
-  const d = tool.desc.replace(/[^\x20-\x7E]/g, ' ').trim();
+  const d = cleanDesc(tool.desc);
   return [
     `I used the ${tool.title} on this site and the result was more useful than I expected.`,
     ``,
@@ -129,7 +142,7 @@ function redditPost(tool, url) {
 }
 
 function facebookPost(tool, url) {
-  const d = tool.desc.replace(/[^\x20-\x7E]/g, ' ').trim();
+  const d = cleanDesc(tool.desc);
   return `${tool.title}\n\n${d}\n\nFree, no signup, no email required:\n${url}`;
 }
 
@@ -275,7 +288,7 @@ function main() {
     return;
   }
 
-  const outDir = path.join(__dirname, '..', '..', 'content', 'queue');
+  const outDir = path.join(__dirname, '..', 'content', 'queue');
   fs.mkdirSync(outDir, { recursive: true });
 
   const lines = [];
@@ -331,7 +344,7 @@ function main() {
 
   const file = path.join(outDir, label + '.md');
   fs.writeFileSync(file, lines.join('\n'), 'utf8');
-  console.log('  wrote ' + path.relative(path.join(__dirname, '..', '..'), file));
+  console.log('  wrote ' + path.relative(path.join(__dirname, '..'), file));
 
   if (failures.length) process.exit(1);
 }

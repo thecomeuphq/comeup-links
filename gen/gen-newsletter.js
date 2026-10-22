@@ -45,7 +45,7 @@ function loadTools() {
 }
 
 function loadQueue(week) {
-  const file = path.join(__dirname, '..', '..', 'content', 'queue', week + '.md');
+  const file = path.join(__dirname, '..', 'content', 'queue', week + '.md');
   if (!fs.existsSync(file)) return null;
   return fs.readFileSync(file, 'utf8');
 }
@@ -217,13 +217,13 @@ function main() {
     return;
   }
 
-  const outDir = path.join(__dirname, '..', '..', 'content', 'newsletter');
+  const outDir = path.join(__dirname, '..', 'content', 'newsletter');
   fs.mkdirSync(outDir, { recursive: true });
   const base = path.join(outDir, label);
   fs.writeFileSync(base + '.txt', edition.text, 'utf8');
   fs.writeFileSync(base + '.html', edition.html, 'utf8');
-  console.log('  wrote ' + path.relative(path.join(__dirname, '..', '..'), base) + '.txt');
-  console.log('  wrote ' + path.relative(path.join(__dirname, '..', '..'), base) + '.html');
+  console.log('  wrote ' + path.relative(path.join(__dirname, '..'), base) + '.txt');
+  console.log('  wrote ' + path.relative(path.join(__dirname, '..'), base) + '.html');
 
   if (problems.length) process.exit(1);
 }
