@@ -271,18 +271,7 @@
   // is only sent on an explicit submit - never on page load.
   function capture(email, name) {
     try {
-      return fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'signup',
-          email: email,
-          name: name || '',
-          list: LIST_ID,
-          path: location.pathname,
-          ts: new Date().toISOString()
-        })
-      });
+      return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
   track();
@@ -386,7 +375,7 @@
 </main>
 <script>
 (function () {
-  var ENDPOINT = "";
+  var ENDPOINT = "https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576";
   var WAITLIST_ADDRESS = "leroybradley7@gmail.com";
   var form = document.getElementById('waitlist-form');
   var status = document.getElementById('waitlist-status');
@@ -418,7 +407,7 @@
 
     // If the shared analytics script is live it owns the capture path, so a
     // signup is recorded in the same place as the pageviews.
-    if (!ENDPOINT && window.__comeupCapture) {
+    if (false && !ENDPOINT && window.__comeupCapture) {
       var btn2 = form.querySelector('button[type="submit"]');
       if (btn2) { btn2.disabled = true; btn2.textContent = 'Signing you up...'; }
       window.__comeupCapture(payload.email, payload.name).then(function () {

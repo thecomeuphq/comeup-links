@@ -434,7 +434,7 @@ const WAITLIST_SCRIPT = `(function () {
 
     // If the shared analytics script is live it owns the capture path, so a
     // signup is recorded in the same place as the pageviews.
-    if (!ENDPOINT && window.__comeupCapture) {
+    if (false && !ENDPOINT && window.__comeupCapture) {
       var btn2 = form.querySelector('button[type="submit"]');
       if (btn2) { btn2.disabled = true; btn2.textContent = 'Signing you up...'; }
       window.__comeupCapture(payload.email, payload.name).then(function () {

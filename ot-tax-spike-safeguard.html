@@ -379,18 +379,7 @@
   // is only sent on an explicit submit - never on page load.
   function capture(email, name) {
     try {
-      return fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'signup',
-          email: email,
-          name: name || '',
-          list: LIST_ID,
-          path: location.pathname,
-          ts: new Date().toISOString()
-        })
-      });
+      return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
   track();

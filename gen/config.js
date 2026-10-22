@@ -22,7 +22,7 @@ const BUNDLE_PRICE = null;
 // An email service endpoint (Formspree, Buttondown, Netlify Forms, a Worker).
 // EMPTY means no endpoint yet: the form falls back to a mailto: so a signup
 // is never silently lost.
-const WAITLIST_ENDPOINT = '';
+const WAITLIST_ENDPOINT = 'https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576';
 
 // The address the waitlist mailto: fallback points at.
 //
