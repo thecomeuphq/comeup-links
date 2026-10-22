@@ -483,13 +483,11 @@
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Tax Withholding Calculator for Gig Shift | The Come Up","description":"Nobody withholds tax from a gig payout, an overtime spike, or an invoice — that s on you. Work out exactly what to set aside per payout.","url":"https://thecomeuphq.github.io/comeup-links/tax-withholding-safeguard.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Tax Withholding Safeguard.Html","item":"https://thecomeuphq.github.io/comeup-links/tax-withholding-safeguard.html"}]}]}</script>
   <script>
-
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
 (function () {
   var ENDPOINT = "";
   var LIST_ID = "comeup";
   if (!ENDPOINT) return;
-
   // ---- analytics ----
   // One small POST on page load. No cookie, no localStorage id, no IP, no
   // fingerprint. We only learn which page and which campaign brought the visit.
@@ -542,7 +540,6 @@
       }
     } catch (e) { /* analytics must never break the page */ }
   }
-
   // ---- waitlist capture ----
   // Same endpoint, different payload. A signup is a POST, not a beacon, so it
   // is only sent on an explicit submit - never on page load.
@@ -562,9 +559,7 @@
       });
     } catch (e) { return Promise.reject(e); }
   }
-
   track();
-
   // Expose capture for the waitlist form, which lives on waitlist.html.
   window.__comeupCapture = capture;
 })();

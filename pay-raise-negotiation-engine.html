@@ -136,13 +136,11 @@
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Pay Raise Calculator — What a Raise Adds | The Come Up","description":"Turn your pay target into a clear ask. See what a raise adds per check and per year, and compare it against the overtime it would take to earn the same.","url":"https://thecomeuphq.github.io/comeup-links/pay-raise-negotiation-engine.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Pay Raise Negotiation Engine.Html","item":"https://thecomeuphq.github.io/comeup-links/pay-raise-negotiation-engine.html"}]}]}</script>
 <script>
-
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
 (function () {
   var ENDPOINT = "";
   var LIST_ID = "comeup";
   if (!ENDPOINT) return;
-
   // ---- analytics ----
   // One small POST on page load. No cookie, no localStorage id, no IP, no
   // fingerprint. We only learn which page and which campaign brought the visit.
@@ -195,7 +193,6 @@
       }
     } catch (e) { /* analytics must never break the page */ }
   }
-
   // ---- waitlist capture ----
   // Same endpoint, different payload. A signup is a POST, not a beacon, so it
   // is only sent on an explicit submit - never on page load.
@@ -215,9 +212,7 @@
       });
     } catch (e) { return Promise.reject(e); }
   }
-
   track();
-
   // Expose capture for the waitlist form, which lives on waitlist.html.
   window.__comeupCapture = capture;
 })();

@@ -234,7 +234,17 @@ export default {
     }
 
     try {
-      if (payload && payload.type === 'signup') {
+      // A signup is recognised by the EMAIL it carries, not only by the
+      // type field. The waitlist form has two POST paths (the analytics
+      // capture and its own fetch) and they have sent different payloads.
+      // Routing on the type field alone meant a payload without
+      // type: 'signup' was counted as a pageview and the lead was lost
+      // while the visitor was told "You are on the list".
+      const isSignup = payload && (
+        payload.type === 'signup' ||
+        (typeof payload.email === 'string' && payload.email.trim() !== '')
+      );
+      if (isSignup) {
         const email = String(payload.email || '').trim();
         if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) {
           return new Response('bad email', { status: 400, headers: cors });

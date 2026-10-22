@@ -161,6 +161,24 @@ for (const p of pages) {
 check('no page sends the beacon with a refused content type', beaconBad.length === 0,
   beaconBad.length + ' page(s) still use application/json in sendBeacon');
 
+// The waitlist form must post a payload the worker will recognise as a
+// SIGNUP. It used to send { email, name, source, ts } with no type field,
+// and the worker routed on payload.type alone - so the signup was counted
+// as a pageview and dropped while the visitor was told "You are on the
+// list". The lead was lost with no error anywhere.
+const waitlistPath = path.join(ROOT, 'waitlist.html');
+const waitlistHtml = fs.existsSync(waitlistPath) ? fs.readFileSync(waitlistPath, 'utf8') : '';
+check('the waitlist form tags its payload as a signup',
+  /type:\s*'signup'/.test(waitlistHtml),
+  "waitlist.html must send type: 'signup' or the worker treats the lead as a pageview");
+
+// The worker must not route on the type field alone. A signup is recognised
+// by the email it carries, so a payload that lost its type field is still a
+// signup and is still stored.
+check('the worker recognises a signup by its email, not only by the type field',
+  /isSignup/.test(workerClean) && /payload\.email/.test(workerClean),
+  'the worker must treat a payload carrying an email as a signup, not just one with type: signup');
+
 // The worker test proves the routing, the CORS preflight, the KV writes and
 // the signup path actually behave. It is the cheapest proof the owner's
 // deploy will work.

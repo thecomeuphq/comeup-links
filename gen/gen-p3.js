@@ -425,6 +425,7 @@ const WAITLIST_SCRIPT = `(function () {
       return;
     }
     var payload = {
+      type: 'signup',
       email: value,
       name: (name && name.value || '').trim(),
       source: 'comeup-links',

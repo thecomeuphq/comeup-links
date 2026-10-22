@@ -241,13 +241,11 @@
   .print-only { display:none; }
 </style>
 <script>
-
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
 (function () {
   var ENDPOINT = "";
   var LIST_ID = "comeup";
   if (!ENDPOINT) return;
-
   // ---- analytics ----
   // One small POST on page load. No cookie, no localStorage id, no IP, no
   // fingerprint. We only learn which page and which campaign brought the visit.
@@ -300,7 +298,6 @@
       }
     } catch (e) { /* analytics must never break the page */ }
   }
-
   // ---- waitlist capture ----
   // Same endpoint, different payload. A signup is a POST, not a beacon, so it
   // is only sent on an explicit submit - never on page load.
@@ -320,9 +317,7 @@
       });
     } catch (e) { return Promise.reject(e); }
   }
-
   track();
-
   // Expose capture for the waitlist form, which lives on waitlist.html.
   window.__comeupCapture = capture;
 })();

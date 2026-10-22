@@ -132,6 +132,29 @@ function check(name, cond, extra) {
     check('invalid email rejected with 400', r.status === 400, 'got ' + r.status);
   }
 
+  // 5c. REGRESSION: a signup that arrives WITHOUT a type field.
+  //
+  // The waitlist form has two POST paths and they have sent different
+  // payloads. The older one (gen-p3's own fetch) sends
+  // { email, name, source, ts } with no type. The worker used to route on
+  // payload.type alone, so that signup was counted as a PAGEVIEW and never
+  // stored - while the visitor was told "You are on the list". The lead was
+  // lost with no error anywhere.
+  //
+  // A signup is now recognised by the email it carries, so a missing type
+  // field can never silently discard a lead.
+  {
+    const before = kv.size;
+    const r = await handle(req('POST', BASE + '/', {
+      email: 'untyped@example.com',
+      name: 'No Type',
+      source: 'comeup-links',
+    }));
+    check('signup without a type field returns 200', r.status === 200, 'got ' + r.status);
+    check('signup without a type field is STORED', kv.has('signup:untyped@example.com'));
+    check('signup without a type field is not silently dropped', kv.size > before);
+  }
+
   // 7. Malformed body is rejected, not a 500
   {
     const bad = new Request(BASE + '/', { method: 'POST', body: 'not json' });
