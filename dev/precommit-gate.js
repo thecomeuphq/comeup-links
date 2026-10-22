@@ -112,7 +112,21 @@ console.log('\n=== WORKER + BEACON ===');
 // type the browser refuses, the pageview is silently lost and the site
 // looks healthy while sending nothing. This gate catches that.
 const workerSrc = fs.readFileSync(path.join(ROOT, 'gen', 'worker', 'worker.js'), 'utf8');
-check('worker answers the OPTIONS preflight', /request\.method === 'OPTIONS'[\s\S]{0,400}request\.method !== 'POST'/.test(workerSrc),
+
+// The CORS preflight must be answered BEFORE the method check. A regex with
+// a character window was used here and it failed the wrong way: a correct
+// worker whose two checks sit more than 400 characters apart was REJECTED,
+// which trains people to ignore the gate. This checks the order by INDEX
+// with comments stripped, so neither a long handler nor a commented-out
+// check can fool it.
+function stripJsComments(src) {
+  return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+}
+const workerClean = stripJsComments(workerSrc);
+const optAt = workerClean.indexOf("request.method === 'OPTIONS'");
+const notPostAt = workerClean.indexOf("request.method !== 'POST'");
+check('worker answers the OPTIONS preflight before the method check',
+  optAt !== -1 && notPostAt !== -1 && optAt < notPostAt,
   'OPTIONS must be handled BEFORE the method check, or the browser blocks the request');
 check('worker guards the email binding', /env\.SIGNUP_EMAIL\)/.test(workerSrc),
   'env.SIGNUP_EMAIL must be guarded or a signup 500s when the secret is missing');
@@ -141,6 +155,19 @@ try {
   const out = (e.stdout || '') + (e.stderr || '');
   const m = out.match(/(\d+) passed, (\d+) failed/);
   check('worker behaviour test passes', false, m ? m[0] : out.slice(-300));
+}
+
+// The order check above is only worth anything if it actually rejects a
+// worker with the wrong order. This proves it does, by building one.
+try {
+  const { execSync } = require('child_process');
+  const out = execSync('node dev/gate-order-test.js', { cwd: ROOT, encoding: 'utf8' });
+  const m = out.match(/(\d+) passed, (\d+) failed/);
+  check('the order check rejects a wrong-order worker', !!m && m[2] === '0', m ? m[0] : out.slice(-200));
+} catch (e) {
+  const out = (e.stdout || '') + (e.stderr || '');
+  const m = out.match(/(\d+) passed, (\d+) failed/);
+  check('the order check rejects a wrong-order worker', false, m ? m[0] : out.slice(-300));
 }
 
 console.log('\n' + (failures === 0 ? 'ALL CHECKS PASSED' : failures + ' CHECK(S) FAILED'));
