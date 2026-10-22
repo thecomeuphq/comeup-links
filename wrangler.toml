@@ -40,3 +40,28 @@ enabled = true
 [[kv_namespaces]]
 binding = "LIST"
 id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+
+# --- Email sending ---
+# This binding is what lets the Worker send the "New The Come Up signup"
+# email. It is NOT a secret - it is a binding, and the block below needs no
+# value from the owner.
+#
+# The Worker calls env.EMAIL.send({ to, from, subject, text }). The `to` and
+# `from` addresses come from the SIGNUP_EMAIL secret, so the SAME address
+# receives the mail and sends it. That means the owner must be able to send
+# AS that address:
+#   - on a domain you own, verify the domain in Cloudflare Email Service
+#   - on a free mailbox (gmail, outlook), send FROM that exact address
+#
+# WITHOUT this binding the Worker still stores and counts every signup - it
+# just cannot send the notification email. If a deploy fails with an error
+# about a missing or unverified sender, that is this block and the
+# SIGNUP_EMAIL address, not the KV namespace.
+#
+# NOTE: Cloudflare Email Sending is a Workers PAID feature. On a free plan
+# this binding may fail to deploy or to send. The site works either way -
+# signups are captured in KV - but you will not get the email. If you do not
+# want to pay, comment this block out and remove the email send from the
+# Worker; the signup capture is the part that matters.
+[[send_email]]
+name = "EMAIL"

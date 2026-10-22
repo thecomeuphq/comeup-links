@@ -17,7 +17,12 @@ const LIST = {
 };
 
 const sent = [];
-const SIGNUP_EMAIL = { async send(m) { sent.push(m); } };
+// EMAIL is a send_email BINDING - an object with a .send() method.
+// SIGNUP_EMAIL is a plain STRING secret - the address that receives the
+// mail. They are deliberately different types: the old worker treated the
+// secret as if it were the binding, which could never have worked.
+const EMAIL = { async send(m) { sent.push(m); return { messageId: 'test-1' }; } };
+const SIGNUP_EMAIL = 'owner@example.com';
 
 async function handle(request) {
   // The worker uses ESM `export default`. Strip it and evaluate the object.
@@ -26,7 +31,7 @@ async function handle(request) {
   vm.createContext(sandbox);
   vm.runInContext(body, sandbox);
   const worker = sandbox.globalThis.__worker;
-  return worker.fetch(request, { LIST, SIGNUP_EMAIL, LIST_EMAIL: 'owner@example.com' });
+  return worker.fetch(request, { LIST, EMAIL, SIGNUP_EMAIL });
 }
 
 function req(method, url, body) {
@@ -95,6 +100,30 @@ function check(name, cond, extra) {
     check('signup stored in KV', kv.has('signup:worker@example.com'));
     check('owner was emailed', sent.length === 1, 'emails sent: ' + sent.length);
     if (sent.length) check('email addressed to owner', sent[0].to === 'owner@example.com');
+    if (sent.length) check('email sent from the owner address', sent[0].from === 'owner@example.com');
+    // The bug that shipped: the secret was treated as the binding, so
+    // env.SIGNUP_EMAIL.send() threw. If the worker ever goes back to that,
+    // this test must fail rather than silently stop emailing.
+    check('the email binding and the address secret are DIFFERENT things',
+      typeof SIGNUP_EMAIL === 'string' && typeof EMAIL.send === 'function',
+      'the worker must use env.EMAIL.send({ to: env.SIGNUP_EMAIL })');
+  }
+
+  // 5b. No EMAIL binding -> the signup is still stored and counted, and
+  //     the request still succeeds. A missing notification must never cost
+  //     a lead.
+  {
+    const body = src.replace(/export\s+default\s*/, 'globalThis.__worker = ');
+    const sandbox = { globalThis: {}, Response, Request, URL, Date, JSON, Number, String, console };
+    vm.createContext(sandbox);
+    vm.runInContext(body, sandbox);
+    const worker = sandbox.globalThis.__worker;
+    const r = await worker.fetch(
+      req('POST', BASE + '/', { type: 'signup', email: 'nobinding@example.com' }),
+      { LIST, SIGNUP_EMAIL } // deliberately no EMAIL binding
+    );
+    check('signup without the EMAIL binding still returns 200', r.status === 200, 'got ' + r.status);
+    check('signup without the EMAIL binding is STILL stored', kv.has('signup:nobinding@example.com'));
   }
 
   // 6. A bad email is rejected

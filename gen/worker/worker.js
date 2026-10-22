@@ -1,11 +1,26 @@
 // The Come Up — analytics + waitlist worker.
 //
-// Deploy: Cloudflare dashboard -> Workers & Pages -> Create -> paste this.
-// Bind a KV namespace named "LIST" and set the LIST_EMAIL secret.
+// Deploy: npx wrangler deploy (the wrangler.toml in this repo has every
+// binding already declared - see audit/OWNER-SETUP.md for the two values
+// the owner has to fill in).
 //
-// The worker does two things:
-//   POST /event  -> analytics beacon (pageview). Counts only, nothing personal.
-//   POST /signup -> a waitlist signup. Appended to the LIST KV namespace.
+// Two bindings are needed:
+//   LIST         - a KV namespace. Stores pageview counts and signups.
+//   EMAIL        - a send_email binding. Lets the Worker send the
+//                  notification email. WITHOUT IT the Worker cannot send
+//                  mail and must not try.
+// Plus one secret:
+//   SIGNUP_EMAIL - the address that RECEIVES signups, as a plain string.
+//                  It is used for both the To and the From header.
+//
+// If the EMAIL binding or the SIGNUP_EMAIL secret is missing, signups are
+// still stored and still counted - only the notification email is skipped.
+//
+// The worker does two things, on any POST path:
+//   a beacon POST  -> analytics pageview. Counts only, nothing personal.
+//   a signup POST  -> a waitlist signup, stored in the LIST KV namespace.
+// The body decides which: { type: 'signup', email, name, path } is a signup,
+// anything else is counted as a pageview.
 //
 // No cookies are set. No IP is stored. No visitor is identified. A visitor is
 // a row of numbers, not a person.
@@ -75,11 +90,21 @@ export default {
         await env.LIST.put('signup:' + email, JSON.stringify(record));
         const total = Number((await env.LIST.get('count:signups')) || 0);
         await env.LIST.put('count:signups', String(total + 1));
-        // notify the owner so a signup is never only in a KV namespace
-        if (env.LIST_EMAIL && env.SIGNUP_EMAIL) {
-          await env.SIGNUP_EMAIL.send({
-            to: env.LIST_EMAIL,
-            from: env.LIST_EMAIL,
+        // notify the owner so a signup is never only in a KV namespace.
+        //
+        // env.EMAIL is a send_email BINDING - an object with a .send()
+        // method, declared in wrangler.toml. env.SIGNUP_EMAIL is a plain
+        // STRING secret - the address that receives the email. They are two
+        // different things and one value cannot be both, which is why the
+        // old code (env.SIGNUP_EMAIL.send({ to: env.SIGNUP_EMAIL })) could
+        // never have worked.
+        //
+        // If either is missing the signup is STILL stored and STILL
+        // counted - only the notification email is skipped.
+        if (env.EMAIL && env.SIGNUP_EMAIL) {
+          await env.EMAIL.send({
+            to: env.SIGNUP_EMAIL,
+            from: env.SIGNUP_EMAIL,
             subject: 'New The Come Up signup',
             text: record.email + (record.name ? ' (' + record.name + ')' : '') + '\nvia ' + record.path,
           }).catch(() => {});

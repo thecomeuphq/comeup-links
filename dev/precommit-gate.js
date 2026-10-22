@@ -128,9 +128,27 @@ const notPostAt = workerClean.indexOf("request.method !== 'POST'");
 check('worker answers the OPTIONS preflight before the method check',
   optAt !== -1 && notPostAt !== -1 && optAt < notPostAt,
   'OPTIONS must be handled BEFORE the method check, or the browser blocks the request');
-check('worker guards the email binding', /env\.SIGNUP_EMAIL\)/.test(workerSrc),
-  'env.SIGNUP_EMAIL must be guarded or a signup 500s when the secret is missing');
+// The email send has TWO separate things: the send_email BINDING (an object
+// with .send()) and the SIGNUP_EMAIL secret (the address string). Using the
+// secret as if it were the binding is the bug that shipped - it made a
+// successful signup return 500 to the visitor.
+check('worker sends email through the EMAIL binding, not the secret',
+  /env\.EMAIL\.send\s*\(/.test(workerClean),
+  'the worker must call env.EMAIL.send({ to: env.SIGNUP_EMAIL })');
+check('worker never calls .send() on the SIGNUP_EMAIL secret',
+  !/env\.SIGNUP_EMAIL\.send\s*\(/.test(workerClean),
+  'env.SIGNUP_EMAIL is an address string, not a binding - it has no .send()');
+check('worker guards the email send so a missing binding cannot 500 a signup',
+  /if\s*\(\s*env\.EMAIL\s*&&\s*env\.SIGNUP_EMAIL\s*\)/.test(workerClean),
+  'both the EMAIL binding and the SIGNUP_EMAIL secret must be checked before sending');
 check('worker binds the LIST namespace', /env\.LIST\.get/.test(workerSrc) && /env\.LIST\.put/.test(workerSrc));
+
+// wrangler.toml must declare the send_email binding the worker calls.
+const wranglerToml = fs.existsSync(path.join(ROOT, 'wrangler.toml'))
+  ? fs.readFileSync(path.join(ROOT, 'wrangler.toml'), 'utf8') : '';
+check('wrangler.toml declares the EMAIL send_email binding',
+  /\[\[send_email\]\]/.test(wranglerToml) && /name\s*=\s*"EMAIL"/.test(wranglerToml),
+  'wrangler.toml needs [[send_email]] with name = "EMAIL" or the worker cannot send mail');
 
 const beaconBad = [];
 for (const p of pages) {

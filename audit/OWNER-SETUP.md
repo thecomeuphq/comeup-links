@@ -62,6 +62,27 @@ It asks for the value. Use the address you want signups delivered to.
 (Currently the site falls back to `leroybradley7@gmail.com` — you can use
 that, or a new address on your own domain once you have one.)
 
+This secret is a plain ADDRESS (a string). It is not the thing that sends
+the email — `wrangler.toml` already has a `send_email` binding named
+`EMAIL` for that. The Worker reads the address from this secret and hands
+it to the binding:
+
+```js
+await env.EMAIL.send({ to: env.SIGNUP_EMAIL, from: env.SIGNUP_EMAIL, ... })
+```
+
+Two things to know before you deploy:
+
+1. **The `from` address must be one you are allowed to send as.** On a
+   domain you own, verify the domain in Cloudflare Email Service first. On
+   a free mailbox (gmail, outlook), use that exact address.
+2. **Email Sending is a Workers Paid feature.** On the free plan the
+   deploy may fail, or the email may never arrive. Nothing else breaks:
+   every signup is still stored and counted in KV. The signup capture is
+   the part that matters; the email is only a convenience. If you hit an
+   error about a missing or unverified sender, that is this binding — not
+   the KV namespace.
+
 ### Step 1.4 — Deploy
 
 ```
@@ -288,6 +309,7 @@ weekly newsletter and start seeing inbox placement problems.
 | `gen/config.js` | `BUNDLE_PRICE = null` → your real price | 3 |
 | `gen/config.js` | `WAITLIST_ADDRESS` → branded address | 4 |
 | `wrangler.toml` | `id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"` → real id | 1 |
+| `wrangler.toml` | `[[send_email]] name = "EMAIL"` → already correct, no value needed | 1 |
 | Cloudflare secret | `SIGNUP_EMAIL` | 1, 4 |
 
 **Never** set these to a value you made up. An empty endpoint is honest and
