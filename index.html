@@ -288,7 +288,7 @@
     </div>
   </details>
 
-  <p class="empty-state" id="empty-state">No matching quick-start tools. Try a different phrase or <a href="tools.html">search the full tool directory</a>.</p>
+  <p class="empty-state" id="empty-state">No matching quick-start tools. Try a different phrase or <a id="empty-state-link" href="tools.html">search the full tool directory</a>.</p>
 
   <section class="after-crisis">
     <h2>Handled the immediate problem? Keep the progress.</h2>
@@ -396,6 +396,7 @@
     const clear = document.getElementById('clear-search');
     const status = document.getElementById('search-status');
     const empty = document.getElementById('empty-state');
+    const emptyLink = document.getElementById('empty-state-link');
     const hubs = Array.from(document.querySelectorAll('[data-hub]'));
     const searchable = Array.from(document.querySelectorAll('.searchable'));
     let savedOpenStates = null;
@@ -424,6 +425,7 @@
       if (!query) savedOpenStates = null;
       clear.hidden = !query;
       empty.classList.toggle('show', Boolean(query) && matches === 0);
+      if (emptyLink) emptyLink.href = input.value.trim() ? 'tools.html?q=' + encodeURIComponent(input.value.trim()) : 'tools.html';
       status.textContent = query ? matches + ' matching quick-start ' + (matches === 1 ? 'result' : 'results') + '.' : '';
       const url = new URL(window.location.href);
       if (input.value.trim()) url.searchParams.set('q', input.value.trim());
