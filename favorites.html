@@ -432,157 +432,157 @@
 </script>
 
     <script>
-    (function () {
-    // The shared "Copy my result" script - v2 (share loop).
-    //
-    // v1 copied the result plus a bare page URL. v2 makes the copy itself the
-    // growth loop:
-    //   - the URL carries UTM params so every share is attributable
-    //   - the copied text ends with a one-line list hook
-    //   - a native share sheet is used where the browser offers one, so the
-    //     result can go straight to TikTok / Facebook / a group chat
-    //
-    // Substituted per page: PAGE_URL, PAGE_PATH, INTRO, FIELDS.
-    // Kept as a template file so every page carries byte-identical behaviour.
-    
-          var SITE = "https://thecomeuphq.github.io/comeup-links";
-          var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/favorites.html";
-          var PAGE_PATH = "favorites.html";
-          var INTRO = "My saved tools on The Come Up:";
-          var FIELDS = [];
-          var btn = document.querySelector('.tcu-share-b');
-          if (!btn) return;
-          var note = document.querySelector('.tcu-share-n');
-    
-          // Where a share came from, so the site can tell which channel works.
-          var UTM = 'utm_source=share&utm_medium=copy&utm_campaign=result';
-    
-          function val(id) {
-            var el = document.getElementById(id);
-            if (!el) return '';
-            // inputs carry their value in the property, not in text
-            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
-              return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+(function () {
+// The shared "Copy my result" script - v2 (share loop).
+//
+// v1 copied the result plus a bare page URL. v2 makes the copy itself the
+// growth loop:
+//   - the URL carries UTM params so every share is attributable
+//   - the copied text ends with a one-line list hook
+//   - a native share sheet is used where the browser offers one, so the
+//     result can go straight to TikTok / Facebook / a group chat
+//
+// Substituted per page: PAGE_URL, PAGE_PATH, INTRO, FIELDS.
+// Kept as a template file so every page carries byte-identical behaviour.
+
+      var SITE = "https://thecomeuphq.github.io/comeup-links";
+      var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/favorites.html";
+      var PAGE_PATH = "favorites.html";
+      var INTRO = "My saved tools on The Come Up:";
+      var FIELDS = [];
+      var btn = document.querySelector('.tcu-share-b');
+      if (!btn) return;
+      var note = document.querySelector('.tcu-share-n');
+
+      // Where a share came from, so the site can tell which channel works.
+      var UTM = 'utm_source=share&utm_medium=copy&utm_campaign=result';
+
+      function val(id) {
+        var el = document.getElementById(id);
+        if (!el) return '';
+        // inputs carry their value in the property, not in text
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
+        }
+        return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
+      }
+
+      // Fallback when a page has no curated field list: find the most
+      // result-like values on the page automatically.
+      function autoFields() {
+        var out = [];
+        var els = document.querySelectorAll('[id]');
+        for (var i = 0; i < els.length && out.length < 4; i++) {
+          var el = els[i];
+          var id = el.id || '';
+          if (!id) continue;
+          if (!/(gross|net|total|monthly|weekly|daily|score|verdict|amount|balance|save|interest|weeks|months|days|pay|remaining|left|coverage|target|deficit|profit|apr|rate|need|bleed|shortfall)/i.test(id)) continue;
+          var v = val(id);
+          if (!v || v.length > 60) continue;
+          var lab = '';
+          var prev = el.previousElementSibling;
+          if (prev) lab = (prev.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40);
+          if (!lab) {
+            var holder = el.closest('.k, .stat, .row, .m, .bp-meta, .quick-answer, .card, .q, .line');
+            if (holder) {
+              var k = holder.querySelector('.k, .stat-label, .row-name, .qa-label, .label, .key');
+              if (k) lab = (k.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40);
             }
-            return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
           }
-    
-          // Fallback when a page has no curated field list: find the most
-          // result-like values on the page automatically.
-          function autoFields() {
-            var out = [];
-            var els = document.querySelectorAll('[id]');
-            for (var i = 0; i < els.length && out.length < 4; i++) {
-              var el = els[i];
-              var id = el.id || '';
-              if (!id) continue;
-              if (!/(gross|net|total|monthly|weekly|daily|score|verdict|amount|balance|save|interest|weeks|months|days|pay|remaining|left|coverage|target|deficit|profit|apr|rate|need|bleed|shortfall)/i.test(id)) continue;
-              var v = val(id);
-              if (!v || v.length > 60) continue;
-              var lab = '';
-              var prev = el.previousElementSibling;
-              if (prev) lab = (prev.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40);
-              if (!lab) {
-                var holder = el.closest('.k, .stat, .row, .m, .bp-meta, .quick-answer, .card, .q, .line');
-                if (holder) {
-                  var k = holder.querySelector('.k, .stat-label, .row-name, .qa-label, .label, .key');
-                  if (k) lab = (k.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40);
-                }
-              }
-              out.push({ id: id, label: lab });
-            }
-            return out;
+          out.push({ id: id, label: lab });
+        }
+        return out;
+      }
+
+      // The shareable URL: the page plus attribution params.
+      function shareUrl() {
+        var base = PAGE_URL;
+        if (base.indexOf('?') > -1) base += '&' + UTM;
+        else base += '?' + UTM;
+        return base;
+      }
+
+      function build() {
+        var lines = [INTRO];
+        var list = FIELDS || autoFields();
+        for (var i = 0; i < list.length; i++) {
+          var v = val(list[i].id);
+          if (!v) continue;
+          lines.push((list[i].label ? list[i].label + ': ' : '') + v);
+        }
+        lines.push('');
+        lines.push('Check yours free: ' + shareUrl());
+        return lines.join('\n');
+      }
+
+      // The bare URL, for the native share sheet (it adds its own preview).
+      function shareTitle() {
+        var first = '';
+        var list = FIELDS || autoFields();
+        for (var i = 0; i < list.length; i++) {
+          var v = val(list[i].id);
+          if (v) { first = v; break; }
+        }
+        if (first) return 'My result: ' + first + ' — The Come Up';
+        return 'A free money tool for hourly workers — The Come Up';
+      }
+
+      function fallbackCopy(t) {
+        var ta = document.createElement('textarea');
+        ta.value = t;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      function say(msg, kind) {
+        if (!note) return;
+        note.textContent = msg;
+        note.className = 'tcu-share-n ' + (kind || '');
+        setTimeout(function () { note.textContent = ''; note.className = 'tcu-share-n'; }, 4000);
+      }
+
+      // Copy first (always works), then offer the native share sheet.
+      function onClick() {
+        var payloadText = build();
+        var copied = false;
+        var tryNative = function () {
+          if (navigator.share) {
+            navigator.share({
+              title: shareTitle(),
+              text: payloadText,
+              url: shareUrl()
+            }).catch(function () { /* the user dismissed the sheet */ });
           }
-    
-          // The shareable URL: the page plus attribution params.
-          function shareUrl() {
-            var base = PAGE_URL;
-            if (base.indexOf('?') > -1) base += '&' + UTM;
-            else base += '?' + UTM;
-            return base;
-          }
-    
-          function build() {
-            var lines = [INTRO];
-            var list = FIELDS || autoFields();
-            for (var i = 0; i < list.length; i++) {
-              var v = val(list[i].id);
-              if (!v) continue;
-              lines.push((list[i].label ? list[i].label + ': ' : '') + v);
-            }
-            lines.push('');
-            lines.push('Check yours free: ' + shareUrl());
-            return lines.join('\n');
-          }
-    
-          // The bare URL, for the native share sheet (it adds its own preview).
-          function shareTitle() {
-            var first = '';
-            var list = FIELDS || autoFields();
-            for (var i = 0; i < list.length; i++) {
-              var v = val(list[i].id);
-              if (v) { first = v; break; }
-            }
-            if (first) return 'My result: ' + first + ' — The Come Up';
-            return 'A free money tool for hourly workers — The Come Up';
-          }
-    
-          function fallbackCopy(t) {
-            var ta = document.createElement('textarea');
-            ta.value = t;
-            ta.setAttribute('readonly', '');
-            ta.style.position = 'fixed';
-            ta.style.top = '-1000px';
-            document.body.appendChild(ta);
-            ta.select();
-            var ok = false;
-            try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
-            document.body.removeChild(ta);
-            return ok;
-          }
-    
-          function say(msg, kind) {
-            if (!note) return;
-            note.textContent = msg;
-            note.className = 'tcu-share-n ' + (kind || '');
-            setTimeout(function () { note.textContent = ''; note.className = 'tcu-share-n'; }, 4000);
-          }
-    
-          // Copy first (always works), then offer the native share sheet.
-          function onClick() {
-            var payloadText = build();
-            var copied = false;
-            var tryNative = function () {
-              if (navigator.share) {
-                navigator.share({
-                  title: shareTitle(),
-                  text: payloadText,
-                  url: shareUrl()
-                }).catch(function () { /* the user dismissed the sheet */ });
-              }
-            };
-    
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-              navigator.clipboard.writeText(payloadText).then(
-                function () {
-                  copied = true;
-                  say(navigator.share ? 'Copied. Now pick where to share it.' : 'Copied — paste it in a comment.', 'ok');
-                  tryNative();
-                },
-                function () {
-                  copied = fallbackCopy(payloadText);
-                  say(copied ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.', copied ? 'ok' : 'err');
-                }
-              );
-            } else {
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(payloadText).then(
+            function () {
+              copied = true;
+              say(navigator.share ? 'Copied. Now pick where to share it.' : 'Copied — paste it in a comment.', 'ok');
+              tryNative();
+            },
+            function () {
               copied = fallbackCopy(payloadText);
               say(copied ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.', copied ? 'ok' : 'err');
-              if (copied) tryNative();
             }
-          }
-    
-          btn.addEventListener('click', onClick);
-        })();
-    </script>
+          );
+        } else {
+          copied = fallbackCopy(payloadText);
+          say(copied ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.', copied ? 'ok' : 'err');
+          if (copied) tryNative();
+        }
+      }
+
+      btn.addEventListener('click', onClick);
+    })();
+</script>
 </body>
 </html>

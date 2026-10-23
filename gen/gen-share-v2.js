@@ -88,7 +88,7 @@ for (const file of files) {
   const indent = m ? m[1] : '    ';
   const newBlock =
     indent +
-    '<script>\n    (function () {\n' +
+    '<script>\n' +
     body +
     '\n' +
     indent +

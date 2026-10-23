@@ -1,5 +1,5 @@
-// Verify every inline <script> block parses as valid JavaScript, and that
-// the interactive elements the pages depend on actually exist.
+// Verify every inline <script> block parses as valid JavaScript across ALL site HTML pages,
+// and that the interactive elements the pages depend on actually exist.
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -7,7 +7,7 @@ const vm = require('vm');
 function walk(dir, acc) {
   acc = acc || [];
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    if (e.name === '.git' || e.name === 'node_modules' || e.name === 'dev' || e.name === 'gen') continue;
+    if (e.name === '.git' || e.name === 'node_modules' || e.name === 'dev' || e.name === 'gen' || e.name === 'audit') continue;
     const p = path.join(dir, e.name);
     if (e.isDirectory()) walk(p, acc);
     else if (e.name.endsWith('.html')) acc.push(p);
@@ -15,17 +15,10 @@ function walk(dir, acc) {
   return acc;
 }
 
-const NEW_PAGES = [
-  'problems.html', 'compare.html', 'faq.html', 'guides.html',
-  'dashboard.html', 'favorites.html', 'payday-ritual.html',
-  'plan-link.html', 'printables.html', 'waitlist.html',
-  'catalog.html', 'free-vs-paid.html', 'bundle.html', '404.html',
-  'index.html', 'tools.html'
-];
-
+const pages = walk('.');
 let failures = 0;
 
-for (const f of NEW_PAGES) {
+for (const f of pages) {
   const h = fs.readFileSync(f, 'utf8');
   const problems = [];
 
@@ -74,9 +67,9 @@ for (const f of NEW_PAGES) {
     console.log('FAIL ' + f);
     problems.forEach(p => console.log('     - ' + p));
   } else {
-    console.log('PASS ' + f + '  (' + scripts.length + ' inline script(s) parse clean)');
+    // Keep output concise, only show failures unless verbose or total summary
   }
 }
 
-console.log('\n' + (failures ? failures + ' FAILED' : 'ALL JS CHECKS PASSED'));
+console.log('jscheck.js: scanned ' + pages.length + ' pages. Failures: ' + failures);
 process.exit(failures ? 1 : 0);
