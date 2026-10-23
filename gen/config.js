@@ -43,7 +43,7 @@ const WAITLIST_ADDRESS = 'leroybradley7@gmail.com';
 //   2. Bind a KV namespace named LIST
 //   3. Put this URL here
 //   4. node gen/gen-analytics.js
-const ANALYTICS_ENDPOINT = '';
+const ANALYTICS_ENDPOINT = 'https://comeup-analytics.leroybradley7.workers.dev';
 
 // The list id written alongside each signup, so several lists can share one
 // endpoint later.

@@ -302,11 +302,13 @@
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Auto Debt Shield — Get Underwater on Your Car Loan | The Come Up","description":"Underwater on your car loan? See your equity gap, the interest you re bleeding, and a step-by-step plan to get back above water without refinancing into more debt.","url":"https://thecomeuphq.github.io/comeup-links/auto-debt-shield.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Auto Debt Shield.Html","item":"https://thecomeuphq.github.io/comeup-links/auto-debt-shield.html"}]}]}</script>
   <script>
+
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
 (function () {
-  var ENDPOINT = "";
+  var ENDPOINT = "https://comeup-analytics.leroybradley7.workers.dev";
   var LIST_ID = "comeup";
   if (!ENDPOINT) return;
+
   // ---- analytics ----
   // One small POST on page load. No cookie, no localStorage id, no IP, no
   // fingerprint. We only learn which page and which campaign brought the visit.
@@ -359,6 +361,7 @@
       }
     } catch (e) { /* analytics must never break the page */ }
   }
+
   // ---- waitlist capture ----
   // Same endpoint, different payload. A signup is a POST, not a beacon, so it
   // is only sent on an explicit submit - never on page load.
@@ -367,7 +370,9 @@
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
+
   track();
+
   // Expose capture for the waitlist form, which lives on waitlist.html.
   window.__comeupCapture = capture;
 })();

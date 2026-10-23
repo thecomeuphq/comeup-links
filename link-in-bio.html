@@ -271,11 +271,13 @@
     .tcu-cta-a:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Free Money Tools for Hourly Workers | The Come Up","description":"Every free money tool in one place — paycheck math, debt payoff, credit repair, and cash buffers for blue-collar and shift workers.","url":"https://thecomeuphq.github.io/comeup-links/link-in-bio.html","isPartOf":{"@type":"WebSite","name":"The Come Up","url":"https://thecomeuphq.github.io/comeup-links/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Link In Bio.Html","item":"https://thecomeuphq.github.io/comeup-links/link-in-bio.html"}]}]}</script>
   <script>
+
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
 (function () {
-  var ENDPOINT = "";
+  var ENDPOINT = "https://comeup-analytics.leroybradley7.workers.dev";
   var LIST_ID = "comeup";
   if (!ENDPOINT) return;
+
   // ---- analytics ----
   // One small POST on page load. No cookie, no localStorage id, no IP, no
   // fingerprint. We only learn which page and which campaign brought the visit.
@@ -328,6 +330,7 @@
       }
     } catch (e) { /* analytics must never break the page */ }
   }
+
   // ---- waitlist capture ----
   // Same endpoint, different payload. A signup is a POST, not a beacon, so it
   // is only sent on an explicit submit - never on page load.
@@ -336,7 +339,9 @@
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
+
   track();
+
   // Expose capture for the waitlist form, which lives on waitlist.html.
   window.__comeupCapture = capture;
 })();

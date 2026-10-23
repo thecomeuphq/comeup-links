@@ -355,11 +355,13 @@
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Sinking Fund Planner — Stop Surprise Bills | The Come Up","description":"Car insurance, registration, holidays — the bills that come out of nowhere are actually predictable. Set the cost and due date, get the per-paycheck amount.","url":"https://thecomeuphq.github.io/comeup-links/sinking-fund-planner.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Sinking Fund Planner.Html","item":"https://thecomeuphq.github.io/comeup-links/sinking-fund-planner.html"}]}]}</script>
   <script>
+
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
 (function () {
-  var ENDPOINT = "";
+  var ENDPOINT = "https://comeup-analytics.leroybradley7.workers.dev";
   var LIST_ID = "comeup";
   if (!ENDPOINT) return;
+
   // ---- analytics ----
   // One small POST on page load. No cookie, no localStorage id, no IP, no
   // fingerprint. We only learn which page and which campaign brought the visit.
@@ -412,6 +414,7 @@
       }
     } catch (e) { /* analytics must never break the page */ }
   }
+
   // ---- waitlist capture ----
   // Same endpoint, different payload. A signup is a POST, not a beacon, so it
   // is only sent on an explicit submit - never on page load.
@@ -420,7 +423,9 @@
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
+
   track();
+
   // Expose capture for the waitlist form, which lives on waitlist.html.
   window.__comeupCapture = capture;
 })();
