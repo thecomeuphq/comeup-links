@@ -481,7 +481,7 @@
           <a class="navlink" href="#how">How it works</a>
           <a class="navlink" href="#blockers">Payment blockers</a>
           <a class="navlink" href="#features">Features</a>
-          <a class="btn small" href="mailto:leroybradley7@gmail.com?subject=RivetDue%20%E2%80%94%20let%27s%20talk%20receivables">Start a conversation</a>
+          <a class="btn small" href="#waitlistForm">Join the interest list</a>
         </nav>
       </div>
     </header>
@@ -494,7 +494,7 @@
           <h1>Construction receivables, <em class="accent-serif">followed&nbsp;through.</em></h1>
           <p class="hero-sub">Keep invoices, retainage, and payment blockers moving without making collections your second job.</p>
           <div class="hero-meta">
-            <a class="btn" href="mailto:leroybradley7@gmail.com?subject=RivetDue%20%E2%80%94%20let%27s%20talk%20receivables">Start a conversation</a>
+            <a class="btn" href="#waitlistForm">Join the interest list</a>
             <span class="rule" aria-hidden="true"></span>
             <span class="audience">Made for <strong>specialty subcontractors</strong> · 5–50 person teams</span>
           </div>
@@ -723,9 +723,9 @@
                 </div>
               </div>
               <button class="btn" type="submit">Join the waitlist</button>
-              <p class="wl-note">Submitting opens your email app with your details filled in — just hit send.</p>
+              <p class="wl-note" id="wl-note">RivetDue is in development. Join the interest list and we will email you as it opens up — no spam, unsubscribe in one click.</p>
             </form>
-            <a class="btn alt" href="mailto:leroybradley7@gmail.com?subject=RivetDue%20%E2%80%94%20let%27s%20talk%20receivables">Start a conversation</a>
+            <a class="btn alt" href="#waitlistForm">Join the interest list</a>
           </div>
         </div>
       </section>
@@ -778,25 +778,35 @@
         if (track) { track.innerHTML += track.innerHTML; }
       })();
 
-      // Waitlist form: hand the signup off to the visitor's email app.
+      // Waitlist form: capture into EmailOctopus (The Come Up waitlist) — RivetDue interest segment.
       (function () {
         var form = document.getElementById('waitlistForm');
+        var status = document.getElementById('wl-note');
         if (!form) { return; }
         form.addEventListener('submit', function (e) {
           e.preventDefault();
-          if (!form.reportValidity()) { return; }
-          function val(id) { return document.getElementById(id).value.trim(); }
-          var volume = val('wl-volume');
-          var lines = [
-            'Name: ' + val('wl-name'),
-            'Company: ' + val('wl-company'),
-            'Email: ' + val('wl-email'),
-            'Approx. monthly invoice volume: ' + (volume || 'Not provided')
-          ];
-          var href = 'mailto:leroybradley7@gmail.com'
-            + '?subject=' + encodeURIComponent('RivetDue waitlist signup')
-            + '&body=' + encodeURIComponent(lines.join('\n'));
-          window.location.href = href;
+          var email = document.getElementById('wl-email');
+          var value = (email && email.value || '').trim();
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
+            status.textContent = 'That email does not look right. Check it and try again.';
+            if (email) email.focus();
+            return;
+          }
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+          fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
+          }).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            form.reset();
+            status.textContent = "You're on the list — we'll email you as RivetDue opens up.";
+          }).catch(function () {
+            status.textContent = 'Something went wrong. Try again in a moment.';
+          }).then(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Join the waitlist'; }
+          });
         });
       })();
     </script>
