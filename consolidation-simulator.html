@@ -759,6 +759,49 @@
         <a href="https://bradley57.gumroad.com/l/ibdair?utm_source=comeup_links&utm_medium=website&utm_campaign=site&utm_campaign=tool_upsell" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; text-decoration:none;">Get Debt Refinance & Consolidation Planner &mdash; $6.95</a>
         <p style="margin:12px 0 0; font-size:12px; line-height:1.6; color:#8a8a8a;">One-time purchase, no subscription. Everything on this site stays free &mdash; <a href="free-vs-paid.html">see what stays free</a>.</p>
       </section>
+      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">Get the free Consolidation Simulator companion by email</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">You just ran the Consolidation Simulator. Get the free Come Up starter tools by email &mdash; including the Reset tracker printable &mdash; plus one email when new free tools drop. No spam, no selling your info &mdash; unsubscribe anytime.</p>
+        <form id="tcu-capture-form" novalidate>
+          <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
+          <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">
+          <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border:0; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; cursor:pointer;">Get My Free Printable</button>
+          <p id="tcu-capture-status" role="status" aria-live="polite" style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#bdbdbd;"></p>
+        </form>
+      </section>
+    <script>
+      (function () {
+        var form = document.getElementById('tcu-capture-form');
+        var status = document.getElementById('tcu-capture-status');
+        var email = document.getElementById('tcu-capture-email');
+        if (!form) return;
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var value = (email && email.value || '').trim();
+          if (!/^[^@s]+@[^@s]+.[^@s]+$/.test(value)) {
+            status.textContent = 'That email does not look right. Check it and try again.';
+            if (email) email.focus();
+            return;
+          }
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+          fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
+          }).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            form.reset();
+            status.textContent = "You're in — check your inbox.";
+          }).catch(function () {
+            status.textContent = 'Something went wrong. Try again in a moment.';
+          }).then(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
+          });
+        });
+      })();
+    </script>
       <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
         <div class="tcu-rels">

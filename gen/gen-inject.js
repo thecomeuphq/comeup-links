@@ -8,6 +8,7 @@
 //   Phase 8   -> "Save tools" section appended to tools.html
 //   Phase 6   -> hub links row appended to index.html and tools.html
 //   Phase 25  -> sitemap entries for every new page
+//   Phase M1  -> EmailOctopus capture block on 16 funnel pages (FLAG-2026-001)
 //
 // The script is idempotent: running it twice changes nothing the second time.
 
@@ -274,6 +275,100 @@ for (const file of ['index.html', 'tools.html']) {
   fs.writeFileSync(file, h);
   changed.push(file);
   console.log('  + hub links -> ' + file);
+}
+
+
+// ---------------------------------------------------------------------------
+// Phase M1 — EmailOctopus capture block (FLAG-2026-001, 2026-10-24)
+// ---------------------------------------------------------------------------
+// Additive only: one capture section + one small script inserted before the
+// "Keep going" tcu section (the same anchor Phase 16 uses), so the order on
+// tool pages reads: tool -> upsell -> capture -> keep going. The tool is
+// NEVER gated: the form sits after tool use. Endpoint comes from
+// gen/config.js (WAITLIST_ENDPOINT) — never a second hardcoded copy.
+// Idempotency marker: class="tcu-capture". waitlist.html (native form) and
+// rivetdue.html (B2B, separate decision) are deliberately NOT targets.
+const { WAITLIST_ENDPOINT: M1_ENDPOINT } = require('./config');
+const M1_HONEYPOT = 'hpc4b27b6e-eb38-11e9-be00-06b4694bee2a';
+// Gemini critique 2026-10-24 (SHIP WITH REFINEMENTS): Discord line under the
+// form REMOVED (exit ramp), Reset page heading/CTA made asset-specific,
+// CTA unified to "Get My Free Printable", placeholder set per critique.
+
+function captureBlock(heading, body) {
+  return `
+      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">${heading}</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">${body}</p>
+        <form id="tcu-capture-form" novalidate>
+          <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
+          <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">
+          <input type="text" name="${M1_HONEYPOT}" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border:0; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; cursor:pointer;">Get My Free Printable</button>
+          <p id="tcu-capture-status" role="status" aria-live="polite" style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#bdbdbd;"></p>
+        </form>
+      </section>
+    <script>
+      (function () {
+        var form = document.getElementById('tcu-capture-form');
+        var status = document.getElementById('tcu-capture-status');
+        var email = document.getElementById('tcu-capture-email');
+        if (!form) return;
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var value = (email && email.value || '').trim();
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
+            status.textContent = 'That email does not look right. Check it and try again.';
+            if (email) email.focus();
+            return;
+          }
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+          fetch(${JSON.stringify(M1_ENDPOINT)}, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'field_0=' + encodeURIComponent(value) + '&${M1_HONEYPOT}='
+          }).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            form.reset();
+            status.textContent = "You're in \u2014 check your inbox.";
+          }).catch(function () {
+            status.textContent = 'Something went wrong. Try again in a moment.';
+          }).then(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
+          });
+        });
+      })();
+    </script>`;
+}
+
+const M1_GENERIC_HEADING = 'Get the free Come Up starter tools by email';
+const M1_GENERIC_BODY = 'One email when new free tools drop, plus the Reset tracker printable. No spam, no selling your info &mdash; unsubscribe anytime.';
+const M1_TARGETS = [
+  { file: 'index.html', heading: M1_GENERIC_HEADING, body: M1_GENERIC_BODY },
+  { file: 'tools.html', heading: M1_GENERIC_HEADING, body: M1_GENERIC_BODY },
+  { file: '30-day-paycheck-reset.html', heading: 'Get the Free 30-Day Reset Printable', body: 'Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.' }
+];
+for (const u of UPSELL) {
+  M1_TARGETS.push({
+    file: u.tool,
+    heading: 'Get the free ' + u.toolName + ' companion by email',
+    body: 'You just ran the ' + u.toolName + '. Get the free Come Up starter tools by email &mdash; including the Reset tracker printable &mdash; plus one email when new free tools drop. No spam, no selling your info &mdash; unsubscribe anytime.'
+  });
+}
+
+for (const t of M1_TARGETS) {
+  if (!fs.existsSync(t.file)) { console.log('  skip (missing): ' + t.file); continue; }
+  let h = fs.readFileSync(t.file, 'utf8');
+  if (h.includes('class="tcu-capture"')) { console.log('  skip (already has capture): ' + t.file); continue; }
+  const anchor = '<section class="tcu"';
+  const idx = h.indexOf(anchor);
+  if (idx === -1) { console.log('  skip (no tcu anchor): ' + t.file); continue; }
+  const lineStart = h.lastIndexOf('\n', idx) + 1;
+  const indent = h.slice(lineStart, idx).match(/^\s*/)[0];
+  h = h.slice(0, lineStart) + indent + captureBlock(t.heading, t.body).trimStart() + '\n' + h.slice(lineStart);
+  fs.writeFileSync(t.file, h);
+  changed.push(t.file);
+  console.log('  + capture -> ' + t.file);
 }
 
 // ---------------------------------------------------------------------------
