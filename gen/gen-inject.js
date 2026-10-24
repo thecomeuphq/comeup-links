@@ -316,7 +316,7 @@ function captureBlock(heading, body) {
         form.addEventListener('submit', function (ev) {
           ev.preventDefault();
           var value = (email && email.value || '').trim();
-          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
+          if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(value)) {
             status.textContent = 'That email does not look right. Check it and try again.';
             if (email) email.focus();
             return;
@@ -346,7 +346,7 @@ const M1_GENERIC_BODY = 'One email when new free tools drop, plus the Reset trac
 const M1_TARGETS = [
   { file: 'index.html', heading: M1_GENERIC_HEADING, body: M1_GENERIC_BODY },
   { file: 'tools.html', heading: M1_GENERIC_HEADING, body: M1_GENERIC_BODY },
-  { file: '30-day-paycheck-reset.html', heading: 'Get the Free 30-Day Reset Printable', body: 'Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.' }
+  { file: '30-day-paycheck-reset.html', afterMain: true, heading: 'Get the Free 30-Day Reset Printable', body: 'Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.' }
 ];
 for (const u of UPSELL) {
   M1_TARGETS.push({
@@ -360,12 +360,23 @@ for (const t of M1_TARGETS) {
   if (!fs.existsSync(t.file)) { console.log('  skip (missing): ' + t.file); continue; }
   let h = fs.readFileSync(t.file, 'utf8');
   if (h.includes('class="tcu-capture"')) { console.log('  skip (already has capture): ' + t.file); continue; }
-  const anchor = '<section class="tcu"';
-  const idx = h.indexOf(anchor);
-  if (idx === -1) { console.log('  skip (no tcu anchor): ' + t.file); continue; }
-  const lineStart = h.lastIndexOf('\n', idx) + 1;
-  const indent = h.slice(lineStart, idx).match(/^\s*/)[0];
-  h = h.slice(0, lineStart) + indent + captureBlock(t.heading, t.body).trimStart() + '\n' + h.slice(lineStart);
+  let insertAt;
+  let indent = '      ';
+  if (t.afterMain) {
+    // The Reset app re-renders <main id="weeks"> (host.innerHTML) — a block
+    // inserted inside that container is wiped at runtime. Anchor AFTER it.
+    const mIdx = h.indexOf('</main>');
+    if (mIdx === -1) { console.log('  skip (no </main> anchor): ' + t.file); continue; }
+    const lineEnd = h.indexOf('\n', mIdx);
+    insertAt = lineEnd === -1 ? h.length : lineEnd + 1;
+  } else {
+    const anchor = '<section class="tcu"';
+    const idx = h.indexOf(anchor);
+    if (idx === -1) { console.log('  skip (no tcu anchor): ' + t.file); continue; }
+    insertAt = h.lastIndexOf('\n', idx) + 1;
+    indent = h.slice(insertAt, idx).match(/^\s*/)[0];
+  }
+  h = h.slice(0, insertAt) + indent + captureBlock(t.heading, t.body).trimStart() + '\n' + h.slice(insertAt);
   fs.writeFileSync(t.file, h);
   changed.push(t.file);
   console.log('  + capture -> ' + t.file);

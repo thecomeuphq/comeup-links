@@ -786,7 +786,7 @@
         form.addEventListener('submit', function (ev) {
           ev.preventDefault();
           var value = (email && email.value || '').trim();
-          if (!/^[^@s]+@[^@s]+.[^@s]+$/.test(value)) {
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
             status.textContent = 'That email does not look right. Check it and try again.';
             if (email) email.focus();
             return;
