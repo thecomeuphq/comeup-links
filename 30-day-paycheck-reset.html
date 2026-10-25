@@ -56,7 +56,7 @@
         -webkit-font-smoothing: antialiased;}
       .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 72px;}
       /* ---------- Hero ---------- */
-      .hero { padding: 44px 0 28px;}
+      .hero { padding: 30px 0 18px;}
       .hero-tag {
         display: inline-block;
         font-family: "JetBrains Mono", monospace;
@@ -84,7 +84,7 @@
       .btn-start {
         display: inline-block;
         background: var(--amber);
-        color: var(--btn-ink);
+        color: var(--ink);
         font-family: "Oswald", sans-serif;
         font-weight: 600; font-size: 20px;
         letter-spacing: 0.04em; text-transform: uppercase;
@@ -119,7 +119,7 @@
         font-family: "JetBrains Mono", monospace;
         font-size: 11px; font-weight: 700;
         letter-spacing: 0.18em; text-transform: uppercase;
-        color: var(--btn-ink);
+        color: var(--ink);
         background: var(--amber);
         padding: 4px 9px; border-radius: 3px;
         margin-bottom: 10px;}
@@ -132,7 +132,7 @@
       .btn-tracker {
         display: inline-block;
         background: var(--amber);
-        color: var(--btn-ink);
+        color: var(--ink);
         font-family: "Oswald", sans-serif;
         font-weight: 600; font-size: 18px;
         letter-spacing: 0.04em; text-transform: uppercase;
@@ -230,7 +230,7 @@
         font-weight: 700; font-size: 15px;
         text-decoration: none;
         padding: 11px 14px; border-radius: 4px;}
-      .btn-move:hover { background: var(--amber); color: var(--btn-ink);}
+      .btn-move:hover { background: var(--amber); color: var(--ink);}
       .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;}
       .deeper { font-size: 13px; color: var(--ink-faint); margin: 0;}
       .deeper a { color: var(--ink-dim); font-weight: 600; text-decoration: underline; text-underline-offset: 2px;}
@@ -243,7 +243,7 @@
         background: transparent; color: var(--ink-dim);
         cursor: pointer; white-space: nowrap;}
       .btn-done:hover { border-color: var(--amber); color: var(--amber);}
-      .card.is-done .btn-done { background: var(--amber); border-color: var(--amber); color: var(--btn-ink);}
+      .card.is-done .btn-done { background: var(--amber); border-color: var(--amber); color: var(--ink);}
       /* ---------- Finale ---------- */
       .finale {
         margin-top: 48px;
@@ -298,14 +298,14 @@
     .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent);}
     .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
     .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
-    .tcu-share-b:hover { background:var(--amber); color:var(--btn-ink);}
+    .tcu-share-b:hover { background:var(--amber); color:var(--ink);}
     .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
     .tcu-share-b svg { width:15px; height:15px;}
     .tcu-share-n { font-size:12.5px; color:var(--ink-dim);}
     .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
     .tcu-share-n.err { color:#c8553d; font-weight:700;}
     .tcu-cta { margin-top:16px;}
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:var(--btn-ink); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:var(--ink); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
     .tcu-cta-a:hover { filter:brightness(1.08);}
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Free 30-Day Paycheck Reset Tracker for Hourly Workers | The Come Up","description":"One 3-minute money move a day for 30 days. Free paycheck reset tracker with 30 daily actions built for shift workers. Progress saves in your browser.","url":"https://thecomeuphq.com/30-day-paycheck-reset.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"30 Day Paycheck Reset.Html","item":"https://thecomeuphq.com/30-day-paycheck-reset.html"}]}]}</script>
@@ -391,12 +391,57 @@
       <!-- Hero -->
       <header class="hero">
         <span class="hero-tag">30 days &middot; 30 moves &middot; ~3 min each</span>
-        <h1>The 30-Day<br />Paycheck <span class="amber">Reset</span></h1>
+        <h1>Take control of your next paycheck in <span class="amber">30 days</span></h1>
         <p class="hero-sub">One 3-minute money move a day. <strong>No budgets that take weekends. No finance degree.</strong> Built for shift workers who get paid by the hour and are tired of watching the check disappear.</p>
         <a class="btn-start" href="https://thecomeuphq.github.io/comeup-links/paycheck-health-score-quiz.html" target="_blank" rel="noopener">Start Day 1 &rarr;</a>
         <p class="hero-meta">FREE TOOLS EVERY DAY &middot; PROGRESS SAVES IN THIS BROWSER</p>
         <div class="hazard" aria-hidden="true"></div>
       </header>
+
+      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Get the Free 30-Day Reset Printable</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.</p>
+        <form id="tcu-capture-form" novalidate>
+          <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
+          <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">
+          <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border:0; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; cursor:pointer;">Get My Free Printable</button>
+          <p id="tcu-capture-status" role="status" aria-live="polite" style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#bdbdbd;"></p>
+        </form>
+        <p style="margin:10px 0 0; font-size:12px; letter-spacing:.02em; color:#7A6A58;">100% FREE &middot; INSTANT DELIVERY &middot; NO CREDIT CARD REQUIRED</p>
+      </section>
+    <script>
+      (function () {
+        var form = document.getElementById('tcu-capture-form');
+        var status = document.getElementById('tcu-capture-status');
+        var email = document.getElementById('tcu-capture-email');
+        if (!form) return;
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var value = (email && email.value || '').trim();
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
+            status.textContent = 'That email does not look right. Check it and try again.';
+            if (email) email.focus();
+            return;
+          }
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+          fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
+          }).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            form.reset();
+            status.textContent = "You're in — check your inbox.";
+          }).catch(function () {
+            status.textContent = 'Something went wrong. Try again in a moment.';
+          }).then(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
+          });
+        });
+      })();
+    </script>
 
       <!-- Free payday worksheet -->
       <section class="tracker-banner" aria-label="Free Paycheck Protection Checklist">
@@ -459,49 +504,7 @@
         </div>
       </section>
 </main>
-      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
-        <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Get the Free 30-Day Reset Printable</h2>
-        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.</p>
-        <form id="tcu-capture-form" novalidate>
-          <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
-          <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">
-          <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
-          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border:0; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; cursor:pointer;">Get My Free Printable</button>
-          <p id="tcu-capture-status" role="status" aria-live="polite" style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#bdbdbd;"></p>
-        </form>
-      </section>
-    <script>
-      (function () {
-        var form = document.getElementById('tcu-capture-form');
-        var status = document.getElementById('tcu-capture-status');
-        var email = document.getElementById('tcu-capture-email');
-        if (!form) return;
-        form.addEventListener('submit', function (ev) {
-          ev.preventDefault();
-          var value = (email && email.value || '').trim();
-          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
-            status.textContent = 'That email does not look right. Check it and try again.';
-            if (email) email.focus();
-            return;
-          }
-          var btn = form.querySelector('button[type="submit"]');
-          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
-          fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
-          }).then(function (r) {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            form.reset();
-            status.textContent = "You're in — check your inbox.";
-          }).catch(function () {
-            status.textContent = 'Something went wrong. Try again in a moment.';
-          }).then(function () {
-            if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
-          });
-        });
-      })();
-    </script>
+
 
       <!-- Finale -->
       <section class="finale locked" id="finale">
