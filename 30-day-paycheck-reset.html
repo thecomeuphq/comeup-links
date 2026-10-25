@@ -58,7 +58,7 @@
       }
       .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 72px; }
       /* ---------- Hero ---------- */
-      .hero { padding: 44px 0 28px; }
+      .hero { padding: 30px 0 18px; }
       .hero-tag {
         display: inline-block;
         font-family: "JetBrains Mono", monospace;
@@ -427,12 +427,57 @@
       <!-- Hero -->
       <header class="hero">
         <span class="hero-tag">30 days &middot; 30 moves &middot; ~3 min each</span>
-        <h1>The 30-Day<br />Paycheck <span class="amber">Reset</span></h1>
+        <h1>Take control of your next paycheck in <span class="amber">30 days</span></h1>
         <p class="hero-sub">One 3-minute money move a day. <strong>No budgets that take weekends. No finance degree.</strong> Built for shift workers who get paid by the hour and are tired of watching the check disappear.</p>
         <a class="btn-start" href="https://thecomeuphq.github.io/comeup-links/paycheck-health-score-quiz.html" target="_blank" rel="noopener">Start Day 1 &rarr;</a>
         <p class="hero-meta">FREE TOOLS EVERY DAY &middot; PROGRESS SAVES IN THIS BROWSER</p>
         <div class="hazard" aria-hidden="true"></div>
       </header>
+
+      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">Get the Free 30-Day Reset Printable</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.</p>
+        <form id="tcu-capture-form" novalidate>
+          <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
+          <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">
+          <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border:0; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; cursor:pointer;">Get My Free Printable</button>
+          <p id="tcu-capture-status" role="status" aria-live="polite" style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#bdbdbd;"></p>
+        </form>
+        <p style="margin:10px 0 0; font-size:12px; letter-spacing:.02em; color:#8f8f8f;">100% FREE &middot; INSTANT DELIVERY &middot; NO CREDIT CARD REQUIRED</p>
+      </section>
+    <script>
+      (function () {
+        var form = document.getElementById('tcu-capture-form');
+        var status = document.getElementById('tcu-capture-status');
+        var email = document.getElementById('tcu-capture-email');
+        if (!form) return;
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var value = (email && email.value || '').trim();
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
+            status.textContent = 'That email does not look right. Check it and try again.';
+            if (email) email.focus();
+            return;
+          }
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+          fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
+          }).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            form.reset();
+            status.textContent = "You're in — check your inbox.";
+          }).catch(function () {
+            status.textContent = 'Something went wrong. Try again in a moment.';
+          }).then(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
+          });
+        });
+      })();
+    </script>
 
       <!-- Free payday worksheet -->
       <section class="tracker-banner" aria-label="Free Paycheck Protection Checklist">
@@ -495,49 +540,7 @@
         </div>
       </section>
 </main>
-      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
-        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">Get the Free 30-Day Reset Printable</h2>
-        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.</p>
-        <form id="tcu-capture-form" novalidate>
-          <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
-          <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">
-          <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
-          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border:0; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; cursor:pointer;">Get My Free Printable</button>
-          <p id="tcu-capture-status" role="status" aria-live="polite" style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#bdbdbd;"></p>
-        </form>
-      </section>
-    <script>
-      (function () {
-        var form = document.getElementById('tcu-capture-form');
-        var status = document.getElementById('tcu-capture-status');
-        var email = document.getElementById('tcu-capture-email');
-        if (!form) return;
-        form.addEventListener('submit', function (ev) {
-          ev.preventDefault();
-          var value = (email && email.value || '').trim();
-          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
-            status.textContent = 'That email does not look right. Check it and try again.';
-            if (email) email.focus();
-            return;
-          }
-          var btn = form.querySelector('button[type="submit"]');
-          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
-          fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
-          }).then(function (r) {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            form.reset();
-            status.textContent = "You're in — check your inbox.";
-          }).catch(function () {
-            status.textContent = 'Something went wrong. Try again in a moment.';
-          }).then(function () {
-            if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
-          });
-        });
-      })();
-    </script>
+
 
       <!-- Finale -->
       <section class="finale locked" id="finale">
