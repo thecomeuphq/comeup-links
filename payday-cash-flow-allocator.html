@@ -27,302 +27,267 @@
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
     <style>
       :root{
-        --bg:#0d0d0f;
-        --panel:#17171a;
-        --panel-2:#1e1e22;
-        --line:#2c2c31;
-        --ink:#f2ede4;
-        --ink-dim:#a8a29a;
-        --ink-faint:#6f6a61;
-        --amber:#f5a524;
-        --orange:#ff6b1a;
-        --amber-soft:rgba(245,165,36,.14);
-        --green:#3ecf7a;
-        --yellow:#f5c524;
-        --red:#ff5147;
-        --radius:10px;
-      }
-      *{ box-sizing:border-box; }
-      html{ -webkit-text-size-adjust:100%; }
+        --bg:#FAF6EF;
+        --panel:#FFFFFF;
+        --panel-2:#F5EDDD;
+        --line:#E3D5BE;
+        --ink:#2A211A;
+        --ink-dim:#7A6A58;
+        --ink-faint:#9A8A76;
+        --amber:#C06A00;
+        --orange:#E8590C;
+        --amber-soft:rgba(192, 106, 0, 0.10);
+        --green:#1E7A3C;
+        --yellow:#B8860B;
+        --red:#BE3A2B;
+        --radius:10px;}
+      *{ box-sizing:border-box;}
+      html{ -webkit-text-size-adjust:100%;}
       body{
         margin:0;
         background:
-          repeating-linear-gradient(0deg, rgba(255,255,255,.014) 0 1px, transparent 1px 56px),
+          repeating-linear-gradient(0deg, rgba(255, 253, 248, .014) 0 1px, transparent 1px 56px),
           var(--bg);
         color:var(--ink);
         font-family:"Barlow", system-ui, sans-serif;
         font-size:16px;
-        line-height:1.5;
-      }
-      .wrap{ max-width:760px; margin:0 auto; padding:20px 16px 56px; }
+        line-height:1.5;}
+      .wrap{ max-width:760px; margin:0 auto; padding:20px 16px 56px;}
       /* ---------- header ---------- */
       .hazard{
         height:8px; border-radius:4px; margin-bottom:22px;
-        background:repeating-linear-gradient(-45deg, var(--amber) 0 14px, #141414 14px 28px);
-        opacity:.9;
-      }
+        background:repeating-linear-gradient(-45deg, var(--amber) 0 14px, #221A14 14px 28px);
+        opacity:.9;}
       h1{
         font-family:"Barlow Condensed", sans-serif;
         font-weight:700; text-transform:uppercase; letter-spacing:.02em;
-        font-size:clamp(2rem, 7vw, 3rem); line-height:1.02; margin:0 0 8px;
-      }
-      h1 . accent, h1 .accent{ color:var(--amber); }
-      .lede{ color:var(--ink-dim); margin:0 0 26px; max-width:56ch; }
-      .lede strong{ color:var(--ink); }
+        font-size:clamp(2rem, 7vw, 3rem); line-height:1.02; margin:0 0 8px;}
+      h1 . accent, h1 .accent{ color:var(--amber);}
+      .lede{ color:var(--ink-dim); margin:0 0 26px; max-width:56ch;}
+      .lede strong{ color:var(--ink);}
       /* ---------- step panels ---------- */
       .step{
         background:var(--panel);
         border:1px solid var(--line);
         border-radius:var(--radius);
         padding:20px 18px 22px;
-        margin-bottom:18px;
-      }
-      .step-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+        margin-bottom:18px;}
+      .step-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px;}
       .step-num{
         font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:.8rem;
-        color:#141414; background:var(--amber);
-        padding:3px 9px; border-radius:4px; letter-spacing:.06em; white-space:nowrap;
-      }
+        color:#2A211A; background:var(--amber);
+        padding:3px 9px; border-radius:4px; letter-spacing:.06em; white-space:nowrap;}
       .step h2{
         font-family:"Barlow Condensed", sans-serif; font-weight:600; text-transform:uppercase;
-        letter-spacing:.04em; font-size:1.45rem; margin:0; line-height:1.1;
-      }
-      .step-sub{ color:var(--ink-dim); font-size:.95rem; margin:0 0 16px; }
-      .step-sub strong{ color:var(--amber); }
+        letter-spacing:.04em; font-size:1.45rem; margin:0; line-height:1.1;}
+      .step-sub{ color:var(--ink-dim); font-size:.95rem; margin:0 0 16px;}
+      .step-sub strong{ color:var(--amber);}
       label.field-label{
         display:block; font-size:.78rem; font-weight:600; letter-spacing:.09em;
-        text-transform:uppercase; color:var(--ink-faint); margin:0 0 6px;
-      }
+        text-transform:uppercase; color:var(--ink-faint); margin:0 0 6px;}
       input[type="number"], input[type="text"], input[type="date"], select{
         width:100%; background:var(--panel-2); color:var(--ink);
         border:1px solid var(--line); border-radius:8px;
         padding:12px 12px; font:inherit; font-size:1rem;
-        appearance:none; -webkit-appearance:none;
-      }
-      input:focus, select:focus{ outline:2px solid var(--amber); outline-offset:1px; border-color:var(--amber); }
-      input[type="date"]{ color-scheme:dark; }
-      .money-wrap{ position:relative; }
+        appearance:none; -webkit-appearance:none;}
+      input:focus, select:focus{ outline:2px solid var(--amber); outline-offset:1px; border-color:var(--amber);}
+      input[type="date"]{ color-scheme:light;}
+      .money-wrap{ position:relative;}
       .money-wrap::before{
         content:"$"; position:absolute; left:12px; top:50%; transform:translateY(-50%);
-        color:var(--amber); font-family:"IBM Plex Mono", monospace; font-weight:600;
-      }
-      .money-wrap input{ padding-left:26px; font-family:"IBM Plex Mono", monospace; font-weight:600; }
-      .grid-3{ display:grid; grid-template-columns:1fr; gap:14px; }
-      @media (min-width:640px){ .grid-3{ grid-template-columns:1.2fr 1fr 1fr; } }
+        color:var(--amber); font-family:"IBM Plex Mono", monospace; font-weight:600;}
+      .money-wrap input{ padding-left:26px; font-family:"IBM Plex Mono", monospace; font-weight:600;}
+      .grid-3{ display:grid; grid-template-columns:1fr; gap:14px;}
+      @media (min-width:640px){ .grid-3{ grid-template-columns:1.2fr 1fr 1fr;}}
       .period-note{
         margin-top:14px; padding:10px 12px; border:1px dashed var(--line); border-radius:8px;
-        color:var(--ink-dim); font-size:.92rem;
-      }
-      .period-note strong{ color:var(--ink); font-family:"IBM Plex Mono", monospace; font-weight:600; }
+        color:var(--ink-dim); font-size:.92rem;}
+      .period-note strong{ color:var(--ink); font-family:"IBM Plex Mono", monospace; font-weight:600;}
       /* ---------- bills ---------- */
-      .quick-add{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+      .quick-add{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
       .qa-btn{
         background:var(--panel-2); color:var(--ink); border:1px solid var(--line);
         border-radius:999px; padding:7px 13px; font:inherit; font-size:.88rem; font-weight:600;
-        cursor:pointer;
-      }
-      .qa-btn:hover{ border-color:var(--amber); color:var(--amber); }
-      .qa-btn::before{ content:"+ "; color:var(--amber); font-weight:700; }
-      .bill-row{ display:grid; grid-template-columns:1fr 110px 36px; gap:8px; margin-bottom:8px; align-items:center; }
-      .bill-row .amt{ font-family:"IBM Plex Mono", monospace; font-weight:600; }
+        cursor:pointer;}
+      .qa-btn:hover{ border-color:var(--amber); color:var(--amber);}
+      .qa-btn::before{ content:"+ "; color:var(--amber); font-weight:700;}
+      .bill-row{ display:grid; grid-template-columns:1fr 110px 36px; gap:8px; margin-bottom:8px; align-items:center;}
+      .bill-row .amt{ font-family:"IBM Plex Mono", monospace; font-weight:600;}
       .bill-del{
         background:transparent; border:1px solid var(--line); color:var(--ink-faint);
-        border-radius:8px; height:44px; cursor:pointer; font-size:1.05rem; line-height:1;
-      }
-      .bill-del:hover{ color:var(--red); border-color:var(--red); }
+        border-radius:8px; height:44px; cursor:pointer; font-size:1.05rem; line-height:1;}
+      .bill-del:hover{ color:var(--red); border-color:var(--red);}
       .add-bill{
         width:100%; background:transparent; border:1px dashed var(--line); color:var(--ink-dim);
-        border-radius:8px; padding:11px; font:inherit; font-weight:600; cursor:pointer; margin-top:2px;
-      }
-      .add-bill:hover{ border-color:var(--amber); color:var(--amber); }
+        border-radius:8px; padding:11px; font:inherit; font-weight:600; cursor:pointer; margin-top:2px;}
+      .add-bill:hover{ border-color:var(--amber); color:var(--amber);}
       .committed{
         display:flex; justify-content:space-between; align-items:baseline;
-        margin-top:16px; padding-top:14px; border-top:1px solid var(--line);
-      }
-      .committed .lbl{ font-size:.8rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); }
-      .committed .val{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.5rem; color:var(--amber); }
+        margin-top:16px; padding-top:14px; border-top:1px solid var(--line);}
+      .committed .lbl{ font-size:.8rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint);}
+      .committed .val{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.5rem; color:var(--amber);}
       /* ---------- goal chips ---------- */
-      .chips{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-      @media (max-width:420px){ .chips{ grid-template-columns:1fr; } }
+      .chips{ display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+      @media (max-width:420px){ .chips{ grid-template-columns:1fr;}}
       .chip{
         text-align:left; background:var(--panel-2); border:1px solid var(--line); border-radius:10px;
-        padding:13px 14px; cursor:pointer; color:var(--ink); font:inherit;
-      }
-      .chip .chip-name{ display:block; font-weight:700; font-size:1rem; margin-bottom:2px; }
-      .chip .chip-desc{ display:block; color:var(--ink-dim); font-size:.85rem; line-height:1.35; }
+        padding:13px 14px; cursor:pointer; color:var(--ink); font:inherit;}
+      .chip .chip-name{ display:block; font-weight:700; font-size:1rem; margin-bottom:2px;}
+      .chip .chip-desc{ display:block; color:var(--ink-dim); font-size:.85rem; line-height:1.35;}
       .chip[aria-pressed="true"]{
         border-color:var(--amber); background:var(--amber-soft);
-        box-shadow:inset 0 0 0 1px var(--amber);
-      }
-      .chip[aria-pressed="true"] .chip-name{ color:var(--amber); }
+        box-shadow:inset 0 0 0 1px var(--amber);}
+      .chip[aria-pressed="true"] .chip-name{ color:var(--amber);}
       /* ---------- buckets / sliders ---------- */
       .bucket{
         border:1px solid var(--line); border-radius:10px; padding:14px 14px 12px; margin-bottom:12px;
-        background:var(--panel-2);
-      }
-      .bucket.locked{ border-style:dashed; background:var(--panel); }
-      .bucket-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
-      .bucket-name{ font-weight:700; font-size:1rem; }
+        background:var(--panel-2);}
+      .bucket.locked{ border-style:dashed; background:var(--panel);}
+      .bucket-top{ display:flex; justify-content:space-between; align-items:baseline; gap:10px;}
+      .bucket-name{ font-weight:700; font-size:1rem;}
       .bucket-name .tag{
-        font-family:"IBM Plex Mono", monospace; font-size:.72rem; font-weight:700; color:#141414;
-        background:var(--amber); border-radius:3px; padding:2px 6px; margin-right:8px; vertical-align:2px;
-      }
-      .bucket.locked .bucket-name .tag{ background:var(--ink-faint); color:#0d0d0f; }
-      .bucket-amt{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.25rem; color:var(--amber); white-space:nowrap; }
-      .bucket.locked .bucket-amt{ color:var(--ink); }
-      .bucket-desc{ color:var(--ink-dim); font-size:.88rem; margin:3px 0 0; }
-      .slider-row{ display:flex; align-items:center; gap:12px; margin-top:10px; }
+        font-family:"IBM Plex Mono", monospace; font-size:.72rem; font-weight:700; color:#2A211A;
+        background:var(--amber); border-radius:3px; padding:2px 6px; margin-right:8px; vertical-align:2px;}
+      .bucket.locked .bucket-name .tag{ background:var(--ink-faint); color:#2A211A;}
+      .bucket-amt{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.25rem; color:var(--amber); white-space:nowrap;}
+      .bucket.locked .bucket-amt{ color:var(--ink);}
+      .bucket-desc{ color:var(--ink-dim); font-size:.88rem; margin:3px 0 0;}
+      .slider-row{ display:flex; align-items:center; gap:12px; margin-top:10px;}
       input[type="range"]{
         flex:1; -webkit-appearance:none; appearance:none; height:8px; border-radius:4px;
-        background:linear-gradient(to right, var(--amber) var(--fill,50%), #333338 var(--fill,50%));
-        cursor:pointer; margin:0;
-      }
+        background:linear-gradient(to right, var(--amber) var(--fill,50%), #F5EDDD var(--fill,50%));
+        cursor:pointer; margin:0;}
       input[type="range"]::-webkit-slider-thumb{
         -webkit-appearance:none; width:26px; height:26px; border-radius:50%;
-        background:#141414; border:3px solid var(--amber); box-shadow:0 2px 8px rgba(0,0,0,.6);
-      }
+        background:#FFFFFF; border:3px solid var(--amber); box-shadow:0 2px 8px rgba(74, 54, 32, 0.27);}
       input[type="range"]::-moz-range-thumb{
         width:20px; height:20px; border-radius:50%;
-        background:#141414; border:3px solid var(--amber);
-      }
+        background:#FFFFFF; border:3px solid var(--amber);}
       .pct{
         font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1rem; color:var(--ink);
-        min-width:52px; text-align:right;
-      }
-      .split-check{ font-size:.9rem; color:var(--ink-dim); margin:4px 0 0; }
-      .split-check strong{ font-family:"IBM Plex Mono", monospace; color:var(--green); }
-      .split-check.bad strong{ color:var(--red); }
+        min-width:52px; text-align:right;}
+      .split-check{ font-size:.9rem; color:var(--ink-dim); margin:4px 0 0;}
+      .split-check strong{ font-family:"IBM Plex Mono", monospace; color:var(--green);}
+      .split-check.bad strong{ color:var(--red);}
       .shortfall{
         display:none; margin-top:14px; padding:12px 14px; border-radius:8px;
-        background:rgba(255,81,71,.12); border:1px solid var(--red); color:#ffb3ae; font-size:.95rem;
-      }
-      .shortfall.show{ display:block; }
-      .shortfall strong{ color:#fff; font-family:"IBM Plex Mono", monospace; }
+        background:rgba(190, 58, 43, .12); border:1px solid var(--red); color:#BE3A2B; font-size:.95rem;}
+      .shortfall.show{ display:block;}
+      .shortfall strong{ color:#2A211A; font-family:"IBM Plex Mono", monospace;}
       /* ---------- output ---------- */
       .output{
-        background:#101013; border:2px solid var(--amber); border-radius:14px;
-        padding:22px 18px; margin:26px 0 18px;
-      }
+        background:#FFFFFF; border:2px solid var(--amber); border-radius:14px;
+        padding:22px 18px; margin:26px 0 18px;}
       .output h2{
         font-family:"Barlow Condensed", sans-serif; font-weight:700; text-transform:uppercase;
-        letter-spacing:.03em; font-size:1.7rem; margin:0 0 2px; line-height:1.1;
-      }
-      .output .out-sub{ color:var(--ink-dim); margin:0 0 18px; font-size:.95rem; }
-      .gauge-zone{ display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-bottom:20px; }
-      .gauge-svg{ flex:0 0 auto; }
+        letter-spacing:.03em; font-size:1.7rem; margin:0 0 2px; line-height:1.1;}
+      .output .out-sub{ color:var(--ink-dim); margin:0 0 18px; font-size:.95rem;}
+      .gauge-zone{ display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-bottom:20px;}
+      .gauge-svg{ flex:0 0 auto;}
       .gauge-read .ratio-big{
-        font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:2rem; line-height:1;
-      }
-      .gauge-read .ratio-lbl{ font-size:.78rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); margin-top:4px; }
-      .gauge-read .verdict{ font-weight:700; margin-top:8px; font-size:1.02rem; }
-      .gauge-read .verdict-detail{ color:var(--ink-dim); font-size:.92rem; margin-top:2px; max-width:38ch; }
-      .exec-list{ list-style:none; margin:0; padding:0; counter-reset:exec; }
+        font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:2rem; line-height:1;}
+      .gauge-read .ratio-lbl{ font-size:.78rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); margin-top:4px;}
+      .gauge-read .verdict{ font-weight:700; margin-top:8px; font-size:1.02rem;}
+      .gauge-read .verdict-detail{ color:var(--ink-dim); font-size:.92rem; margin-top:2px; max-width:38ch;}
+      .exec-list{ list-style:none; margin:0; padding:0; counter-reset:exec;}
       .exec-item{
         display:flex; gap:12px; align-items:flex-start;
         background:var(--panel); border:1px solid var(--line); border-radius:10px;
-        padding:13px 14px; margin-bottom:9px; cursor:pointer;
-      }
+        padding:13px 14px; margin-bottom:9px; cursor:pointer;}
       .exec-item .box{
         flex:0 0 auto; width:24px; height:24px; border-radius:6px; margin-top:1px;
         border:2px solid var(--amber); display:flex; align-items:center; justify-content:center;
-        color:transparent; font-weight:700; font-size:.95rem;
-      }
-      .exec-item.done .box{ background:var(--amber); color:#141414; }
-      .exec-item.done .exec-text{ color:var(--ink-faint); text-decoration:line-through; }
-      .exec-text{ font-size:1rem; }
-      .exec-text .amt{ font-family:"IBM Plex Mono", monospace; font-weight:700; color:var(--amber); }
-      .exec-item.done .exec-text .amt{ color:var(--ink-faint); }
-      .exec-text .why{ display:block; color:var(--ink-dim); font-size:.87rem; margin-top:1px; }
-      .exec-item.done .exec-text .why{ color:var(--ink-faint); }
+        color:transparent; font-weight:700; font-size:.95rem;}
+      .exec-item.done .box{ background:var(--amber); color:#2A211A;}
+      .exec-item.done .exec-text{ color:var(--ink-faint); text-decoration:line-through;}
+      .exec-text{ font-size:1rem;}
+      .exec-text .amt{ font-family:"IBM Plex Mono", monospace; font-weight:700; color:var(--amber);}
+      .exec-item.done .exec-text .amt{ color:var(--ink-faint);}
+      .exec-text .why{ display:block; color:var(--ink-dim); font-size:.87rem; margin-top:1px;}
+      .exec-item.done .exec-text .why{ color:var(--ink-faint);}
       .tally{
         display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;
-        border-top:1px solid var(--line); padding-top:14px; margin-top:6px;
-      }
-      .tally .t-lbl{ font-size:.8rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); }
-      .tally .t-val{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.15rem; }
-      .tally .t-val.ok{ color:var(--green); }
-      .out-actions{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+        border-top:1px solid var(--line); padding-top:14px; margin-top:6px;}
+      .tally .t-lbl{ font-size:.8rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint);}
+      .tally .t-val{ font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:1.15rem;}
+      .tally .t-val.ok{ color:var(--green);}
+      .out-actions{ display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;}
       .btn{
-        font:inherit; font-weight:700; border-radius:8px; padding:12px 18px; cursor:pointer; border:1px solid var(--amber);
-      }
-      .btn-primary{ background:var(--amber); color:#141414; }
-      .btn-primary:hover{ background:var(--orange); border-color:var(--orange); color:#fff; }
-      .btn-ghost{ background:transparent; color:var(--amber); }
-      .btn-ghost:hover{ background:var(--amber-soft); }
-      .copy-note{ font-size:.88rem; color:var(--green); align-self:center; min-height:1.2em; }
+        font:inherit; font-weight:700; border-radius:8px; padding:12px 18px; cursor:pointer; border:1px solid var(--amber);}
+      .btn-primary{ background:var(--amber); color:#2A211A;}
+      .btn-primary:hover{ background:var(--orange); border-color:var(--orange); color:#2A211A;}
+      .btn-ghost{ background:transparent; color:var(--amber);}
+      .btn-ghost:hover{ background:var(--amber-soft);}
+      .copy-note{ font-size:.88rem; color:var(--green); align-self:center; min-height:1.2em;}
       /* ---------- next steps / CTA / FAQ ---------- */
       .section-title{
         font-family:"Barlow Condensed", sans-serif; font-weight:600; text-transform:uppercase;
-        letter-spacing:.04em; font-size:1.4rem; margin:30px 0 12px;
-      }
-      .next-grid{ display:grid; grid-template-columns:1fr; gap:12px; }
-      @media (min-width:640px){ .next-grid{ grid-template-columns:1fr 1fr; } }
+        letter-spacing:.04em; font-size:1.4rem; margin:30px 0 12px;}
+      .next-grid{ display:grid; grid-template-columns:1fr; gap:12px;}
+      @media (min-width:640px){ .next-grid{ grid-template-columns:1fr 1fr;}}
       .next-card{
         display:block; text-decoration:none; color:var(--ink);
-        background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px;
-      }
-      .next-card:hover{ border-color:var(--amber); }
-      .next-card .nc-name{ font-weight:700; font-size:1.05rem; margin-bottom:3px; }
-      .next-card .nc-desc{ color:var(--ink-dim); font-size:.92rem; }
-      .next-card .nc-go{ color:var(--amber); font-weight:700; font-size:.9rem; margin-top:8px; display:block; }
+        background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px;}
+      .next-card:hover{ border-color:var(--amber);}
+      .next-card .nc-name{ font-weight:700; font-size:1.05rem; margin-bottom:3px;}
+      .next-card .nc-desc{ color:var(--ink-dim); font-size:.92rem;}
+      .next-card .nc-go{ color:var(--amber); font-weight:700; font-size:.9rem; margin-top:8px; display:block;}
       .cta{
         display:block; text-decoration:none; margin-top:14px;
-        background:linear-gradient(120deg, #2a1c05, #1c1c1f 60%);
+        background:linear-gradient(120deg, #C06A00, #221A14 60%);
         border:1px solid var(--amber); border-radius:12px; padding:18px;
-        color:var(--ink);
-      }
-      .cta .cta-text{ font-size:1.05rem; line-height:1.5; }
-      .cta .cta-text strong{ color:var(--amber); }
-      .cta .cta-go{ display:inline-block; margin-top:10px; background:var(--amber); color:#141414; font-weight:700; padding:10px 16px; border-radius:8px; }
-      .cta:hover .cta-go{ background:var(--orange); color:#fff; }
+        color:var(--ink);}
+      .cta .cta-text{ font-size:1.05rem; line-height:1.5;}
+      .cta .cta-text strong{ color:var(--amber);}
+      .cta .cta-go{ display:inline-block; margin-top:10px; background:var(--amber); color:#FAF6EF; font-weight:700; padding:10px 16px; border-radius:8px;}
+      .cta:hover .cta-go{ background:var(--orange); color:#2A211A;}
       details.faq{
         background:var(--panel); border:1px solid var(--line); border-radius:10px;
-        padding:14px 16px; margin-bottom:10px;
-      }
-      details.faq summary{ cursor:pointer; font-weight:700; font-size:1rem; list-style:none; }
-      details.faq summary::-webkit-details-marker{ display:none; }
-      details.faq summary::after{ content:"+"; float:right; color:var(--amber); font-family:"IBM Plex Mono", monospace; font-weight:700; }
-      details.faq[open ] summary::after{ content:"–"; }
-      details.faq p{ color:var(--ink-dim); margin:10px 0 2px; }
-      details.faq p strong{ color:var(--ink); }
-      .foot{ color:var(--ink-faint); font-size:.85rem; text-align:center; margin-top:34px; }
+        padding:14px 16px; margin-bottom:10px;}
+      details.faq summary{ cursor:pointer; font-weight:700; font-size:1rem; list-style:none;}
+      details.faq summary::-webkit-details-marker{ display:none;}
+      details.faq summary::after{ content:"+"; float:right; color:var(--amber); font-family:"IBM Plex Mono", monospace; font-weight:700;}
+      details.faq[open ] summary::after{ content:"–";}
+      details.faq p{ color:var(--ink-dim); margin:10px 0 2px;}
+      details.faq p strong{ color:var(--ink);}
+      .foot{ color:var(--ink-faint); font-size:.85rem; text-align:center; margin-top:34px;}
       /* ---------- print ---------- */
       @media print{
-        body{ background:#fff; color:#111; }
+        body{ background:#ffffff; color:#2A211A; }
         .wrap{ max-width:none; padding:0; }
         .hazard, .out-actions, .next-grid, .cta, .foot, .step{ display:none !important; }
-        h1{ color:#111; font-size:1.6rem; }
-        .lede{ color:#333; }
-        .output{ border:2px solid #111; background:#fff; margin-top:10px; }
-        .output h2{ color:#111; }
-        .output .out-sub, .gauge-read .verdict-detail, .exec-text .why{ color:#444; }
-        .exec-item{ background:#fff; border-color:#999; break-inside:avoid; }
-        .exec-item .box{ border-color:#111; }
-        .exec-text .amt, .bucket-amt, .gauge-read .ratio-big{ color:#111; }
+        h1{ color:#111111; font-size:1.6rem; }
+        .lede{ color:#333333; }
+        .output{ border:2px solid #111111; background:#ffffff; margin-top:10px; }
+        .output h2{ color:#111111; }
+        .output .out-sub, .gauge-read .verdict-detail, .exec-text .why{ color:#444444; }
+        .exec-item{ background:#ffffff; border-color:#E3D5BE; break-inside:avoid; }
+        .exec-item .box{ border-color:#111111; }
+        .exec-text .amt, .bucket-amt, .gauge-read .ratio-big{ color:#111111; }
         details.faq{ display:none; }
       }
     /* ===== The Come Up: related tools + share + next step ===== */
-    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
-    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px; }
-    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
-    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px); }
-    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3; }
-    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-dim); }
-    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); }
-    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
-    .tcu-share-b:hover { background:var(--amber); color:#17130c; }
-    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-share-b svg { width:15px; height:15px; }
-    .tcu-share-n { font-size:12.5px; color:var(--ink-dim); }
-    .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
-    .tcu-share-n.err { color:#c8553d; font-weight:700; }
-    .tcu-cta { margin-top:16px; }
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#17130c; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
-    .tcu-cta-a:hover { filter:brightness(1.08); }
-    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
+    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line);}
+    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px;}
+    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s;}
+    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px);}
+    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3;}
+    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-dim);}
+    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent);}
+    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
+    .tcu-share-b:hover { background:var(--amber); color:#2A211A;}
+    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-share-b svg { width:15px; height:15px;}
+    .tcu-share-n { font-size:12.5px; color:var(--ink-dim);}
+    .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
+    .tcu-share-n.err { color:#c8553d; font-weight:700;}
+    .tcu-cta { margin-top:16px;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#2A211A; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a:hover { filter:brightness(1.08);}
+    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Paycheck Allocator — Route Every Dollar | The Come Up","description":"Bills first, goal second, guilt-free spending last. Route your whole paycheck into buckets the moment it lands, and stop losing it by Tuesday.","url":"https://thecomeuphq.com/payday-cash-flow-allocator.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Payday Cash Flow Allocator.Html","item":"https://thecomeuphq.com/payday-cash-flow-allocator.html"}]}]}</script>
   <script>
 
@@ -591,15 +556,15 @@
       <p class="foot">Built for shift workers who get paid on a cycle, not a salary. Run it every payday.</p>
 
       <!-- ===== The Come Up: related tools + share + next step ===== -->
-      <section class="tcu-upsell" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
-        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">Want this on paper?</h2>
-        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">The free tool gives you the number. This tracker gives you the system you keep using &mdash; one-time $6.95, yours to print and reprint.</p>
-        <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&utm_medium=website&utm_campaign=site&utm_campaign=tool_upsell" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; text-decoration:none;">Get The Paycheck-to-Paycheck Weekly Planner &mdash; $6.95</a>
-        <p style="margin:12px 0 0; font-size:12px; line-height:1.6; color:#8a8a8a;">One-time purchase, no subscription. Everything on this site stays free &mdash; <a href="free-vs-paid.html">see what stays free</a>.</p>
+      <section class="tcu-upsell" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Want this on paper?</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">The free tool gives you the number. This tracker gives you the system you keep using &mdash; one-time $6.95, yours to print and reprint.</p>
+        <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&utm_medium=website&utm_campaign=site&utm_campaign=tool_upsell" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border-radius:12px; background:#C06A00; color:#2A211A; font-size:14px; font-weight:800; text-decoration:none;">Get The Paycheck-to-Paycheck Weekly Planner &mdash; $6.95</a>
+        <p style="margin:12px 0 0; font-size:12px; line-height:1.6; color:#7A6A58;">One-time purchase, no subscription. Everything on this site stays free &mdash; <a href="free-vs-paid.html">see what stays free</a>.</p>
       </section>
-      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
-        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">Get the free Payday Cash Flow Allocator companion by email</h2>
-        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">You just ran the Payday Cash Flow Allocator. Get the free Come Up starter tools by email &mdash; including the Reset tracker printable &mdash; plus one email when new free tools drop. No spam, no selling your info &mdash; unsubscribe anytime.</p>
+      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Get the free Payday Cash Flow Allocator companion by email</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">You just ran the Payday Cash Flow Allocator. Get the free Come Up starter tools by email &mdash; including the Reset tracker printable &mdash; plus one email when new free tools drop. No spam, no selling your info &mdash; unsubscribe anytime.</p>
         <form id="tcu-capture-form" novalidate>
           <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
           <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">

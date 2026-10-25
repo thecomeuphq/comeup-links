@@ -30,53 +30,50 @@
     />
     <style>
       :root {
-        color-scheme: dark;
-        --bg: #101012;
-        --bg-deep: #0a0a0b;
-        --panel: #1a1a1e;
-        --panel-2: #222228;
-        --panel-edge: #33333c;
-        --ink: #f2f0ea;
-        --ink-dim: #b8b4aa;
-        --ink-faint: #8a867c;
-        --amber: #f59e0b;
-        --amber-hot: #ff7a1a;
-        --amber-soft: rgba(245, 158, 11, 0.14);
+        color-scheme: light;
+        --bg: #FAF6EF;
+        --bg-deep: #F5EDDD;
+        --panel: #FFFFFF;
+        --panel-2: #F5EDDD;
+        --panel-edge: #E3D5BE;
+        --ink: #2A211A;
+        --ink-dim: #7A6A58;
+        --ink-faint: #9A8A76;
+        --amber: #C06A00;
+        --amber-hot: #E8590C;
+        --amber-soft: rgba(192, 106, 0, 0.10);
         --needs: #3b82f6;
         --needs-soft: rgba(59, 130, 246, 0.13);
         --wants: #a855f7;
         --wants-soft: rgba(168, 85, 247, 0.13);
         --save: #22c55e;
-        --save-soft: rgba(34, 197, 94, 0.13);
+        --save-soft: rgba(30, 122, 60, 0.13);
         --radius: 14px;
         --font-body: "Barlow", system-ui, sans-serif;
         --font-display: "Barlow Condensed", "Barlow", sans-serif;
-        --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-      }
-      * { box-sizing: border-box; }
-      html { -webkit-text-size-adjust: 100%; }
+        --font-mono: "IBM Plex Mono", ui-monospace, monospace;}
+      * { box-sizing: border-box;}
+      html { -webkit-text-size-adjust: 100%;}
       body {
         margin: 0;
         background:
-          repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(245, 158, 11, 0.025) 47px, rgba(245, 158, 11, 0.025) 48px),
+          repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(192, 106, 0, 0.025) 47px, rgba(192, 106, 0, 0.025) 48px),
           linear-gradient(180deg, var(--bg-deep), var(--bg) 220px);
         color: var(--ink);
         font-family: var(--font-body);
         font-size: 16.5px;
         line-height: 1.5;
-        padding: 0 16px 64px;
-      }
-      .wrap { max-width: 880px; margin: 0 auto; }
+        padding: 0 16px 64px;}
+      .wrap { max-width: 880px; margin: 0 auto;}
       /* ---------- Header ---------- */
-      header { padding: 30px 0 6px; }
+      header { padding: 30px 0 6px;}
       .kicker {
         font-family: var(--font-mono);
         font-size: 12px;
         letter-spacing: 0.22em;
         text-transform: uppercase;
         color: var(--amber);
-        margin: 0 0 8px;
-      }
+        margin: 0 0 8px;}
       h1 {
         font-family: var(--font-display);
         font-weight: 700;
@@ -84,19 +81,17 @@
         line-height: 0.98;
         letter-spacing: 0.01em;
         margin: 0 0 10px;
-        text-transform: uppercase;
-      }
-      h1 .accent { color: var(--amber); }
-      .lede { color: var(--ink-dim); max-width: 56ch; margin: 0; font-size: 17px; }
-      .lede strong { color: var(--ink); }
+        text-transform: uppercase;}
+      h1 .accent { color: var(--amber);}
+      .lede { color: var(--ink-dim); max-width: 56ch; margin: 0; font-size: 17px;}
+      .lede strong { color: var(--ink);}
       /* ---------- Panels ---------- */
       .panel {
         background: var(--panel);
         border: 1px solid var(--panel-edge);
         border-radius: var(--radius);
         padding: 20px;
-        margin-top: 20px;
-      }
+        margin-top: 20px;}
       .panel-label {
         font-family: var(--font-mono);
         font-size: 11.5px;
@@ -106,27 +101,23 @@
         margin: 0 0 14px;
         display: flex;
         align-items: center;
-        gap: 10px;
-      }
+        gap: 10px;}
       .panel-label::after {
         content: "";
         flex: 1;
         height: 1px;
-        background: var(--panel-edge);
-      }
+        background: var(--panel-edge);}
       /* ---------- Paycheck input ---------- */
-      .pay-grid { display: grid; gap: 18px; }
+      .pay-grid { display: grid; gap: 18px;}
       @media (min-width: 640px) {
-        .pay-grid { grid-template-columns: 1.15fr 1fr; align-items: end; }
-      }
-      .amount-field { min-width: 0; }
+        .pay-grid { grid-template-columns: 1.15fr 1fr; align-items: end;}}
+      .amount-field { min-width: 0;}
       .amount-field label, .freq-field > span {
         display: block;
         font-weight: 600;
         font-size: 14.5px;
         margin-bottom: 8px;
-        color: var(--ink-dim);
-      }
+        color: var(--ink-dim);}
       .amount-wrap {
         display: flex;
         align-items: center;
@@ -136,14 +127,12 @@
         border: 2px solid var(--amber);
         border-radius: 10px;
         padding: 6px 14px;
-        gap: 4px;
-      }
+        gap: 4px;}
       .amount-wrap .dollar {
         font-family: var(--font-mono);
         font-size: 30px;
         font-weight: 700;
-        color: var(--amber);
-      }
+        color: var(--amber);}
       .amount-wrap input {
         flex: 1 1 0;
         width: 100%;
@@ -155,10 +144,9 @@
         font-family: var(--font-mono);
         font-size: 30px;
         font-weight: 700;
-        padding: 4px 0;
-      }
-      .amount-wrap input::placeholder { color: var(--ink-faint); }
-      .freq-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+        padding: 4px 0;}
+      .amount-wrap input::placeholder { color: var(--ink-faint);}
+      .freq-btns { display: flex; gap: 8px; flex-wrap: wrap;}
       .freq-btns button, .fw-btns button {
         font-family: var(--font-body);
         font-weight: 600;
@@ -169,40 +157,36 @@
         border-radius: 9px;
         padding: 10px 14px;
         cursor: pointer;
-        transition: border-color 0.15s, color 0.15s, background 0.15s;
-      }
-      .freq-btns button:hover, .fw-btns button:hover { border-color: var(--amber); color: var(--ink); }
+        transition: border-color 0.15s, color 0.15s, background 0.15s;}
+      .freq-btns button:hover, .fw-btns button:hover { border-color: var(--amber); color: var(--ink);}
       .freq-btns button.active, .fw-btns button.active {
         border-color: var(--amber);
         background: var(--amber-soft);
-        color: var(--ink);
-      }
-      .freq-note { font-size: 13.5px; color: var(--ink-faint); margin: 10px 0 0; }
+        color: var(--ink);}
+      .freq-note { font-size: 13.5px; color: var(--ink-faint); margin: 10px 0 0;}
       /* ---------- Framework + sliders ---------- */
-      .fw-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
-      .fw-btns button small { display: block; font-weight: 500; font-size: 12px; color: var(--ink-faint); }
-      .fw-btns button.active small { color: var(--ink-dim); }
-      .slider-row { padding: 14px 0 4px; border-bottom: 1px dashed var(--panel-edge); }
-      .slider-row:last-of-type { border-bottom: none; }
+      .fw-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;}
+      .fw-btns button small { display: block; font-weight: 500; font-size: 12px; color: var(--ink-faint);}
+      .fw-btns button.active small { color: var(--ink-dim);}
+      .slider-row { padding: 14px 0 4px; border-bottom: 1px dashed var(--panel-edge);}
+      .slider-row:last-of-type { border-bottom: none;}
       .slider-head {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
         gap: 12px;
-        margin-bottom: 8px;
-      }
-      .slider-name { font-weight: 700; font-size: 17px; display: flex; align-items: center; gap: 9px; }
-      .dot { width: 11px; height: 11px; border-radius: 3px; flex: none; }
-      .dot-needs { background: var(--needs); }
-      .dot-wants { background: var(--wants); }
-      .dot-save { background: var(--save); }
+        margin-bottom: 8px;}
+      .slider-name { font-weight: 700; font-size: 17px; display: flex; align-items: center; gap: 9px;}
+      .dot { width: 11px; height: 11px; border-radius: 3px; flex: none;}
+      .dot-needs { background: var(--needs);}
+      .dot-wants { background: var(--wants);}
+      .dot-save { background: var(--save);}
       .slider-pct {
         font-family: var(--font-mono);
         font-weight: 700;
         font-size: 22px;
-        white-space: nowrap;
-      }
-      .slider-pct .pct-sign { font-size: 14px; color: var(--ink-faint); }
+        white-space: nowrap;}
+      .slider-pct .pct-sign { font-size: 14px; color: var(--ink-faint);}
       input[type="range"] {
         -webkit-appearance: none;
         appearance: none;
@@ -212,8 +196,7 @@
         background: var(--panel-2);
         outline: none;
         cursor: pointer;
-        margin: 4px 0 8px;
-      }
+        margin: 4px 0 8px;}
       input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -222,22 +205,20 @@
         border-radius: 50%;
         background: var(--ink);
         border: 4px solid var(--thumb, var(--amber));
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-        cursor: grab;
-      }
+        box-shadow: 0 2px 8px rgba(74, 54, 32, 0.2);
+        cursor: grab;}
       input[type="range"]::-moz-range-thumb {
         width: 20px;
         height: 20px;
         border-radius: 50%;
         background: var(--ink);
         border: 4px solid var(--thumb, var(--amber));
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-        cursor: grab;
-      }
-      #range-needs { --thumb: var(--needs); }
-      #range-wants { --thumb: var(--wants); }
-      #range-save { --thumb: var(--save); }
-      .slider-sub { font-size: 13.5px; color: var(--ink-faint); margin: 0; }
+        box-shadow: 0 2px 8px rgba(74, 54, 32, 0.2);
+        cursor: grab;}
+      #range-needs { --thumb: var(--needs);}
+      #range-wants { --thumb: var(--wants);}
+      #range-save { --thumb: var(--save);}
+      .slider-sub { font-size: 13.5px; color: var(--ink-faint); margin: 0;}
       .total-line {
         display: flex;
         justify-content: space-between;
@@ -247,9 +228,8 @@
         border-top: 1px solid var(--panel-edge);
         font-family: var(--font-mono);
         font-size: 14px;
-        color: var(--ink-dim);
-      }
-      .total-line .total-val { font-weight: 700; color: var(--save); font-size: 17px; }
+        color: var(--ink-dim);}
+      .total-line .total-val { font-weight: 700; color: var(--save); font-size: 17px;}
       /* ---------- Stacked bar ---------- */
       .stack {
         display: flex;
@@ -257,33 +237,30 @@
         border-radius: 8px;
         overflow: hidden;
         margin-top: 20px;
-        border: 1px solid var(--panel-edge);
-      }
-      .stack div { transition: width 0.25s ease; min-width: 0; }
-      .stack-needs { background: var(--needs); }
-      .stack-wants { background: var(--wants); }
-      .stack-save { background: var(--save); }
+        border: 1px solid var(--panel-edge);}
+      .stack div { transition: width 0.25s ease; min-width: 0;}
+      .stack-needs { background: var(--needs);}
+      .stack-wants { background: var(--wants);}
+      .stack-save { background: var(--save);}
       /* ---------- Bucket cards ---------- */
-      .buckets { display: grid; gap: 14px; margin-top: 14px; }
-      @media (min-width: 700px) { .buckets { grid-template-columns: repeat(3, 1fr); } }
+      .buckets { display: grid; gap: 14px; margin-top: 14px;}
+      @media (min-width: 700px) { .buckets { grid-template-columns: repeat(3, 1fr);}}
       .bucket {
         border-radius: var(--radius);
         padding: 18px;
         border: 1px solid var(--panel-edge);
         background: var(--panel);
         position: relative;
-        overflow: hidden;
-      }
+        overflow: hidden;}
       .bucket::before {
         content: "";
         position: absolute;
         inset: 0 0 auto 0;
         height: 5px;
-        background: var(--bucket-color);
-      }
-      .bucket-needs { --bucket-color: var(--needs); background: linear-gradient(180deg, var(--needs-soft), var(--panel) 55%); }
-      .bucket-wants { --bucket-color: var(--wants); background: linear-gradient(180deg, var(--wants-soft), var(--panel) 55%); }
-      .bucket-save { --bucket-color: var(--save); background: linear-gradient(180deg, var(--save-soft), var(--panel) 55%); }
+        background: var(--bucket-color);}
+      .bucket-needs { --bucket-color: var(--needs); background: linear-gradient(180deg, var(--needs-soft), var(--panel) 55%);}
+      .bucket-wants { --bucket-color: var(--wants); background: linear-gradient(180deg, var(--wants-soft), var(--panel) 55%);}
+      .bucket-save { --bucket-color: var(--save); background: linear-gradient(180deg, var(--save-soft), var(--panel) 55%);}
       .bucket h3 {
         font-family: var(--font-display);
         font-size: 24px;
@@ -291,27 +268,24 @@
         text-transform: uppercase;
         letter-spacing: 0.03em;
         margin: 4px 0 2px;
-        color: var(--bucket-color);
-      }
-      .bucket .bucket-pct { font-family: var(--font-mono); font-size: 13px; color: var(--ink-faint); letter-spacing: 0.08em; }
+        color: var(--bucket-color);}
+      .bucket .bucket-pct { font-family: var(--font-mono); font-size: 13px; color: var(--ink-faint); letter-spacing: 0.08em;}
       .bucket .per-check {
         font-family: var(--font-mono);
         font-weight: 700;
         font-size: clamp(30px, 7vw, 36px);
         line-height: 1.1;
-        margin: 10px 0 2px;
-      }
-      .bucket .per-check-label { font-size: 13px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
+        margin: 10px 0 2px;}
+      .bucket .per-check-label { font-size: 13px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600;}
       .bucket .monthly {
         margin-top: 12px;
         padding-top: 10px;
         border-top: 1px dashed var(--panel-edge);
         font-size: 15px;
-        color: var(--ink-dim);
-      }
-      .bucket .monthly strong { font-family: var(--font-mono); color: var(--ink); font-size: 17px; }
-      .bucket ul { margin: 12px 0 0; padding: 0; list-style: none; font-size: 14.5px; color: var(--ink-dim); }
-      .bucket ul li { padding: 2.5px 0 2.5px 16px; position: relative; }
+        color: var(--ink-dim);}
+      .bucket .monthly strong { font-family: var(--font-mono); color: var(--ink); font-size: 17px;}
+      .bucket ul { margin: 12px 0 0; padding: 0; list-style: none; font-size: 14.5px; color: var(--ink-dim);}
+      .bucket ul li { padding: 2.5px 0 2.5px 16px; position: relative;}
       .bucket ul li::before {
         content: "";
         position: absolute;
@@ -319,18 +293,16 @@
         top: 11px;
         width: 7px;
         height: 2px;
-        background: var(--bucket-color);
-      }
+        background: var(--bucket-color);}
       /* ---------- Checklist ---------- */
-      .checklist { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+      .checklist { list-style: none; margin: 0; padding: 0; counter-reset: step;}
       .checklist li {
         counter-increment: step;
         display: flex;
         gap: 14px;
         padding: 13px 0;
-        border-bottom: 1px dashed var(--panel-edge);
-      }
-      .checklist li:last-child { border-bottom: none; padding-bottom: 2px; }
+        border-bottom: 1px dashed var(--panel-edge);}
+      .checklist li:last-child { border-bottom: none; padding-bottom: 2px;}
       .checklist li::before {
         content: counter(step);
         flex: none;
@@ -346,14 +318,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 1px;
-      }
-      .checklist .step-title { font-weight: 700; display: block; }
-      .checklist .step-body { color: var(--ink-dim); font-size: 15px; }
-      .checklist .amt { font-family: var(--font-mono); font-weight: 700; color: var(--ink); white-space: nowrap; }
-      .checklist .amt-needs { color: var(--needs); }
-      .checklist .amt-wants { color: var(--wants); }
-      .checklist .amt-save { color: var(--save); }
+        margin-top: 1px;}
+      .checklist .step-title { font-weight: 700; display: block;}
+      .checklist .step-body { color: var(--ink-dim); font-size: 15px;}
+      .checklist .amt { font-family: var(--font-mono); font-weight: 700; color: var(--ink); white-space: nowrap;}
+      .checklist .amt-needs { color: var(--needs);}
+      .checklist .amt-wants { color: var(--wants);}
+      .checklist .amt-save { color: var(--save);}
       /* ---------- CTA ---------- */
       .cta {
         margin-top: 22px;
@@ -364,50 +335,44 @@
           var(--panel);
         padding: 24px 22px;
         display: grid;
-        gap: 14px;
-      }
+        gap: 14px;}
       @media (min-width: 640px) {
-        .cta { grid-template-columns: 1fr auto; align-items: center; }
-      }
+        .cta { grid-template-columns: 1fr auto; align-items: center;}}
       .cta h2 {
         font-family: var(--font-display);
         font-size: clamp(26px, 5.5vw, 34px);
         font-weight: 700;
         text-transform: uppercase;
         line-height: 1.05;
-        margin: 0 0 6px;
-      }
-      .cta p { margin: 0; color: var(--ink-dim); max-width: 48ch; }
+        margin: 0 0 6px;}
+      .cta p { margin: 0; color: var(--ink-dim); max-width: 48ch;}
       .cta a {
         display: inline-block;
         background: linear-gradient(180deg, var(--amber-hot), var(--amber));
-        color: #171106;
+        color: #C06A00;
         font-weight: 700;
         font-size: 17px;
         text-decoration: none;
         padding: 14px 22px;
         border-radius: 10px;
         text-align: center;
-        box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
-        white-space: nowrap;
-      }
-      .cta a:hover { filter: brightness(1.08); }
+        box-shadow: 0 4px 18px rgba(192, 106, 0, 0.35);
+        white-space: nowrap;}
+      .cta a:hover { filter: brightness(1.08);}
       /* ---------- FAQ ---------- */
-      .faq { margin-top: 26px; }
+      .faq { margin-top: 26px;}
       .faq h2 {
         font-family: var(--font-display);
         font-size: 30px;
         font-weight: 700;
         text-transform: uppercase;
-        margin: 0 0 6px;
-      }
+        margin: 0 0 6px;}
       details {
         background: var(--panel);
         border: 1px solid var(--panel-edge);
         border-radius: 10px;
         margin-top: 10px;
-        padding: 0 18px;
-      }
+        padding: 0 18px;}
       summary {
         cursor: pointer;
         font-weight: 700;
@@ -417,36 +382,35 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 12px;
-      }
-      summary::-webkit-details-marker { display: none; }
-      summary::after { content: "+"; font-family: var(--font-mono); color: var(--amber); font-size: 22px; font-weight: 700; }
-      details[open ] summary::after { content: "–"; }
-      details p { margin: 0 0 16px; color: var(--ink-dim); font-size: 15.5px; }
-      details p strong { color: var(--ink); }
-      footer { margin-top: 34px; text-align: center; color: var(--ink-faint); font-size: 13.5px; }
+        gap: 12px;}
+      summary::-webkit-details-marker { display: none;}
+      summary::after { content: "+"; font-family: var(--font-mono); color: var(--amber); font-size: 22px; font-weight: 700;}
+      details[open ] summary::after { content: "–";}
+      details p { margin: 0 0 16px; color: var(--ink-dim); font-size: 15.5px;}
+      details p strong { color: var(--ink);}
+      footer { margin-top: 34px; text-align: center; color: var(--ink-faint); font-size: 13.5px;}
     /* ===== The Come Up: related tools + share + next step ===== */
-    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
-    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px; }
-    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
-    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px); }
-    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3; }
-    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-dim); }
-    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); }
-    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
-    .tcu-share-b:hover { background:var(--amber); color:#17130c; }
-    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-share-b svg { width:15px; height:15px; }
-    .tcu-share-n { font-size:12.5px; color:var(--ink-dim); }
-    .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
-    .tcu-share-n.err { color:#c8553d; font-weight:700; }
-    .tcu-cta { margin-top:16px; }
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#17130c; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
-    .tcu-cta-a:hover { filter:brightness(1.08); }
-    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
+    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line);}
+    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px;}
+    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s;}
+    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px);}
+    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3;}
+    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-dim);}
+    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent);}
+    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
+    .tcu-share-b:hover { background:var(--amber); color:#2A211A;}
+    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-share-b svg { width:15px; height:15px;}
+    .tcu-share-n { font-size:12.5px; color:var(--ink-dim);}
+    .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
+    .tcu-share-n.err { color:#c8553d; font-weight:700;}
+    .tcu-cta { margin-top:16px;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#2A211A; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a:hover { filter:brightness(1.08);}
+    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Paycheck Budget Splitter — Split Every Dollar | The Come Up","description":"Give every dollar a job the second it lands. Enter your take-home pay, pick a split, and see exactly where each dollar goes per check and per month.","url":"https://thecomeuphq.com/paycheck-budget-splitter.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Paycheck Budget Splitter.Html","item":"https://thecomeuphq.com/paycheck-budget-splitter.html"}]}]}</script>
   <script>
 
@@ -725,15 +689,15 @@
 
 
       <!-- ===== The Come Up: related tools + share + next step ===== -->
-      <section class="tcu-upsell" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
-        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">Want this on paper?</h2>
-        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">The free tool gives you the number. This tracker gives you the system you keep using &mdash; one-time $12.95, yours to print and reprint.</p>
-        <a href="https://bradley57.gumroad.com/l/fafiob?utm_source=comeup_links&utm_medium=website&utm_campaign=site&utm_campaign=tool_upsell" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; text-decoration:none;">Get Ultimate Zero-Based Budgeting Starter Binder &mdash; $12.95</a>
-        <p style="margin:12px 0 0; font-size:12px; line-height:1.6; color:#8a8a8a;">One-time purchase, no subscription. Everything on this site stays free &mdash; <a href="free-vs-paid.html">see what stays free</a>.</p>
+      <section class="tcu-upsell" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Want this on paper?</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">The free tool gives you the number. This tracker gives you the system you keep using &mdash; one-time $12.95, yours to print and reprint.</p>
+        <a href="https://bradley57.gumroad.com/l/fafiob?utm_source=comeup_links&utm_medium=website&utm_campaign=site&utm_campaign=tool_upsell" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border-radius:12px; background:#C06A00; color:#2A211A; font-size:14px; font-weight:800; text-decoration:none;">Get Ultimate Zero-Based Budgeting Starter Binder &mdash; $12.95</a>
+        <p style="margin:12px 0 0; font-size:12px; line-height:1.6; color:#7A6A58;">One-time purchase, no subscription. Everything on this site stays free &mdash; <a href="free-vs-paid.html">see what stays free</a>.</p>
       </section>
-      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
-        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">Get the free Paycheck Budget Splitter companion by email</h2>
-        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">You just ran the Paycheck Budget Splitter. Get the free Come Up starter tools by email &mdash; including the Reset tracker printable &mdash; plus one email when new free tools drop. No spam, no selling your info &mdash; unsubscribe anytime.</p>
+      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Get the free Paycheck Budget Splitter companion by email</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">You just ran the Paycheck Budget Splitter. Get the free Come Up starter tools by email &mdash; including the Reset tracker printable &mdash; plus one email when new free tools drop. No spam, no selling your info &mdash; unsubscribe anytime.</p>
         <form id="tcu-capture-form" novalidate>
           <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
           <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">

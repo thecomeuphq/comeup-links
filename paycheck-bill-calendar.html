@@ -22,71 +22,71 @@
   <meta name="theme-color" content="#141414">
   <title>Paycheck Bill Calendar — Map Paydays Against Bills | The Come Up</title>
   <style>
-    :root { color-scheme:dark; --bg:#141414; --panel:#1f1f1f; --panel-2:#262626; --line:#3a3a3a; --text:#f5f5f5; --muted:#bdbdbd; --amber:#f5a623; --green:#a8e6bd; --red:#ff9186; }
-    * { box-sizing:border-box; }
-    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.55; }
-    .wrap { width:min(100% - 32px,760px); margin:0 auto; padding:24px 0 56px; }
-    .back { display:inline-block; margin-bottom:18px; color:var(--amber); text-underline-offset:3px; }
-    .hero, .panel { margin-bottom:14px; padding:20px; border:1px solid var(--line); border-radius:15px; background:var(--panel); }
-    .hero { border-color:#715321; background:linear-gradient(135deg,#30230f,#1f1f1f 72%); }
-    .eyebrow { color:var(--amber); font-size:11px; font-weight:850; letter-spacing:.14em; text-transform:uppercase; }
-    h1 { margin:8px 0; font-size:clamp(28px,7vw,40px); line-height:1.08; }
-    h2 { margin:0 0 12px; font-size:18px; }
-    p { margin:8px 0; }
-    .intro, .muted { color:var(--muted); }
-    .privacy { font-size:13px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:13px; }
-    label { display:block; margin-bottom:5px; font-size:13px; font-weight:750; }
-    input, select { width:100%; min-height:45px; border:1px solid #555; border-radius:9px; padding:10px 11px; background:#111; color:var(--text); font:inherit; }
-    input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline:3px solid #fff; outline-offset:2px; }
-    .field-note { margin-top:5px; color:#999; font-size:12px; line-height:1.4; }
-    .bill-list { display:grid; gap:10px; }
-    .bill-row { display:grid; grid-template-columns:minmax(110px,1.4fr) minmax(90px,1fr) minmax(76px,.65fr) auto; gap:9px; align-items:end; padding:12px; border:1px solid #393939; border-radius:11px; background:#191919; }
-    .remove { min-height:43px; border:1px solid #555; border-radius:9px; padding:8px 10px; background:#292929; color:var(--text); cursor:pointer; }
-    .actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:15px; }
-    .button { min-height:45px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:10px; padding:10px 15px; background:#292929; color:var(--text); font:inherit; font-weight:750; text-decoration:none; cursor:pointer; }
-    .button.primary { border-color:var(--amber); background:var(--amber); color:#17130c; }
-    .result { padding:16px; border:1px solid #3c5943; border-radius:12px; background:#17221a; }
-    .result.warning { border-color:#77423d; background:#291a19; }
-    .result h2 { margin-bottom:4px; }
-    .result p { margin:4px 0; }
-    .positive { color:var(--green); font-weight:800; }
-    .negative { color:var(--red); font-weight:800; }
-    .table-wrap { overflow-x:auto; margin-top:14px; }
-    table { width:100%; border-collapse:collapse; min-width:480px; font-size:14px; }
-    th, td { padding:10px 8px; border-bottom:1px solid var(--line); text-align:left; }
-    th { color:var(--muted); font-size:12px; }
-    td:last-child, th:last-child { text-align:right; }
-    .related { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:10px; }
-    .related a { color:var(--amber); text-underline-offset:3px; }
-    .offer { margin-top:16px; padding:14px; border:1px solid #715321; border-radius:11px; background:#211b10; font-size:14px; }
-    .offer a { color:var(--amber); font-weight:800; text-underline-offset:3px; }
-    .disclaimer { color:#999; font-size:12px; line-height:1.55; }
-    [hidden] { display:none !important; }
-    @media (max-width:560px) { .bill-row { grid-template-columns:1fr 1fr; } .bill-row .bill-name { grid-column:1 / -1; } .remove { grid-column:2; } }
+    :root { color-scheme:light; --bg:#FAF6EF; --panel:#FFFFFF; --panel-2:#F5EDDD; --line:#E3D5BE; --text:#2A211A; --muted:#7A6A58; --amber:#C06A00; --green:#1E7A3C; --red:#BE3A2B;}
+    * { box-sizing:border-box;}
+    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.55;}
+    .wrap { width:min(100% - 32px,760px); margin:0 auto; padding:24px 0 56px;}
+    .back { display:inline-block; margin-bottom:18px; color:var(--amber); text-underline-offset:3px;}
+    .hero, .panel { margin-bottom:14px; padding:20px; border:1px solid var(--line); border-radius:15px; background:var(--panel);}
+    .hero { border-color:#C9902E; background:linear-gradient(135deg,#FBEED3,#FFFFFF 72%);}
+    .eyebrow { color:var(--amber); font-size:11px; font-weight:850; letter-spacing:.14em; text-transform:uppercase;}
+    h1 { margin:8px 0; font-size:clamp(28px,7vw,40px); line-height:1.08;}
+    h2 { margin:0 0 12px; font-size:18px;}
+    p { margin:8px 0;}
+    .intro, .muted { color:var(--muted);}
+    .privacy { font-size:13px;}
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:13px;}
+    label { display:block; margin-bottom:5px; font-size:13px; font-weight:750;}
+    input, select { width:100%; min-height:45px; border:1px solid #4A3E33; border-radius:9px; padding:10px 11px; background:#221A14; color:var(--text); font:inherit;}
+    input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline:3px solid #C06A00; outline-offset:2px;}
+    .field-note { margin-top:5px; color:#7A6A58; font-size:12px; line-height:1.4;}
+    .bill-list { display:grid; gap:10px;}
+    .bill-row { display:grid; grid-template-columns:minmax(110px,1.4fr) minmax(90px,1fr) minmax(76px,.65fr) auto; gap:9px; align-items:end; padding:12px; border:1px solid #D8C29A; border-radius:11px; background:#FFFFFF;}
+    .remove { min-height:43px; border:1px solid #4A3E33; border-radius:9px; padding:8px 10px; background:#221A14; color:var(--text); cursor:pointer;}
+    .actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+    .button { min-height:45px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line); border-radius:10px; padding:10px 15px; background:#221A14; color:var(--text); font:inherit; font-weight:750; text-decoration:none; cursor:pointer;}
+    .button.primary { border-color:var(--amber); background:var(--amber); color:#2A211A;}
+    .result { padding:16px; border:1px solid #B7D3BE; border-radius:12px; background:#E2F1E8;}
+    .result.warning { border-color:#E0B3A8; background:#F9E9E5;}
+    .result h2 { margin-bottom:4px;}
+    .result p { margin:4px 0;}
+    .positive { color:var(--green); font-weight:800;}
+    .negative { color:var(--red); font-weight:800;}
+    .table-wrap { overflow-x:auto; margin-top:14px;}
+    table { width:100%; border-collapse:collapse; min-width:480px; font-size:14px;}
+    th, td { padding:10px 8px; border-bottom:1px solid var(--line); text-align:left;}
+    th { color:var(--muted); font-size:12px;}
+    td:last-child, th:last-child { text-align:right;}
+    .related { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:10px;}
+    .related a { color:var(--amber); text-underline-offset:3px;}
+    .offer { margin-top:16px; padding:14px; border:1px solid #C9902E; border-radius:11px; background:#FFFFFF; font-size:14px;}
+    .offer a { color:var(--amber); font-weight:800; text-underline-offset:3px;}
+    .disclaimer { color:#7A6A58; font-size:12px; line-height:1.55;}
+    [hidden] { display:none !important;}
+    @media (max-width:560px) { .bill-row { grid-template-columns:1fr 1fr;} .bill-row .bill-name { grid-column:1 / -1;} .remove { grid-column:2;}}
     @media print { body { background:#fff; color:#111; } .wrap { width:100%; padding:0; } .back, .actions, .offer { display:none; } .hero, .panel { break-inside:avoid; border-color:#aaa; background:#fff; } input, select { border-color:#888; background:#fff; color:#111; } }
     /* ===== The Come Up: related tools + share + next step ===== */
-    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
-    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px; }
-    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
-    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px); }
-    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--text); line-height:1.3; }
-    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--muted); }
-    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); }
-    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
-    .tcu-share-b:hover { background:var(--amber); color:#17130c; }
-    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-share-b svg { width:15px; height:15px; }
-    .tcu-share-n { font-size:12.5px; color:var(--muted); }
-    .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
-    .tcu-share-n.err { color:#c8553d; font-weight:700; }
-    .tcu-cta { margin-top:16px; }
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#17130c; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
-    .tcu-cta-a:hover { filter:brightness(1.08); }
-    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
+    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line);}
+    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px;}
+    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s;}
+    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px);}
+    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--text); line-height:1.3;}
+    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--muted);}
+    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent);}
+    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
+    .tcu-share-b:hover { background:var(--amber); color:#2A211A;}
+    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-share-b svg { width:15px; height:15px;}
+    .tcu-share-n { font-size:12.5px; color:var(--muted);}
+    .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
+    .tcu-share-n.err { color:#c8553d; font-weight:700;}
+    .tcu-cta { margin-top:16px;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#2A211A; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a:hover { filter:brightness(1.08);}
+    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Paycheck Bill Calendar — Map Paydays Against Bills | The Come Up","description":"Map your paydays and recurring bills ahead so you can spot a tight stretch before it arrives. A free planning forecast, not a bank balance.","url":"https://thecomeuphq.com/paycheck-bill-calendar.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Paycheck Bill Calendar.Html","item":"https://thecomeuphq.com/paycheck-bill-calendar.html"}]}]}</script>
 <script>
 
