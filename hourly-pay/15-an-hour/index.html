@@ -22,31 +22,30 @@
     <title>$15 an Hour Pay Breakdown — Weekly, Monthly &amp; Tax | The Come Up</title>
     <style>
       :root {
-        --bg:#141414; --panel:#1f1f1f; --line:#333; --text:#f5f5f5; --muted:#bdbdbd; --amber:#f5a623; --amber-soft:rgba(245,166,35,0.12);
-      }
-      *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5} .wrap{max-width:720px;margin:0 auto;padding:26px 18px 48px}.brand{color:var(--text);text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:8px}.mark{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--amber-soft);color:var(--amber)}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.back{color:var(--amber);text-decoration:none;font-weight:700}.hero{background:linear-gradient(135deg, rgba(245,166,35,0.12), rgba(31,31,31,0.95));border:1px solid rgba(245,166,35,0.4);border-radius:18px;padding:24px 20px;box-shadow:0 10px 30px rgba(0,0,0,0.25)}h1{margin:0 0 10px;font-size:clamp(32px,8vw,46px);line-height:1.05} .lead{margin:0;color:var(--muted);font-size:17px}.meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px}.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--muted);font-size:13px}.table{margin-top:20px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.row{display:flex;justify-content:space-between;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.label{color:var(--muted)}.value{font-weight:700}.cta{margin-top:18px;display:flex;flex-wrap:wrap;gap:12px}.btn{display:inline-block;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:800} .btn.primary{background:var(--amber);color:#141414}.btn.secondary{background:transparent;border:1px solid var(--line);color:var(--text)}.foot{margin-top:18px;color:var(--muted);font-size:13px} a{color:var(--amber)}
+        --bg:#FAF6EF; --panel:#FFFFFF; --line:#E3D5BE; --text:#2A211A; --muted:#7A6A58; --amber:#C06A00; --amber-soft:rgba(192, 106, 0, 0.10);}
+      *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5} .wrap{max-width:720px;margin:0 auto;padding:26px 18px 48px}.brand{color:var(--text);text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:8px}.mark{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--amber-soft);color:var(--amber)}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.back{color:var(--amber);text-decoration:none;font-weight:700}.hero{background:linear-gradient(135deg, rgba(192, 106, 0, 0.12), rgba(255, 253, 248, 0.95));border:1px solid rgba(192, 106, 0, 0.4);border-radius:18px;padding:24px 20px;box-shadow:0 10px 30px rgba(74, 54, 32, 0.11)}h1{margin:0 0 10px;font-size:clamp(32px,8vw,46px);line-height:1.05} .lead{margin:0;color:var(--muted);font-size:17px}.meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px}.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--muted);font-size:13px}.table{margin-top:20px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}.row{display:flex;justify-content:space-between;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}.label{color:var(--muted)}.value{font-weight:700}.cta{margin-top:18px;display:flex;flex-wrap:wrap;gap:12px}.btn{display:inline-block;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:800} .btn.primary{background:var(--amber);color:#2A211A}.btn.secondary{background:transparent;border:1px solid var(--line);color:var(--text)}.foot{margin-top:18px;color:var(--muted);font-size:13px} a{color:var(--amber)}
     /* ===== The Come Up: related tools + share + next step ===== */
-    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
-    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px; }
-    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
-    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px); }
-    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--text); line-height:1.3; }
-    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--muted); }
-    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); }
-    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
-    .tcu-share-b:hover { background:var(--amber); color:#17130c; }
-    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-share-b svg { width:15px; height:15px; }
-    .tcu-share-n { font-size:12.5px; color:var(--muted); }
-    .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
-    .tcu-share-n.err { color:#c8553d; font-weight:700; }
-    .tcu-cta { margin-top:16px; }
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#17130c; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
-    .tcu-cta-a:hover { filter:brightness(1.08); }
-    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
+    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line);}
+    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px;}
+    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s;}
+    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px);}
+    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--text); line-height:1.3;}
+    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--muted);}
+    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent);}
+    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
+    .tcu-share-b:hover { background:var(--amber); color:#2A211A;}
+    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-share-b svg { width:15px; height:15px;}
+    .tcu-share-n { font-size:12.5px; color:var(--muted);}
+    .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
+    .tcu-share-n.err { color:#c8553d; font-weight:700;}
+    .tcu-cta { margin-top:16px;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#2A211A; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a:hover { filter:brightness(1.08);}
+    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"$15 an Hour Pay Breakdown — Weekly, Monthly Tax | The Come Up","description":"A $15/hour job pays $600 a week before taxes. See the full breakdown: weekly, monthly, and yearly pay, plus what overtime really adds at $15 an hour.","url":"https://thecomeuphq.com/hourly-pay/15-an-hour/","isPartOf":{"@type":"WebSite","name":"The Come Up","url":"https://thecomeuphq.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Hourly Pay","item":"https://thecomeuphq.com/hourly-pay/"},{"@type":"ListItem","position":2,"name":"15 An Hour","item":"https://thecomeuphq.com/hourly-pay/15-an-hour/"}]}]}</script>
   <script>
 
