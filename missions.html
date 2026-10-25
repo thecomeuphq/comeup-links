@@ -21,125 +21,114 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Money Mission Board — Small Wins That Stack | The Come Up</title>
   <style>
-    * { box-sizing: border-box; }
-    html, body { margin:0; padding:0; }
+    * { box-sizing: border-box;}
+    html, body { margin:0; padding:0;}
     body {
-      background:#141414;
-      color:#f5f5f5;
+      background:#FAF6EF;
+      color:#2A211A;
       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
       min-height:100vh;
       display:flex;
-      justify-content:center;
-    }
-    .wrap { width:100%; max-width:560px; padding:28px 20px 52px; }
-    .back { display:inline-block; color:#f5a623; text-decoration:none; font-size:14px; margin-bottom:18px; }
-    h1 { font-size:28px; margin: 0 0 6px; }
-    .sub { color:#bdbdbd; font-size:15px; line-height:1.55; margin-bottom:18px; }
+      justify-content:center;}
+    .wrap { width:100%; max-width:560px; padding:28px 20px 52px;}
+    .back { display:inline-block; color:#C06A00; text-decoration:none; font-size:14px; margin-bottom:18px;}
+    h1 { font-size:28px; margin: 0 0 6px;}
+    .sub { color:#4A3E33; font-size:15px; line-height:1.55; margin-bottom:18px;}
     .top-card {
-      background:linear-gradient(135deg,#2a1e08,#1f1f1f);
-      border:1px solid #f5a623;
+      background:linear-gradient(135deg,#FBEED3,#FFFFFF);
+      border:1px solid #C9902E;
       border-radius:16px;
       padding:18px;
-      margin-bottom:16px;
-    }
+      margin-bottom:16px;}
     .stats {
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom:8px;
-    }
-    .stats strong { font-size: 28px; }
-    .stats span { color:#d6d6d6; font-size:13px; }
-    .progress { height:10px; background:#262626; border-radius:999px; overflow:hidden; border:1px solid #3a3a3a; }
+      margin-bottom:8px;}
+    .stats strong { font-size: 28px;}
+    .stats span { color:#2A211A; font-size:13px;}
+    .progress { height:10px; background:#FFFFFF; border-radius:999px; overflow:hidden; border:1px solid #D8C29A;}
     .progress-bar {
       width:0%;
       height:100%;
-      background: linear-gradient(90deg, #f5a623, #ffbb55);
+      background: linear-gradient(90deg, #C06A00, #ffbb55);
       border-radius:999px;
-      transition: width .2s ease;
-    }
+      transition: width .2s ease;}
     .mission {
-      background:#1f1f1f;
-      border:1px solid #353535;
+      background:#FFFFFF;
+      border:1px solid #D8C29A;
       border-radius:16px;
       padding:16px 16px 14px;
-      margin-bottom:12px;
-    }
+      margin-bottom:12px;}
     .mission-header {
       display:flex;
       gap:10px;
       align-items:flex-start;
-      justify-content:space-between;
-    }
-    .mission strong { font-size:17px; }
+      justify-content:space-between;}
+    .mission strong { font-size:17px;}
     .check {
       width:28px; height:28px;
       border-radius:50%;
-      border:2px solid #f5a623;
+      border:2px solid #C9902E;
       background:transparent;
       display:flex;
       align-items:center;
       justify-content:center;
       font-weight:800;
-      color:#f5a623;
+      color:#C06A00;
       flex-shrink:0;
-      cursor:pointer;
-    }
-    .mission.done .check { background:#f5a623; color:#141414; }
+      cursor:pointer;}
+    .mission.done .check { background:#C06A00; color:#2A211A;}
     .mission .tag {
       display:inline-block;
       margin-top:8px;
       font-size:11px;
       letter-spacing:1px;
       text-transform:uppercase;
-      color:#f5a623;
-      font-weight:700;
-    }
+      color:#C06A00;
+      font-weight:700;}
     .mission p {
-      color:#cfcfcf;
+      color:#2A211A;
       font-size:14px;
       margin:8px 0 0;
-      line-height:1.5;
-    }
+      line-height:1.5;}
     .mission.done {
-      border-color:#f5a623;
-      background:linear-gradient(135deg,#2a1e08,#1f1f1f);
-    }
+      border-color:#C9902E;
+      background:linear-gradient(135deg,#FBEED3,#FFFFFF);}
     .bottom-cta {
       display:block;
       text-align:center;
       text-decoration:none;
-      background:#f5a623;
-      color:#141414;
+      background:#C06A00;
+      color:#2A211A;
       border-radius:12px;
       padding:14px 16px;
       font-weight:800;
-      margin-top:18px;
-    }
-    .foot { color:#7d7d7d; font-size:12px; margin-top:18px; line-height:1.7; text-align:center; }
+      margin-top:18px;}
+    .foot { color:#4A3E33; font-size:12px; margin-top:18px; line-height:1.7; text-align:center;}
     /* ===== The Come Up: related tools + share + next step ===== */
-    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
-    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px; }
-    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-    .tcu-rel { display:block; text-decoration:none; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
-    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px); }
-    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--text); line-height:1.3; }
-    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--muted); }
-    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); }
-    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
-    .tcu-share-b:hover { background:var(--amber); color:#17130c; }
-    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-share-b svg { width:15px; height:15px; }
-    .tcu-share-n { font-size:12.5px; color:var(--muted); }
-    .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
-    .tcu-share-n.err { color:#c8553d; font-weight:700; }
-    .tcu-cta { margin-top:16px; }
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#17130c; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
-    .tcu-cta-a:hover { filter:brightness(1.08); }
-    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
+    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line);}
+    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px;}
+    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .tcu-rel { display:block; text-decoration:none; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s;}
+    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px);}
+    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--text); line-height:1.3;}
+    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--muted);}
+    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent);}
+    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
+    .tcu-share-b:hover { background:var(--amber); color:#2A211A;}
+    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-share-b svg { width:15px; height:15px;}
+    .tcu-share-n { font-size:12.5px; color:var(--muted);}
+    .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
+    .tcu-share-n.err { color:#c8553d; font-weight:700;}
+    .tcu-cta { margin-top:16px;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#2A211A; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a:hover { filter:brightness(1.08);}
+    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Money Mission Board — Small Wins That Stack | The Come Up","description":"Pick a money mission that matches your next move and build momentum. Small, practical wins for hourly workers — no spreadsheets required.","url":"https://thecomeuphq.com/missions.html","isPartOf":{"@type":"WebSite","name":"The Come Up","url":"https://thecomeuphq.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Missions.Html","item":"https://thecomeuphq.com/missions.html"}]}]}</script>
 <script>
 

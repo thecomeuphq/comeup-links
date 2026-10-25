@@ -24,58 +24,51 @@
     <title>Free Financial Calculators for Debt &amp; Paychecks | The Come Up</title>
     <style>
       :root {
-        color-scheme: light dark;
-        --bg: #f7f6f2;
-        --surface: #ffffff;
-        --ink: #1c2420;
-        --ink-soft: #4a554f;
-        --line: #e0ddd2;
+        color-scheme: light light;
+        --bg: #FAF6EF;
+        --surface: #FFFFFF;
+        --ink: #2A211A;
+        --ink-soft: #4A3E33;
+        --line: #E3D5BE;
         --accent: #14683f;
-        --accent-ink: #ffffff;
-        --accent-soft: #e6f0e9;
-        --shadow: 0 1px 2px rgba(28, 36, 32, 0.06), 0 8px 24px rgba(28, 36, 32, 0.06);
-      }
+        --accent-ink: #1A1206;
+        --accent-soft: #E2F1E8;
+        --shadow: 0 1px 2px rgba(28, 36, 32, 0.06), 0 8px 24px rgba(28, 36, 32, 0.06);}
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #121614;
-          --surface: #1c211e;
-          --ink: #ecefeb;
-          --ink-soft: #a8b3ac;
-          --line: #2c332e;
+          --bg: #221A14;
+          --surface: #2A211A;
+          --ink: #FAF6EF;
+          --ink-soft: #EDE3D0;
+          --line: #4A3E33;
           --accent: #3fae72;
-          --accent-ink: #0d1712;
-          --accent-soft: #1e2b23;
-          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
-        }
-      }
-      * { box-sizing: border-box; }
+          --accent-ink: #F5A623;
+          --accent-soft: #17372D;
+          --shadow: 0 1px 2px rgba(74, 54, 32, 0.18), 0 8px 24px rgba(74, 54, 32, 0.16);}}
+      * { box-sizing: border-box;}
       body {
         margin: 0;
         background: var(--bg);
         color: var(--ink);
         font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
         line-height: 1.55;
-        -webkit-font-smoothing: antialiased;
-      }
+        -webkit-font-smoothing: antialiased;}
       .wrap {
         max-width: 960px;
         margin: 0 auto;
-        padding: clamp(28px, 6vw, 64px) clamp(18px, 4vw, 32px) 56px;
-      }
-      header { max-width: 640px; }
+        padding: clamp(28px, 6vw, 64px) clamp(18px, 4vw, 32px) 56px;}
+      header { max-width: 640px;}
       h1 {
         font-family: Georgia, "Times New Roman", serif;
         font-size: clamp(32px, 5.5vw, 46px);
         line-height: 1.12;
         margin: 0 0 16px;
-        letter-spacing: -0.01em;
-      }
+        letter-spacing: -0.01em;}
       .intro {
         font-size: clamp(16px, 2.4vw, 18px);
         color: var(--ink-soft);
-        margin: 0;
-      }
-      .intro strong { color: var(--ink); font-weight: 600; }
+        margin: 0;}
+      .intro strong { color: var(--ink); font-weight: 600;}
       .facts {
         display: flex;
         flex-wrap: wrap;
@@ -84,16 +77,14 @@
         padding: 0;
         list-style: none;
         font-size: 14px;
-        color: var(--ink-soft);
-      }
-      .facts li { display: inline-flex; align-items: center; gap: 7px; }
-      .facts svg { flex: none; color: var(--accent); }
+        color: var(--ink-soft);}
+      .facts li { display: inline-flex; align-items: center; gap: 7px;}
+      .facts svg { flex: none; color: var(--accent);}
       .tools {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 18px;
-        margin-top: 42px;
-      }
+        margin-top: 42px;}
       .card {
         display: flex;
         flex-direction: column;
@@ -103,12 +94,10 @@
         padding: 26px 24px 22px;
         box-shadow: var(--shadow);
         text-decoration: none;
-        color: inherit;
-      }
+        color: inherit;}
       .card:focus-visible {
         outline: 3px solid var(--accent);
-        outline-offset: 3px;
-      }
+        outline-offset: 3px;}
       .icon {
         width: 46px;
         height: 46px;
@@ -117,19 +106,16 @@
         color: var(--accent);
         display: grid;
         place-items: center;
-        margin-bottom: 18px;
-      }
+        margin-bottom: 18px;}
       .card h2 {
         font-size: 19px;
         line-height: 1.3;
         margin: 0 0 8px;
-        font-weight: 650;
-      }
+        font-weight: 650;}
       .card p {
         margin: 0 0 22px;
         color: var(--ink-soft);
-        font-size: 15px;
-      }
+        font-size: 15px;}
       .go {
         margin-top: auto;
         display: inline-flex;
@@ -137,14 +123,12 @@
         gap: 8px;
         font-weight: 600;
         font-size: 15px;
-        color: var(--accent);
-      }
-      .go svg { transition: transform 0.15s ease; }
-      .card:hover .go svg { transform: translateX(3px); }
+        color: var(--accent);}
+      .go svg { transition: transform 0.15s ease;}
+      .card:hover .go svg { transform: translateX(3px);}
       @media (prefers-reduced-motion: reduce) {
-        .go svg { transition: none; }
-        .card:hover .go svg { transform: none; }
-      }
+        .go svg { transition: none;}
+        .card:hover .go svg { transform: none;}}
       .more {
         margin-top: 40px;
         padding: 22px 24px;
@@ -154,37 +138,35 @@
         font-size: 15px;
         display: flex;
         align-items: center;
-        gap: 14px;
-      }
-      .more svg { flex: none; color: var(--accent); }
-      .more strong { color: var(--ink); }
+        gap: 14px;}
+      .more svg { flex: none; color: var(--accent);}
+      .more strong { color: var(--ink);}
       footer {
         margin-top: 48px;
         font-size: 13.5px;
-        color: var(--ink-soft);
-      }
+        color: var(--ink-soft);}
     /* ===== The Come Up: related tools + share + next step ===== */
-    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
-    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 12px; }
-    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-    .tcu-rel { display:block; text-decoration:none; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
-    .tcu-rel:hover { border-color:var(--accent); transform:translateY(-1px); }
-    .tcu-rel:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
-    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3; }
-    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-soft); }
-    .tcu-rel-hub { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 13%, transparent); }
-    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--accent); background:color-mix(in srgb, var(--accent) 13%, transparent); color:var(--accent); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
-    .tcu-share-b:hover { background:var(--accent); color:var(--accent-ink); }
-    .tcu-share-b:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
-    .tcu-share-b svg { width:15px; height:15px; }
-    .tcu-share-n { font-size:12.5px; color:var(--ink-soft); }
-    .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
-    .tcu-share-n.err { color:#c8553d; font-weight:700; }
-    .tcu-cta { margin-top:16px; }
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--accent); color:var(--accent-ink); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
-    .tcu-cta-a:hover { filter:brightness(1.08); }
-    .tcu-cta-a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }</style>
+    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line);}
+    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 12px;}
+    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .tcu-rel { display:block; text-decoration:none; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s;}
+    .tcu-rel:hover { border-color:var(--accent); transform:translateY(-1px);}
+    .tcu-rel:focus-visible { outline:3px solid var(--accent); outline-offset:2px;}
+    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3;}
+    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-soft);}
+    .tcu-rel-hub { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 13%, transparent);}
+    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--accent); background:color-mix(in srgb, var(--accent) 13%, transparent); color:var(--accent); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
+    .tcu-share-b:hover { background:var(--accent); color:var(--accent-ink);}
+    .tcu-share-b:focus-visible { outline:3px solid var(--accent); outline-offset:2px;}
+    .tcu-share-b svg { width:15px; height:15px;}
+    .tcu-share-n { font-size:12.5px; color:var(--ink-soft);}
+    .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
+    .tcu-share-n.err { color:#c8553d; font-weight:700;}
+    .tcu-cta { margin-top:16px;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--accent); color:var(--accent-ink); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a:hover { filter:brightness(1.08);}
+    .tcu-cta-a:focus-visible { outline:3px solid var(--accent); outline-offset:3px;}</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Free Financial Calculators for Debt Paychecks | The Come Up","description":"Free calculators for debt payoff, credit utilization, and paycheck planning. Enter your numbers, get a straight answer, keep every dollar free.","url":"https://thecomeuphq.com/free-financial-calculators.html","isPartOf":{"@type":"WebSite","name":"The Come Up","url":"https://thecomeuphq.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Free Financial Calculators.Html","item":"https://thecomeuphq.com/free-financial-calculators.html"}]}]}</script>
   <script>
 
