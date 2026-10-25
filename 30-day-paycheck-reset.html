@@ -27,26 +27,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
     <style>
       :root {
-        color-scheme: dark;
-        --bg: #0b0b0d;
-        --bg-raise: #141416;
-        --bg-card: #17171a;
-        --bg-card-done: #1c1a12;
-        --line: #2a2a2e;
-        --line-done: #6b5518;
-        --ink: #f4f1ea;
-        --ink-dim: #b8b4aa;
-        --ink-faint: #8a867d;
-        --amber: #f5a302;
-        --amber-hot: #ff7a1a;
-        --amber-soft: rgba(245, 163, 2, 0.12);
-        --btn-ink: #161100;
-        --bar-track: #26262a;
-        --hazard-a: #f5a302;
-        --hazard-b: #101010;
-      }
-      * { box-sizing: border-box; }
-      html { scroll-behavior: smooth; }
+        color-scheme: light;
+        --bg: #FAF6EF;
+        --bg-raise: #FFFFFF;
+        --bg-card: #FFFFFF;
+        --bg-card-done: #F5EDDD;
+        --line: #E3D5BE;
+        --line-done: #B98A1F;
+        --ink: #2A211A;
+        --ink-dim: #7A6A58;
+        --ink-faint: #9A8A76;
+        --amber: #C06A00;
+        --amber-hot: #E8590C;
+        --amber-soft: rgba(192, 106, 0, 0.10);
+        --btn-ink: #C06A00;
+        --bar-track: #EDE3D0;
+        --hazard-a: #C06A00;
+        --hazard-b: #221A14;}
+      * { box-sizing: border-box;}
+      html { scroll-behavior: smooth;}
       body {
         margin: 0;
         background: var(--bg);
@@ -54,11 +53,10 @@
         font-family: "Inter", system-ui, -apple-system, sans-serif;
         font-size: 16px;
         line-height: 1.55;
-        -webkit-font-smoothing: antialiased;
-      }
-      .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 72px; }
+        -webkit-font-smoothing: antialiased;}
+      .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px 72px;}
       /* ---------- Hero ---------- */
-      .hero { padding: 30px 0 18px; }
+      .hero { padding: 44px 0 28px;}
       .hero-tag {
         display: inline-block;
         font-family: "JetBrains Mono", monospace;
@@ -67,8 +65,7 @@
         color: var(--amber);
         border: 1px solid var(--line-done);
         background: var(--amber-soft);
-        padding: 5px 10px; border-radius: 3px;
-      }
+        padding: 5px 10px; border-radius: 3px;}
       h1 {
         font-family: "Oswald", sans-serif;
         font-weight: 700;
@@ -76,16 +73,14 @@
         line-height: 1.02;
         letter-spacing: 0.01em;
         text-transform: uppercase;
-        margin: 18px 0 14px;
-      }
-      h1 .amber { color: var(--amber); }
+        margin: 18px 0 14px;}
+      h1 .amber { color: var(--amber);}
       .hero-sub {
         font-size: clamp(17px, 4.4vw, 21px);
         color: var(--ink-dim);
         max-width: 34em;
-        margin: 0 0 26px;
-      }
-      .hero-sub strong { color: var(--ink); }
+        margin: 0 0 26px;}
+      .hero-sub strong { color: var(--ink);}
       .btn-start {
         display: inline-block;
         background: var(--amber);
@@ -96,33 +91,29 @@
         text-decoration: none;
         padding: 16px 34px;
         border-radius: 4px;
-        box-shadow: 0 6px 24px rgba(245, 163, 2, 0.28);
-      }
-      .btn-start:active { transform: translateY(1px); }
+        box-shadow: 0 6px 24px rgba(192, 106, 0, 0.28);}
+      .btn-start:active { transform: translateY(1px);}
       .hero-meta {
         margin-top: 16px;
         font-family: "JetBrains Mono", monospace;
         font-size: 12px; color: var(--ink-faint);
-        letter-spacing: 0.06em;
-      }
+        letter-spacing: 0.06em;}
       .hazard {
         height: 8px;
         background: repeating-linear-gradient(-45deg, var(--hazard-a) 0 14px, var(--hazard-b) 14px 28px);
         border-radius: 2px;
         margin: 30px 0 0;
-        opacity: 0.9;
-      }
+        opacity: 0.9;}
       /* ---------- Tracker banner ---------- */
       .tracker-banner {
         margin-top: 26px;
         display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
-        background: linear-gradient(135deg, rgba(245, 163, 2, 0.16), rgba(255, 122, 26, 0.08));
+        background: linear-gradient(135deg, rgba(192, 106, 0, 0.16), rgba(192, 106, 0, 0.08));
         border: 1px solid var(--amber);
         border-radius: 6px;
         padding: 22px;
-        box-shadow: 0 0 0 1px var(--amber), 0 12px 40px rgba(245, 163, 2, 0.15);
-      }
-      .tracker-banner-text { flex: 1 1 300px; min-width: 0; }
+        box-shadow: 0 0 0 1px var(--amber), 0 12px 40px rgba(192, 106, 0, 0.15);}
+      .tracker-banner-text { flex: 1 1 300px; min-width: 0;}
       .tracker-banner-tag {
         display: inline-block;
         font-family: "JetBrains Mono", monospace;
@@ -131,15 +122,13 @@
         color: var(--btn-ink);
         background: var(--amber);
         padding: 4px 9px; border-radius: 3px;
-        margin-bottom: 10px;
-      }
+        margin-bottom: 10px;}
       .tracker-banner p {
         margin: 0;
         font-size: clamp(17px, 4.2vw, 20px);
         font-weight: 600;
-        line-height: 1.35;
-      }
-      .tracker-banner p strong { color: var(--amber); }
+        line-height: 1.35;}
+      .tracker-banner p strong { color: var(--amber);}
       .btn-tracker {
         display: inline-block;
         background: var(--amber);
@@ -150,10 +139,9 @@
         text-decoration: none;
         padding: 14px 28px;
         border-radius: 4px;
-        box-shadow: 0 6px 24px rgba(245, 163, 2, 0.28);
-        white-space: nowrap;
-      }
-      .btn-tracker:active { transform: translateY(1px); }
+        box-shadow: 0 6px 24px rgba(192, 106, 0, 0.28);
+        white-space: nowrap;}
+      .btn-tracker:active { transform: translateY(1px);}
       /* ---------- Progress ---------- */
       .progress-panel {
         position: sticky; top: 0; z-index: 20;
@@ -162,93 +150,78 @@
         border-radius: 6px;
         padding: 14px 16px;
         margin: 26px 0 8px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-      }
+        box-shadow: 0 10px 30px rgba(74, 54, 32, 0.16);}
       .progress-top {
-        display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-      }
+        display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;}
       .progress-count {
         font-family: "Oswald", sans-serif;
-        font-size: 22px; font-weight: 600; letter-spacing: 0.03em;
-      }
-      .progress-count .of { color: var(--ink-faint); font-size: 15px; }
+        font-size: 22px; font-weight: 600; letter-spacing: 0.03em;}
+      .progress-count .of { color: var(--ink-faint); font-size: 15px;}
       .progress-stats {
         display: flex; gap: 18px;
         font-family: "JetBrains Mono", monospace;
         font-size: 12px; color: var(--ink-dim);
-        letter-spacing: 0.04em;
-      }
-      .progress-stats b { color: var(--amber); font-size: 15px; }
+        letter-spacing: 0.04em;}
+      .progress-stats b { color: var(--amber); font-size: 15px;}
       .bar {
         height: 12px; border-radius: 3px;
         background: var(--bar-track);
-        margin-top: 10px; overflow: hidden;
-      }
+        margin-top: 10px; overflow: hidden;}
       .bar-fill {
         height: 100%; width: 0%;
         background: linear-gradient(90deg, var(--amber), var(--amber-hot));
-        transition: width 0.45s ease;
-      }
-      .progress-note { margin-top: 9px; font-size: 13px; color: var(--ink-faint); }
-      .progress-note b { color: var(--amber); }
+        transition: width 0.45s ease;}
+      .progress-note { margin-top: 9px; font-size: 13px; color: var(--ink-faint);}
+      .progress-note b { color: var(--amber);}
       .reset-link {
         background: none; border: none; padding: 0; margin-left: 10px;
         font: inherit; font-size: 12px; color: var(--ink-faint);
-        text-decoration: underline; cursor: pointer;
-      }
+        text-decoration: underline; cursor: pointer;}
       @media (prefers-reduced-motion: reduce) {
-        .bar-fill { transition: none; }
-        html { scroll-behavior: auto; }
-      }
+        .bar-fill { transition: none;}
+        html { scroll-behavior: auto;}}
       /* ---------- Weeks ---------- */
-      .week { margin-top: 44px; }
-      .week-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+      .week { margin-top: 44px;}
+      .week-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;}
       .week-kicker {
         font-family: "JetBrains Mono", monospace;
         font-size: 12px; font-weight: 700; letter-spacing: 0.2em;
-        color: var(--amber);
-      }
+        color: var(--amber);}
       .week h2 {
         font-family: "Oswald", sans-serif;
         font-size: clamp(28px, 6.5vw, 38px);
         font-weight: 600; text-transform: uppercase;
-        margin: 0; line-height: 1.1;
-      }
-      .week-sub { color: var(--ink-dim); margin: 6px 0 0; font-size: 15px; }
+        margin: 0; line-height: 1.1;}
+      .week-sub { color: var(--ink-dim); margin: 6px 0 0; font-size: 15px;}
       .week-progress {
         font-family: "JetBrains Mono", monospace;
-        font-size: 12px; color: var(--ink-faint); letter-spacing: 0.05em;
-      }
-      .cards { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px; }
-      @media (min-width: 680px) { .cards { grid-template-columns: 1fr 1fr; } }
+        font-size: 12px; color: var(--ink-faint); letter-spacing: 0.05em;}
+      .cards { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 18px;}
+      @media (min-width: 680px) { .cards { grid-template-columns: 1fr 1fr;}}
       .card {
         background: var(--bg-card);
         border: 1px solid var(--line);
         border-radius: 6px;
         padding: 18px;
-        display: flex; flex-direction: column; gap: 10px;
-      }
-      .card.is-done { background: var(--bg-card-done); border-color: var(--line-done); }
-      .card.is-next { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber); }
-      .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        display: flex; flex-direction: column; gap: 10px;}
+      .card.is-done { background: var(--bg-card-done); border-color: var(--line-done);}
+      .card.is-next { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber);}
+      .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px;}
       .day-badge {
         font-family: "JetBrains Mono", monospace;
         font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
-        background: var(--amber); color: #161100;
-        padding: 4px 9px; border-radius: 3px;
-      }
-      .card.is-done .day-badge { background: var(--line-done); color: #fff8e1; }
+        background: var(--amber); color: #F5A623;
+        padding: 4px 9px; border-radius: 3px;}
+      .card.is-done .day-badge { background: var(--line-done); color: #FAF6EF;}
       .next-tag {
         font-family: "JetBrains Mono", monospace;
         font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
-        color: var(--amber-hot); text-transform: uppercase;
-      }
+        color: var(--amber-hot); text-transform: uppercase;}
       .card h3 {
         font-family: "Oswald", sans-serif;
         font-size: 21px; font-weight: 600; line-height: 1.15;
-        margin: 0;
-      }
-      .card .action { color: var(--ink-dim); margin: 0; font-size: 15px; flex: 1; }
+        margin: 0;}
+      .card .action { color: var(--ink-dim); margin: 0; font-size: 15px; flex: 1;}
       .btn-move {
         display: block; text-align: center;
         background: var(--amber-soft);
@@ -256,23 +229,21 @@
         color: var(--amber);
         font-weight: 700; font-size: 15px;
         text-decoration: none;
-        padding: 11px 14px; border-radius: 4px;
-      }
-      .btn-move:hover { background: var(--amber); color: var(--btn-ink); }
-      .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-      .deeper { font-size: 13px; color: var(--ink-faint); margin: 0; }
-      .deeper a { color: var(--ink-dim); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
-      .deeper a:hover { color: var(--amber); }
+        padding: 11px 14px; border-radius: 4px;}
+      .btn-move:hover { background: var(--amber); color: var(--btn-ink);}
+      .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;}
+      .deeper { font-size: 13px; color: var(--ink-faint); margin: 0;}
+      .deeper a { color: var(--ink-dim); font-weight: 600; text-decoration: underline; text-underline-offset: 2px;}
+      .deeper a:hover { color: var(--amber);}
       .btn-done {
         font-family: "Inter", sans-serif;
         font-weight: 700; font-size: 14px;
         padding: 9px 18px; border-radius: 4px;
         border: 1px solid var(--line);
         background: transparent; color: var(--ink-dim);
-        cursor: pointer; white-space: nowrap;
-      }
-      .btn-done:hover { border-color: var(--amber); color: var(--amber); }
-      .card.is-done .btn-done { background: var(--amber); border-color: var(--amber); color: var(--btn-ink); }
+        cursor: pointer; white-space: nowrap;}
+      .btn-done:hover { border-color: var(--amber); color: var(--amber);}
+      .card.is-done .btn-done { background: var(--amber); border-color: var(--amber); color: var(--btn-ink);}
       /* ---------- Finale ---------- */
       .finale {
         margin-top: 48px;
@@ -280,70 +251,63 @@
         border-radius: 6px;
         padding: 30px 22px;
         text-align: center;
-        background: var(--bg-raise);
-      }
+        background: var(--bg-raise);}
       .finale .big {
         font-family: "Oswald", sans-serif;
         font-size: clamp(26px, 6vw, 36px);
         font-weight: 600; text-transform: uppercase;
-        line-height: 1.15; margin: 0 0 10px;
-      }
-      .finale p { color: var(--ink-dim); margin: 0 auto; max-width: 34em; }
-      .finale.locked { opacity: 0.75; }
-      .finale.unlocked { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber), 0 12px 40px rgba(245,163,2,0.15); }
+        line-height: 1.15; margin: 0 0 10px;}
+      .finale p { color: var(--ink-dim); margin: 0 auto; max-width: 34em;}
+      .finale.locked { opacity: 0.75;}
+      .finale.unlocked { border-color: var(--amber); box-shadow: 0 0 0 1px var(--amber), 0 12px 40px rgba(192, 106, 0, 0.15);}
       .finale .status {
         font-family: "JetBrains Mono", monospace;
         font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
-        color: var(--amber); display: block; margin-bottom: 12px;
-      }
+        color: var(--amber); display: block; margin-bottom: 12px;}
       /* ---------- FAQ ---------- */
-      .faq { margin-top: 52px; }
+      .faq { margin-top: 52px;}
       .faq h2 {
         font-family: "Oswald", sans-serif;
         font-size: clamp(26px, 6vw, 34px);
-        font-weight: 600; text-transform: uppercase; margin: 0 0 16px;
-      }
+        font-weight: 600; text-transform: uppercase; margin: 0 0 16px;}
       .faq details {
         border: 1px solid var(--line); border-radius: 6px;
         background: var(--bg-card);
-        margin-bottom: 10px; padding: 4px 18px;
-      }
+        margin-bottom: 10px; padding: 4px 18px;}
       .faq summary {
         cursor: pointer; font-weight: 700; font-size: 16px;
-        padding: 12px 0; list-style: none;
-      }
-      .faq summary::-webkit-details-marker { display: none; }
-      .faq summary::after { content: "+"; float: right; color: var(--amber); font-weight: 700; }
-      .faq details[open ] summary::after { content: "–"; }
-      .faq details p { color: var(--ink-dim); margin: 0 0 14px; font-size: 15px; }
+        padding: 12px 0; list-style: none;}
+      .faq summary::-webkit-details-marker { display: none;}
+      .faq summary::after { content: "+"; float: right; color: var(--amber); font-weight: 700;}
+      .faq details[open ] summary::after { content: "–";}
+      .faq details p { color: var(--ink-dim); margin: 0 0 14px; font-size: 15px;}
       footer {
         margin-top: 48px; padding-top: 20px;
         border-top: 1px solid var(--line);
-        color: var(--ink-faint); font-size: 13px;
-      }
-      footer a { color: var(--ink-dim); }
+        color: var(--ink-faint); font-size: 13px;}
+      footer a { color: var(--ink-dim);}
     /* ===== The Come Up: related tools + share + next step ===== */
-    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
-    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px; }
-    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-    .tcu-rel { display:block; text-decoration:none; background:var(--bg-card); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
-    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px); }
-    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3; }
-    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-dim); }
-    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); }
-    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
-    .tcu-share-b:hover { background:var(--amber); color:var(--btn-ink); }
-    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-share-b svg { width:15px; height:15px; }
-    .tcu-share-n { font-size:12.5px; color:var(--ink-dim); }
-    .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
-    .tcu-share-n.err { color:#c8553d; font-weight:700; }
-    .tcu-cta { margin-top:16px; }
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:var(--btn-ink); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
-    .tcu-cta-a:hover { filter:brightness(1.08); }
-    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
+    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line);}
+    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px;}
+    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .tcu-rel { display:block; text-decoration:none; background:var(--bg-card); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s;}
+    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px);}
+    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3;}
+    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-dim);}
+    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent);}
+    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
+    .tcu-share-b:hover { background:var(--amber); color:var(--btn-ink);}
+    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-share-b svg { width:15px; height:15px;}
+    .tcu-share-n { font-size:12.5px; color:var(--ink-dim);}
+    .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
+    .tcu-share-n.err { color:#c8553d; font-weight:700;}
+    .tcu-cta { margin-top:16px;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:var(--btn-ink); font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a:hover { filter:brightness(1.08);}
+    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Free 30-Day Paycheck Reset Tracker for Hourly Workers | The Come Up","description":"One 3-minute money move a day for 30 days. Free paycheck reset tracker with 30 daily actions built for shift workers. Progress saves in your browser.","url":"https://thecomeuphq.com/30-day-paycheck-reset.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"30 Day Paycheck Reset.Html","item":"https://thecomeuphq.com/30-day-paycheck-reset.html"}]}]}</script>
   <script>
 
@@ -427,57 +391,12 @@
       <!-- Hero -->
       <header class="hero">
         <span class="hero-tag">30 days &middot; 30 moves &middot; ~3 min each</span>
-        <h1>Take control of your next paycheck in <span class="amber">30 days</span></h1>
+        <h1>The 30-Day<br />Paycheck <span class="amber">Reset</span></h1>
         <p class="hero-sub">One 3-minute money move a day. <strong>No budgets that take weekends. No finance degree.</strong> Built for shift workers who get paid by the hour and are tired of watching the check disappear.</p>
         <a class="btn-start" href="https://thecomeuphq.github.io/comeup-links/paycheck-health-score-quiz.html" target="_blank" rel="noopener">Start Day 1 &rarr;</a>
         <p class="hero-meta">FREE TOOLS EVERY DAY &middot; PROGRESS SAVES IN THIS BROWSER</p>
         <div class="hazard" aria-hidden="true"></div>
       </header>
-
-      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #6b4f18; border-radius:14px; background:linear-gradient(125deg,#241a07,#1f1f1f);">
-        <h2 style="margin:0 0 6px; font-size:16px; color:#f5a623; letter-spacing:.01em;">Get the Free 30-Day Reset Printable</h2>
-        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#bdbdbd;">Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.</p>
-        <form id="tcu-capture-form" novalidate>
-          <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
-          <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">
-          <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
-          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border:0; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; cursor:pointer;">Get My Free Printable</button>
-          <p id="tcu-capture-status" role="status" aria-live="polite" style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#bdbdbd;"></p>
-        </form>
-        <p style="margin:10px 0 0; font-size:12px; letter-spacing:.02em; color:#8f8f8f;">100% FREE &middot; INSTANT DELIVERY &middot; NO CREDIT CARD REQUIRED</p>
-      </section>
-    <script>
-      (function () {
-        var form = document.getElementById('tcu-capture-form');
-        var status = document.getElementById('tcu-capture-status');
-        var email = document.getElementById('tcu-capture-email');
-        if (!form) return;
-        form.addEventListener('submit', function (ev) {
-          ev.preventDefault();
-          var value = (email && email.value || '').trim();
-          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
-            status.textContent = 'That email does not look right. Check it and try again.';
-            if (email) email.focus();
-            return;
-          }
-          var btn = form.querySelector('button[type="submit"]');
-          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
-          fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
-          }).then(function (r) {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            form.reset();
-            status.textContent = "You're in — check your inbox.";
-          }).catch(function () {
-            status.textContent = 'Something went wrong. Try again in a moment.';
-          }).then(function () {
-            if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
-          });
-        });
-      })();
-    </script>
 
       <!-- Free payday worksheet -->
       <section class="tracker-banner" aria-label="Free Paycheck Protection Checklist">
@@ -540,7 +459,49 @@
         </div>
       </section>
 </main>
-
+      <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
+        <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Get the Free 30-Day Reset Printable</h2>
+        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">Get the Reset tracker printable sent straight to your inbox, plus instant access when new free tools drop. No spam, no selling your info &mdash; unsubscribe in one click.</p>
+        <form id="tcu-capture-form" novalidate>
+          <label for="tcu-capture-email" style="display:block; margin:0 0 6px; font-size:13px; color:#bdbdbd;">Email address</label>
+          <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required style="display:block; width:100%; box-sizing:border-box; min-height:44px; padding:11px 12px; margin:0 0 10px; border-radius:12px; border:1px solid #3a3a3a; background:#171717; color:#f2f2f2; font-size:15px;">
+          <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border:0; border-radius:12px; background:#f5a623; color:#17130c; font-size:14px; font-weight:800; cursor:pointer;">Get My Free Printable</button>
+          <p id="tcu-capture-status" role="status" aria-live="polite" style="margin:10px 0 0; font-size:13px; line-height:1.5; color:#bdbdbd;"></p>
+        </form>
+      </section>
+    <script>
+      (function () {
+        var form = document.getElementById('tcu-capture-form');
+        var status = document.getElementById('tcu-capture-status');
+        var email = document.getElementById('tcu-capture-email');
+        if (!form) return;
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          var value = (email && email.value || '').trim();
+          if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
+            status.textContent = 'That email does not look right. Check it and try again.';
+            if (email) email.focus();
+            return;
+          }
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+          fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
+          }).then(function (r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            form.reset();
+            status.textContent = "You're in — check your inbox.";
+          }).catch(function () {
+            status.textContent = 'Something went wrong. Try again in a moment.';
+          }).then(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
+          });
+        });
+      })();
+    </script>
 
       <!-- Finale -->
       <section class="finale locked" id="finale">

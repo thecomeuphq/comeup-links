@@ -24,55 +24,51 @@
     <title>Emergency Fund Quiz — How Ready Are You? | The Come Up</title>
     <style>
       :root {
-        --bg: #101013;
-        --bg-2: #17171c;
-        --panel: #1c1c22;
-        --panel-2: #23232b;
-        --line: #2e2e38;
-        --line-strong: #3a3a46;
-        --ink: #f2f0ea;
-        --ink-2: #b9b6ad;
-        --ink-3: #82807a;
-        --amber: #f5a524;
-        --amber-2: #ffb84d;
-        --amber-dim: rgba(245, 165, 36, 0.12);
-        --red: #e5484d;
-        --red-dim: rgba(229, 72, 77, 0.13);
-        --green: #3fb96f;
-        --green-dim: rgba(63, 185, 111, 0.13);
-        --radius: 14px;
-      }
-      * { box-sizing: border-box; }
-      html, body { margin: 0; padding: 0; }
+        --bg: #FAF6EF;
+        --bg-2: #FFFDF8;
+        --panel: #FFFFFF;
+        --panel-2: #F5EDDD;
+        --line: #E3D5BE;
+        --line-strong: #D8C29A;
+        --ink: #2A211A;
+        --ink-2: #4A3E33;
+        --ink-3: #9A8A76;
+        --amber: #C06A00;
+        --amber-2: #C06A00;
+        --amber-dim: rgba(192, 106, 0, 0.10);
+        --red: #BE3A2B;
+        --red-dim: rgba(190, 58, 43, 0.12);
+        --green: #1E7A3C;
+        --green-dim: rgba(30, 122, 60, 0.12);
+        --radius: 14px;}
+      * { box-sizing: border-box;}
+      html, body { margin: 0; padding: 0;}
       body {
         background: var(--bg);
         color: var(--ink);
         font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         line-height: 1.5;
-        min-height: 100vh;
-      }
+        min-height: 100vh;}
       /* subtle industrial texture: faint diagonal hazard striping at top */
       .hazard {
         height: 6px;
         background: repeating-linear-gradient(
           -45deg,
           var(--amber) 0 14px,
-          #131316 14px 28px
+          #221A14 14px 28px
         );
-        opacity: 0.85;
-      }
+        opacity: 0.85;}
       .wrap {
         max-width: 640px;
         margin: 0 auto;
-        padding: 20px 18px 56px;
-      }
+        padding: 20px 18px 56px;}
       /* ---------- screen transitions ---------- */
-      .stage { position: relative; }
-      .screen { display: none; }
-      .screen.active { display: block; }
-      .screen.enter-fwd { animation: slideFwd 0.34s cubic-bezier(0.22, 0.9, 0.3, 1) both; }
-      .screen.enter-back { animation: slideBack 0.34s cubic-bezier(0.22, 0.9, 0.3, 1) both; }
+      .stage { position: relative;}
+      .screen { display: none;}
+      .screen.active { display: block;}
+      .screen.enter-fwd { animation: slideFwd 0.34s cubic-bezier(0.22, 0.9, 0.3, 1) both;}
+      .screen.enter-back { animation: slideBack 0.34s cubic-bezier(0.22, 0.9, 0.3, 1) both;}
       @keyframes slideFwd {
         from { opacity: 0; transform: translateX(26px); }
         to { opacity: 1; transform: translateX(0); }
@@ -82,8 +78,7 @@
         to { opacity: 1; transform: translateX(0); }
       }
       @media (prefers-reduced-motion: reduce) {
-        .screen.enter-fwd, .screen.enter-back { animation: none; }
-      }
+        .screen.enter-fwd, .screen.enter-back { animation: none;}}
       /* ---------- intro ---------- */
       .kicker {
         font-size: 12px;
@@ -91,22 +86,19 @@
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--amber);
-        margin: 14px 0 10px;
-      }
+        margin: 14px 0 10px;}
       h1 {
         font-size: clamp(30px, 8vw, 42px);
         line-height: 1.08;
         margin: 0 0 14px;
         font-weight: 800;
-        letter-spacing: -0.01em;
-      }
-      .lede { color: var(--ink-2); font-size: 16.5px; margin: 0 0 22px; }
+        letter-spacing: -0.01em;}
+      .lede { color: var(--ink-2); font-size: 16.5px; margin: 0 0 22px;}
       .meta-row {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
-        margin-bottom: 26px;
-      }
+        margin-bottom: 26px;}
       .meta-chip {
         background: var(--panel);
         border: 1px solid var(--line);
@@ -114,14 +106,13 @@
         padding: 7px 14px;
         font-size: 13.5px;
         color: var(--ink-2);
-        font-weight: 600;
-      }
-      .meta-chip b { color: var(--ink); }
+        font-weight: 600;}
+      .meta-chip b { color: var(--ink);}
       .btn-primary {
         display: block;
         width: 100%;
         background: var(--amber);
-        color: #191104;
+        color: #C06A00;
         border: none;
         border-radius: var(--radius);
         padding: 17px 20px;
@@ -129,30 +120,26 @@
         font-weight: 800;
         cursor: pointer;
         letter-spacing: 0.01em;
-        transition: background 0.15s ease, transform 0.1s ease;
-      }
-      .btn-primary:hover { background: var(--amber-2); }
-      .btn-primary:active { transform: scale(0.985); }
+        transition: background 0.15s ease, transform 0.1s ease;}
+      .btn-primary:hover { background: var(--amber-2);}
+      .btn-primary:active { transform: scale(0.985);}
       .intro-note {
         margin-top: 16px;
         color: var(--ink-3);
         font-size: 13.5px;
-        text-align: center;
-      }
+        text-align: center;}
       .checks {
         margin: 26px 0 4px;
         padding: 0;
-        list-style: none;
-      }
+        list-style: none;}
       .checks li {
         display: flex;
         gap: 12px;
         padding: 11px 0;
         border-top: 1px solid var(--line);
         color: var(--ink-2);
-        font-size: 15px;
-      }
-      .checks li:last-child { border-bottom: 1px solid var(--line); }
+        font-size: 15px;}
+      .checks li:last-child { border-bottom: 1px solid var(--line);}
       .checks .tick {
         flex: 0 0 auto;
         width: 22px; height: 22px;
@@ -161,38 +148,33 @@
         color: var(--amber);
         display: grid; place-items: center;
         font-size: 13px; font-weight: 800;
-        margin-top: 1px;
-      }
+        margin-top: 1px;}
       /* ---------- quiz ---------- */
       .progress-head {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        margin: 8px 0 10px;
-      }
-      .progress-count { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
-      .progress-count b { color: var(--amber); }
-      .progress-cat { font-size: 13px; color: var(--ink-3); font-weight: 600; }
+        margin: 8px 0 10px;}
+      .progress-count { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3);}
+      .progress-count b { color: var(--amber);}
+      .progress-cat { font-size: 13px; color: var(--ink-3); font-weight: 600;}
       .progress-track {
         height: 8px;
         background: var(--panel-2);
         border-radius: 99px;
         overflow: hidden;
-        margin-bottom: 30px;
-      }
+        margin-bottom: 30px;}
       .progress-fill {
         height: 100%;
         background: var(--amber);
         border-radius: 99px;
-        transition: width 0.45s cubic-bezier(0.22, 0.9, 0.3, 1);
-      }
+        transition: width 0.45s cubic-bezier(0.22, 0.9, 0.3, 1);}
       .q-text {
         font-size: clamp(21px, 5.6vw, 26px);
         font-weight: 750;
         line-height: 1.3;
-        margin: 0 0 24px;
-      }
-      .answers { display: flex; flex-direction: column; gap: 11px; }
+        margin: 0 0 24px;}
+      .answers { display: flex; flex-direction: column; gap: 11px;}
       .answer {
         display: flex;
         align-items: center;
@@ -208,10 +190,9 @@
         font-weight: 600;
         cursor: pointer;
         transition: border-color 0.12s ease, background 0.12s ease, transform 0.08s ease;
-        -webkit-tap-highlight-color: transparent;
-      }
-      .answer:hover { border-color: var(--line-strong); background: var(--panel-2); }
-      .answer:active { transform: scale(0.99); }
+        -webkit-tap-highlight-color: transparent;}
+      .answer:hover { border-color: var(--line-strong); background: var(--panel-2);}
+      .answer:active { transform: scale(0.99);}
       .answer .letter {
         flex: 0 0 auto;
         width: 30px; height: 30px;
@@ -219,23 +200,19 @@
         border: 1.5px solid var(--line-strong);
         display: grid; place-items: center;
         font-size: 14px; font-weight: 800;
-        color: var(--ink-2);
-      }
+        color: var(--ink-2);}
       .answer.picked {
         border-color: var(--amber);
-        background: var(--amber-dim);
-      }
+        background: var(--amber-dim);}
       .answer.picked .letter {
         background: var(--amber);
         border-color: var(--amber);
-        color: #191104;
-      }
+        color: #C06A00;}
       .quiz-nav {
         margin-top: 26px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-      }
+        justify-content: space-between;}
       .btn-back {
         background: none;
         border: 1px solid var(--line);
@@ -244,11 +221,10 @@
         padding: 10px 16px;
         font-size: 14.5px;
         font-weight: 700;
-        cursor: pointer;
-      }
-      .btn-back:hover { border-color: var(--line-strong); color: var(--ink); }
-      .btn-back.hidden { visibility: hidden; }
-      .quiz-hint { font-size: 13px; color: var(--ink-3); }
+        cursor: pointer;}
+      .btn-back:hover { border-color: var(--line-strong); color: var(--ink);}
+      .btn-back.hidden { visibility: hidden;}
+      .quiz-hint { font-size: 13px; color: var(--ink-3);}
       /* ---------- results ---------- */
       .result-card {
         background: var(--panel);
@@ -256,9 +232,8 @@
         border-radius: 18px;
         padding: 28px 22px 24px;
         text-align: center;
-        margin-top: 8px;
-      }
-      .gauge-wrap { position: relative; width: 210px; margin: 0 auto 6px; }
+        margin-top: 8px;}
+      .gauge-wrap { position: relative; width: 210px; margin: 0 auto 6px;}
       .gauge-num {
         position: absolute;
         inset: 0;
@@ -266,15 +241,13 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding-top: 26px;
-      }
+        padding-top: 26px;}
       .gauge-num .score {
         font-size: 62px;
         font-weight: 850;
         line-height: 1;
-        letter-spacing: -0.02em;
-      }
-      .gauge-num .of { font-size: 13px; color: var(--ink-3); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 4px; }
+        letter-spacing: -0.02em;}
+      .gauge-num .of { font-size: 13px; color: var(--ink-3); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 4px;}
       .tier-badge {
         display: inline-block;
         border-radius: 999px;
@@ -282,36 +255,33 @@
         font-size: 15px;
         font-weight: 800;
         letter-spacing: 0.02em;
-        margin: 10px 0 12px;
-      }
-      .tier-danger { background: var(--red-dim); color: #ff8589; border: 1px solid rgba(229,72,77,0.45); }
-      .tier-fragile { background: var(--amber-dim); color: var(--amber-2); border: 1px solid rgba(245,165,36,0.45); }
-      .tier-fortified { background: var(--green-dim); color: #6fd598; border: 1px solid rgba(63,185,111,0.45); }
-      .diagnosis { color: var(--ink-2); font-size: 16.5px; margin: 0 auto; max-width: 44ch; }
+        margin: 10px 0 12px;}
+      .tier-danger { background: var(--red-dim); color: #BE3A2B; border: 1px solid rgba(190, 58, 43, 0.45);}
+      .tier-fragile { background: var(--amber-dim); color: var(--amber-2); border: 1px solid rgba(192, 106, 0, 0.45);}
+      .tier-fortified { background: var(--green-dim); color: #1E7A3C; border: 1px solid rgba(30, 122, 60, 0.45);}
+      .diagnosis { color: var(--ink-2); font-size: 16.5px; margin: 0 auto; max-width: 44ch;}
       .section-title {
         font-size: 13px;
         font-weight: 800;
         letter-spacing: 0.13em;
         text-transform: uppercase;
         color: var(--ink-3);
-        margin: 34px 0 14px;
-      }
-      .breakdown { display: flex; flex-direction: column; gap: 14px; }
-      .bd-row { }
+        margin: 34px 0 14px;}
+      .breakdown { display: flex; flex-direction: column; gap: 14px;}
+      .bd-row {}
       .bd-head {
         display: flex;
         justify-content: space-between;
         font-size: 14.5px;
-        margin-bottom: 6px;
-      }
-      .bd-head .bd-name { font-weight: 650; color: var(--ink); }
-      .bd-head .bd-pts { color: var(--ink-3); font-weight: 700; font-variant-numeric: tabular-nums; }
-      .bd-track { height: 7px; background: var(--panel-2); border-radius: 99px; overflow: hidden; }
-      .bd-fill { height: 100%; background: var(--amber); border-radius: 99px; width: 0; transition: width 0.8s cubic-bezier(0.22, 0.9, 0.3, 1); }
-      .bd-fill.low { background: var(--red); }
-      .bd-fill.mid { background: var(--amber); }
-      .bd-fill.high { background: var(--green); }
-      .link-cards { display: flex; flex-direction: column; gap: 11px; }
+        margin-bottom: 6px;}
+      .bd-head .bd-name { font-weight: 650; color: var(--ink);}
+      .bd-head .bd-pts { color: var(--ink-3); font-weight: 700; font-variant-numeric: tabular-nums;}
+      .bd-track { height: 7px; background: var(--panel-2); border-radius: 99px; overflow: hidden;}
+      .bd-fill { height: 100%; background: var(--amber); border-radius: 99px; width: 0; transition: width 0.8s cubic-bezier(0.22, 0.9, 0.3, 1);}
+      .bd-fill.low { background: var(--red);}
+      .bd-fill.mid { background: var(--amber);}
+      .bd-fill.high { background: var(--green);}
+      .link-cards { display: flex; flex-direction: column; gap: 11px;}
       a.tool-card {
         display: flex;
         align-items: center;
@@ -322,26 +292,24 @@
         padding: 16px;
         text-decoration: none;
         color: var(--ink);
-        transition: border-color 0.12s ease, background 0.12s ease;
-      }
-      a.tool-card:hover { border-color: var(--amber); background: var(--panel-2); }
+        transition: border-color 0.12s ease, background 0.12s ease;}
+      a.tool-card:hover { border-color: var(--amber); background: var(--panel-2);}
       .tool-icon {
         flex: 0 0 auto;
         width: 42px; height: 42px;
         border-radius: 10px;
         background: var(--amber-dim);
         color: var(--amber);
-        display: grid; place-items: center;
-      }
-      .tool-icon svg { width: 22px; height: 22px; }
-      .tool-body { flex: 1 1 auto; min-width: 0; }
-      .tool-name { font-weight: 750; font-size: 15.5px; }
-      .tool-desc { color: var(--ink-2); font-size: 13.5px; margin-top: 1px; }
-      .tool-arrow { color: var(--ink-3); font-size: 20px; flex: 0 0 auto; }
+        display: grid; place-items: center;}
+      .tool-icon svg { width: 22px; height: 22px;}
+      .tool-body { flex: 1 1 auto; min-width: 0;}
+      .tool-name { font-weight: 750; font-size: 15.5px;}
+      .tool-desc { color: var(--ink-2); font-size: 13.5px; margin-top: 1px;}
+      .tool-arrow { color: var(--ink-3); font-size: 20px; flex: 0 0 auto;}
       .free-tag {
         display: inline-block;
         background: var(--green-dim);
-        color: #6fd598;
+        color: #1E7A3C;
         border-radius: 6px;
         padding: 1px 7px;
         font-size: 11.5px;
@@ -349,8 +317,7 @@
         letter-spacing: 0.05em;
         text-transform: uppercase;
         vertical-align: 2px;
-        margin-left: 6px;
-      }
+        margin-left: 6px;}
       .btn-retake {
         display: block;
         width: 100%;
@@ -362,64 +329,59 @@
         padding: 15px 20px;
         font-size: 16px;
         font-weight: 750;
-        cursor: pointer;
-      }
-      .btn-retake:hover { border-color: var(--amber); color: var(--amber-2); }
+        cursor: pointer;}
+      .btn-retake:hover { border-color: var(--amber); color: var(--amber-2);}
       /* ---------- FAQ ---------- */
-      .faq { margin-top: 44px; }
-      .faq h2 { font-size: 21px; font-weight: 800; margin: 0 0 6px; }
+      .faq { margin-top: 44px;}
+      .faq h2 { font-size: 21px; font-weight: 800; margin: 0 0 6px;}
       details.faq-item {
         border-top: 1px solid var(--line);
-        padding: 4px 0;
-      }
-      details.faq-item:last-of-type { border-bottom: 1px solid var(--line); }
+        padding: 4px 0;}
+      details.faq-item:last-of-type { border-bottom: 1px solid var(--line);}
       details.faq-item summary {
         cursor: pointer;
         font-weight: 700;
         font-size: 15.5px;
         padding: 13px 26px 13px 0;
         list-style: none;
-        position: relative;
-      }
-      details.faq-item summary::-webkit-details-marker { display: none; }
+        position: relative;}
+      details.faq-item summary::-webkit-details-marker { display: none;}
       details.faq-item summary::after {
         content: "+";
         position: absolute;
         right: 2px;
         color: var(--amber);
         font-weight: 800;
-        font-size: 18px;
-      }
-      details.faq-item[open ] summary::after { content: "–"; }
-      details.faq-item p { color: var(--ink-2); font-size: 15px; margin: 0 0 15px; }
+        font-size: 18px;}
+      details.faq-item[open ] summary::after { content: "–";}
+      details.faq-item p { color: var(--ink-2); font-size: 15px; margin: 0 0 15px;}
       footer {
         margin-top: 40px;
         color: var(--ink-3);
         font-size: 13px;
-        text-align: center;
-      }
+        text-align: center;}
     /* ===== The Come Up: related tools + share + next step ===== */
-    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line); }
-    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px; }
-    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
-    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s; }
-    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px); }
-    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3; }
-    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-2); }
-    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); }
-    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit; }
-    .tcu-share-b:hover { background:var(--amber); color:#17130c; }
-    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px; }
-    .tcu-share-b svg { width:15px; height:15px; }
-    .tcu-share-n { font-size:12.5px; color:var(--ink-2); }
-    .tcu-share-n.ok { color:#2f9e57; font-weight:700; }
-    .tcu-share-n.err { color:#c8553d; font-weight:700; }
-    .tcu-cta { margin-top:16px; }
-    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#17130c; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center; }
-    .tcu-cta-a:hover { filter:brightness(1.08); }
-    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px; }</style>
+    .tcu { margin-top:34px; padding-top:22px; border-top:1px solid var(--line);}
+    .tcu-h { font-size:15px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--amber); margin:0 0 12px;}
+    .tcu-rels { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+    .tcu-rel { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 13px; transition:border-color .15s,transform .15s;}
+    .tcu-rel:hover { border-color:var(--amber); transform:translateY(-1px);}
+    .tcu-rel:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-rel-t { display:block; font-size:14px; font-weight:750; color:var(--ink); line-height:1.3;}
+    .tcu-rel-d { display:block; margin-top:4px; font-size:12.5px; line-height:1.45; color:var(--ink-2);}
+    .tcu-rel-hub { border-color:var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent);}
+    .tcu-share { margin-top:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;}
+    .tcu-share-b { display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:10px 15px; border-radius:11px; border:1px solid var(--amber); background:color-mix(in srgb, var(--amber) 13%, transparent); color:var(--amber); font-size:13.5px; font-weight:750; cursor:pointer; font-family:inherit;}
+    .tcu-share-b:hover { background:var(--amber); color:#2A211A;}
+    .tcu-share-b:focus-visible { outline:3px solid var(--amber); outline-offset:2px;}
+    .tcu-share-b svg { width:15px; height:15px;}
+    .tcu-share-n { font-size:12.5px; color:var(--ink-2);}
+    .tcu-share-n.ok { color:#2f9e57; font-weight:700;}
+    .tcu-share-n.err { color:#c8553d; font-weight:700;}
+    .tcu-cta { margin-top:16px;}
+    .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#2A211A; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
+    .tcu-cta-a:hover { filter:brightness(1.08);}
+    .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Emergency Fund Quiz — How Ready Are You? | The Come Up","description":"Six questions about your cash buffer and fallback plan. Get a 0-100 emergency fund readiness score and the exact next move for where you stand.","url":"https://thecomeuphq.com/emergency-fund-readiness-quiz.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Emergency Fund Readiness Quiz.Html","item":"https://thecomeuphq.com/emergency-fund-readiness-quiz.html"}]}]}</script>
   <script>
 
