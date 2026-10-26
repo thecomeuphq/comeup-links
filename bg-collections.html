@@ -207,6 +207,28 @@
   .pick-photo { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:10px; margin:0 0 12px; background:#F5EDDD; }
   .pick-tile { display:grid; place-items:center; font-size:54px; line-height:1; }
 </style>
+<style>
+/* RETAIL POLISH (Oct 25) - popular-company grid feel */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 6px 18px rgba(74,54,32,.08);display:flex;flex-direction:column;}
+.card .pick-photo{width:100%;height:180px;object-fit:cover;border-radius:12px;}
+.card .pick-tile{height:180px;display:grid;place-items:center;font-size:64px;background:var(--surface-raised);border-radius:12px;}
+.card .t{font-size:17px;font-weight:800;margin-top:10px;line-height:1.3;}
+.card .btn{display:flex;width:100%;justify-content:center;background:var(--amber);color:#FFFFFF;border:1px solid var(--amber);border-radius:12px;padding:12px;font-weight:800;text-decoration:none;}
+.otherdoor{border:2px dashed var(--amber);border-radius:18px;padding:20px;background:var(--surface);}
+.hwbar{display:none;}
+.hwonly{display:none;}
+/* HALLOWEEN SKIN - date-gated, lifts itself Nov 2 2026 */
+body.hw{--bg:#14091F;--surface:#221331;--surface-raised:#2C1B40;--line:#3D2756;--text:#F5EFE6;--muted:#B9A8CC;--amber:#FF7518;--amber-soft:rgba(255,117,24,.14);}
+body.hw .hero{background:linear-gradient(135deg,#2C1B40,#14091F);border-color:#FF7518;}
+body.hw .lead{color:#F5EFE6;}
+body.hw h1,body.hw h2,body.hw h3{color:#FFF3E2;}
+body.hw .card{box-shadow:0 8px 22px rgba(0,0,0,.45);}
+body.hw .card .btn{background:#FF7518;border-color:#FF7518;color:#1A0B00;}
+body.hw .btn.ghost{background:transparent;color:#FF7518;border:1px solid #FF7518;}
+body.hw .hwbar{display:block;background:linear-gradient(90deg,#FF7518,#7B2FF7);color:#FFFFFF;font-weight:800;text-align:center;padding:10px 14px;border-radius:12px;margin-bottom:14px;font-size:14px;}
+body.hw .hwonly{display:inline;}
+</style>
 <script>
 
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
@@ -287,6 +309,7 @@
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <main class="wrap" id="main-content" tabindex="-1">
+<div class="hwbar">🎃 HALLOWEEN AT B&amp;G — spooky-season picks, same honest prices. The costume comes off Nov 2.</div>
 <div class="topbar">
   <a class="brand" href="./index.html"><span class="mark">$</span> The Come Up</a>
   <a class="back" href="index.html">← Back to home</a>
@@ -378,6 +401,12 @@
     </div>
   </div>
 </section>
+
+<section class="section"><div class="otherdoor">
+<div class="t" style="font-size:19px; font-weight:800;">The other door — learn while you're here</div>
+<p style="margin-top:8px;">B&amp;G is the gift shop of The Come Up. The other half of this house is free: 60+ money tools — paycheck calculators, debt defenses, planners — built for hourly workers. Gifts handle the giving; the tools handle the getting.</p>
+<div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;"><a class="btn" style="background:var(--amber); color:#fff; border-radius:12px; padding:11px 16px; font-weight:800; text-decoration:none;" href="/">Start with the free Paycheck Quiz</a><a class="btn" style="border:1px solid var(--amber); color:var(--amber); border-radius:12px; padding:11px 16px; font-weight:800; text-decoration:none;" href="/">Browse all 60+ tools</a></div>
+</div></section>
 
 <section class="section" id="is-this-legit">
   <h2>New here? The honest answers.</h2>
@@ -626,5 +655,6 @@
       btn.addEventListener('click', onClick);
     })();
 </script>
+<script>(function(){var end=new Date('2026-11-02T00:00:00-04:00');if(new Date()<end){document.body.classList.add('hw');}})();</script>
 </body>
 </html>

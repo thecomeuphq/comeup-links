@@ -118,6 +118,13 @@
     .tcu-cta-a { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 18px; border-radius:12px; background:var(--amber); color:#2A211A; font-size:14.5px; font-weight:800; text-decoration:none; text-align:center;}
     .tcu-cta-a:hover { filter:brightness(1.08);}
     .tcu-cta-a:focus-visible { outline:3px solid var(--amber); outline-offset:3px;}</style>
+<style>
+.card{border-radius:16px;box-shadow:0 4px 14px rgba(74,54,32,.07);}
+.hwbar{display:none;}
+.hwonly{display:none;}
+body.hw .hwbar{display:block;background:linear-gradient(90deg,#FF7518,#7B2FF7);color:#FFFFFF;font-weight:800;text-align:center;padding:10px 14px;border-radius:12px;margin:0 0 14px;font-size:14px;}
+body.hw .hwonly{display:inline;}
+</style>
 <script>
 
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
@@ -198,6 +205,7 @@
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <main class="wrap" id="main-content" tabindex="-1">
+<div class="hwbar">🎃 Halloween at the shop — B&amp;G Collections is dressed up through Nov 1. Same honest prices, spookier door.</div>
   <div class="topline"><span>●</span> Built for hourly work. Made for real life.</div>
   <header class="hero">
     <div class="logo" aria-hidden="true">💰</div>
@@ -653,5 +661,6 @@
       btn.addEventListener('click', onClick);
     })();
 </script>
-  </body>
+  <script>(function(){var end=new Date('2026-11-02T00:00:00-04:00');if(new Date()<end){document.body.classList.add('hw');}})();</script>
+</body>
 </html>
