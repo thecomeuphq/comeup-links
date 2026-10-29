@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="You did the work. Now get the money. The Owed Ledger is the system for contractors and small crews who are done chasing checks from memory — free first page inside.">
+<title>The Owed Ledger — Get Paid What You're Owed | The Come Up HQ</title>
+<style>
+  :root{ --paper:#fbf7ec; --paper2:#f1e9d2; --ink:#232a1e; --red:#b3372c; --blue:#33526e; --line:#d8cdb2; --mono:"Courier New", ui-monospace, monospace; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:#2c2a24; color:var(--ink); font-family:'Segoe UI', Arial, sans-serif; padding:26px 14px 60px; line-height:1.55; }
+  .sheet{ max-width:860px; margin:0 auto; background:var(--paper); border:1px solid var(--line); box-shadow:0 14px 44px rgba(0,0,0,.45); padding:36px 40px 32px; position:relative;
+    background-image:repeating-linear-gradient(to bottom, transparent 0 30px, rgba(51,82,110,.08) 30px 31px); }
+  .ticket{ display:flex; justify-content:space-between; gap:14px; border-bottom:3px double var(--ink); padding-bottom:14px; font-family:var(--mono); font-size:13px; letter-spacing:.06em; flex-wrap:wrap; }
+  .ticket b{ font-size:15px; }
+  .stamp{ position:absolute; top:88px; right:28px; transform:rotate(9deg); border:4px solid var(--red); color:var(--red); font-family:var(--mono); font-weight:bold; font-size:21px; letter-spacing:.18em; padding:5px 14px; border-radius:4px; opacity:.85; background:rgba(251,247,236,.8); }
+  .kicker{ font-family:var(--mono); font-size:12px; letter-spacing:.22em; color:var(--blue); margin:30px 0 10px; text-transform:uppercase; }
+  h1{ font-family:Georgia, "Times New Roman", serif; font-size:clamp(32px,5.4vw,52px); line-height:1.05; max-width:620px; }
+  h1 em{ color:var(--red); font-style:normal; border-bottom:4px solid rgba(179,55,44,.4); }
+  .scene{ margin:26px 0 6px; max-width:640px; font-size:18px; line-height:1.65; }
+  .scene p + p{ margin-top:12px; }
+  .scene .who{ font-family:var(--mono); font-size:12.5px; letter-spacing:.14em; color:#6d7563; text-transform:uppercase; }
+  .margin-note{ font-family:var(--mono); color:var(--red); font-size:14.5px; transform:rotate(-1.2deg); margin:16px 0 4px; }
+  h2{ font-family:var(--mono); font-size:15px; letter-spacing:.2em; text-transform:uppercase; margin:38px 0 12px; border-bottom:1px solid var(--line); padding-bottom:7px; }
+  table{ width:100%; border-collapse:collapse; font-size:15px; background:rgba(255,255,255,.4); }
+  th{ font-family:var(--mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; text-align:left; padding:8px 10px; border-bottom:2px solid var(--ink); }
+  td{ padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td.days{ font-family:var(--mono); color:var(--red); font-weight:bold; white-space:nowrap; }
+  td.paid{ color:#1e5631; font-family:var(--mono); font-weight:bold; white-space:nowrap; }
+  .tablenote{ font-size:13.5px; color:#6d7563; font-style:italic; margin-top:8px; }
+  .steps{ display:grid; gap:12px; margin-top:6px; }
+  @media (min-width:700px){ .steps{ grid-template-columns:repeat(3,1fr); } }
+  .step{ background:rgba(255,255,255,.45); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .step .n{ font-family:var(--mono); color:var(--red); font-weight:bold; font-size:13px; letter-spacing:.14em; }
+  .step b{ display:block; font-size:16.5px; margin:5px 0 4px; }
+  .step span{ font-size:14.5px; color:#49523f; line-height:1.5; }
+  .kit{ display:grid; gap:0; border:1px solid var(--line); background:rgba(255,255,255,.4); }
+  .item{ display:flex; gap:16px; padding:16px 18px; border-bottom:1px dashed var(--line); align-items:baseline; }
+  .item:last-child{ border-bottom:none; }
+  .price{ font-family:var(--mono); font-weight:bold; font-size:19px; color:var(--blue); white-space:nowrap; min-width:74px; }
+  .item b{ font-size:17px; display:block; margin-bottom:3px; }
+  .item span{ font-size:14.5px; color:#49523f; line-height:1.5; }
+  .kitnote{ font-size:13.5px; color:#6d7563; font-style:italic; margin-top:8px; }
+  .freeline{ margin:30px 0 0; background:var(--paper2); border:1.5px solid var(--ink); padding:22px 24px; }
+  .freeline b.head{ font-size:19px; font-family:Georgia, serif; }
+  .freeline p{ font-size:15px; line-height:1.55; margin:6px 0 14px; max-width:560px; }
+  form{ display:flex; gap:10px; flex-wrap:wrap; }
+  input[type=email]{ flex:1 1 260px; padding:12px 14px; font-family:var(--mono); font-size:15px; border:1.5px solid var(--ink); background:#ffffff; border-radius:6px; }
+  button{ padding:12px 20px; background:var(--red); color:#fff; border:none; border-radius:6px; font-family:var(--mono); font-size:14px; letter-spacing:.08em; cursor:pointer; font-weight:bold; }
+  button:hover{ background:#932c23; }
+  .fineprint{ font-size:12.5px; color:#6d7563; margin-top:10px; font-style:italic; }
+  .ok{ display:none; font-family:var(--mono); font-size:15px; color:#1e5631; margin-top:12px; }
+  .ok a{ color:var(--red); font-weight:bold; }
+  .status{ font-family:var(--mono); font-size:13.5px; color:var(--red); margin-top:10px; min-height:18px; }
+  footer{ max-width:860px; margin:20px auto 0; text-align:center; font-family:var(--mono); font-size:12px; letter-spacing:.14em; color:#a49a7d; }
+  @media (max-width:640px){ .sheet{ padding:24px 18px; } .stamp{ position:static; display:inline-block; margin-top:14px; } .item{ flex-direction:column; gap:4px; } }
+</style>
+<script>
+// --- privacy-first analytics (no cookies, no fingerprint) ---
+(function () {
+  var ENDPOINT = "https://comeup-analytics.leroybradley7.workers.dev";
+  function track() {
+    try {
+      var u = new URL(location.href);
+      var ref = document.referrer || '';
+      var src = '';
+      if (ref) { try { src = new URL(ref).origin; } catch (e) { src = ''; } }
+      var body = { type: 'pageview', path: u.pathname, query: u.search || '', ref: src,
+        utm_source: u.searchParams.get('utm_source') || '', utm_medium: u.searchParams.get('utm_medium') || '',
+        utm_campaign: u.searchParams.get('utm_campaign') || '', ts: new Date().toISOString() };
+      var payload = JSON.stringify(body);
+      if (navigator.sendBeacon) {
+        var sent = false;
+        try { sent = navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' })); } catch (e) { sent = false; }
+        if (!sent) { fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {}); }
+      } else {
+        fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {});
+      }
+    } catch (e) { /* analytics must never break the page */ }
+  }
+  track();
+})();
+</script>
+</head>
+<body>
+<div class="sheet">
+  <div class="ticket">
+    <div><b>WORK ORDER</b> · THE OWED LEDGER™</div>
+    <div>CLIENT: YOU · JOB: EVERY DOLLAR YOU'RE OWED</div>
+    <div>STATUS: <b style="color:var(--red)">UNPAID</b></div>
+  </div>
+  <div class="stamp">OVERDUE</div>
+
+  <div class="kicker">For contractors &amp; small crews who did the work</div>
+  <h1>You did the work.<br>Now <em>get the money.</em></h1>
+
+  <div class="scene">
+    <p class="who">Friday · 6:40 PM · Kitchen table</p>
+    <p>The job's been done for three weeks. The invoice is sitting in somebody's inbox under a pile of newer emails, and you're sitting here doing math you shouldn't have to do — rent on the left, "the check's in the mail" on the right.</p>
+    <p>You're not bad at your trade. You're just running accounts receivable out of your head, your texts, and a shoebox. That ends tonight.</p>
+  </div>
+  <div class="margin-note">— nobody forgets to pay the guy who keeps receipts.</div>
+
+  <h2>Inside the ledger — sample rows</h2>
+  <table>
+    <tr><th>Who owes</th><th>The job</th><th>Owed</th><th>Status</th></tr>
+    <tr><td>Rivera remodel</td><td>Kitchen tear-out &amp; tile</td><td>$2,400</td><td class="days">23 DAYS LATE</td></tr>
+    <tr><td>Maple St. rental</td><td>Turnover paint, 2 units</td><td>$850</td><td class="days">11 DAYS LATE</td></tr>
+    <tr><td>Johnson addition</td><td>Framing, final draw</td><td>$3,150</td><td class="paid">PAID ✓</td></tr>
+    <tr><td>City gym contract</td><td>Floor refinish</td><td>$1,275</td><td class="days">6 DAYS LATE</td></tr>
+  </table>
+  <p class="tablenote">Sample rows. Yours will have real names — and every one gets a status, a promise date, and a next move. No more "I think he paid… some of it?"</p>
+
+  <h2>How the money comes home</h2>
+  <div class="steps">
+    <div class="step"><span class="n">STEP 1</span><b>Write it down</b><span>Every dollar owed, by who, since when — in one ledger, not in your head. You can't chase what you can't see.</span></div>
+    <div class="step"><span class="n">STEP 2</span><b>Work the ladder</b><span>The right message at the right day — friendly nudge, firm reminder, final notice. Word for word, so you never have to find the words at 6:40 PM on a Friday.</span></div>
+    <div class="step"><span class="n">STEP 3</span><b>Close it out</b><span>Paid gets marked paid, promises get dates, and the next job starts with a paper trail from day one.</span></div>
+  </div>
+
+  <h2>The kit</h2>
+  <div class="kit">
+    <div class="item"><span class="price">$7.95</span><div><b>The Owed Ledger — Invoice &amp; Balance Tracker</b><span>Google Sheets + Excel. Every invoice, every balance, every overdue day — one view, sorted by who owes you most.</span></div></div>
+    <div class="item"><span class="price">$4.95</span><div><b>The Follow-Up Ladder — 7 Payment Messages</b><span>PDF + editable Word. Word-for-word messages from friendly nudge to final notice — firm, professional, and impossible to misread.</span></div></div>
+    <div class="item"><span class="price">$12.95</span><div><b>The Owed Ledger Complete Kit</b><span>The tracker and the ladder together — the whole system in one download. Track it, chase it, close it.</span></div></div>
+  </div>
+  <p class="kitnote">The kit is in production now. The list below gets first access at these founding prices — when it opens, list members hear first. No fake buy buttons in the meantime: if you can't have it yet, we won't pretend you can.</p>
+
+  <div class="freeline">
+    <b class="head">Start with the first page — free.</b>
+    <p><b>Money Owed Today</b> is the one-page version: list what you're owed, by who, since when. Ten minutes at the kitchen table and you'll know your number to the dollar. Tell us where to send it — the download opens the moment you're in.</p>
+    <form id="f-ol" novalidate>
+      <input type="email" id="e-ol" placeholder="your@email.com" autocomplete="email" required>
+      <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+      <button type="submit">SEND MY FREE PAGE →</button>
+    </form>
+    <p class="status" id="st-ol" role="status" aria-live="polite"></p>
+    <div class="ok" id="ok-ol">You're in. <a href="assets/money-owed-today-free.xlsx" download>Download Money Owed Today (.xlsx)</a> — and you're first in line for the kit.</div>
+    <p class="fineprint">One list runs the whole house — The Come Up HQ. You'll hear from that list, nobody else's. No spam, no games, unsubscribe anytime.</p>
+  </div>
+</div>
+<footer>THE COME UP HQ · BUILT FOR PEOPLE WHO WORK FOR A LIVING</footer>
+<script>
+document.getElementById('f-ol').addEventListener('submit', function(ev){
+  ev.preventDefault();
+  var input = document.getElementById('e-ol');
+  var status = document.getElementById('st-ol');
+  var value = (input.value || '').trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)){ status.textContent = 'That email does not look right. Check it and try again.'; input.focus(); return; }
+  status.textContent = 'Sending…';
+  fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
+    method: "POST",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
+  }).then(function(r){
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    status.textContent = '';
+    document.getElementById('ok-ol').style.display='block';
+  }).catch(function(){
+    status.textContent = 'Something went wrong. Try again in a moment.';
+  });
+});
+</script>
+</body>
+</html>
