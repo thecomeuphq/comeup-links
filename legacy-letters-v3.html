@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Your story is the most valuable thing your family will ever inherit. Legacy Letters asks the right questions, one page at a time — your first letter page is free.">
+<title>Legacy Letters — Your Story, Kept | The Come Up HQ</title>
+<style>
+  :root{ --paper:#fdf8f5; --ink:#3d2329; --inkblue:#7a2233; --gold:#96505e; --soft:#97818a; --line:#ecd9dc; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:#e3ccd2; color:var(--ink); font-family:Georgia, "Times New Roman", serif; padding:30px 14px 60px; }
+  .letter{ max-width:640px; margin:0 auto; background:var(--paper); padding:48px 52px 40px; box-shadow:0 12px 44px rgba(70,58,20,.30); border:1px solid var(--line); position:relative; }
+  .letter::before{ content:""; position:absolute; top:0; bottom:0; left:34px; width:1px; background:rgba(179,55,44,.25); }
+  .seal{ width:58px; height:58px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #b4506a, #6d1428); color:#fbeae6; display:flex; align-items:center; justify-content:center; font-size:25px; margin:0 auto 18px; box-shadow:inset 0 0 0 3px rgba(253,246,221,.35), 0 3px 8px rgba(70,58,20,.35); font-style:italic; }
+  .brand{ text-align:center; font-size:11.5px; letter-spacing:.3em; text-transform:uppercase; color:var(--soft); margin-bottom:34px; }
+  .dear{ font-size:21px; font-style:italic; color:var(--inkblue); margin-bottom:16px; }
+  .body-copy{ font-size:17.5px; line-height:1.85; }
+  .body-copy p + p{ margin-top:16px; }
+  .body-copy .sig{ font-style:italic; color:var(--inkblue); margin-top:22px; }
+  .rule{ border:none; border-top:1px solid var(--line); margin:36px 0 8px; }
+  h2{ font-size:13px; letter-spacing:.26em; text-transform:uppercase; color:var(--gold); text-align:center; margin:22px 0 18px; font-weight:normal; }
+  .shelf{ display:grid; gap:14px; }
+  .book{ border:1px solid var(--line); background:#ffffff; padding:18px 20px; display:flex; gap:16px; align-items:baseline; }
+  .book .price{ font-size:19px; color:var(--inkblue); white-space:nowrap; font-style:italic; }
+  .book b{ display:block; font-size:16.5px; margin-bottom:3px; }
+  .book span{ font-size:14.5px; color:#6e5560; line-height:1.55; }
+  .shelf-note{ font-size:13.5px; color:var(--soft); font-style:italic; text-align:center; margin-top:12px; line-height:1.6; }
+  .how{ display:grid; gap:12px; }
+  .how .step{ border-left:2px solid var(--line); padding:2px 0 2px 16px; }
+  .how .step b{ display:block; font-size:16px; margin-bottom:2px; }
+  .how .step span{ font-size:14.5px; color:#6e5560; line-height:1.55; }
+  .forwho{ text-align:center; font-size:15.5px; line-height:1.7; color:#54383f; margin:6px 10px 0; }
+  .pull{ text-align:center; font-style:italic; font-size:19px; line-height:1.6; color:var(--inkblue); margin:34px 8px 4px; }
+  .pull small{ display:block; margin-top:8px; font-size:12.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--soft); font-style:normal; }
+  .sendbox{ margin-top:30px; border-top:3px double var(--line); padding-top:24px; }
+  .sendbox b.head{ font-size:18px; display:block; margin-bottom:6px; }
+  .sendbox p{ font-size:15px; line-height:1.6; color:#54383f; margin-bottom:14px; }
+  form{ display:flex; gap:10px; flex-wrap:wrap; }
+  input[type=email]{ flex:1 1 240px; padding:12px 14px; font-family:Georgia, serif; font-size:15.5px; border:1px solid #cbb3ba; background:#fff; }
+  button{ padding:12px 20px; background:var(--inkblue); color:#f9ecec; border:none; font-family:Georgia, serif; font-size:15px; font-style:italic; cursor:pointer; }
+  button:hover{ background:#5d1626; }
+  .fineprint{ font-size:12.5px; color:var(--soft); margin-top:10px; font-style:italic; }
+  .ok{ display:none; font-size:15.5px; color:#7a2233; margin-top:12px; font-style:italic; }
+  .status{ font-size:14px; color:#7a2233; margin-top:10px; min-height:18px; font-style:italic; }
+  footer{ max-width:640px; margin:20px auto 0; text-align:center; font-size:11.5px; letter-spacing:.22em; color:#97818a; text-transform:uppercase; }
+  @media (max-width:640px){ .letter{ padding:34px 24px 30px 40px; } .book{ flex-direction:column; gap:4px; } }
+</style>
+<script>
+// --- privacy-first analytics (no cookies, no fingerprint) ---
+(function () {
+  var ENDPOINT = "https://comeup-analytics.leroybradley7.workers.dev";
+  function track() {
+    try {
+      var u = new URL(location.href);
+      var ref = document.referrer || '';
+      var src = '';
+      if (ref) { try { src = new URL(ref).origin; } catch (e) { src = ''; } }
+      var body = { type: 'pageview', path: u.pathname, query: u.search || '', ref: src,
+        utm_source: u.searchParams.get('utm_source') || '', utm_medium: u.searchParams.get('utm_medium') || '',
+        utm_campaign: u.searchParams.get('utm_campaign') || '', ts: new Date().toISOString() };
+      var payload = JSON.stringify(body);
+      if (navigator.sendBeacon) {
+        var sent = false;
+        try { sent = navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' })); } catch (e) { sent = false; }
+        if (!sent) { fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {}); }
+      } else {
+        fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {});
+      }
+    } catch (e) { /* analytics must never break the page */ }
+  }
+  track();
+})();
+</script>
+</head>
+<body>
+<div class="letter">
+  <div class="seal">L</div>
+  <div class="brand">Legacy Letters · A Come Up HQ Keepsake</div>
+
+  <p class="dear">Dear — ,</p>
+  <div class="body-copy">
+    <p>If you're reading this someday, it means I finally sat down and did the thing I kept putting off. Not because I didn't have stories — Lord knows I have stories — but because I didn't know where to start, and nobody ever asked me the right questions.</p>
+    <p>So somebody asked. One question at a time, the way you'd ask me across a kitchen table. What was your mama's kitchen like? What did your first paycheck buy? Who taught you to be strong, and what did it cost them?</p>
+    <p>By the third page I wasn't writing anymore. I was remembering out loud — and somebody was kind enough to keep it.</p>
+    <p class="sig">— with all my love, always</p>
+  </div>
+
+  <p class="pull">"Someday they'll want to know who you were<br>before you were just 'Grandma.'"
+    <small>The letter your family will read for a hundred years</small></p>
+
+  <hr class="rule">
+  <h2>How a legacy gets kept</h2>
+  <div class="how">
+    <div class="step"><b>One question at a time</b><span>No blank page staring back at you. Each page opens with one question — the kind a grandchild would ask if they knew to ask it.</span></div>
+    <div class="step"><b>At your pace, in your words</b><span>Ten quiet minutes here, a Sunday afternoon there. Nobody edits your voice out of it. The way you say it is the keepsake.</span></div>
+    <div class="step"><b>Kept, and handed down</b><span>The finished letters become one volume your children can hold — and hand to theirs, with your name on the first page.</span></div>
+  </div>
+  <p class="forwho">Write your own, while your stories are still yours to tell.<br>Or start one with a parent — while their voice is still in the room.</p>
+
+  <hr class="rule">
+  <h2>What stays on the shelf</h2>
+  <div class="shelf">
+    <div class="book"><span class="price">$9.95</span><div><b>Life Legacy Workbook</b><span>Six chapters of guided questions with room to write — childhood, work, love, hard times, lessons. Answer them at your pace, in your own words.</span></div></div>
+    <div class="book"><span class="price">$7.95</span><div><b>Memory Capsule Prompt Deck</b><span>52 printable prompt cards. Pull one a week at Sunday dinner and keep the answers — a year of stories, gathered without ever feeling like homework.</span></div></div>
+    <div class="book"><span class="price">$29.95</span><div><b>The Complete Legacy Vault System</b><span>The workbook, the capsule, and the letters together — one keepsake volume your children hand to theirs.</span></div></div>
+  </div>
+  <p class="shelf-note">The shelf is being bound now. Join the list below and you'll be first to know when it opens — at these founding prices, held for the list. Until then, the first page is free, and it's the page that matters most.</p>
+
+  <div class="sendbox">
+    <b class="head">Your first letter page is free.</b>
+    <p>We'll send you the first Legacy Letter, ready to fill in — the same opening page from the letter above. Write one page. If it doesn't move you, you've lost nothing but ten quiet minutes.</p>
+    <form id="f-ll" novalidate>
+      <input type="email" id="e-ll" placeholder="your@email.com" autocomplete="email" required>
+      <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+      <button type="submit">Send my first page →</button>
+    </form>
+    <p class="status" id="st-ll" role="status" aria-live="polite"></p>
+    <div class="ok" id="ok-ll">It's yours. <a href="assets/legacy-letters-free-sample.pdf" download>Download Your First Legacy Letter (.pdf)</a></div>
+    <p class="fineprint">One list runs the whole house — The Come Up HQ. Your address stays with us, the way your stories will stay with your family.</p>
+  </div>
+</div>
+<footer>The Come Up HQ · Some things shouldn't be lost</footer>
+<script>
+document.getElementById('f-ll').addEventListener('submit', function(ev){
+  ev.preventDefault();
+  var input = document.getElementById('e-ll');
+  var status = document.getElementById('st-ll');
+  var value = (input.value || '').trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)){ status.textContent = 'That email does not look right. Check it and try again.'; input.focus(); return; }
+  status.textContent = 'Sending…';
+  fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
+    method: "POST",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
+  }).then(function(r){
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    status.textContent = '';
+    document.getElementById('ok-ll').style.display='block';
+  }).catch(function(){
+    status.textContent = 'Something went wrong. Try again in a moment.';
+  });
+});
+</script>
+</body>
+</html>
