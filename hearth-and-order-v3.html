@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="When your house has a bad night, this is the binder your family opens. Hearth & Order puts shut-offs, policies, contacts, and the plan on one table — start with the free Year Wheel.">
+<title>Hearth &amp; Order — Run Your House Like a Table | The Come Up HQ</title>
+<style>
+  :root{ --plum:#160d22; --plum2:#221334; --card:#2a1a40; --gold:#c9a227; --goldsoft:#e8cf7a; --cream:#f3ead8; --dim:#b7a8c9; --red:#e07856; --teal:#57b8a2; --amber:#d9a441; --sky:#7aa7d9; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:#0c0616; color:var(--cream); font-family:"Segoe UI", Helvetica, Arial, sans-serif; padding:30px 14px 60px; }
+  .binder{ max-width:880px; margin:0 auto; background:var(--plum); border:1px solid #3a2658; border-radius:10px; overflow:hidden; box-shadow:0 16px 50px rgba(0,0,0,.6); }
+  .tabs{ display:flex; gap:4px; padding:14px 18px 0; flex-wrap:wrap; }
+  .tab{ font-size:11.5px; letter-spacing:.16em; padding:8px 14px 10px; border-radius:8px 8px 0 0; color:#0e0819; font-weight:700; text-transform:uppercase; }
+  .tab.red{ background:var(--red); } .tab.teal{ background:var(--teal); } .tab.amber{ background:var(--amber); } .tab.sky{ background:var(--sky); } .tab.gold{ background:var(--gold); }
+  .inner{ background:var(--plum2); border-top:3px solid var(--gold); padding:34px 38px 34px; }
+  .brandline{ font-size:11.5px; letter-spacing:.3em; color:var(--goldsoft); text-transform:uppercase; text-align:center; }
+  .crown{ text-align:center; font-size:30px; margin:10px 0 2px; }
+  h1{ text-align:center; font-family:Georgia, serif; font-size:clamp(30px,5.2vw,48px); line-height:1.1; color:var(--goldsoft); letter-spacing:.02em; }
+  .log{ margin:30px auto 0; max-width:640px; background:#120a20; border-left:4px solid var(--red); padding:18px 22px; border-radius:0 8px 8px 0; }
+  .log .when{ font-family:"Courier New", monospace; font-size:12.5px; letter-spacing:.18em; color:var(--red); text-transform:uppercase; margin-bottom:8px; }
+  .log p{ font-size:16.5px; line-height:1.7; color:#e9dfc9; }
+  .log p + p{ margin-top:10px; }
+  .after{ max-width:640px; margin:22px auto 0; font-size:16.5px; line-height:1.7; color:var(--cream); }
+  .after b{ color:var(--goldsoft); }
+  .checkline{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:26px 0 4px; }
+  .chip{ border:1px solid #4a3570; background:var(--card); border-radius:999px; padding:8px 15px; font-size:13.5px; color:var(--dim); }
+  .chip b{ color:var(--teal); }
+  h2{ font-size:13px; letter-spacing:.28em; text-transform:uppercase; color:var(--goldsoft); margin:38px 0 16px; text-align:center; font-weight:600; }
+  .sections{ display:grid; gap:14px; }
+  .sec{ background:var(--card); border:1px solid #463169; border-left:6px solid var(--gold); border-radius:8px; padding:18px 20px; display:flex; gap:16px; align-items:baseline; }
+  .sec.s1{ border-left-color:var(--red); } .sec.s2{ border-left-color:var(--teal); } .sec.s3{ border-left-color:var(--gold); }
+  .sec .price{ font-family:Georgia, serif; font-size:20px; color:var(--goldsoft); white-space:nowrap; }
+  .sec b{ display:block; font-size:17px; margin-bottom:3px; }
+  .sec span{ font-size:14.5px; color:var(--dim); line-height:1.55; }
+  .secnote{ font-size:13.5px; color:#9a8ab2; font-style:italic; text-align:center; margin-top:14px; line-height:1.6; }
+  .door{ margin-top:32px; background:#120a20; border:1.5px solid var(--gold); border-radius:10px; padding:22px 24px; }
+  .door b.head{ font-size:18.5px; color:var(--goldsoft); display:block; margin-bottom:6px; font-family:Georgia, serif; }
+  .door p{ font-size:15px; line-height:1.6; color:#ddd2ea; margin-bottom:14px; max-width:580px; }
+  form{ display:flex; gap:10px; flex-wrap:wrap; }
+  input[type=email]{ flex:1 1 250px; padding:12px 14px; font-size:15px; border:1px solid #57457c; background:#1c1130; color:var(--cream); border-radius:6px; }
+  button{ padding:12px 20px; background:var(--gold); color:#1d1030; border:none; font-weight:700; font-size:14.5px; letter-spacing:.04em; border-radius:6px; cursor:pointer; }
+  button:hover{ background:var(--goldsoft); }
+  .fineprint{ font-size:12.5px; color:#9a8ab2; margin-top:10px; font-style:italic; }
+  .ok{ display:none; font-size:15.5px; color:var(--teal); margin-top:12px; }
+  .status{ font-size:14px; color:var(--red); margin-top:10px; min-height:18px; }
+  footer{ max-width:880px; margin:20px auto 0; text-align:center; font-size:11.5px; letter-spacing:.24em; color:#6f5f8c; text-transform:uppercase; }
+  @media (max-width:640px){ .inner{ padding:26px 18px; } .sec{ flex-direction:column; gap:4px; } }
+</style>
+<script>
+// --- privacy-first analytics (no cookies, no fingerprint) ---
+(function () {
+  var ENDPOINT = "https://comeup-analytics.leroybradley7.workers.dev";
+  function track() {
+    try {
+      var u = new URL(location.href);
+      var ref = document.referrer || '';
+      var src = '';
+      if (ref) { try { src = new URL(ref).origin; } catch (e) { src = ''; } }
+      var body = { type: 'pageview', path: u.pathname, query: u.search || '', ref: src,
+        utm_source: u.searchParams.get('utm_source') || '', utm_medium: u.searchParams.get('utm_medium') || '',
+        utm_campaign: u.searchParams.get('utm_campaign') || '', ts: new Date().toISOString() };
+      var payload = JSON.stringify(body);
+      if (navigator.sendBeacon) {
+        var sent = false;
+        try { sent = navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' })); } catch (e) { sent = false; }
+        if (!sent) { fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {}); }
+      } else {
+        fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {});
+      }
+    } catch (e) { /* analytics must never break the page */ }
+  }
+  track();
+})();
+</script>
+</head>
+<body>
+<div class="binder">
+  <div class="tabs">
+    <span class="tab red">Emergency</span><span class="tab teal">Papers</span><span class="tab amber">People</span><span class="tab sky">Home</span><span class="tab gold">Money</span>
+  </div>
+  <div class="inner">
+    <div class="brandline">Hearth &amp; Order™ · The Home Command System</div>
+    <div class="crown">👑</div>
+    <h1>RUN YOUR HOUSE<br>LIKE A TABLE.</h1>
+
+    <div class="log">
+      <div class="when">House Log — 3:12 A.M.</div>
+      <p>The water heater let go. There's an inch of water spreading across the laundry room floor, your phone's at 9%, and somewhere in this house is a shut-off valve, an insurance number, and a plumber's name — in three different drawers, a glove box, and a text thread from 2023.</p>
+      <p>This is the moment a house is either run, or it runs you.</p>
+    </div>
+
+    <p class="after">Hearth &amp; Order is the binder — physical or digital — that ends the 3 A.M. scramble. Every critical fact about your home, <b>findable by your family in minutes, not panic</b>: shut-offs, policies, contacts, accounts, the plan if you're not the one standing there to give it. Because the worst night doesn't ask whether you're home. It just asks whether the house is ready.</p>
+
+    <div class="checkline">
+      <span class="chip"><b>✓</b> Insurance number — 1 page</span>
+      <span class="chip"><b>✓</b> Water &amp; gas shut-offs — 1 page</span>
+      <span class="chip"><b>✓</b> Who to call — 1 page</span>
+      <span class="chip"><b>✓</b> If I'm not here — 1 page</span>
+    </div>
+
+    <h2>The Binder — Three Parts</h2>
+    <div class="sections">
+      <div class="sec s1"><span class="price">$14.95</span><div><b>1 · The Family Emergency Binder</b><span>The 3 A.M. section: shut-offs, emergency contacts, medical basics, insurance, the first-hour checklist. Built for the worst night, readable by a scared teenager or a visiting parent.</span></div></div>
+      <div class="sec s2"><span class="price">$9.95</span><div><b>2 · Home Inventory &amp; Insurance Record</b><span>Room-by-room record of what you own and what it's worth — the document an insurance claim wishes you had. Spreadsheet with live totals and a coverage-gap check.</span></div></div>
+      <div class="sec s3"><span class="price">$24.95</span><div><b>3 · The Complete Hearth System</b><span>The binder, the inventory, and the 12-month home calendar together — the whole house, commanded from one table.</span></div></div>
+    </div>
+    <p class="secnote">The binder is in production now. The list below gets first access at these founding prices — when it opens, list members hear first. The free Year Wheel, though, is ready tonight.</p>
+
+    <div class="door">
+      <b class="head">Start with the Year Wheel — free.</b>
+      <p>One page: twelve months of the house, mapped — filters, batteries, detectors, policy renewals, the stuff that only gets remembered when it fails. Print it, stick it inside a cabinet door, and the house starts reminding you instead of ambushing you.</p>
+      <form id="f-ho" novalidate>
+        <input type="email" id="e-ho" placeholder="your@email.com" autocomplete="email" required>
+        <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
+        <button type="submit">SEND MY YEAR WHEEL →</button>
+      </form>
+      <p class="status" id="st-ho" role="status" aria-live="polite"></p>
+      <div class="ok" id="ok-ho">You're in. <a href="assets/hearth-year-wheel-free.pdf" style="color:var(--goldsoft)">Download the Year Wheel →</a></div>
+      <p class="fineprint">One list runs the whole house — The Come Up HQ. Only house-order mail, only when it matters.</p>
+    </div>
+  </div>
+</div>
+<footer>The Come Up HQ · Every house needs a table</footer>
+<script>
+document.getElementById('f-ho').addEventListener('submit', function(ev){
+  ev.preventDefault();
+  var input = document.getElementById('e-ho');
+  var status = document.getElementById('st-ho');
+  var value = (input.value || '').trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)){ status.textContent = 'That email does not look right. Check it and try again.'; input.focus(); return; }
+  status.textContent = 'Sending…';
+  fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
+    method: "POST",
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
+  }).then(function(r){
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    status.textContent = '';
+    document.getElementById('ok-ho').style.display='block';
+  }).catch(function(){
+    status.textContent = 'Something went wrong. Try again in a moment.';
+  });
+});
+</script>
+</body>
+</html>
