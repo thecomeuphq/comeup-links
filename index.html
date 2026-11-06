@@ -2,144 +2,306 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="description" content="Free paycheck, debt, credit, and savings tools built for hourly and shift workers. Pick your situation, get a clear next move, and keep every dollar." />
-<link rel="canonical" href="https://thecomeuphq.com/" />
-<meta property="og:type" content="website" />
-<meta property="og:locale" content="en_US" />
-<meta property="og:site_name" content="The Come Up" />
-<meta property="og:title" content="Free Money Tools for Hourly Workers — Paycheck &amp; Debt | The Come Up" />
-<meta property="og:description" content="Free paycheck, debt, credit, and savings tools built for hourly and shift workers. Pick your situation, get a clear next move, and keep every dollar." />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Come Up — I Run a Forklift 12 Hours a Day. Then I Clock In On My Own Dream.</title>
+<meta name="description" content="Money moves for hourly workers, from a forklift operator building in public. The debt payoff date, the real paycheck math, and the sheet I actually use. No guru. No courses. Start free.">
+<link rel="canonical" href="https://thecomeuphq.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Come Up">
+<meta property="og:title" content="The Come Up — Clock In On Your Own Dream">
+<meta property="og:description" content="Money moves for hourly workers, from a forklift operator building in public. Start with the free sheet.">
 <meta property="og:image" content="https://thecomeuphq.com/og/index.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Free Money Tools for Hourly Workers — Paycheck Debt — The Come Up">
-<meta name="twitter:image" content="https://thecomeuphq.com/og/index.png">
-<meta property="og:url" content="https://thecomeuphq.com/" />
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Free Money Tools for Hourly Workers — Paycheck &amp; Debt | The Come Up" />
-<meta name="twitter:description" content="Free paycheck, debt, credit, and savings tools built for hourly and shift workers. Pick your situation, get a clear next move, and keep every dollar." />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1d2b1f">
-<title>Free Money Tools for Hourly Workers — Paycheck &amp; Debt | The Come Up</title>
-<script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "The Come Up",
-    "url": "https://thecomeuphq.com/",
-    "description": "Practical paycheck, debt, emergency, and savings tools for hourly and shift workers."
-  }
-</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#faf6ef; --paper2:#f3ecdd; --card:#fffdf8; --ink:#22301f; --ink-soft:#44503f;
-  --green:#1e5631; --green-deep:#14351f; --ember:#e4572e; --gold:#f5a623;
-  --muted:#6d7563; --line:#ddd3bd; --line-soft:#e9e1cd;
+  --asphalt:#0B0E11; --steel:#161B21; --stub:#F2F0E9; --mute:#9AA7B4;
+  --hivis:#C1F32D; --brake:#FF4D2E; --line:#2A323B;
 }
-*{ box-sizing:border-box; }
-html{ scroll-behavior:smooth; }
-body{ margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size:16.5px; line-height:1.6; }
-.skip-link{ position:absolute; left:-9999px; } .skip-link:focus{ left:8px; top:8px; background:#fff; padding:8px; z-index:9; }
-.wrap{ max-width:1060px; margin:0 auto; padding:26px 18px 56px; }
-h1,h2,h3,.serif{ font-family:Georgia, "Times New Roman", serif; font-weight:700; letter-spacing:-.01em; }
-.topline{ font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--green); font-weight:700; margin:4px 0 14px; }
-.topline span{ color:var(--ember); }
-
-/* --- hero --- */
-.hero{ background:var(--green-deep); color:#f4efe2; border-radius:20px; padding:44px 34px 36px; box-shadow:0 14px 34px rgba(20,53,31,.28); }
-.hero .brand{ font-family:Georgia, serif; font-size:15px; letter-spacing:.22em; text-transform:uppercase; color:var(--gold); margin:0 0 14px; }
-.hero h1{ font-size:clamp(38px,6vw,58px); line-height:1.06; margin:0 0 16px; color:#fdfaf1; }
-.hero h1 em{ font-style:italic; color:var(--gold); }
-.hero .moment{ font-size:18.5px; line-height:1.65; max-width:660px; color:#e6dfca; margin:0; }
-.hero .moment strong{ color:#fff; }
-.hero-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:26px; }
-.button{ display:inline-block; padding:13px 22px; border-radius:999px; border:2px solid #f4efe2; color:#f4efe2; text-decoration:none; font-weight:700; font-size:15px; }
-.button.primary{ background:var(--ember); border-color:var(--ember); color:#fff; }
-.button:hover{ filter:brightness(1.08); }
-.hero-note{ margin:18px 0 0; font-size:14px; color:#c9c2ab; }
-
-/* --- capture --- */
-.capture{ margin-top:22px; background:var(--card); border:1.5px solid var(--gold); border-radius:18px; padding:24px 26px; box-shadow:0 6px 18px rgba(74,54,32,.07); }
-.capture h2{ margin:0 0 6px; font-size:23px; color:var(--ink); }
-.capture p{ margin:0 0 14px; font-size:15.5px; color:var(--ink-soft); max-width:640px; }
-.capture label{ display:block; margin:0 0 6px; font-size:13.5px; font-weight:700; color:var(--ink-soft); }
-.capture input[type="email"]{ display:block; width:100%; max-width:520px; min-height:48px; padding:12px 14px; margin:0 0 12px; border-radius:12px; border:1.5px solid var(--line); background:#fff; color:var(--ink); font-size:16px; }
-.capture button{ display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:12px 22px; border:0; border-radius:999px; background:var(--ember); color:#fff; font-size:15px; font-weight:800; cursor:pointer; }
-.capture button:hover{ filter:brightness(1.07); }
-.capture .status{ margin:10px 0 0; font-size:14px; color:var(--green); min-height:20px; }
-
-/* --- search --- */
-.search-panel{ margin:30px 0 4px; }
-.search-panel label{ font-family:Georgia, serif; font-size:25px; font-weight:700; display:block; margin-bottom:10px; }
-.search-row{ display:flex; gap:10px; max-width:640px; }
-.search-row input{ flex:1; padding:13px 16px; font-size:16.5px; border:1.5px solid var(--line); border-radius:999px; background:#fff; font-family:inherit; }
-.search-row button{ padding:12px 18px; border:1.5px solid var(--ink); background:var(--paper2); border-radius:999px; cursor:pointer; font-weight:700; }
-.search-hint{ color:var(--muted); font-size:14px; margin-top:8px; } .search-status{ color:var(--green); font-size:14px; min-height:20px; font-weight:600; }
-.empty-state{ display:none; color:var(--muted); font-style:italic; padding:10px 0; } .empty-state.show{ display:block; }
-
-/* --- door cards --- */
-.door{ display:block; background:var(--card); border:1.5px solid var(--line); border-radius:18px; padding:22px 24px; text-decoration:none; color:var(--ink); margin:16px 0; box-shadow:0 4px 14px rgba(74,54,32,.06); }
-.door:hover{ border-color:var(--green); }
-.door .kicker{ font-size:11.5px; letter-spacing:.15em; text-transform:uppercase; font-weight:800; color:var(--ember); }
-.door .title{ font-family:Georgia, serif; font-size:24px; font-weight:700; margin-top:4px; }
-.door .desc{ font-size:15.5px; line-height:1.6; color:var(--ink-soft); margin-top:6px; max-width:720px; }
-
-/* --- situations --- */
-.section-heading{ font-size:30px; margin:40px 0 4px; }
-.section-sub{ color:var(--muted); margin:0 0 8px; font-size:15.5px; }
-details.hub{ background:var(--card); border:1.5px solid var(--line); border-radius:18px; padding:6px 22px 14px; margin:14px 0; box-shadow:0 4px 14px rgba(74,54,32,.05); }
-details.hub summary{ cursor:pointer; list-style:none; padding:14px 0 8px; display:flex; gap:12px; align-items:baseline; }
-details.hub summary::-webkit-details-marker{ display:none; }
-.hub-title{ font-family:Georgia, serif; font-size:21.5px; font-weight:700; }
-.hub-subtitle{ color:var(--muted); font-size:14.5px; }
-.chevron{ margin-left:auto; color:var(--muted); }
-.tools{ display:grid; grid-template-columns:repeat(auto-fill,minmax(235px,1fr)); gap:12px; margin:12px 0 8px; }
-.tool{ display:block; background:var(--paper); border:1px solid var(--line-soft); border-radius:14px; padding:14px 16px; text-decoration:none; color:var(--ink); }
-.tool:hover{ border-color:var(--green); }
-.tool .title{ font-weight:700; font-size:16.5px; } .tool .desc{ font-size:14px; color:var(--ink-soft); margin-top:3px; line-height:1.5; }
-.tool.featured-tool{ border:1.5px solid var(--gold); background:#fffaf0; }
-.pipeline{ grid-column:1/-1; background:var(--paper2); border:1px dashed var(--line); border-radius:14px; padding:14px 16px; }
-.pipeline-title{ font-weight:700; margin-bottom:8px; }
-.pipeline-step{ display:flex; gap:10px; align-items:baseline; padding:5px 0; font-size:15px; }
-.step-number{ font-family:Georgia, serif; font-weight:700; color:var(--ember); }
-.step-link{ color:var(--green); font-weight:700; }
-details.debt-more{ grid-column:1/-1; } details.debt-more summary{ cursor:pointer; font-weight:700; color:var(--green); padding:6px 0; }
-details.debt-more .tool{ margin-top:10px; }
-
-/* --- after crisis / keep going --- */
-.after-crisis{ background:var(--green-deep); color:#f4efe2; border-radius:18px; padding:26px 28px; margin-top:32px; }
-.after-crisis h2{ margin:0 0 8px; font-size:25px; color:#fdfaf1; }
-.after-crisis p{ margin:0 0 12px; color:#e6dfca; max-width:640px; }
-.after-crisis a{ color:var(--gold); font-weight:700; }
-
-/* --- empire --- */
-.empire{ margin-top:38px; }
-.empire-h{ font-size:13px; letter-spacing:.15em; text-transform:uppercase; color:var(--ember); font-weight:800; text-align:center; margin:0 0 6px; }
-.empire-sub{ text-align:center; color:var(--muted); margin:0 auto 16px; max-width:560px; font-size:15px; }
-.empire-grid{ display:grid; gap:12px; }
-@media (min-width:760px){ .empire-grid{ grid-template-columns:repeat(3,1fr); } }
-.empire-card{ display:block; text-decoration:none; border-radius:18px; padding:20px; color:var(--ink); background:var(--card); border:1.5px solid var(--line); box-shadow:0 4px 14px rgba(74,54,32,.06); }
-.empire-card b{ font-family:Georgia, serif; display:block; font-size:19px; margin-bottom:5px; }
-.empire-card span{ color:var(--ink-soft); font-size:14.5px; line-height:1.55; display:block; }
-.empire-card .go{ margin-top:10px; font-weight:800; font-size:14px; }
-.empire-owed{ border-top:5px solid var(--ember); } .empire-owed .go{ color:var(--ember); }
-.empire-legacy{ border-top:5px solid #7a5c3e; } .empire-legacy .go{ color:#7a5c3e; }
-.empire-hearth{ border-top:5px solid var(--green); } .empire-hearth .go{ color:var(--green); }
-
-/* --- find your way --- */
-.tcu{ margin-top:38px; } .tcu-h{ font-size:25px; border-bottom:2px solid var(--line); padding-bottom:8px; }
-.tcu-rels{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-top:14px; }
-.tcu-rel{ display:block; text-decoration:none; background:var(--card); border:1px solid var(--line-soft); border-radius:14px; padding:13px 15px; color:var(--ink); }
-.tcu-rel:hover{ border-color:var(--green); } .tcu-rel-t{ display:block; font-weight:700; font-size:15px; } .tcu-rel-d{ display:block; margin-top:3px; font-size:13.5px; color:var(--muted); line-height:1.5; }
-.tcu-rel-hub{ border-color:var(--gold); background:#fffaf0; }
-.tcu-share{ margin-top:22px; } .tcu-share-b{ display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border:1.5px solid var(--green); color:var(--green); background:transparent; border-radius:999px; font-weight:700; font-size:14px; cursor:pointer; }
-.tcu-share-b svg{ width:16px; height:16px; }
-.tcu-share-n{ color:var(--muted); font-size:13.5px; margin-left:8px; }
-.tcu-cta{ margin-top:24px; background:var(--green-deep); border-radius:16px; padding:20px 22px; } .tcu-cta-a{ color:var(--gold); font-weight:700; font-size:17.5px; text-decoration:none; }
-.foot{ margin-top:46px; border-top:2px solid var(--line); padding-top:16px; color:var(--muted); font-size:13.5px; line-height:1.7; }
-.foot a{ color:var(--green); }
-@media (max-width:640px){ .hero{ padding:30px 20px; } .tools{ grid-template-columns:1fr; } }
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--asphalt);color:var(--stub);font-family:'Archivo',system-ui,sans-serif;font-size:17.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:0 20px}
+a{color:var(--hivis);text-decoration:underline;text-underline-offset:3px}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.anton{font-family:'Anton',Impact,sans-serif;text-transform:uppercase;letter-spacing:.01em;font-weight:400}
+/* nav */
+nav{border-bottom:1px solid var(--line)}
+.nav-in{max-width:680px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.wordmark{font-family:'Anton',Impact,sans-serif;font-size:20px;letter-spacing:.04em;color:var(--stub);text-decoration:none;text-transform:uppercase}
+.nav-links{margin-left:auto;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.nav-links a.nl{color:var(--mute);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.08em}
+.nav-links a.nl:hover{color:var(--stub)}
+.btn-door{display:inline-block;background:var(--hivis);color:#0B0E11;font-family:'Anton',Impact,sans-serif;text-transform:uppercase;text-decoration:none;padding:15px 26px;font-size:19px;letter-spacing:.03em;border:0;cursor:pointer}
+.btn-door:hover{background:#d4ff4d}
+.btn-mini{padding:9px 14px;font-size:14px}
+/* sections */
+section{padding:44px 0 8px}
+.perf{border-top:2px dashed var(--line);position:relative;margin-top:26px}
+.sec-label{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);background:var(--asphalt);padding-right:12px;position:relative;top:-11px;display:inline-block}
+h1{font-size:clamp(40px,9.5vw,64px);line-height:1.04;margin:14px 0 18px}
+h2{font-size:clamp(28px,6.5vw,40px);line-height:1.12;margin:6px 0 14px}
+h3{font-size:21px;line-height:1.25;margin-bottom:8px}
+.hivis{color:var(--hivis)}
+.sub{font-size:19px;color:var(--stub);max-width:56ch}
+.meta-line{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase;margin-top:20px}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--hivis);letter-spacing:.14em;text-transform:uppercase}
+/* numbers strip */
+.strip{margin-top:8px}
+.strip .row{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px dashed var(--line)}
+.strip .k{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;padding-top:3px;white-space:nowrap}
+.strip .v{font-family:'IBM Plex Mono',monospace;font-size:14.5px;text-align:right}
+/* journal */
+.entry{padding:18px 0;border-bottom:1px dashed var(--line)}
+.entry:last-child{border-bottom:0}
+.entry .date{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase}
+.entry p{margin:6px 0 8px;color:var(--stub)}
+/* tools */
+.fight{margin-bottom:34px}
+.moment{font-size:19px;font-weight:600}
+.tool{background:var(--steel);border:1px solid var(--line);padding:20px;margin-top:12px}
+.tool .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:560px){.tool .grid{grid-template-columns:1fr 1fr}}
+.tool label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.tool input{width:100%;background:var(--asphalt);border:1px solid var(--line);color:var(--stub);font-family:'IBM Plex Mono',monospace;font-size:17px;padding:10px 12px;border-radius:0}
+.tool input:focus{outline:2px solid var(--hivis);outline-offset:0;border-color:var(--hivis)}
+.tool .out{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);font-family:'IBM Plex Mono',monospace;font-size:15.5px;line-height:1.9}
+.tool .out b{color:var(--hivis);font-weight:600}
+.tool .out .warn{color:var(--brake)}
+/* sheet sample */
+.stub-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:15px;margin-top:14px;background:var(--steel);border:1px solid var(--line)}
+.stub-table td{padding:10px 14px;border-bottom:1px dashed var(--line)}
+.stub-table td:last-child{text-align:right}
+.stub-table tr.total td{border-bottom:0;border-top:2px solid var(--mute);color:var(--hivis);font-weight:600}
+.stamp{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mute);letter-spacing:.08em;text-transform:uppercase;margin-top:10px}
+/* footer */
+footer{padding:40px 0 56px;margin-top:30px}
+.foot-line{font-size:19px}
+.foot-nav{margin:16px 0;display:flex;gap:16px;flex-wrap:wrap}
+.foot-nav a{color:var(--mute);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:12.5px;text-transform:uppercase;letter-spacing:.08em}
+.small{font-size:13.5px;color:var(--mute)}
+.cta-row{margin-top:22px}
 </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a class="wordmark" href="index.html">The Come Up</a>
+    <div class="nav-links">
+      <a class="nl" href="https://www.facebook.com/freebandroy" rel="noopener">Story</a>
+      <a class="nl" href="hourly-money.html">Paycheck</a>
+      <a class="nl" href="debt-free.html">Debt</a>
+      <a class="nl" href="tools.html">Tools</a>
+      <a class="nl" href="bg-collections.html">Shop</a>
+      <a class="btn-door btn-mini" href="start.html">Start Free</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- SEC. 00 — THE CLOCK-IN -->
+  <section style="padding-top:38px">
+    <div class="kicker">Augusta, GA — night shift math</div>
+    <h1 class="anton">I run a forklift 12 hours a day. Then I clock in on my own <span class="hivis">dream.</span></h1>
+    <p class="sub">No investors. No handouts. No guru courses. Just the money moves a regular paycheck can actually make — shown by the man making them, after shift, in the open.</p>
+    <div class="cta-row"><a class="btn-door" href="start.html">Start the free reset &rarr;</a></div>
+    <div class="meta-line">Building in public since Oct 2026 — updated by hand, not by a team</div>
+  </section>
+
+  <!-- SEC. 01 — TONIGHT'S NUMBERS -->
+  <section>
+    <div class="perf"><span class="sec-label">Sec. 01 — Tonight's numbers</span></div>
+    <div class="strip">
+      <div class="row"><span class="k">Day job</span><span class="v">Forklift operator — Graniteville, SC</span></div>
+      <div class="row"><span class="k">This week</span><span class="v">4 day shifts worked · 2 OT nights next (Fri + Sat, 6p–6a)</span></div>
+      <div class="row"><span class="k">Posting</span><span class="v">One video + one story, every day</span></div>
+      <div class="row"><span class="k">Current mission</span><span class="v">Facebook monetization — on the waitlist (Nov 5)</span></div>
+      <div class="row"><span class="k">The gap to close</span><span class="v">Reel watch time 3.1s &rarr; 17.0s — that's where the money starts</span></div>
+    </div>
+    <div class="stamp">Dated Nov 5, 2026. Real numbers or it doesn't go up.</div>
+  </section>
+
+  <!-- SEC. 02 — THE MONEY, THE MISTAKES, ALL OF IT -->
+  <section>
+    <div class="perf"><span class="sec-label">Sec. 02 — The money, the mistakes, all of it</span></div>
+    <div class="entry">
+      <div class="date">Nov 5, 2026</div>
+      <h3 class="anton">The waitlist</h3>
+      <p>Tonight I put my own page on Facebook's Content Monetization waitlist. The dashboard told me the truth: people watch my reels for 3.1 seconds. The ones getting paid hold them for 17. Nobody's coming to fix that for me — so the work is longer stories, told straight. First one went up tonight.</p>
+      <a href="https://www.facebook.com/freebandroy" rel="noopener">Watch it on my profile &rarr;</a>
+    </div>
+    <div class="entry">
+      <div class="date">Nov 5, 2026</div>
+      <h3 class="anton">104 pages of nothing</h3>
+      <p>I let this website grow to 104 pages — calculators wearing costumes, saying the same thing 104 ways. A man with one paycheck doesn't need 104 doors. He needs one that works. This page you're reading is the diet starting.</p>
+      <a href="start.html">Start with the free sheet &rarr;</a>
+    </div>
+    <div class="entry">
+      <div class="date">On deck — Nov 6–7</div>
+      <h3 class="anton">Overtime weekend</h3>
+      <p>Two night shifts, 6 to 6, back to back. Sleep in the daytime, build at night, clock the OT. Overtime isn't the plan — it's the fuel. Here's the math I run on every check:</p>
+      <a href="#paycheck">Run your own paycheck &darr;</a>
+    </div>
+  </section>
+
+  <!-- SEC. 03 — PICK YOUR FIGHT -->
+  <section>
+    <div class="perf"><span class="sec-label">Sec. 03 — Pick your fight</span></div>
+    <p class="sub" style="margin-bottom:26px">Three moments run an hourly worker's whole money life. The tools are right here — working, not listed. Try one.</p>
+
+    <div class="fight">
+      <div class="moment">"The balance barely moves."</div>
+      <p>Every month you pay, and the number laughs at you. That's interest eating the payment before it touches the debt. Put your real numbers in — get the exact date it ends.</p>
+      <div class="tool">
+        <div class="grid">
+          <div><label for="d-bal">Balance owed ($)</label><input id="d-bal" type="number" inputmode="decimal" value="2400" min="0"></div>
+          <div><label for="d-apr">APR (%)</label><input id="d-apr" type="number" inputmode="decimal" value="24.99" min="0" step="0.01"></div>
+          <div><label for="d-pay">You pay / month ($)</label><input id="d-pay" type="number" inputmode="decimal" value="75" min="0"></div>
+        </div>
+        <div class="out" id="d-out"></div>
+      </div>
+    </div>
+
+    <div class="fight" id="paycheck">
+      <div class="moment">"The check lands and it's already gone."</div>
+      <p>Know what the check actually is before it lands — regular time, overtime, all of it. This is the math I run on my own stub.</p>
+      <div class="tool">
+        <div class="grid">
+          <div><label for="p-wage">Pay / hour ($)</label><input id="p-wage" type="number" inputmode="decimal" value="19.25" min="0" step="0.05"></div>
+          <div><label for="p-reg">Regular hrs / week</label><input id="p-reg" type="number" inputmode="decimal" value="40" min="0"></div>
+          <div><label for="p-ot">OT hrs / week (1.5x)</label><input id="p-ot" type="number" inputmode="decimal" value="8" min="0"></div>
+        </div>
+        <div class="out" id="p-out"></div>
+      </div>
+    </div>
+
+    <div class="fight">
+      <div class="moment">"One bad week from zero."</div>
+      <p>A tire, a shift cut, a doctor bill — that's the whole emergency for most of us. The first target isn't three months of savings. It's the first $1,000 standing between you and the panic.</p>
+      <div class="tool">
+        <div class="grid">
+          <div><label for="r-exp">Must-pay bills / month ($)</label><input id="r-exp" type="number" inputmode="decimal" value="1450" min="0"></div>
+          <div><label for="r-save">Cash saved now ($)</label><input id="r-save" type="number" inputmode="decimal" value="300" min="0"></div>
+          <div><label for="r-week">You can stash / week ($)</label><input id="r-week" type="number" inputmode="decimal" value="25" min="0"></div>
+        </div>
+        <div class="out" id="r-out"></div>
+      </div>
+    </div>
+
+    <p>The free sheet below runs all three fights on one page, every payday. <a href="start.html">Get the sheet &rarr;</a></p>
+  </section>
+
+  <!-- SEC. 04 — THE SHEET I ACTUALLY USE -->
+  <section>
+    <div class="perf"><span class="sec-label">Sec. 04 — The sheet I actually use</span></div>
+    <h2 class="anton">One page. Every payday. <span class="hivis">Free.</span></h2>
+    <p>The Reset Companion is the exact worksheet I run my own check through before the money moves: what came in, what's spoken for, what attacks the debt, what stands guard. This is it, filled in:</p>
+    <table class="stub-table">
+      <tr><td>NET CHECK IN</td><td>$1,684</td></tr>
+      <tr><td>RENT</td><td>−$875</td></tr>
+      <tr><td>LIGHTS + WATER</td><td>−$96</td></tr>
+      <tr><td>PHONE</td><td>−$55</td></tr>
+      <tr><td>GAS</td><td>−$60</td></tr>
+      <tr><td>GROCERIES</td><td>−$220</td></tr>
+      <tr><td>DEBT — CARD 1 (extra, on purpose)</td><td>−$75</td></tr>
+      <tr><td>THE SHIELD (first $1,000)</td><td>−$50</td></tr>
+      <tr class="total"><td>LEFT STANDING</td><td>$253</td></tr>
+    </table>
+    <div class="stamp">Sample numbers — the sheet is real, the dollars are stand-ins. Yours will move you more.</div>
+    <div class="cta-row"><a class="btn-door" href="start.html">Steal the sheet — it's free &rarr;</a></div>
+  </section>
+
+  <!-- SEC. 05 — WHAT I SELL, SAID PLAIN -->
+  <section>
+    <div class="perf"><span class="sec-label">Sec. 05 — What I sell, said plain</span></div>
+    <p>Everything free on this site stays free — the tools, the sheet, the daily videos. If you want the full binders — the trackers and planners I print for the long haul — they're on <a href="printables.html">the binders page</a>. The gear and gadgets I actually use are on <a href="bg-collections.html">the shelf</a>, every pick under $60, prices checked and dated. I only sell what I'd hand my own mama. That's the whole pitch.</p>
+  </section>
+
+  <footer>
+    <div class="perf"><span class="sec-label">The Come Up HQ</span></div>
+    <div class="foot-line"><span class="anton">Built after shift.</span> — Leroy</div>
+    <div class="foot-nav">
+      <a href="https://www.facebook.com/freebandroy" rel="noopener">Story</a>
+      <a href="hourly-money.html">Paycheck</a>
+      <a href="debt-free.html">Debt</a>
+      <a href="tools.html">Tools</a>
+      <a href="bg-collections.html">Shop</a>
+      <a href="start.html">Start Free</a>
+      <a href="faq.html">Straight Answers</a>
+    </div>
+    <p class="small">Augusta, GA. Some drafts and graphics on this site are made with AI help — the story, the numbers, and the mistakes are mine. © 2026 The Come Up HQ.</p>
+  </footer>
+
+</div>
+
+<script>
+// --- Slice 1 calculators: pure logic first (semantic-gate tested), thin DOM wiring ---
+function fmt$(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+var MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function payoffDate(monthsFromNow){
+  var d = new Date(2026, 10, 5); // Nov 5, 2026 — build date anchor
+  d.setMonth(d.getMonth() + monthsFromNow);
+  return MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+}
+function calcDebt(bal, apr, pay){
+  if (bal <= 0) return {done:true, months:0, totalInt:0};
+  if (pay <= 0) return {never:true};
+  var r = apr / 1200, b = bal, m = 0, ti = 0;
+  while (b > 0 && m < 1200){
+    var interest = b * r;
+    if (pay <= interest) return {never:true, interest:interest};
+    ti += interest;
+    b = b + interest - Math.min(pay, b + interest);
+    m++;
+  }
+  if (m >= 1200) return {never:true, interest:bal * r};
+  return {done:true, months:m, totalInt:ti};
+}
+function calcPay(wage, reg, ot){
+  var weekly = wage * reg + wage * 1.5 * ot;
+  return {weekly:weekly, check:weekly * 2, month:weekly * 52 / 12, year:weekly * 52};
+}
+function calcRunway(exp, saved, perWeek){
+  var cover = exp > 0 ? saved / exp : 0;
+  var gapFirst1000 = Math.max(0, 1000 - saved);
+  var weeks1000 = perWeek > 0 ? Math.ceil(gapFirst1000 / perWeek) : Infinity;
+  var gapMonth = Math.max(0, exp - saved);
+  var weeksMonth = perWeek > 0 ? Math.ceil(gapMonth / perWeek) : Infinity;
+  return {cover:cover, gapFirst1000:gapFirst1000, weeks1000:weeks1000, gapMonth:gapMonth, weeksMonth:weeksMonth};
+}
+function num(id){ var v = parseFloat(document.getElementById(id).value); return isNaN(v) ? 0 : v; }
+function runDebt(){
+  var res = calcDebt(num('d-bal'), num('d-apr'), num('d-pay'));
+  var el = document.getElementById('d-out');
+  if (res.done && res.months === 0){ el.innerHTML = 'NOTHING OWED. <b>THAT\'S THE WHOLE GAME.</b>'; return; }
+  if (res.never){
+    el.innerHTML = '<span class="warn">THAT PAYMENT NEVER KILLS IT.</span> Interest takes about <b>' + fmt$(res.interest || 0) + '/MO</b> before your payment touches the debt. Raise the payment until it beats the interest — then a date appears.';
+    return;
+  }
+  el.innerHTML = 'DEBT-FREE DATE: <b>' + payoffDate(res.months) + '</b> — ' + res.months + ' payments. Interest takes ' + fmt$(res.totalInt) + ' of your money on the way. Every extra $25/mo pulls that date closer.';
+}
+function runPay(){
+  var r = calcPay(num('p-wage'), num('p-reg'), num('p-ot'));
+  document.getElementById('p-out').innerHTML =
+    'WEEK: <b>' + fmt$(r.weekly) + '</b> · PER CHECK (2 WK): <b>' + fmt$(r.check) + '</b><br>MONTH: <b>' + fmt$(r.month) + '</b> · YEAR: <b>' + fmt$(r.year) + '</b><br><span style="color:var(--mute)">Gross — before taxes. The stub tells the rest.</span>';
+}
+function runRunway(){
+  var r = calcRunway(num('r-exp'), num('r-save'), num('r-week'));
+  var w1 = r.weeks1000 === Infinity ? '—' : (r.weeks1000 === 0 ? 'DONE — IT\'S STANDING' : r.weeks1000 + ' WEEKS');
+  var wm = r.weeksMonth === Infinity ? '—' : (r.weeksMonth === 0 ? 'COVERED' : r.weeksMonth + ' WEEKS');
+  document.getElementById('r-out').innerHTML =
+    'RIGHT NOW YOU COVER: <b>' + r.cover.toFixed(1) + ' MONTHS</b> OF MUST-PAY BILLS.<br>FIRST $1,000 SHIELD: <b>' + w1 + '</b> · ONE FULL MONTH COVERED: <b>' + wm + '</b>';
+}
+['d-bal','d-apr','d-pay','p-wage','p-reg','p-ot','r-exp','r-save','r-week'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', function(){ runDebt(); runPay(); runRunway(); });
+});
+runDebt(); runPay(); runRunway();
+</script>
+
 <script>
 
 // --- privacy-first analytics + waitlist capture (no cookies, no fingerprint) ---
@@ -216,475 +378,6 @@ details.debt-more .tool{ margin-top:10px; }
   window.__comeupCapture = capture;
 })();
 </script>
-</head>
-<body>
-<a class="skip-link" href="#main-content">Skip to main content</a>
-<main class="wrap" id="main-content" tabindex="-1">
-  <p class="topline"><span>●</span> Built for hourly work. Made for real life.</p>
-  <header class="hero">
-    <p class="brand">The Come Up</p>
-    <h1>Your check landed at midnight. <em>By sunrise, it was already spent.</em></h1>
-    <p class="moment">It&rsquo;s 5:47 in the morning. Rent, lights, the car note &mdash; everybody took their piece before you even woke up. <strong>This is where hourly workers take it back:</strong> one bill, one debt, one payday at a time. No jargon. No lectures. Just your next move, free.</p>
-    <div class="hero-actions">
-      <a class="button primary" href="paycheck-health-score-quiz.html">Find my next move <span aria-hidden="true">&nbsp;&rarr;</span></a>
-      <a class="button" href="tools.html">Browse all tools</a>
-      <a class="button" href="paycheck-protection-checklist.html">Free paycheck checklist</a>
-    </div>
-    <p class="hero-note">Every tool here is free. No account, no card, no catch &mdash; your numbers stay in your browser.</p>
-  </header>
 
-  <section class="capture" aria-labelledby="capture-h">
-    <h2 id="capture-h">The first tools are free &mdash; we&rsquo;ll email them to you</h2>
-    <p>Join the list and the starter tools land in your inbox &mdash; the Reset tracker printable included. After that, one email when new free tools drop. No spam, no selling your info &mdash; unsubscribe anytime.</p>
-    <form id="tcu-capture-form" novalidate>
-      <label for="tcu-capture-email">Email address</label>
-      <input type="email" id="tcu-capture-email" placeholder="Enter your email address" autocomplete="email" required>
-      <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;">
-      <button type="submit">Get My Free Printable</button>
-      <p class="status" id="tcu-capture-status" role="status" aria-live="polite"></p>
-    </form>
-  </section>
-
-  <section class="search-panel" aria-labelledby="finder-title">
-    <label id="finder-title" for="tool-search">What do you need help with right now?</label>
-    <div class="search-row">
-      <input id="tool-search" type="search" placeholder="Try &ldquo;overtime&rdquo;, &ldquo;car&rdquo;, or &ldquo;debt&rdquo;" autocomplete="off" aria-describedby="search-hint search-status">
-      <button id="clear-search" type="button" hidden>Clear</button>
-    </div>
-    <p class="search-hint" id="search-hint">Search these quick-start tools, or browse every tool in the full directory.</p>
-    <p class="search-status" id="search-status" role="status" aria-live="polite"></p>
-  </section>
-
-  <a class="door searchable" data-search="shop gifts bg collections store presents trendy waffle projector backpack" href="bg-collections.html">
-    <div class="kicker">The Shop &middot; B&amp;G Collections</div>
-    <div class="title">A gift that doesn&rsquo;t waste a paycheck</div>
-    <div class="desc">Unique and trendy picks, hand-picked weekly, every one under $60. You check out on the merchant&rsquo;s own secure site &mdash; Walmart, Wayfair, Dash &mdash; real picks, real stores, no stranger&rsquo;s cart asking for your card. One house, two doors: the same rule as the money tools applies here. Nothing wastes a paycheck.</div>
-  </a>
-  <a class="door searchable" data-search="paycheck health score quiz start next move paycheck money score budget" href="paycheck-health-score-quiz.html">
-    <div class="kicker">Start Here &middot; 2 Minutes</div>
-    <div class="title">What&rsquo;s your Paycheck Health Score?</div>
-    <div class="desc">Answer 8 quick questions about how your money actually moves and get a 0&ndash;100 score &mdash; plus the one next move that fits your situation, not somebody else&rsquo;s.</div>
-  </a>
-  <a class="door searchable" data-search="mission board action momentum small step" href="missions.html">
-    <div class="kicker">Mission Board</div>
-    <div class="title">One small move today beats a perfect plan someday</div>
-    <div class="desc">Choose one small money mission and build momentum with a practical action you can finish before your next shift.</div>
-  </a>
-
-  <h2 class="section-heading">Pick your situation</h2>
-  <p class="section-sub">Start from the problem you&rsquo;re staring at &mdash; not from a tool name you have to guess.</p>
-
-  <details class="hub" data-hub>
-    <summary><span><span class="hub-title">Paycheck &amp; Cash-Flow Shields</span><br><span class="hub-subtitle">Overtime, short checks, taxes, missing wages, and irregular hours.</span></span><span class="chevron" aria-hidden="true">&#9654;</span></summary>
-    <div class="tools">
-      <div class="pipeline searchable" data-search="overtime ot shift pay baseline paycheck tax safeguard withholding maximize wealth">
-        <div class="pipeline-title">Overtime game plan: know the baseline, protect the check, then direct the extra.</div>
-        <div class="pipeline-step"><span class="step-number">1</span><span><a class="step-link" href="overtime-paycheck-calculator.html">Calculate your overtime paycheck</a> or <a class="step-link" href="shift-paycheck-calculator.html">estimate shift pay</a> first.</span></div>
-        <div class="pipeline-step"><span class="step-number">2</span><span>Check the withholding with the <a class="step-link" href="ot-tax-spike-safeguard.html">OT Tax Spike Safeguard</a>.</span></div>
-        <div class="pipeline-step"><span class="step-number">3</span><span>Put the extra hours to work with the <a class="step-link" href="overtime-wealth-maximizer.html">Overtime Wealth Maximizer</a>.</span></div>
-      </div>
-      <a class="tool featured-tool searchable" data-search="wage theft audit missing unpaid hours overtime paycheck" href="wage-theft-audit.html"><div class="title">Wage Theft Audit</div><div class="desc">Check for missing hours, unpaid overtime, and paycheck discrepancies.</div></a>
-      <a class="tool searchable" data-search="variable pay irregular hours feast famine income shift" href="variable-pay-shield.html"><div class="title">Variable Pay Shield</div><div class="desc">Build a steadier plan around changing hours, tips, and income.</div></a>
-      <a class="tool searchable" data-search="short check paycheck shock emergency triage" href="paycheck-shock-defense.html"><div class="title">Paycheck Shock Defense</div><div class="desc">Prioritize the essentials when this check comes up short.</div></a>
-      <a class="tool searchable" data-search="tax withholding w4 refund owing irs" href="tax-withholding-safeguard.html"><div class="title">Tax Withholding Safeguard</div><div class="desc">Review your withholding before a tax bill or oversized refund.</div></a>
-      <a class="tool featured-tool searchable" data-search="paycheck bill calendar cash flow payday due date forecast" href="paycheck-bill-calendar.html"><div class="title">Paycheck &amp; Bill Calendar</div><div class="desc">Map upcoming paydays and recurring bills to spot a possible cash gap.</div></a>
-      <a class="tool searchable" data-search="payday cash flow budget split bills paycheck" href="payday-cash-flow-allocator.html"><div class="title">Payday Cash Flow Allocator</div><div class="desc">Give each payday a plan for bills, needs, and priorities.</div></a>
-    </div>
-  </details>
-
-  <details class="hub" data-hub>
-    <summary><span><span class="hub-title">Debt, Garnishment &amp; Repo Defenses</span><br><span class="hub-subtitle">High-interest debt, payday loans, collection pressure, and car payments.</span></span><span class="chevron" aria-hidden="true">&#9654;</span></summary>
-    <div class="tools">
-      <a class="tool featured-tool searchable" data-search="payday trap shield rollover payday loan true apr exit" href="payday-trap-shield.html"><div class="title">Payday Trap Shield</div><div class="desc">See the cost of repeat rollovers and map a safer exit plan.</div></a>
-      <a class="tool searchable" data-search="repo shield repossession car loan payment cure" href="repo-shield.html"><div class="title">Repo Shield</div><div class="desc">Understand the amount and steps needed to address a late car payment.</div></a>
-      <a class="tool searchable" data-search="garnishment shield wage paycheck creditor legal cap" href="garnishment-shield.html"><div class="title">Garnishment Shield</div><div class="desc">Estimate paycheck impact and organize questions about a garnishment.</div></a>
-      <a class="tool searchable" data-search="debt strategy payoff snowball avalanche consolidation" href="debt-strategy-selector.html"><div class="title">Debt Strategy Finder</div><div class="desc">Compare payoff approaches and find a strategy to explore.</div></a>
-      <details class="debt-more">
-        <summary>More debt payoff tools +</summary>
-        <a class="tool searchable" data-search="debt payoff calculator debt free date interest" href="debt-payoff-calculator.html"><div class="title">Debt Payoff Calculator</div><div class="desc">Estimate your payoff timeline and interest cost.</div></a>
-        <a class="tool searchable" data-search="snowball avalanche calculator compare" href="debt-snowball-vs-avalanche-calculator.html"><div class="title">Snowball vs. Avalanche Calculator</div><div class="desc">Compare two common payoff methods using your balances.</div></a>
-        <a class="tool searchable" data-search="snowball accelerator extra payment" href="snowball-accelerator.html"><div class="title">Snowball Accelerator</div><div class="desc">Explore ways to add momentum to a debt payoff plan.</div></a>
-        <a class="tool searchable" data-search="apr defense engine credit card interest" href="apr-defense-engine.html"><div class="title">APR Defense Engine</div><div class="desc">See how interest affects payoff and what to consider next.</div></a>
-        <a class="tool searchable" data-search="predatory debt exit title loan fee trap" href="predatory-debt-exit.html"><div class="title">Predatory Debt Exit</div><div class="desc">Review options for title loans and other high-cost debt.</div></a>
-      </details>
-    </div>
-  </details>
-
-  <details class="hub" data-hub>
-    <summary><span><span class="hub-title">Emergency &amp; Living-Cost Defense</span><br><span class="hub-subtitle">Medical bills, housing, utilities, tickets, childcare, and unexpected costs.</span></span><span class="chevron" aria-hidden="true">&#9654;</span></summary>
-    <div class="tools">
-      <a class="tool featured-tool searchable" data-search="medical bill defense hospital negotiate bill" href="medical-bill-defense.html"><div class="title">Medical Bill Defense</div><div class="desc">Organize a bill review and prepare for a conversation with the provider.</div></a>
-      <a class="tool searchable" data-search="ticket defense engine fines court license" href="ticket-defense-engine.html"><div class="title">Ticket Defense Engine</div><div class="desc">Review the deadlines, costs, and steps on a ticket.</div></a>
-      <a class="tool searchable" data-search="utility spike shield shutoff power water bill" href="utility-spike-shield.html"><div class="title">Utility Spike Shield</div><div class="desc">Plan a response to a high utility bill or shutoff notice.</div></a>
-      <a class="tool searchable" data-search="childcare cost defense childcare bill" href="childcare-cost-defense.html"><div class="title">Childcare Cost Defense</div><div class="desc">Map childcare costs against your work schedule and take-home pay.</div></a>
-      <a class="tool searchable" data-search="housing affordability rent lease renewal" href="housing-affordability-engine.html"><div class="title">Housing Affordability Engine</div><div class="desc">Estimate a rent range that fits your paycheck and regular expenses.</div></a>
-      <a class="tool searchable" data-search="vehicle maintenance car repairs emergency planner" href="vehicle-maintenance-defense-planner.html"><div class="title">Vehicle Maintenance Defense Planner</div><div class="desc">Prepare for repairs and protect the vehicle you rely on to work.</div></a>
-      <a class="tool searchable" data-search="family emergency injury layoff bereavement" href="family-emergency-shield.html"><div class="title">Family Emergency Shield</div><div class="desc">Sort urgent family costs and decide what to handle first.</div></a>
-    </div>
-  </details>
-
-  <details class="hub" data-hub>
-    <summary><span><span class="hub-title">Income Acceleration &amp; Assets</span><br><span class="hub-subtitle">Build a buffer, grow earning power, and make progress after the crisis.</span></span><span class="chevron" aria-hidden="true">&#9654;</span></summary>
-    <div class="tools">
-      <a class="tool featured-tool searchable" data-search="30 day paycheck reset hub stabilize routine" href="30-day-paycheck-reset.html"><div class="title">30-Day Paycheck Reset</div><div class="desc">Build a steadier money routine with one manageable step at a time.</div></a>
-      <a class="tool searchable" data-search="career lift engine certification raise pay income" href="career-lift-engine.html"><div class="title">Career Lift Engine</div><div class="desc">Compare training costs with a potential pay increase and payback time.</div></a>
-      <a class="tool searchable" data-search="emergency fund runway savings buffer" href="emergency-fund-runway-calculator.html"><div class="title">Emergency Fund Runway</div><div class="desc">Estimate how long your current savings could cover essential costs.</div></a>
-      <a class="tool searchable" data-search="savings challenge stash savings goal" href="savings-challenge.html"><div class="title">Savings Challenge</div><div class="desc">Use a savings challenge to turn small deposits into a repeatable habit.</div></a>
-      <a class="tool searchable" data-search="hustle profitability quiz side gig income" href="hustle-profitability-quiz.html"><div class="title">Hustle Profitability Quiz</div><div class="desc">Check whether a side hustle pays after costs and time.</div></a>
-      <a class="tool searchable" data-search="yield shield savings account apy" href="yield-shield.html"><div class="title">Yield Shield</div><div class="desc">Review what your cash earns and compare savings options.</div></a>
-    </div>
-  </details>
-
-  <p class="empty-state" id="empty-state">No matching quick-start tools. Try a different phrase or <a id="empty-state-link" href="tools.html">search the full tool directory</a>.</p>
-
-  <section class="after-crisis">
-    <h2>Handled the immediate problem? Keep the progress.</h2>
-    <p>Use a free printable paycheck checklist to review your pay, plan the next check, and choose one manageable action.</p>
-    <a href="paycheck-protection-checklist.html">Open the free checklist &rarr;</a>
-  </section>
-
-  <a class="door searchable" data-search="all tools directory calculators engines planners" href="tools.html">
-    <div class="kicker">The Full Shelf</div>
-    <div class="title">Browse all 60+ tools</div>
-    <div class="desc">Search the full collection of calculators, quizzes, planners, and defense engines.</div>
-  </a>
-  <a class="door searchable" data-search="tiktok videos daily money moves" href="https://www.tiktok.com/@bgcollections2k24" target="_blank" rel="noopener noreferrer">
-    <div class="kicker">TikTok &middot; @bgcollections2k24</div>
-    <div class="title">Daily money moves, on video</div>
-    <div class="desc">Short walkthroughs of the tools and the moves behind them.</div>
-  </a>
-
-  <section class="empire" aria-labelledby="empire-h">
-    <h2 class="empire-h" id="empire-h">New from The Come Up</h2>
-    <p class="empire-sub">Three new tools, each built for one specific moment. Try the free piece inside each one &mdash; and join the list above to hear when they open.</p>
-    <div class="empire-grid">
-      <a class="empire-card empire-owed" href="owed-ledger.html"><b>The Owed Ledger&trade;</b><span>Somebody owes you money and both of you know it. This is the system that gets it back &mdash; free tracker inside.</span><span class="go">Track what you&rsquo;re owed &rarr;</span></a>
-      <a class="empire-card empire-legacy" href="legacy-letters.html"><b>Legacy Letters&trade;</b><span>Your story is the most valuable thing your family will ever inherit. Keep it while you can &mdash; free sample letter inside.</span><span class="go">Start your first letter &rarr;</span></a>
-      <a class="empire-card empire-hearth" href="hearth-and-order.html"><b>Hearth &amp; Order&trade;</b><span>When your house has a bad night, this is the binder your family opens. Emergency, papers, people &mdash; free Year Wheel inside.</span><span class="go">Open the binder &rarr;</span></a>
-    </div>
-  </section>
-
-  <section class="tcu" aria-labelledby="hubs-h">
-    <h2 class="tcu-h" id="hubs-h">Find your way around</h2>
-    <div class="tcu-rels">
-      <a class="tcu-rel" href="bg-collections.html">
-        <span class="tcu-rel-t">B&amp;G Collections &mdash; the shop</span>
-        <span class="tcu-rel-d">Unique and trendy gifts, hand-picked weekly. Checkout happens on the merchant&rsquo;s own secure site.</span>
-      </a>
-      <a class="tcu-rel" href="problems.html">
-        <span class="tcu-rel-t">Problems hub</span>
-        <span class="tcu-rel-d">Start from the problem, not the tool name.</span>
-      </a>
-      <a class="tcu-rel" href="compare.html">
-        <span class="tcu-rel-t">Compare tools</span>
-        <span class="tcu-rel-d">Side-by-side, so you pick the right one.</span>
-      </a>
-      <a class="tcu-rel" href="faq.html">
-        <span class="tcu-rel-t">Money FAQ</span>
-        <span class="tcu-rel-d">Answers to the questions people actually ask.</span>
-      </a>
-      <a class="tcu-rel" href="guides.html">
-        <span class="tcu-rel-t">Guides &amp; playbooks</span>
-        <span class="tcu-rel-d">The deeper explainers behind the tools.</span>
-      </a>
-      <a class="tcu-rel" href="dashboard.html">
-        <span class="tcu-rel-t">Money dashboard</span>
-        <span class="tcu-rel-d">Every number you have saved, in one place.</span>
-      </a>
-      <a class="tcu-rel" href="favorites.html">
-        <span class="tcu-rel-t">My saved tools</span>
-        <span class="tcu-rel-d">The tools you keep coming back to.</span>
-      </a>
-      <a class="tcu-rel" href="payday-ritual.html">
-        <span class="tcu-rel-t">Payday ritual</span>
-        <span class="tcu-rel-d">A repeatable 20-minute payday routine.</span>
-      </a>
-      <a class="tcu-rel" href="printables.html">
-        <span class="tcu-rel-t">Printable worksheets</span>
-        <span class="tcu-rel-d">Print-and-go versions, one page each.</span>
-      </a>
-      <a class="tcu-rel" href="plan-link.html">
-        <span class="tcu-rel-t">Share a plan as a link</span>
-        <span class="tcu-rel-d">Send a plan without a signup.</span>
-      </a>
-      <a class="tcu-rel" href="catalog.html">
-        <span class="tcu-rel-t">Paid trackers</span>
-        <span class="tcu-rel-d">Printables for when paper works better.</span>
-      </a>
-    </div>
-  </section>
-
-  <section class="tcu" aria-labelledby="tcu-h">
-    <h2 class="tcu-h" id="tcu-h">Keep going</h2>
-    <div class="tcu-rels">
-      <a class="tcu-rel" href="paycheck-budget-splitter.html">
-        <span class="tcu-rel-t">Paycheck Budget Splitter</span>
-        <span class="tcu-rel-d">Give every dollar a job the second it lands.</span>
-      </a>
-      <a class="tcu-rel" href="tools.html">
-        <span class="tcu-rel-t">Free Paycheck &amp; Debt Calculators for Hourly Workers</span>
-        <span class="tcu-rel-d">Browse every free calculator on The Come Up.</span>
-      </a>
-      <a class="tcu-rel" href="paycheck-health-score-quiz.html">
-        <span class="tcu-rel-t">Paycheck Health Score Quiz</span>
-        <span class="tcu-rel-d">Eight questions about how your money actually moves &mdash; your safety net, your debt drag, your payday system.</span>
-      </a>
-      <a class="tcu-rel tcu-rel-hub" href="30-day-paycheck-reset.html">
-        <span class="tcu-rel-t">The 30-Day Paycheck Reset</span>
-        <span class="tcu-rel-d">One 3-minute money move a day. Free, and it saves your progress in this browser.</span>
-      </a>
-    </div>
-    <div class="tcu-share">
-      <button class="tcu-share-b" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 0 0 1-2-2V4a2 0 0 1 2-2h9a2 0 0 1 2 2v1"/></svg>
-        Copy my result
-      </button>
-      <span class="tcu-share-n" role="status" aria-live="polite"></span>
-    </div>
-    <div class="tcu-cta">
-      <a class="tcu-cta-a" href="30-day-paycheck-reset.html">Start Day 1 of the 30-Day Paycheck Reset &rarr;</a>
-    </div>
-  </section>
-
-  <p class="foot">Built for the ones who earn it hourly.<br>Educational tools only; not financial, legal, or tax advice.<br>The Come Up HQ &copy; 2026</p>
-</main>
-<script>
-  (function () {
-    var form = document.getElementById('tcu-capture-form');
-    var status = document.getElementById('tcu-capture-status');
-    var email = document.getElementById('tcu-capture-email');
-    if (!form) return;
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      var value = (email && email.value || '').trim();
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) {
-        status.textContent = 'That email does not look right. Check it and try again.';
-        if (email) email.focus();
-        return;
-      }
-      var btn = form.querySelector('button[type="submit"]');
-      if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
-      fetch("https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'field_0=' + encodeURIComponent(value) + '&hpc4b27b6e-eb38-11e9-be00-06b4694bee2a='
-      }).then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        form.reset();
-        status.textContent = "You're in — check your inbox.";
-      }).catch(function () {
-        status.textContent = 'Something went wrong. Try again in a moment.';
-      }).then(function () {
-        if (btn) { btn.disabled = false; btn.textContent = 'Get My Free Printable'; }
-      });
-    });
-  })();
-</script>
-<script>
-  (function () {
-    const input = document.getElementById('tool-search');
-    const clear = document.getElementById('clear-search');
-    const status = document.getElementById('search-status');
-    const empty = document.getElementById('empty-state');
-    const emptyLink = document.getElementById('empty-state-link');
-    const hubs = Array.from(document.querySelectorAll('[data-hub]'));
-    const searchable = Array.from(document.querySelectorAll('.searchable'));
-    let savedOpenStates = null;
-
-    function normalize(value) {
-      return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
-    }
-
-    function filterTools() {
-      const query = normalize(input.value.trim());
-      const terms = query ? query.split(/\s+/) : [];
-      if (query && savedOpenStates === null) savedOpenStates = hubs.map(function (hub) { return hub.open; });
-      let matches = 0;
-      searchable.forEach(function (item) {
-        const text = normalize(item.textContent + ' ' + (item.getAttribute('data-search') || ''));
-        const matched = terms.every(function (term) { return text.includes(term); });
-        item.hidden = !matched;
-        if (matched) matches++;
-      });
-      hubs.forEach(function (hub, index) {
-        const hasMatch = hub.querySelector('.searchable:not([hidden])') !== null;
-        hub.hidden = Boolean(query) && !hasMatch;
-        if (query && hasMatch) hub.open = true;
-        if (!query && savedOpenStates !== null) hub.open = savedOpenStates[index];
-      });
-      if (!query) savedOpenStates = null;
-      clear.hidden = !query;
-      empty.classList.toggle('show', Boolean(query) && matches === 0);
-      if (emptyLink) emptyLink.href = input.value.trim() ? 'tools.html?q=' + encodeURIComponent(input.value.trim()) : 'tools.html';
-      status.textContent = query ? matches + ' matching quick-start ' + (matches === 1 ? 'result' : 'results') + '.' : '';
-      const url = new URL(window.location.href);
-      if (input.value.trim()) url.searchParams.set('q', input.value.trim());
-      else url.searchParams.delete('q');
-      window.history.replaceState(null, '', url);
-    }
-
-    input.value = new URLSearchParams(window.location.search).get('q') || '';
-    input.addEventListener('input', filterTools);
-    clear.addEventListener('click', function () {
-      input.value = '';
-      filterTools();
-      input.focus();
-    });
-    filterTools();
-  })();
-</script>
-<script>
-(function () {
-// The shared "Copy my result" script - v2 (share loop).
-//
-// v1 copied the result plus a bare page URL. v2 makes the copy itself the
-// growth loop:
-//   - the URL carries UTM params so every share is attributable
-//   - the copied text ends with a one-line list hook
-//   - a native share sheet is used where the browser offers one, so the
-//     result can go straight to TikTok / Facebook / a group chat
-//
-// Substituted per page: PAGE_URL, PAGE_PATH, INTRO, FIELDS.
-// Kept as a template file so every page carries byte-identical behaviour.
-
-      var SITE = "https://thecomeuphq.github.io/comeup-links";
-      var PAGE_URL = "https://thecomeuphq.github.io/comeup-links/index.html";
-      var PAGE_PATH = "index.html";
-      var INTRO = "I ran the Free Money Tools for Hourly Workers:";
-      var FIELDS = [];
-      var btn = document.querySelector('.tcu-share-b');
-      if (!btn) return;
-      var note = document.querySelector('.tcu-share-n');
-
-      // Where a share came from, so the site can tell which channel works.
-      var UTM = 'utm_source=share&utm_medium=copy&utm_campaign=result';
-
-      function val(id) {
-        var el = document.getElementById(id);
-        if (!el) return '';
-        // inputs carry their value in the property, not in text
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
-          return String(el.value == null ? '' : el.value).replace(/\s+/g, ' ').trim();
-        }
-        return (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
-      }
-
-      // Fallback when a page has no curated field list: find the most
-      // result-like values on the page automatically.
-      function autoFields() {
-        var out = [];
-        var els = document.querySelectorAll('[id]');
-        for (var i = 0; i < els.length && out.length < 4; i++) {
-          var el = els[i];
-          var id = el.id || '';
-          if (!id) continue;
-          if (!/(gross|net|total|monthly|weekly|daily|score|verdict|amount|balance|save|interest|weeks|months|days|pay|remaining|left|coverage|target|deficit|profit|apr|rate|need|bleed|shortfall)/i.test(id)) continue;
-          var v = val(id);
-          if (!v || v.length > 60) continue;
-          var lab = '';
-          var prev = el.previousElementSibling;
-          if (prev) lab = (prev.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40);
-          if (!lab) {
-            var holder = el.closest('.k, .stat, .row, .m, .bp-meta, .quick-answer, .card, .q, .line');
-            if (holder) {
-              var k = holder.querySelector('.k, .stat-label, .row-name, .qa-label, .label, .key');
-              if (k) lab = (k.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40);
-            }
-          }
-          out.push({ id: id, label: lab });
-        }
-        return out;
-      }
-
-      // The shareable URL: the page plus attribution params.
-      function shareUrl() {
-        var base = PAGE_URL;
-        if (base.indexOf('?') > -1) base += '&' + UTM;
-        else base += '?' + UTM;
-        return base;
-      }
-
-      function build() {
-        var lines = [INTRO];
-        var list = FIELDS || autoFields();
-        for (var i = 0; i < list.length; i++) {
-          var v = val(list[i].id);
-          if (!v) continue;
-          lines.push((list[i].label ? list[i].label + ': ' : '') + v);
-        }
-        lines.push('');
-        lines.push('Check yours free: ' + shareUrl());
-        return lines.join('\n');
-      }
-
-      // The bare URL, for the native share sheet (it adds its own preview).
-      function shareTitle() {
-        var first = '';
-        var list = FIELDS || autoFields();
-        for (var i = 0; i < list.length; i++) {
-          var v = val(list[i].id);
-          if (v) { first = v; break; }
-        }
-        if (first) return 'My result: ' + first + ' — The Come Up';
-        return 'A free money tool for hourly workers — The Come Up';
-      }
-
-      function fallbackCopy(t) {
-        var ta = document.createElement('textarea');
-        ta.value = t;
-        ta.setAttribute('readonly', '');
-        ta.style.position = 'fixed';
-        ta.style.top = '-1000px';
-        document.body.appendChild(ta);
-        ta.select();
-        var ok = false;
-        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
-        document.body.removeChild(ta);
-        return ok;
-      }
-
-      function say(msg, kind) {
-        if (!note) return;
-        note.textContent = msg;
-        note.className = 'tcu-share-n ' + (kind || '');
-        setTimeout(function () { note.textContent = ''; note.className = 'tcu-share-n'; }, 4000);
-      }
-
-      // Copy first (always works), then offer the native share sheet.
-      function onClick() {
-        var payloadText = build();
-        var copied = false;
-        var tryNative = function () {
-          if (navigator.share) {
-            navigator.share({
-              title: shareTitle(),
-              text: payloadText,
-              url: shareUrl()
-            }).catch(function () { /* the user dismissed the sheet */ });
-          }
-        };
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(payloadText).then(
-            function () {
-              copied = true;
-              say(navigator.share ? 'Copied. Now pick where to share it.' : 'Copied — paste it in a comment.', 'ok');
-              tryNative();
-            },
-            function () {
-              copied = fallbackCopy(payloadText);
-              say(copied ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.', copied ? 'ok' : 'err');
-            }
-          );
-        } else {
-          copied = fallbackCopy(payloadText);
-          say(copied ? 'Copied — paste it in a comment.' : 'Copy failed, select the text above.', copied ? 'ok' : 'err');
-          if (copied) tryNative();
-        }
-      }
-
-      btn.addEventListener('click', onClick);
-    })();
-</script>
 </body>
 </html>
