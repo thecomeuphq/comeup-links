@@ -25,6 +25,15 @@
 // No cookies are set. No IP is stored. No visitor is identified. A visitor is
 // a row of numbers, not a person.
 
+// Key parts come from the visitor's URL, so they are untrusted input: a
+// scanner or a junk link can mint unbounded KV keys with random campaign
+// strings. Clean every part before it becomes a key - letters, digits and
+// . _ / - survive, everything else (including the ':' key separator)
+// becomes '_', and each part is length-capped.
+function cleanPart(v, max) {
+  return String(v || '').replace(/[^A-Za-z0-9._/-]/g, '_').slice(0, max);
+}
+
 export default {
   async fetch(request, env) {
     // GET /status - a health check the setup page uses to confirm the worker
@@ -41,6 +50,56 @@ export default {
           service: 'comeup',
           pageviewsToday: pv,
           signupsTotal: signups,
+          ts: new Date().toISOString()
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+      if (url.pathname === '/report') {
+        // Per-date read-back: arrivals keyed by (date, page, campaign) and
+        // Gumroad outbound clicks for that date. This is the read the
+        // Oct 27 ad readout needed and did not have (FLAG-2026-004).
+        const day = url.searchParams.get('date') || new Date().toISOString().slice(0, 10);
+        const pvDay = Number((await env.LIST.get('pv:' + day)) || 0);
+        const signupsR = Number((await env.LIST.get('count:signups')) || 0);
+        const arrivals = [];
+        const gumroadClicks = [];
+        let cursor = undefined;
+        do {
+          const listed = await env.LIST.list({ cursor });
+          for (const k of listed.keys) {
+            if (k.name.startsWith('arr:' + day + ':')) {
+              const rest = k.name.slice(('arr:' + day + ':').length);
+              const i1 = rest.indexOf(':');
+              const pth = i1 === -1 ? rest : rest.slice(0, i1);
+              const rem = i1 === -1 ? '' : rest.slice(i1 + 1);
+              const i2 = rem.lastIndexOf(':');
+              arrivals.push({
+                path: pth,
+                campaign: i2 === -1 ? rem : rem.slice(0, i2),
+                source: i2 === -1 ? '' : rem.slice(i2 + 1),
+                count: Number((await env.LIST.get(k.name)) || 0)
+              });
+            } else if (k.name.startsWith('gum:' + day + ':')) {
+              gumroadClicks.push({
+                target: k.name.slice(('gum:' + day + ':').length),
+                count: Number((await env.LIST.get(k.name)) || 0)
+              });
+            }
+          }
+          cursor = listed.list_complete ? undefined : listed.cursor;
+        } while (cursor);
+        arrivals.sort((x, y) => y.count - x.count);
+        gumroadClicks.sort((x, y) => y.count - x.count);
+        return new Response(JSON.stringify({
+          ok: true,
+          service: 'comeup',
+          date: day,
+          pageviews: pvDay,
+          signupsTotal: signupsR,
+          arrivals,
+          gumroadClicks,
           ts: new Date().toISOString()
         }), {
           status: 200,
@@ -125,6 +184,18 @@ export default {
         });
       }
 
+      // Gumroad outbound click: counted separately, never as a pageview.
+      if (payload && payload.type === 'gumroad_click') {
+        const gDay = new Date().toISOString().slice(0, 10);
+        const gKey = 'gum:' + gDay + ':' + String(payload.target || '').trim().slice(0, 200);
+        const gCount = Number((await env.LIST.get(gKey)) || 0);
+        await env.LIST.put(gKey, String(gCount + 1));
+        return new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
       // analytics: count only
       const key = 'pv:' + new Date().toISOString().slice(0, 10);
       const count = Number((await env.LIST.get(key)) || 0);
@@ -137,6 +208,14 @@ export default {
         const cCount = Number((await env.LIST.get(cKey)) || 0);
         await env.LIST.put(cKey, String(cCount + 1));
       }
+      // Arrival record keyed by (date, page, campaign) - readable back per
+      // date through GET /report, which the old global counters could not do.
+      const arrKey = 'arr:' + new Date().toISOString().slice(0, 10) + ':' +
+        cleanPart(payload.path, 128) + ':' +
+        (payload.utm_campaign ? cleanPart(payload.utm_campaign, 64) : 'none') + ':' +
+        (payload.utm_source ? cleanPart(payload.utm_source, 32) : 'none');
+      const arrCount = Number((await env.LIST.get(arrKey)) || 0);
+      await env.LIST.put(arrKey, String(arrCount + 1));
       return new Response(JSON.stringify({ ok: true }), {
         status: 200,
         headers: { ...cors, 'Content-Type': 'application/json' },

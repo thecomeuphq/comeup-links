@@ -50,6 +50,10 @@ const ANALYTICS_SCRIPT = `
         utm_campaign: u.searchParams.get('utm_campaign') || '',
         ts: new Date().toISOString()
       };
+      // Remember the campaign for this session only, so a Gumroad click on
+      // a later page still credits the campaign that brought the visit.
+      // Session-scoped, no identifier, gone when the tab closes.
+      try { if (body.utm_campaign) sessionStorage.setItem('tcu_utm_campaign', body.utm_campaign); } catch (e) {}
       // sendBeacon survives the page unloading; fetch with keepalive is the
       // fallback. Neither blocks the page.
       //
@@ -91,6 +95,37 @@ const ANALYTICS_SCRIPT = `
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
+
+  // ---- gumroad outbound clicks ----
+  // A click on a Gumroad link is the last step we can measure before the
+  // sale moves off-site. Counted the same privacy-first way: this page,
+  // the link target, this page's campaign - nothing personal.
+  document.addEventListener('click', function (e) {
+    try {
+      var a = (e.target && e.target.closest) ? e.target.closest('a[href*="gumroad.com"]') : null;
+      if (!a) return;
+      var u = new URL(location.href);
+      var body = {
+        type: 'gumroad_click',
+        path: u.pathname,
+        target: a.href,
+        utm_campaign: u.searchParams.get('utm_campaign') || (function () { try { return sessionStorage.getItem('tcu_utm_campaign') || ''; } catch (e) { return ''; } })(),
+        ts: new Date().toISOString()
+      };
+      var payload = JSON.stringify(body);
+      if (navigator.sendBeacon) {
+        try {
+          if (navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }))) return;
+        } catch (err) {}
+      }
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true
+      }).catch(function () {});
+    } catch (err) { /* analytics must never break the page */ }
+  });
 
   track();
 
@@ -172,6 +207,15 @@ const WORKER = `// The Come Up — analytics + waitlist worker.
 // No cookies are set. No IP is stored. No visitor is identified. A visitor is
 // a row of numbers, not a person.
 
+// Key parts come from the visitor's URL, so they are untrusted input: a
+// scanner or a junk link can mint unbounded KV keys with random campaign
+// strings. Clean every part before it becomes a key - letters, digits and
+// . _ / - survive, everything else (including the ':' key separator)
+// becomes '_', and each part is length-capped.
+function cleanPart(v, max) {
+  return String(v || '').replace(/[^A-Za-z0-9._/-]/g, '_').slice(0, max);
+}
+
 export default {
   async fetch(request, env) {
     // GET /status - a health check the setup page uses to confirm the worker
@@ -188,6 +232,56 @@ export default {
           service: 'comeup',
           pageviewsToday: pv,
           signupsTotal: signups,
+          ts: new Date().toISOString()
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+      if (url.pathname === '/report') {
+        // Per-date read-back: arrivals keyed by (date, page, campaign) and
+        // Gumroad outbound clicks for that date. This is the read the
+        // Oct 27 ad readout needed and did not have (FLAG-2026-004).
+        const day = url.searchParams.get('date') || new Date().toISOString().slice(0, 10);
+        const pvDay = Number((await env.LIST.get('pv:' + day)) || 0);
+        const signupsR = Number((await env.LIST.get('count:signups')) || 0);
+        const arrivals = [];
+        const gumroadClicks = [];
+        let cursor = undefined;
+        do {
+          const listed = await env.LIST.list({ cursor });
+          for (const k of listed.keys) {
+            if (k.name.startsWith('arr:' + day + ':')) {
+              const rest = k.name.slice(('arr:' + day + ':').length);
+              const i1 = rest.indexOf(':');
+              const pth = i1 === -1 ? rest : rest.slice(0, i1);
+              const rem = i1 === -1 ? '' : rest.slice(i1 + 1);
+              const i2 = rem.lastIndexOf(':');
+              arrivals.push({
+                path: pth,
+                campaign: i2 === -1 ? rem : rem.slice(0, i2),
+                source: i2 === -1 ? '' : rem.slice(i2 + 1),
+                count: Number((await env.LIST.get(k.name)) || 0)
+              });
+            } else if (k.name.startsWith('gum:' + day + ':')) {
+              gumroadClicks.push({
+                target: k.name.slice(('gum:' + day + ':').length),
+                count: Number((await env.LIST.get(k.name)) || 0)
+              });
+            }
+          }
+          cursor = listed.list_complete ? undefined : listed.cursor;
+        } while (cursor);
+        arrivals.sort((x, y) => y.count - x.count);
+        gumroadClicks.sort((x, y) => y.count - x.count);
+        return new Response(JSON.stringify({
+          ok: true,
+          service: 'comeup',
+          date: day,
+          pageviews: pvDay,
+          signupsTotal: signupsR,
+          arrivals,
+          gumroadClicks,
           ts: new Date().toISOString()
         }), {
           status: 200,
@@ -272,6 +366,18 @@ export default {
         });
       }
 
+      // Gumroad outbound click: counted separately, never as a pageview.
+      if (payload && payload.type === 'gumroad_click') {
+        const gDay = new Date().toISOString().slice(0, 10);
+        const gKey = 'gum:' + gDay + ':' + String(payload.target || '').trim().slice(0, 200);
+        const gCount = Number((await env.LIST.get(gKey)) || 0);
+        await env.LIST.put(gKey, String(gCount + 1));
+        return new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { ...cors, 'Content-Type': 'application/json' },
+        });
+      }
+
       // analytics: count only
       const key = 'pv:' + new Date().toISOString().slice(0, 10);
       const count = Number((await env.LIST.get(key)) || 0);
@@ -284,6 +390,14 @@ export default {
         const cCount = Number((await env.LIST.get(cKey)) || 0);
         await env.LIST.put(cKey, String(cCount + 1));
       }
+      // Arrival record keyed by (date, page, campaign) - readable back per
+      // date through GET /report, which the old global counters could not do.
+      const arrKey = 'arr:' + new Date().toISOString().slice(0, 10) + ':' +
+        cleanPart(payload.path, 128) + ':' +
+        (payload.utm_campaign ? cleanPart(payload.utm_campaign, 64) : 'none') + ':' +
+        (payload.utm_source ? cleanPart(payload.utm_source, 32) : 'none');
+      const arrCount = Number((await env.LIST.get(arrKey)) || 0);
+      await env.LIST.put(arrKey, String(arrCount + 1));
       return new Response(JSON.stringify({ ok: true }), {
         status: 200,
         headers: { ...cors, 'Content-Type': 'application/json' },
