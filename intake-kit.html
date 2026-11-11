@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Client Intake Blueprint</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans antialiased">
+
+  <!-- Main Container -->
+  <main class="max-w-4xl mx-auto px-6 py-16 w-full">
+
+    <!-- Badge -->
+    <div class="flex justify-center mb-6">
+      <span class="inline-flex items-center px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 border border-emerald-800/50 rounded-full">
+        B2B Lead Engine Protocol
+      </span>
+    </div>
+
+    <!-- Main Hero Headings -->
+    <header class="text-center max-w-2xl mx-auto mb-12">
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight mb-4">
+        Stop Losing $500+ Jobs to Slow Text Backs.
+      </h1>
+      <p class="text-lg text-slate-400">
+        The exact step-by-step intake, qualification, and instant-reply blueprint designed for local service businesses to capture high-value leads automatically.
+      </p>
+    </header>
+
+    <!-- Content & Form Grid -->
+    <div class="grid md:grid-cols-2 gap-8 items-start bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl">
+
+      <!-- Value Proposition -->
+      <div class="space-y-6">
+        <h2 class="text-xl font-bold text-white border-b border-slate-800 pb-3">What You Get Inside:</h2>
+
+        <ul class="space-y-4 text-sm text-slate-300">
+          <li class="flex items-start gap-3">
+            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xs mt-0.5">✓</span>
+            <div>
+              <strong class="text-white block">Zero Lost Leads</strong>
+              Turn website visitors into booked calls before they open a competitor's tab.
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xs mt-0.5">✓</span>
+            <div>
+              <strong class="text-white block">Pre-Qualified Clients</strong>
+              Filter out tire-kickers and low-budget price shoppers automatically.
+            </div>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-xs mt-0.5">✓</span>
+            <div>
+              <strong class="text-white block">20-Minute Plug-and-Play Setup</strong>
+              Runs on any standard form, web builder, or CRM without complex code.
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Lead Capture Form (JS-driven; handled by intake-kit.js) -->
+      <div class="bg-slate-950 p-6 rounded-xl border border-slate-800">
+        <form id="leadForm" class="space-y-4">
+          <div>
+            <label for="firstName" class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">First Name</label>
+            <input type="text" id="firstName" name="first_name" required placeholder="John"
+              class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition">
+          </div>
+
+          <div>
+            <label for="email" class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Business Email</label>
+            <input type="email" id="email" name="email" required placeholder="john@contracting.com"
+              class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition">
+          </div>
+
+          <div>
+            <label for="serviceType" class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Primary Service Niche</label>
+            <select id="serviceType" name="niche" required
+              class="w-full px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition">
+              <option value="" disabled selected>Select your industry</option>
+              <option value="contractor">General Contracting / Remodeling</option>
+              <option value="auto_detail">Auto Detailing / Mobile Services</option>
+              <option value="hvac_plumbing">HVAC / Plumbing / Electrical</option>
+              <option value="other">Other Local Service</option>
+            </select>
+          </div>
+
+          <!-- Honeypot: hidden from people, tempting to bots. Leave empty. -->
+          <div class="hidden" aria-hidden="true">
+            <label>Leave this field empty
+              <input type="text" name="hp" tabindex="-1" autocomplete="off">
+            </label>
+          </div>
+
+          <button type="submit" id="submitBtn"
+            class="w-full py-3.5 px-6 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold tracking-wide transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-[0.99]">
+            Get The Intake Kit Free
+          </button>
+        </form>
+
+        <!-- Privacy / consent line -->
+        <p class="mt-4 text-[11px] leading-relaxed text-slate-500 text-center">
+          By submitting, you agree to receive the free Intake Kit and occasional follow-up emails from Local Lead Engine. We'll never sell or share your information. Unsubscribe anytime.
+        </p>
+
+        <!-- Status Notification UI -->
+        <div id="statusMessage" class="hidden mt-4 p-3 rounded-lg text-xs font-medium text-center"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="text-center py-6 text-xs text-slate-600 border-t border-slate-900">
+    © 2026 Local Lead Engine. All rights reserved.
+  </footer>
+
+  <script src="intake-kit.js"></script>
+</body>
+</html>
