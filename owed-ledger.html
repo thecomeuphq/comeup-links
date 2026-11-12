@@ -65,7 +65,7 @@
       var ref = document.referrer || '';
       var src = '';
       if (ref) { try { src = new URL(ref).origin; } catch (e) { src = ''; } }
-      var body = { type: 'pageview', path: u.pathname, query: u.search || '', ref: src,
+      var body = { type: 'pageview', path: u.pathname, query: '', ref: src,
         utm_source: u.searchParams.get('utm_source') || '', utm_medium: u.searchParams.get('utm_medium') || '',
         utm_campaign: u.searchParams.get('utm_campaign') || '', ts: new Date().toISOString() };
       var payload = JSON.stringify(body);
