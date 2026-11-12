@@ -696,29 +696,17 @@
           <div class="cta-card reveal">
             <p class="sec-kicker"><b>04</b> A little more room to build</p>
             <h2>Let’s get your <em class="accent-serif">receivables moving.</em></h2>
-            <p>Tell us how your team handles follow-ups today. We’ll show you where RivetDue can help.</p>
+            <p>Want updates about RivetDue? Enter your email below. We don't need your company's details to add you to the list.</p>
             <form class="waitlist" id="waitlistForm">
-              <p class="wl-title">Join the waitlist</p>
+              <p class="wl-title">Get product updates</p>
               <div class="wl-grid">
-                <div class="wl-field">
-                  <label for="wl-name">Name</label>
-                  <input id="wl-name" name="name" type="text" autocomplete="name" required placeholder="Your name" />
-                </div>
-                <div class="wl-field">
-                  <label for="wl-company">Company name</label>
-                  <input id="wl-company" name="company" type="text" autocomplete="organization" required placeholder="Company name" />
-                </div>
                 <div class="wl-field full">
                   <label for="wl-email">Email</label>
                   <input id="wl-email" name="email" type="email" autocomplete="email" required placeholder="you@company.com" />
                 </div>
-                <div class="wl-field full">
-                  <label for="wl-volume">Approximate monthly invoice volume <span class="opt">(optional)</span></label>
-                  <input id="wl-volume" name="volume" type="text" inputmode="numeric" placeholder="e.g. 30 invoices a month" />
-                </div>
               </div>
-              <button class="btn" type="submit">Join the waitlist</button>
-              <p class="wl-note" id="wl-note">RivetDue is in development. Join the interest list and we will email you as it opens up — no spam, unsubscribe in one click.</p>
+              <button class="btn" type="submit">Join the email list</button>
+              <p class="wl-note" id="wl-note">This adds your email to The Come Up HQ mailing list. We may share RivetDue updates there. Unsubscribe using the link in any email.</p>
             </form>
             <a class="btn alt" href="#waitlistForm">Join the interest list</a>
           </div>
@@ -773,7 +761,7 @@
         if (track) { track.innerHTML += track.innerHTML; }
       })();
 
-      // Waitlist form: capture into EmailOctopus (The Come Up waitlist) — RivetDue interest segment.
+      // Interest form: submits the email field to The Come Up HQ EmailOctopus signup form; a RivetDue-specific segment is not verified.
       (function () {
         var form = document.getElementById('waitlistForm');
         var status = document.getElementById('wl-note');
@@ -796,11 +784,11 @@
           }).then(function (r) {
             if (!r.ok) throw new Error('HTTP ' + r.status);
             form.reset();
-            status.textContent = "You're on the list — we'll email you as RivetDue opens up.";
+            status.textContent = "Thanks — your email was submitted to The Come Up HQ mailing list.";
           }).catch(function () {
             status.textContent = 'Something went wrong. Try again in a moment.';
           }).then(function () {
-            if (btn) { btn.disabled = false; btn.textContent = 'Join the waitlist'; }
+            if (btn) { btn.disabled = false; btn.textContent = 'Join the email list'; }
           });
         });
       })();
