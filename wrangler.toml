@@ -25,10 +25,23 @@ name = "comeup-analytics"
 main = "gen/worker/worker.js"
 compatibility_date = "2024-11-06"
 
-# The site is served from https://thecomeuphq.github.io, so the Worker is
-# called cross-origin. The Worker already answers with
-# Access-Control-Allow-Origin: * and handles the OPTIONS preflight, so no
-# routes are needed here.
+# The site is served from https://thecomeuphq.com (GitHub Pages), so the
+# Worker is called cross-origin. The Worker handles the OPTIONS preflight and
+# only accepts POSTs whose Origin (or Referer) is one of ALLOWED_ORIGINS in
+# gen/worker/worker.js, so no routes are needed here.
+
+# --- Rate limiting (free on the Workers Free plan; needs wrangler 4.36+) ---
+# Per-IP cap on POSTs, checked in the Worker as env.RATE_LIMITER. Counts are
+# per Cloudflare location and approximate. If this binding is missing the
+# Worker still applies its own in-memory per-IP cap. namespace_id is any
+# integer unique within the Cloudflare account.
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+
+  [ratelimits.simple]
+  limit = 30
+  period = 60
 
 [observability]
 enabled = true

@@ -1,0 +1,24 @@
+# GitHub Pages (Jekyll) build settings for thecomeuphq.com.
+#
+# Keep internal docs, build tooling and config OUT of the published site.
+# They stay in the repo (the repo is public, so they are still readable on
+# GitHub) but are no longer served at thecomeuphq.com/... URLs.
+# Added Nov 14, 2026 after the security sweep (MEDIUM-2).
+#
+# Listing `exclude` replaces Jekyll's default exclude list, so the defaults
+# (Gemfile, node_modules, vendor/...) are repeated here.
+exclude:
+  - audit
+  - dev
+  - gen
+  - plan.md
+  - wrangler.toml
+  - package.json
+  - package-lock.json
+  - node_modules
+  - Gemfile
+  - Gemfile.lock
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/

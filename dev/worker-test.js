@@ -34,12 +34,31 @@ async function handle(request) {
   return worker.fetch(request, { LIST, EMAIL, SIGNUP_EMAIL });
 }
 
-function req(method, url, body) {
+// Every POST from the real site carries Origin: https://thecomeuphq.com, so
+// the default test request does too. Pass extraHeaders to override.
+function req(method, url, body, extraHeaders) {
+  const headers = Object.assign(
+    { Origin: 'https://thecomeuphq.com', 'CF-Connecting-IP': '203.0.113.' + (++ipSeq % 250) },
+    body ? { 'Content-Type': 'application/json' } : {},
+    extraHeaders || {}
+  );
+  for (const k of Object.keys(headers)) if (headers[k] === null) delete headers[k];
   return new Request(url, {
     method,
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
+}
+let ipSeq = 0;
+
+// One long-lived worker instance, for tests that need in-memory state
+// (the per-IP rate limit) to persist across requests.
+function freshWorker() {
+  const body = src.replace(/export\s+default\s*/, 'globalThis.__worker = ');
+  const sandbox = { globalThis: {}, Response, Request, URL, Date, JSON, Number, String, console };
+  vm.createContext(sandbox);
+  vm.runInContext(body, sandbox);
+  return sandbox.globalThis.__worker;
 }
 
 const BASE = 'https://comeup-analytics.test';
@@ -56,7 +75,7 @@ function check(name, cond, extra) {
   {
     const r = await handle(req('OPTIONS', BASE + '/'));
     check('OPTIONS returns 204', r.status === 204, 'got ' + r.status);
-    check('OPTIONS has Access-Control-Allow-Origin', r.headers.get('Access-Control-Allow-Origin') === '*');
+    check('OPTIONS has Access-Control-Allow-Origin (the site origin)', r.headers.get('Access-Control-Allow-Origin') === 'https://thecomeuphq.com');
     check('OPTIONS allows Content-Type', /Content-Type/i.test(r.headers.get('Access-Control-Allow-Headers') || ''));
   }
 
@@ -157,7 +176,7 @@ function check(name, cond, extra) {
 
   // 7. Malformed body is rejected, not a 500
   {
-    const bad = new Request(BASE + '/', { method: 'POST', body: 'not json' });
+    const bad = new Request(BASE + '/', { method: 'POST', body: 'not json', headers: { Origin: 'https://thecomeuphq.com' } });
     const resp = await handle(bad);
     check('malformed body returns 400', resp.status === 400, 'got ' + resp.status);
   }
@@ -165,7 +184,102 @@ function check(name, cond, extra) {
   // 8. CORS header present on a normal POST
   {
     const r = await handle(req('POST', BASE + '/', { type: 'pageview', path: '/x' }));
-    check('POST carries CORS origin header', r.headers.get('Access-Control-Allow-Origin') === '*');
+    check('POST carries CORS origin header (echoes the site origin)', r.headers.get('Access-Control-Allow-Origin') === 'https://thecomeuphq.com', 'got ' + r.headers.get('Access-Control-Allow-Origin'));
+  }
+
+  // ---- Nov 14, 2026 security sweep (MEDIUM-1) ----
+
+  // 9. Origin allowlist
+  {
+    const before = kv.get('pv:' + new Date().toISOString().slice(0, 10));
+    const r = await handle(req('POST', BASE + '/', { type: 'pageview', path: '/x' }, { Origin: 'https://evil.example' }));
+    check('POST from a foreign Origin is rejected with 403', r.status === 403, 'got ' + r.status);
+    check('foreign-Origin POST wrote nothing', kv.get('pv:' + new Date().toISOString().slice(0, 10)) === before);
+    const r2 = await handle(req('POST', BASE + '/', { type: 'pageview', path: '/x' }, { Origin: null }));
+    check('POST with no Origin and no Referer is rejected with 403', r2.status === 403, 'got ' + r2.status);
+    const r3 = await handle(req('POST', BASE + '/', { type: 'pageview', path: '/x' }, { Origin: null, Referer: 'https://thecomeuphq.com/yield-shield.html' }));
+    check('POST with no Origin but a site Referer is accepted', r3.status === 200, 'got ' + r3.status);
+    const r4 = await handle(req('POST', BASE + '/', { type: 'pageview', path: '/x' }, { Origin: 'https://www.thecomeuphq.com' }));
+    check('POST from www.thecomeuphq.com is accepted', r4.status === 200, 'got ' + r4.status);
+    const r5 = await handle(req('POST', BASE + '/', { type: 'pageview', path: '/x' }, { Origin: 'https://thecomeuphq.com.evil.example' }));
+    check('look-alike origin is rejected', r5.status === 403, 'got ' + r5.status);
+    const r6 = await handle(req('POST', BASE + '/', { type: 'signup', email: 'evil@example.com' }, { Origin: 'https://evil.example' }));
+    check('foreign-Origin signup is rejected and not stored', r6.status === 403 && !kv.has('signup:evil@example.com'));
+  }
+
+  // 10. Raw input never becomes a KV key
+  {
+    await handle(req('POST', BASE + '/', { type: 'pageview', path: '/a b:c' + 'x'.repeat(500), utm_campaign: 'camp:aign' + 'y'.repeat(500) }));
+    const keys = [...kv.keys()];
+    check('path key is cleaned and capped', keys.some(k => k.startsWith('path:/a_b_c')) && keys.filter(k => k.startsWith('path:')).every(k => k.length <= 5 + 128));
+    check('utm key is cleaned and capped', keys.some(k => k.startsWith('utm:camp_aign')) && keys.filter(k => k.startsWith('utm:')).every(k => k.length <= 4 + 64));
+    check('real path key unchanged', kv.has('path:/index.html'));
+    check('real utm key unchanged', kv.has('utm:test'));
+  }
+
+  // 11. Gumroad clicks: real target kept as a URL, junk target refused
+  {
+    const ok = await handle(req('POST', BASE + '/', { type: 'gumroad_click', path: '/x', target: 'https://bradley57.gumroad.com/l/abc' }));
+    check('real gumroad click accepted', ok.status === 200, 'got ' + ok.status);
+    check('gumroad key keeps the URL', kv.has('gum:' + new Date().toISOString().slice(0, 10) + ':https://bradley57.gumroad.com/l/abc'));
+    const bad = await handle(req('POST', BASE + '/', { type: 'gumroad_click', path: '/x', target: 'https://evil.example/' + 'z'.repeat(50) }));
+    check('non-gumroad click target rejected', bad.status === 400, 'got ' + bad.status);
+  }
+
+  // 12. Body size cap
+  {
+    const r = await handle(req('POST', BASE + '/', { type: 'pageview', path: '/x', junk: 'q'.repeat(5000) }));
+    check('oversized body rejected with 413', r.status === 413, 'got ' + r.status);
+  }
+
+  // 13. Email validation and signup field cleaning
+  {
+    for (const e of ['a@b', 'a b@c.com', 'a@b..com', 'x'.repeat(65) + '@example.com', 'a@example.c', 'a@-example.com']) {
+      const r = await handle(req('POST', BASE + '/', { type: 'signup', email: e }));
+      check('bad email rejected: ' + e.slice(0, 30), r.status === 400, 'got ' + r.status);
+    }
+    const sentBefore = sent.length;
+    const r = await handle(req('POST', BASE + '/', { type: 'signup', email: 'clean@example.com', name: 'Bob\r\nBcc: x@evil.example', path: '/w:x' }));
+    check('signup with junk name accepted', r.status === 200, 'got ' + r.status);
+    const rec = JSON.parse(kv.get('signup:clean@example.com') || '{}');
+    check('name has no line breaks', !/[\r\n]/.test(rec.name || 'x'), JSON.stringify(rec.name));
+    check('email body has no injected line', sent.length === sentBefore + 1 && !/\nBcc:/.test(sent[sent.length - 1].text));
+    const totalBefore = Number(kv.get('count:signups'));
+    const r2 = await handle(req('POST', BASE + '/', { type: 'signup', email: 'Clean@Example.com' }));
+    check('repeat signup still answers 200', r2.status === 200, 'got ' + r2.status);
+    check('repeat signup not re-counted', Number(kv.get('count:signups')) === totalBefore);
+    check('repeat signup not re-emailed', sent.length === sentBefore + 1);
+  }
+
+  // 14. Per-IP rate limits (one worker instance so memory persists)
+  {
+    const w = freshWorker();
+    const env = { LIST, EMAIL, SIGNUP_EMAIL };
+    const ip = { 'CF-Connecting-IP': '198.51.100.7' };
+    let codes = [];
+    for (let i = 0; i < 31; i++) {
+      const r = await w.fetch(req('POST', BASE + '/', { type: 'pageview', path: '/rl' }, ip), env);
+      codes.push(r.status);
+    }
+    check('first 30 POSTs from one IP in a minute accepted', codes.slice(0, 30).every(c => c === 200), codes.join(','));
+    check('31st POST from one IP in a minute gets 429', codes[30] === 429, 'got ' + codes[30]);
+    const other = await w.fetch(req('POST', BASE + '/', { type: 'pageview', path: '/rl' }, { 'CF-Connecting-IP': '198.51.100.8' }), env);
+    check('a different IP is not limited', other.status === 200, 'got ' + other.status);
+
+    const w2 = freshWorker();
+    const sip = { 'CF-Connecting-IP': '198.51.100.9' };
+    const sc = [];
+    for (let i = 0; i < 4; i++) {
+      const r = await w2.fetch(req('POST', BASE + '/', { type: 'signup', email: 'rl' + i + '@example.com' }, sip), env);
+      sc.push(r.status);
+    }
+    check('3 signups per IP per 10 min allowed, 4th gets 429', sc.slice(0, 3).every(c => c === 200) && sc[3] === 429, sc.join(','));
+
+    // The free Rate Limiting binding, when bound, is honoured.
+    const w3 = freshWorker();
+    const r = await w3.fetch(req('POST', BASE + '/', { type: 'pageview', path: '/rl' }),
+      { LIST, RATE_LIMITER: { async limit() { return { success: false }; } } });
+    check('RATE_LIMITER binding saying no -> 429', r.status === 429, 'got ' + r.status);
   }
 
   console.log('\n' + pass + ' passed, ' + fail + ' failed');
