@@ -275,8 +275,8 @@
         utm_campaign: u.searchParams.get('utm_campaign') || '',
         ts: new Date().toISOString()
       };
-      // Remember the campaign for this session only, so a Gumroad click on
-      // a later page still credits the campaign that brought the visit.
+      // Remember the campaign for this session only, so a later click on
+      // another page still credits the campaign that brought the visit.
       // Session-scoped, no identifier, gone when the tab closes.
       try { if (body.utm_campaign) sessionStorage.setItem('tcu_utm_campaign', body.utm_campaign); } catch (e) {}
       // sendBeacon survives the page unloading; fetch with keepalive is the
@@ -320,37 +320,6 @@
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
-
-  // ---- gumroad outbound clicks ----
-  // A click on a Gumroad link is the last step we can measure before the
-  // sale moves off-site. Counted the same privacy-first way: this page,
-  // the link target, this page's campaign - nothing personal.
-  document.addEventListener('click', function (e) {
-    try {
-      var a = (e.target && e.target.closest) ? e.target.closest('a[href*="gumroad.com"]') : null;
-      if (!a) return;
-      var u = new URL(location.href);
-      var body = {
-        type: 'gumroad_click',
-        path: u.pathname,
-        target: a.href,
-        utm_campaign: u.searchParams.get('utm_campaign') || (function () { try { return sessionStorage.getItem('tcu_utm_campaign') || ''; } catch (e) { return ''; } })(),
-        ts: new Date().toISOString()
-      };
-      var payload = JSON.stringify(body);
-      if (navigator.sendBeacon) {
-        try {
-          if (navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }))) return;
-        } catch (err) {}
-      }
-      fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        keepalive: true
-      }).catch(function () {});
-    } catch (err) { /* analytics must never break the page */ }
-  });
 
   track();
 
@@ -886,12 +855,7 @@
 
 
       <!-- ===== The Come Up: related tools + share + next step ===== -->
-      <section class="tcu-upsell" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
-        <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Want this on paper?</h2>
-        <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">The free tool gives you the number. This tracker gives you the system you keep using &mdash; one-time $4.95, yours to print and reprint.</p>
-        <a href="https://bradley57.gumroad.com/l/kvztuf?utm_source=comeup_links&utm_medium=website&utm_campaign=tool_upsell" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:11px 17px; border-radius:12px; background:#C06A00; color:#2A211A; font-size:14px; font-weight:800; text-decoration:none;">Get Debt Payoff Tracker Printable &mdash; $4.95</a>
-        <p style="margin:12px 0 0; font-size:12px; line-height:1.6; color:#7A6A58;">One-time purchase, no subscription. Everything on this site stays free &mdash; <a href="free-vs-paid.html">see what stays free</a>.</p>
-      </section>
+      
       <section class="tcu-capture" style="margin-top:28px; padding:16px; border:1px solid #C9902E; border-radius:14px; background:linear-gradient(125deg,#FBEED3,#FFFFFF);">
         <h2 style="margin:0 0 6px; font-size:16px; color:#C06A00; letter-spacing:.01em;">Get the free Debt Free App companion by email</h2>
         <p style="margin:0 0 13px; font-size:14px; line-height:1.55; color:#4A3E33;">You just ran the Debt Free App. Get the free Come Up starter tools by email &mdash; including the Reset tracker printable &mdash; plus one email when new free tools drop. No spam, no selling your info &mdash; unsubscribe anytime.</p>

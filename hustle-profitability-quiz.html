@@ -471,8 +471,8 @@
         utm_campaign: u.searchParams.get('utm_campaign') || '',
         ts: new Date().toISOString()
       };
-      // Remember the campaign for this session only, so a Gumroad click on
-      // a later page still credits the campaign that brought the visit.
+      // Remember the campaign for this session only, so a later click on
+      // another page still credits the campaign that brought the visit.
       // Session-scoped, no identifier, gone when the tab closes.
       try { if (body.utm_campaign) sessionStorage.setItem('tcu_utm_campaign', body.utm_campaign); } catch (e) {}
       // sendBeacon survives the page unloading; fetch with keepalive is the
@@ -516,37 +516,6 @@
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
-
-  // ---- gumroad outbound clicks ----
-  // A click on a Gumroad link is the last step we can measure before the
-  // sale moves off-site. Counted the same privacy-first way: this page,
-  // the link target, this page's campaign - nothing personal.
-  document.addEventListener('click', function (e) {
-    try {
-      var a = (e.target && e.target.closest) ? e.target.closest('a[href*="gumroad.com"]') : null;
-      if (!a) return;
-      var u = new URL(location.href);
-      var body = {
-        type: 'gumroad_click',
-        path: u.pathname,
-        target: a.href,
-        utm_campaign: u.searchParams.get('utm_campaign') || (function () { try { return sessionStorage.getItem('tcu_utm_campaign') || ''; } catch (e) { return ''; } })(),
-        ts: new Date().toISOString()
-      };
-      var payload = JSON.stringify(body);
-      if (navigator.sendBeacon) {
-        try {
-          if (navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }))) return;
-        } catch (err) {}
-      }
-      fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        keepalive: true
-      }).catch(function () {});
-    } catch (err) { /* analytics must never break the page */ }
-  });
 
   track();
 
@@ -764,11 +733,7 @@
             { kind: "calc", tag: "Free calculator", icon: "chart",
               name: "Compound Interest Velocity Calculator",
               desc: "Your margins are clean — now see how fast surplus cash compounds when you put it to work.",
-              url: "https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html" },
-            { kind: "prod", tag: "Printable tracker", icon: "thermo",
-              name: "52-Week Cash Stash Thermometer",
-              desc: "Turn weekly surplus into a visible savings streak you can watch climb.",
-              url: "https://bradley57.gumroad.com/" }
+              url: "https://thecomeuphq.github.io/comeup-links/compound-interest-velocity-calculator.html" }
           ]
         },
         mid: {
@@ -778,11 +743,7 @@
             { kind: "calc", tag: "Free calculator", icon: "calc",
               name: "Side-Hustle Tax Estimator",
               desc: "Enter your side income and see your real estimated tax bill — and the per-payout amount to set aside.",
-              url: "https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html" },
-            { kind: "prod", tag: "Printable log", icon: "clipboard",
-              name: "Overtime & Shift Worker Cash Flow Log",
-              desc: "A weekly log built for variable income — track payouts and tax set-asides side by side.",
-              url: "https://bradley57.gumroad.com/" }
+              url: "https://thecomeuphq.github.io/comeup-links/side-hustle-tax-estimator.html" }
           ]
         },
         low: {
@@ -796,15 +757,7 @@
             { kind: "calc", tag: "Free calculator", icon: "split",
               name: "Paycheck Budget Splitter",
               desc: "Split every payout into needs, wants, and savings the day it lands — before it leaks away.",
-              url: "https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" },
-            { kind: "prod", tag: "Free download", icon: "shield",
-              name: "Paycheck Protection Checklist",
-              desc: "A free one-page checklist that plugs the most common payday leaks.",
-              url: "https://bradley57.gumroad.com/" },
-            { kind: "prod", tag: "Printable binder", icon: "binder",
-              name: "Zero-Based Budgeting Starter Binder",
-              desc: "Give every dollar a job on paper, so expenses stop deciding for you.",
-              url: "https://bradley57.gumroad.com/" }
+              url: "https://thecomeuphq.github.io/comeup-links/paycheck-budget-splitter.html" }
           ]
         }
       };
@@ -957,6 +910,7 @@
         tier.recs.forEach(function (rec) {
           var a = document.createElement("a");
           a.className = "rec-card";
+          if (rec.kind === "prod") return;
           a.href = rec.url;
           a.target = "_blank";
           a.rel = "noopener";

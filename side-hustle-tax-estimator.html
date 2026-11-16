@@ -571,8 +571,8 @@
         utm_campaign: u.searchParams.get('utm_campaign') || '',
         ts: new Date().toISOString()
       };
-      // Remember the campaign for this session only, so a Gumroad click on
-      // a later page still credits the campaign that brought the visit.
+      // Remember the campaign for this session only, so a later click on
+      // another page still credits the campaign that brought the visit.
       // Session-scoped, no identifier, gone when the tab closes.
       try { if (body.utm_campaign) sessionStorage.setItem('tcu_utm_campaign', body.utm_campaign); } catch (e) {}
       // sendBeacon survives the page unloading; fetch with keepalive is the
@@ -616,37 +616,6 @@
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
-
-  // ---- gumroad outbound clicks ----
-  // A click on a Gumroad link is the last step we can measure before the
-  // sale moves off-site. Counted the same privacy-first way: this page,
-  // the link target, this page's campaign - nothing personal.
-  document.addEventListener('click', function (e) {
-    try {
-      var a = (e.target && e.target.closest) ? e.target.closest('a[href*="gumroad.com"]') : null;
-      if (!a) return;
-      var u = new URL(location.href);
-      var body = {
-        type: 'gumroad_click',
-        path: u.pathname,
-        target: a.href,
-        utm_campaign: u.searchParams.get('utm_campaign') || (function () { try { return sessionStorage.getItem('tcu_utm_campaign') || ''; } catch (e) { return ''; } })(),
-        ts: new Date().toISOString()
-      };
-      var payload = JSON.stringify(body);
-      if (navigator.sendBeacon) {
-        try {
-          if (navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }))) return;
-        } catch (err) {}
-      }
-      fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        keepalive: true
-      }).catch(function () {});
-    } catch (err) { /* analytics must never break the page */ }
-  });
 
   track();
 
@@ -751,7 +720,7 @@
                 <span class="tip">
                   <button type="button" class="tip-btn" aria-label="About platform fees">?</button>
                   <span class="tip-bubble" role="tooltip">
-                    The cut DoorDash, Uber, Etsy, Gumroad, or your marketplace keeps, plus payment
+                    The cut DoorDash, Uber, Etsy, or your marketplace keeps, plus payment
                     processing fees. If your payout is already net of fees, don't double-count —
                     enter gross income <strong>before</strong> the platform's cut here if you can.
                   </span>
@@ -896,16 +865,7 @@
             set-aside, not to file.
           </div>
 
-          <a class="cta-banner" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
-            <p class="cta-eyebrow">From the shop</p>
-            <p class="cta-text">Keep every dollar organized — grab the Paycheck Protection Checklist and Budget Binders.</p>
-            <span class="cta-go">
-              Shop the printables
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M4 12h15M13 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-          </a>
+          
         </div>
       </div>
 

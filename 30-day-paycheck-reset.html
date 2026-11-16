@@ -337,8 +337,8 @@
         utm_campaign: u.searchParams.get('utm_campaign') || '',
         ts: new Date().toISOString()
       };
-      // Remember the campaign for this session only, so a Gumroad click on
-      // a later page still credits the campaign that brought the visit.
+      // Remember the campaign for this session only, so a later click on
+      // another page still credits the campaign that brought the visit.
       // Session-scoped, no identifier, gone when the tab closes.
       try { if (body.utm_campaign) sessionStorage.setItem('tcu_utm_campaign', body.utm_campaign); } catch (e) {}
       // sendBeacon survives the page unloading; fetch with keepalive is the
@@ -382,37 +382,6 @@
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
-
-  // ---- gumroad outbound clicks ----
-  // A click on a Gumroad link is the last step we can measure before the
-  // sale moves off-site. Counted the same privacy-first way: this page,
-  // the link target, this page's campaign - nothing personal.
-  document.addEventListener('click', function (e) {
-    try {
-      var a = (e.target && e.target.closest) ? e.target.closest('a[href*="gumroad.com"]') : null;
-      if (!a) return;
-      var u = new URL(location.href);
-      var body = {
-        type: 'gumroad_click',
-        path: u.pathname,
-        target: a.href,
-        utm_campaign: u.searchParams.get('utm_campaign') || (function () { try { return sessionStorage.getItem('tcu_utm_campaign') || ''; } catch (e) { return ''; } })(),
-        ts: new Date().toISOString()
-      };
-      var payload = JSON.stringify(body);
-      if (navigator.sendBeacon) {
-        try {
-          if (navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }))) return;
-        } catch (err) {}
-      }
-      fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        keepalive: true
-      }).catch(function () {});
-    } catch (err) { /* analytics must never break the page */ }
-  });
 
   track();
 
@@ -479,13 +448,7 @@
     </script>
 
       <!-- Free payday worksheet -->
-      <section class="tracker-banner" aria-label="Free Paycheck Protection Checklist">
-        <div class="tracker-banner-text">
-          <span class="tracker-banner-tag">Free printable worksheet</span>
-          <p>Want a paper companion for this reset? Use the <strong>Paycheck Protection Checklist</strong> to review your pay and plan the next check.</p>
-        </div>
-        <a class="btn-tracker" href="paycheck-protection-checklist.html">Get the Free Checklist</a>
-      </section>
+      
 
       <!-- Progress -->
       <section class="progress-panel" aria-label="Your progress">
@@ -548,13 +511,7 @@
         <p id="finaleText">This banner lights up when all 30 moves are checked off. Retake your Paycheck Health Score on Day 30 and compare it to Day 1 &mdash; that jump is the proof.</p>
       </section>
 
-      <section class="tracker-banner" aria-label="Optional Paycheck-to-Paycheck Weekly Planner">
-        <div class="tracker-banner-text">
-          <span class="tracker-banner-tag">Optional paper planner · $6.95</span>
-          <p>Prefer to write out your payday plan? The <strong>Paycheck-to-Paycheck Weekly Planner</strong> is an optional printable companion. The 30-day reset remains free.</p>
-        </div>
-        <a class="btn-tracker" href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=reset_tracker">See the Planner</a>
-      </section>
+      
 
       <!-- FAQ -->
       <section class="faq">
@@ -569,16 +526,16 @@
         </details>
         <details>
           <summary>Is it really only 3 minutes?</summary>
-          <p>Yes. Every move is one small, specific action inside a free tool &mdash; add up a number, get a score, set one dollar amount. No spreadsheets to build, no accounts to connect. The optional weekly planner is a separate purchase; you can complete the full reset without it.</p>
+          <p>Yes. Every move is one small, specific action inside a free tool &mdash; add up a number, get a score, set one dollar amount. No spreadsheets to build, no accounts to connect.</p>
         </details>
         <details>
           <summary>Does it cost anything?</summary>
-          <p>The reset and all 30 daily tools are free. The optional Paycheck-to-Paycheck Weekly Planner is $6.95; buying it is not required to complete the reset.</p>
+          <p>The reset and all 30 daily tools are free.</p>
         </details>
       </section>
 
       <footer>
-        <p>Built for hourly and shift workers. The reset is free; optional printables are available from <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=reset_footer" target="_blank" rel="noopener noreferrer">The Come Up shop</a>.</p>
+        <p>Built for hourly and shift workers. The reset is free.</p>
       </footer>
     </div>
 
@@ -661,9 +618,7 @@
           html += '<p class="week-sub">' + w.sub + '</p>';
           html += '<div class="cards">';
           w.days.forEach(function (day) {
-            var plannerOffer = day.prod === "Paycheck-to-Paycheck Weekly Planner"
-              ? '<p class="deeper">Optional: <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&amp;utm_medium=website&amp;utm_campaign=reset_day_' + day.d + '" target="_blank" rel="noopener noreferrer">Paycheck-to-Paycheck Weekly Planner — $6.95</a></p>'
-              : '';
+            var plannerOffer = '';
             html += '<article class="card" id="card-' + day.d + '" data-day="' + day.d + '">';
             html += '<div class="card-top"><span class="day-badge">DAY ' + pad(day.d) + '</span><span class="next-tag" id="nextTag-' + day.d + '" hidden>Up next</span></div>';
             html += '<h3>' + day.t + '</h3>';

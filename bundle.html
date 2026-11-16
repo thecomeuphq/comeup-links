@@ -47,24 +47,9 @@
   "description": "Three printable money trackers: emergency fund starter, weekly paycheck planner, and zero-based budget binder.",
   "numberOfItems": 3,
   "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "$1,000 Emergency Fund Starter Pack",
-      "url": "https://bradley57.gumroad.com/l/turfm?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "The Paycheck-to-Paycheck Weekly Planner",
-      "url": "https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Ultimate Zero-Based Budgeting Starter Binder",
-      "url": "https://bradley57.gumroad.com/l/fafiob?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle"
-    }
+    
+    
+    
   ]
 }
 </script><script type="application/ld+json">
@@ -253,8 +238,8 @@
         utm_campaign: u.searchParams.get('utm_campaign') || '',
         ts: new Date().toISOString()
       };
-      // Remember the campaign for this session only, so a Gumroad click on
-      // a later page still credits the campaign that brought the visit.
+      // Remember the campaign for this session only, so a later click on
+      // another page still credits the campaign that brought the visit.
       // Session-scoped, no identifier, gone when the tab closes.
       try { if (body.utm_campaign) sessionStorage.setItem('tcu_utm_campaign', body.utm_campaign); } catch (e) {}
       // sendBeacon survives the page unloading; fetch with keepalive is the
@@ -299,37 +284,6 @@
     } catch (e) { return Promise.reject(e); }
   }
 
-  // ---- gumroad outbound clicks ----
-  // A click on a Gumroad link is the last step we can measure before the
-  // sale moves off-site. Counted the same privacy-first way: this page,
-  // the link target, this page's campaign - nothing personal.
-  document.addEventListener('click', function (e) {
-    try {
-      var a = (e.target && e.target.closest) ? e.target.closest('a[href*="gumroad.com"]') : null;
-      if (!a) return;
-      var u = new URL(location.href);
-      var body = {
-        type: 'gumroad_click',
-        path: u.pathname,
-        target: a.href,
-        utm_campaign: u.searchParams.get('utm_campaign') || (function () { try { return sessionStorage.getItem('tcu_utm_campaign') || ''; } catch (e) { return ''; } })(),
-        ts: new Date().toISOString()
-      };
-      var payload = JSON.stringify(body);
-      if (navigator.sendBeacon) {
-        try {
-          if (navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }))) return;
-        } catch (err) {}
-      }
-      fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        keepalive: true
-      }).catch(function () {});
-    } catch (err) { /* analytics must never break the page */ }
-  });
-
   track();
 
   // Expose capture for the waitlist form, which lives on waitlist.html.
@@ -349,38 +303,18 @@
   <h1>The Starter 3-Pack</h1>
   <p class="lead">Three trackers that cover the first ninety days of getting your money straight. Right now they are three separate downloads, so you can pick the one you need first and add the others later.</p>
   <div class="btnrow">
-    <a class="btn primary" href="https://bradley57.gumroad.com/l/turfm?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle">Start with $1,000 Emergency Fund Starter Pack</a>
+    
     <a class="btn ghost" href="catalog.html">See all 13 products</a>
   </div>
 </header>
-
-<div class="table" style="margin-top:22px">
-  <div class="tr head"><span class="k">What is in the pack</span><span class="v">Price</span></div>
-  <div class="tr">
-    <span class="k"><a href="https://bradley57.gumroad.com/l/turfm?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle">$1,000 Emergency Fund Starter Pack</a><br><span class="muted" style="font-size:12px">The step-by-step plan to stack your first $1,000 — the wall before the next emergency.</span></span>
-    <span class="v">$4.95</span>
-  </div>
-  <div class="tr">
-    <span class="k"><a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle">The Paycheck-to-Paycheck Weekly Planner</a><br><span class="muted" style="font-size:12px">Every payday gets a written plan you can follow — built around shift work, not a monthly grid.</span></span>
-    <span class="v">$6.95</span>
-  </div>
-  <div class="tr">
-    <span class="k"><a href="https://bradley57.gumroad.com/l/fafiob?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle">Ultimate Zero-Based Budgeting Starter Binder</a><br><span class="muted" style="font-size:12px">Every dollar gets a job — the full system for giving your paycheck a job before it lands.</span></span>
-    <span class="v">$12.95</span>
-  </div>
-  <div class="tr" style="background:rgba(192, 106, 0, 0.08)">
-    <span class="k"><strong>All three</strong><br><span class="muted" style="font-size:12px">Buy them one at a time &mdash; every one is a separate download</span></span>
-    <span class="v" style="color:var(--amber); font-size:18px;">$24.85</span>
-  </div>
-</div>
 
 <section class="section">
   <h2>Who this is for</h2>
   <p>This pack is for someone who has looked at the free tools, likes what they see, and knows they will do better with something to write on. It assumes you are starting from a tight month, not a comfortable one.</p>
   <ul class="tips">
-    <li><strong>You have no emergency buffer.</strong> The <a href="https://bradley57.gumroad.com/l/turfm?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle">$1,000 Emergency Fund Starter Pack</a> is the first $1,000 &mdash; the wall before the next emergency.</li>
-    <li><strong>Your paycheck is different every week.</strong> The <a href="https://bradley57.gumroad.com/l/qechcz?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle">Paycheck-to-Paycheck Weekly Planner</a> is built around shift work, not a monthly grid.</li>
-    <li><strong>Money leaves before you plan it.</strong> The <a href="https://bradley57.gumroad.com/l/fafiob?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle">Zero-Based Budgeting Starter Binder</a> gives every dollar a job before it lands.</li>
+    <li><strong>You have no emergency buffer.</strong></li>
+    <li><strong>Your paycheck is different every week.</strong></li>
+    <li><strong>Money leaves before you plan it.</strong></li>
   </ul>
 </section>
 
@@ -389,10 +323,7 @@
   <p>If you would rather not buy anything, the <a href="free-vs-paid.html">free tools do the same math</a> and always will. You can also go through the <a href="catalog.html">shop page</a> and pick the one tracker that matches your problem, instead of taking all three.</p>
 </section>
 
-<div class="note green">
-  <h3>One-time price, no subscription</h3>
-  <p>Every one is a one-time purchase with no renewal, no account, and no subscription. You can reprint each file as many times as you need &mdash; for you, for your partner, for a second copy on the fridge. If you want all three, buy all three; the combined pack is not published yet.</p>
-</div>
+
 <section class="tcu" aria-labelledby="tcu-h">
         <h2 class="tcu-h" id="tcu-h">Keep going</h2>
         <div class="tcu-rels">
@@ -422,9 +353,7 @@
         <span class="tcu-share-n" role="status" aria-live="polite"></span>
         </div>
 
-        <div class="tcu-cta">
-          <a class="tcu-cta-a" href="https://bradley57.gumroad.com/l/turfm?utm_source=comeup_links&utm_medium=website&utm_campaign=bundle_cta" target="_blank" rel="noopener">Start with $1,000 Emergency Fund Starter Pack</a>
-        </div>
+        
       </section>
 
 <p class="foot">Built for the ones who earn it hourly.<br>Educational tools only; not financial, legal, or tax advice.<br>B&amp;GCollections © 2026 · <a href="./index.html">The Come Up</a></p>

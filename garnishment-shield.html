@@ -311,8 +311,8 @@
         utm_campaign: u.searchParams.get('utm_campaign') || '',
         ts: new Date().toISOString()
       };
-      // Remember the campaign for this session only, so a Gumroad click on
-      // a later page still credits the campaign that brought the visit.
+      // Remember the campaign for this session only, so a later click on
+      // another page still credits the campaign that brought the visit.
       // Session-scoped, no identifier, gone when the tab closes.
       try { if (body.utm_campaign) sessionStorage.setItem('tcu_utm_campaign', body.utm_campaign); } catch (e) {}
       // sendBeacon survives the page unloading; fetch with keepalive is the
@@ -356,37 +356,6 @@
       return Promise.reject('Waitlist capture disconnected per wiring commission.');
     } catch (e) { return Promise.reject(e); }
   }
-
-  // ---- gumroad outbound clicks ----
-  // A click on a Gumroad link is the last step we can measure before the
-  // sale moves off-site. Counted the same privacy-first way: this page,
-  // the link target, this page's campaign - nothing personal.
-  document.addEventListener('click', function (e) {
-    try {
-      var a = (e.target && e.target.closest) ? e.target.closest('a[href*="gumroad.com"]') : null;
-      if (!a) return;
-      var u = new URL(location.href);
-      var body = {
-        type: 'gumroad_click',
-        path: u.pathname,
-        target: a.href,
-        utm_campaign: u.searchParams.get('utm_campaign') || (function () { try { return sessionStorage.getItem('tcu_utm_campaign') || ''; } catch (e) { return ''; } })(),
-        ts: new Date().toISOString()
-      };
-      var payload = JSON.stringify(body);
-      if (navigator.sendBeacon) {
-        try {
-          if (navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=UTF-8' }))) return;
-        } catch (err) {}
-      }
-      fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        keepalive: true
-      }).catch(function () {});
-    } catch (err) { /* analytics must never break the page */ }
-  });
 
   track();
 
@@ -689,11 +658,7 @@
         </a>
       </div>
 
-      <a class="cta" href="https://bradley57.gumroad.com/" target="_blank" rel="noopener">
-        <h3>Protect every dollar that's yours</h3>
-        <p>The <strong>Debt Snowball vs Avalanche Battle Plan</strong> and the <strong>Paycheck-to-Paycheck Weekly Planner</strong> on Gumroad — printable systems to kill the debts behind the garnishment and run every week on purpose.</p>
-        <span class="go">Get the planners on Gumroad →</span>
-      </a>
+      
 
       <!-- ================= FAQ ================= -->
       <h2 class="section-title">Straight answers</h2>
@@ -1100,7 +1065,7 @@
             + stabCells
             + (hasExp && leftover < 0
               ? "<strong>You're " + money(-leftover) + "/month short even at the lawful cap.</strong> That shortfall is evidence: document it and attach it to a hardship exemption claim (Tier 1 template) or, for a tax levy, an IRS hardship release request. Courts and the IRS both act on documented numbers, not general claims of hardship."
-              : "Once the buffer exists, aim the freed-up cash at the debt behind the order — the Battle Plan in the Gumroad banner below sequences exactly that.");
+              : "Once the buffer exists, aim the freed-up cash at the debt behind the order.");
 
           var html = "";
           html += tierHTML(1, "Court Exemption Protocol", primaryTier === 1, t1body, scripts[1], "Copy the Claim of Exemption");
