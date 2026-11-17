@@ -1,0 +1,55 @@
+# guard: free GitHub Actions on this public repo. Runs on PRs only.
+#
+#   1. gitleaks: fail on tokens/secrets anywhere in the repo history
+#      (including gen/ and wrangler.toml). Uses the free gitleaks binary,
+#      not gitleaks-action (which needs a license on private repos).
+#   2. banned strings: fail if Pages-published files contain Gumroad
+#      checkout hosts or known personal privacy identifiers (stored only as
+#      hashes in scripts/check-banned-strings.sh). Warns on the stale
+#      github.io origin.
+#
+# Error messages tell the agent to fix the root cause, not to comment the
+# string out. Never put personal mailboxes, employer names, or city/job
+# identifiers into this workflow in plain text.
+
+name: guard
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          set -euo pipefail
+          ver="8.24.3"
+          curl -sSL -o /tmp/gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${ver}/gitleaks_${ver}_linux_x64.tar.gz"
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+          install /tmp/gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      - name: Scan for secrets
+        run: |
+          gitleaks detect --source . --verbose --redact --exit-code 1
+          echo "If this fails: remove the secret from the file AND rotate it. Do not just delete the line and merge — anything already pushed to this public repo is burned."
+
+  banned-strings:
+    name: banned strings (published surface)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check published files for Gumroad, privacy identifiers, and stale hosts
+        run: bash scripts/check-banned-strings.sh .

@@ -1,18 +1,28 @@
-// The 13 PAID Gumroad products.
+// The 13 retired paid products (historical record only).
+//
+// CHECKOUT IS RETIRED. The old shop is not a shipped destination and its links
+// were removed from every live page in Nov 2026. CHECKOUT_HOST is intentionally
+// empty, and link() throws, so a generator rebuild fails loudly instead of
+// publishing dead checkout links. Do not set a host without Leroy's OK and a
+// tested, live destination.
 //
 // IMPORTANT RULE: the two free products (the $0+ companion worksheet and the
 // $0+ blue-collar checklist) must NEVER be linked from this site. They are
 // excluded here on purpose. Their free equivalents already live on-site as
 // 30-day-paycheck-reset.html and paycheck-protection-checklist.html.
 //
-// Source of truth: bradley57.gumroad.com products/search API (user_id 661919712772).
-// Prices verified 2026-10-20.
+// Prices were last checked 2026-10-20 and are NOT current. Do not publish them.
 
-const GUMROAD = 'https://bradley57.gumroad.com';
+const CHECKOUT_HOST = '';
+// Back-compat name for generators that import it. Empty on purpose.
+const GUMROAD = CHECKOUT_HOST;
 const UTM = 'utm_source=comeup_links&utm_medium=website&utm_campaign=site';
 
 function link(slug, campaign) {
-  return `${GUMROAD}/l/${slug}?${UTM}&utm_campaign=${campaign}`;
+  if (!CHECKOUT_HOST) {
+    throw new Error('Paid checkout is retired; refusing to build a checkout link for ' + slug + ' (' + campaign + ').');
+  }
+  return `${CHECKOUT_HOST}/l/${slug}?${UTM}&utm_campaign=${campaign}`;
 }
 
 // slug, name, price, one-line purpose, what it is for

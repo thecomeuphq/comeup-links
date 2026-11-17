@@ -3,18 +3,21 @@
 // Anything Leroy may need to change lives here so the generators do not have
 // to be edited. Set a value to non-empty to enable the feature.
 
-const SITE = 'https://thecomeuphq.github.io/comeup-links';
+const SITE = 'https://thecomeuphq.com';
 
-// --- Gumroad ---
-// The 13 paid products live in gen/products.js.
+// --- Paid checkout (retired) ---
+// The old Gumroad shop is not a shipped destination, and its links were
+// removed from every live page in Nov 2026. gen/products.js no longer carries
+// a checkout host, so the paid-link generators stop with an error instead of
+// baking dead checkout links back into the site. Do not re-add a checkout
+// host without Leroy's OK and a tested, live destination.
 //
-// BUNDLE_SLUG: the Gumroad SKU for the "Starter 3-Pack" combined product.
-// EMPTY means the combined product does not exist yet on Gumroad. While it is
+// BUNDLE_SLUG: the SKU for the "Starter 3-Pack" combined product.
+// EMPTY means the combined product does not exist. While it is
 // empty, bundle.html links the three real products individually and shows
 // their real prices — no invented bundle price, no dead checkout.
 //
-// To turn the combined SKU on: create the product on Gumroad, set its slug
-// here, and set BUNDLE_PRICE to its actual price.
+// Leave empty: there is no live paid checkout.
 const BUNDLE_SLUG = '';
 const BUNDLE_PRICE = null;
 
@@ -24,13 +27,10 @@ const BUNDLE_PRICE = null;
 // is never silently lost.
 const WAITLIST_ENDPOINT = 'https://eomail5.com/form/28f5b9da-cd9b-11f1-a64f-8d47d9604576';
 
-// The address the waitlist mailto: fallback points at.
-//
-// It is a real, working address so a signup is never lost while the
-// list provider is being set up. The domain-based list address is a
-// placeholder until thecomeuphq.com exists - a mailto: to a domain with
-// no MX record silently bounces, so the real address is used instead.
-const WAITLIST_ADDRESS = 'leroybradley7@gmail.com';
+// The waitlist no longer falls back to a mailto:. Personal mailboxes must
+// never be published on the site (public branding is The Come Up HQ only).
+// Kept as an empty export so older generators still load.
+const WAITLIST_ADDRESS = '';
 
 // --- Analytics + waitlist capture ---
 // One endpoint serves both: the pageview beacon and the signup POST.

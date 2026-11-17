@@ -17,7 +17,7 @@ const path = require('path');
 
 const DRY = process.argv.includes('--dry');
 
-const SITE = 'https://thecomeuphq.github.io/comeup-links';
+const SITE = 'https://thecomeuphq.com';
 
 // The same voice rules the content engine enforces. One source of truth.
 const VOICE = {

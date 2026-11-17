@@ -395,15 +395,13 @@ console.log('wrote printables.html');
 // Phase 13 + 14 — waitlist hook and lead magnet landing page
 // ---------------------------------------------------------------------------
 // ENDPOINT: empty until Leroy supplies a form endpoint (Formspree, Buttondown,
-// Netlify Forms, etc.). While empty, the form falls back to a mailto: so a
-// visitor can still sign up. Set WAITLIST_ENDPOINT in gen/config.js to switch
+// Netlify Forms, etc.). While empty, the form tells the visitor signups are
+// paused (no personal-mailbox fallback). Set WAITLIST_ENDPOINT in gen/config.js to switch
 // it to a real POST.
 const WAITLIST_ENDPOINT = config.WAITLIST_ENDPOINT;
-const WAITLIST_ADDRESS = config.WAITLIST_ADDRESS;
 
 const WAITLIST_SCRIPT = `(function () {
   var ENDPOINT = ${JSON.stringify(WAITLIST_ENDPOINT)};
-  var WAITLIST_ADDRESS = ${JSON.stringify(WAITLIST_ADDRESS)};
   var form = document.getElementById('waitlist-form');
   var status = document.getElementById('waitlist-status');
   var email = document.getElementById('waitlist-email');
@@ -441,7 +439,7 @@ const WAITLIST_SCRIPT = `(function () {
         form.reset();
         say('You are on the list. Next money move is coming your way.', true);
       }).catch(function () {
-        say('Something went wrong. Try again, or email ' + WAITLIST_ADDRESS + ' and we will add you by hand.', false);
+        say('Something went wrong. Give it a minute and try again.', false);
       }).then(function () {
         if (btn2) { btn2.disabled = false; btn2.textContent = 'Join the list'; }
       });
@@ -449,14 +447,9 @@ const WAITLIST_SCRIPT = `(function () {
     }
 
     if (!ENDPOINT) {
-      // No endpoint configured yet: hand off to the visitor's email client so
-      // the signup is not silently lost. The address is a placeholder that
-      // Leroy replaces when he wires up the list provider.
-      var subject = 'Add me to The Come Up list';
-      var body = 'Email: ' + payload.email + '\\nName: ' + (payload.name || '(not given)') + '\\n';
-      var href = 'mailto:' + WAITLIST_ADDRESS + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      window.location.href = href;
-      say('Opening your email app so you can send the signup. If nothing happens, email ' + WAITLIST_ADDRESS + ' directly.', true);
+      // No list endpoint configured: say so instead of falling back to a
+      // personal mailbox. Set WAITLIST_ENDPOINT in gen/config.js.
+      say('Signups are paused for a moment. Please try again later.', false);
       return;
     }
 
@@ -471,7 +464,7 @@ const WAITLIST_SCRIPT = `(function () {
       form.reset();
       say('You are on the list. Next money move is coming your way.', true);
     }).catch(function () {
-      say('Something went wrong. Try again, or email ' + WAITLIST_ADDRESS + ' and we will add you by hand.', false);
+      say('Something went wrong. Give it a minute and try again.', false);
     }).then(function () {
       if (btn) { btn.disabled = false; btn.textContent = 'Join the list'; }
     });

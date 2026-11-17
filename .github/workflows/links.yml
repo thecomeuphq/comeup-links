@@ -1,0 +1,99 @@
+# links: free GitHub Actions on this public repo. Runs on PRs only.
+#
+# Two jobs:
+#   1. internal — lychee --offline; missing repo files fail the PR.
+#   2. external — live HEAD/GET with a 15s timeout; 403/429/timeouts are
+#      accepted (unverified). This job reports and does not fail the PR:
+#      read the uploaded report for 404/410 and malformed URLs. (Third-party
+#      sites rate-limit CI runners, so a hard fail here would be flaky.)
+#
+# The internal job uses --root-dir, not --base-url: with an https base URL,
+# --offline would treat every relative link as remote and silently skip it.
+#
+# Known false positives this config already accounts for:
+#   - GET of https://fonts.googleapis.com and https://fonts.gstatic.com
+#     (preconnect origins; the /css2 stylesheet URLs are the real check)
+#   - GET of the eomail5.com waitlist form (Allow: POST, OPTIONS only)
+# A remaining lychee pitfall: href values built in JavaScript
+# (e.g. href="' + day.tool + '") are not real URLs. If offline lychee
+# flags those, add them to exclude or skip script bodies in a follow-up.
+
+name: links
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  internal:
+    name: Internal links (fail hard)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check internal href/src against files in the repo
+        uses: lycheeverse/lychee-action@v2
+        with:
+          lycheeVersion: v0.24.2
+          fail: true
+          args: >-
+            --offline
+            --no-progress
+            --verbose
+            --timeout 15
+            --root-dir ${{ github.workspace }}
+            --exclude-path audit
+            --exclude-path dev
+            --exclude-path gen
+            --exclude-path node_modules
+            '**/*.html'
+            'site.css'
+            'sitemap.xml'
+            'manifest.webmanifest'
+
+  external:
+    name: External links (report)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check outbound http(s) links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          lycheeVersion: v0.24.2
+          # Always upload the report. Do not fail the PR on 403/429/timeouts.
+          # Review output for 404/410 and malformed URLs (unencoded spaces).
+          fail: false
+          output: lychee-out.md
+          args: >-
+            --no-progress
+            --verbose
+            --timeout 15
+            --max-concurrency 8
+            --accept '200..=299,403,429'
+            --accept-timeouts
+            --scheme https
+            --scheme http
+            --exclude-path audit
+            --exclude-path dev
+            --exclude-path gen
+            --exclude-path node_modules
+            --exclude '^https://fonts\.googleapis\.com$'
+            --exclude '^https://fonts\.gstatic\.com$'
+            --exclude '^https://eomail5\.com/form/'
+            --user-agent 'Mozilla/5.0 (compatible; ComeUpLinkAudit/1.0; +https://thecomeuphq.com/)'
+            '**/*.html'
+            'site.css'
+            'sitemap.xml'
+
+      - name: Upload lychee report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lychee-external-report
+          path: lychee-out.md
+          if-no-files-found: ignore
