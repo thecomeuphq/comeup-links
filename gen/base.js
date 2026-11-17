@@ -2,7 +2,7 @@
 // Every generated page is a single self-contained HTML file, matching the
 // existing charcoal/amber design system used across the repo.
 
-const SITE = 'https://thecomeuphq.github.io/comeup-links';
+const SITE = 'https://thecomeuphq.com';
 
 const CSS = `
   :root {

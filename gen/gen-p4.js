@@ -23,6 +23,9 @@ function link(slug, campaign) {
   if (FORBIDDEN.includes(slug)) {
     throw new Error('refusing to link free product slug: ' + slug);
   }
+  if (!GUMROAD) {
+    throw new Error('Paid checkout is retired (gen/products.js has no checkout host); refusing to build a checkout link for ' + slug + '.');
+  }
   return `${GUMROAD}/l/${slug}?${UTM}&utm_campaign=${campaign}`;
 }
 

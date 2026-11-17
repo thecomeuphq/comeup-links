@@ -1,0 +1,11 @@
+# gitleaks config for comeup-links: default rules plus a narrow allowlist.
+# Only allowlist values proven not to be secrets. Never allowlist a real key;
+# remove and rotate it instead.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Browser localStorage key names (not credentials)"
+regexes = [
+  '''^comeup\.(favs|ritual)\.v1$''',
+]

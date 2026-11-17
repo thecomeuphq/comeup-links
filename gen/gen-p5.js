@@ -10,7 +10,7 @@ const fs = require('fs');
 const P = require('./pages');
 const { page, breadcrumbJsonLd, webSiteJsonLd, jsonld } = P;
 
-const SITE = 'https://thecomeuphq.github.io/comeup-links';
+const SITE = 'https://thecomeuphq.com';
 
 // ---------------------------------------------------------------------------
 // Phase 21 — custom 404 page with recovery links
